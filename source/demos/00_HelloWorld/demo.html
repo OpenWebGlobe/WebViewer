@@ -1,0 +1,70 @@
+<!--
+      This is a minimal application using the cwc WebGL Engine
+      Tutorial 2: Using internal shaders to simplify the application
+-->
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <script type="text/javascript" src="../../core/openwebglobe.js"></script>
+      <script type="text/javascript">
+         
+         //---------------------------------------------------------------------
+         
+         var totaltime = 0;
+         var engine = null;
+         
+         //---------------------------------------------------------------------
+         
+         function OnTimer(delta)
+         {
+            totaltime = totaltime + delta;
+            
+            if (totaltime > 1000) // change background color every second (1000 milliseconds)
+            {
+               var r=Math.abs(Math.random());
+               var g=Math.abs(Math.random());
+               var b=Math.abs(Math.random());
+               engine.SetClearColor(r,g,b,1);
+               totaltime = 0;
+            }
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnResize(w,h)
+         {
+            console.log("Resize: " + w + ", " + h);
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnRender()
+         {
+            // engine.DrawCube()
+         }
+        
+         //---------------------------------------------------------------------
+         
+         function init()
+         {
+         	engine = new engine3d();
+           
+            // Set Callbacks:
+            engine.SetTimerCallback(OnTimer);
+            engine.SetRenderCallback(OnRender);
+            engine.SetResizeCallback(OnResize);
+            
+            // Start engine...
+            engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
+         }
+         
+         //---------------------------------------------------------------------
+         
+      </script>
+    </head>
+    <body onload="init()">
+        <div style="text-align: center">
+            <canvas id="canvas" width="640" height="480"></canvas>
+        </div>
+    </body>
+</html>
