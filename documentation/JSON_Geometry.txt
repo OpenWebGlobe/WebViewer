@@ -1,0 +1,42 @@
+OPENWEBGLOBE GEOMETRY EXCHANGE FORMAT VERSION 1.0
+=================================================
+
+Geometry Objects consist of 
+   1) Vertex Semantic
+   2) Array of Vertices
+   3) Index Semantic
+   4) Array of indices
+
+Every geometry object has a vertex semantic.
+The following vertex semantics are currently supported:
+
+    "pnt":  Position, Normal, Texcoord
+    "pc":   Position, Color
+    "pt":   Position, Texcoord
+    "pnct": Position, Normal, Color, Texcoord
+    
+Points are always x,y,z floating points
+Normals are always x,y,z floating points
+Texcoords are always u,v floating points
+Colors are always r,g,b floating points [0,1]    
+
+
+Index Semantic
+   "POINTS"
+   "LINES"
+   "TRIANGLES"
+
+
+EXAMPLE:
+========
+
+{
+   "VertexSemantic" : "pnt",
+   "Vertices" : [1.2,2.31,12.312, ...],
+   "IndexSemantic": "TRIANGLES",
+   "Indices" : [0,1,2,3,4,5]
+}
+
+
+Please note that in this first version of the Geometry Exchange format, user data is not yet supported.
+
