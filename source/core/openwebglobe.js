@@ -591,9 +591,10 @@ Mesh.prototype.Create = function(nvertex)
 // C: Color
 
 // Currently the following vertex semantics are supported:
-//    PNT: Position, Normal, Texcoord
-//    PC:  Position, Color
-//    PT:  Position, Texcoord
+//    P:    Position only
+//    PNT:  Position, Normal, Texcoord
+//    PC:   Position, Color
+//    PT:   Position, Texcoord
 //    PNCT: Position, Normal, Color, Texcoord
 
 Mesh.prototype.SetBufferPNT = function(pnt)
