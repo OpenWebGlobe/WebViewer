@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Vektor Test</title>
+      <script type="text/javascript" src="../../core/vec3.js"></script>
+      <script type="text/javascript">
+      
+      function calc()
+      {
+         vector=new vec3("double");
+
+         x1=document.getElementById("elem10").value;
+         y1=document.getElementById("elem11").value;
+         z1=document.getElementById("elem12").value;
+         
+         vector.Set(new Float64Array([parseFloat(x1),parseFloat(y1),parseFloat(z1)]));
+         
+         vector2=new vec3("double");
+         vector2.Set([1,2,3]);
+         
+         
+         vector.Test(vector2);
+         
+        
+      }
+        
+         
+         
+      </script>
+    </head>
+    <body>
+      <input type="text" id="elem10">
+      <input type="text" id="elem11">
+      <input type="text" id="elem12">
+      <input type="button" onclick="calc()" value="calc..."> 
+    </body>
+</html>
