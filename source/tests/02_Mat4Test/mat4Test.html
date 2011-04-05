@@ -9,13 +9,14 @@
       function calc()
       {
          var mat=new mat4("float");
-         mat.Set(new Float32Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16));
+         mat.Set(new Float32Array([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]));
          
          var vec=new vec3("float");
          vec.Set([1,2,3]);
          
          mat.MultiplyVec3(vec);
          mat.Print();
+         vec.ToString();
         
       } 
       </script>
