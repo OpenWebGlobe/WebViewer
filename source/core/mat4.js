@@ -317,14 +317,86 @@ mat4.prototype.MultiplyVec3 = function(vec)
       }  
       resVec._values[0]=this._values[0]*vec._values[0]+this._values[1]*vec._values[1]+this._values[2]*vec._values[2]+this._values[3]*1;
       resVec._values[1]=this._values[4]*vec._values[0]+this._values[5]*vec._values[1]+this._values[6]*vec._values[2]+this._values[7]*1;
-      resVec._values[2]=this._values[8]*vec._values[0]+this._values[9]*vec._values[1]+this._values[10]*vec._values[2]+this._values[11]*1;    
+      resVec._values[2]=this._values[8]*vec._values[0]+this._values[9]*vec._values[1]+this._values[10]*vec._values[2]+this._values[11]*1;
+      var a=this._values[12]*vec._values[0]+this._values[13]*vec._values[1]+this._values[14]*vec._values[2]+this._values[15]*1; //ToDo Martin: Homogene Koordinaten? Durch letztes Element Teilen?
+      
+      resVec._values[0]=this._values[0]/a;
+      resVec._values[1]=this._values[0]/a;
+      resVec._values[2]=this._values[0]/a;
+             
       return resVec;
    }
 }
-
 //------------------------------------------------------------------------------
-// Print Matrix using document.write
-//----------------------------------------------------------
+// Frustum
+//------------------------------------------------------------------------------
+mat4.prototype.getFrustum = function(left, right, bottom, top, znear, zfar)
+{
+    r = new mat4("double"); //ToDo Martin: default double? oder wählbar als type-parameter
+    r.Zero();
+    var X = 2*znear/(right-left);
+    var Y = 2*znear/(top-bottom);
+    var A = (right+left)/(right-left);
+    var B = (top+bottom)/(top-bottom);
+    var C = -(zfar+znear)/(zfar-znear);
+    var D = -2*zfar*znear/(zfar-znear);
+
+    r._values[0] = 2*znear/(right-left);
+    r._values[5] = 2*znear/(top-bottom);
+    r._values[8] = (right+left)/(right-left);
+    r._values[9] = (top+bottom)/(top-bottom);
+    r._values[10] = -(zfar+znear)/(zfar-znear);
+    r._values[11] = -1;
+    r._values[14] = -2*zfar*znear/(zfar-znear);
+
+    return r;
+}
+//------------------------------------------------------------------------------
+// Perspective
+//------------------------------------------------------------------------------
+mat4.prototype.getPerspective = function(fovy, aspect, znear, zfar)
+{
+    var ymax = znear * Math.tan(fovy * Math.PI / 360.0); //ToDo: Welche Einheit hat fovy? (rad oder grad?) komische Umrechnung.
+    var ymin = -ymax;
+    var xmin = ymin * aspect;
+    var xmax = ymax * aspect;
+
+    return this.getFrustum(xmin, xmax, ymin, ymax, znear, zfar);
+}
+//------------------------------------------------------------------------------
+// Orthogonal
+//------------------------------------------------------------------------------
+mat4.prototype.getOrtho = function(left, right, bottom, top, znear, zfar)
+{
+    r = new mat4("double"); //ToDo Martin: default double? oder wählbar als type-parameter
+    r.Zero();
+    var tX = -(right+left)/(right-left);
+    var tY = -(top+bottom)/(top-bottom);
+    var tZ = -(zfar+znear)/(zfar-znear);
+    var X = 2 / (right-left);
+    var Y = 2 / (top-bottom);
+    var Z = -2 / (zfar-znear);
+
+    r._values[0] = 2 / (right-left);
+    r._values[5] = 2 / (top-bottom);
+    r._values[10] = -2 / (zfar-znear);
+    r._values[12] = -(right+left)/(right-left);
+    r._values[13] = -(top+bottom)/(top-bottom);
+    r._values[14] = -(zfar+znear)/(zfar-znear);
+    r._values[15] = 1;
+
+    return r; 
+}
+//------------------------------------------------------------------------------
+// Orthogonal 2D
+//------------------------------------------------------------------------------
+mat4.prototype.getOrtho2D = function(left, right, bottom, top) {
+
+    return this.getOrtho(left, right, bottom, top, -1, 1);
+};
+//------------------------------------------------------------------------------
+// Print Matrix using console.log
+//------------------------------------------------------------------------------
 mat4.prototype.Print = function()
 {
    if (this._values.length != 16)
@@ -359,4 +431,14 @@ mat4.prototype.Print = function()
       }
    }
    return true;
+}
+//------------------------------------------------------------------------------
+// ToString()
+//------------------------------------------------------------------------------
+mat4.prototype.ToString = function()
+{
+ return "[ "+this._values[0]+" "+this._values[1]+" "+this._values[2]+" "+this._values[3]+
+         "\n  "+this._values[4]+" "+this._values[5]+" "+this._values[6]+" "+this._values[7]+
+         "\n  "+this._values[8]+" "+this._values[9]+" "+this._values[10]+" "+this._values[11]+
+         "\n  "+this._values[12]+" "+this._values[13]+" "+this._values[14]+" "+this._values[15]+" ]";      
 }
