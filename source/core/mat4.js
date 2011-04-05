@@ -99,6 +99,16 @@ mat4.prototype.Set = function(oMatrix)
   return false;
 }
 //------------------------------------------------------------------------------
+// Get
+//------------------------------------------------------------------------------
+mat4.prototype.Get = function()
+{
+   return this._values;
+}
+
+
+
+//------------------------------------------------------------------------------
 // Copy matrix
 //------------------------------------------------------------------------------
 mat4.prototype.Copy = function()
@@ -150,66 +160,24 @@ mat4.prototype.Zero = function()
 //------------------------------------------------------------------------------
 // Create Translation matrix
 //------------------------------------------------------------------------------
-mat4.prototype.Translation = function(oVector)
-{
-   var x,y,z,w;
-   if (oVector.length == 3)
-   {
-      x = oVector[0];
-      y = oVector[1];
-      z = oVector[2];
-      w = 1;
-   }
-   else if (oVector.length == 4)
-   {
-      x = oVector[0];
-      y = oVector[1];
-      z = oVector[2];
-      w = oVector[3];
-   }
-   else
-   {
-      return false;
-   }
-      
+mat4.prototype.Translation = function(x,y,z)
+{     
    this._values[0]  = 1; this._values[1]  = 0; this._values[2]  = 0; this._values[3]  = x;
    this._values[4]  = 0; this._values[5]  = 1; this._values[6]  = 0; this._values[7]  = y;
    this._values[8]  = 0; this._values[9]  = 0; this._values[10] = 1; this._values[11] = z;
-   this._values[12] = 0; this._values[13] = 0; this._values[14] = 0; this._values[15] = w;
-   
-   return true;
-   
+   this._values[12] = 0; this._values[13] = 0; this._values[14] = 0; this._values[15] = 1;
+  
 }
 
 //------------------------------------------------------------------------------
 // Create Scale Matrix
 //------------------------------------------------------------------------------
-mat4.prototype.Scale = function(oVector)
+mat4.prototype.Scale = function(x,y,z)
 {
-   var x,y,z,w;
-   if (oVector.length == 3)
-   {
-      x = oVector[0];
-      y = oVector[1];
-      z = oVector[2];
-      w = 1;
-   }
-   else if (oVector.length == 4)
-   {
-      x = oVector[0];
-      y = oVector[1];
-      z = oVector[2];
-      w = oVector[3];
-   }
-   else
-   {
-      return false;
-   }
-
    this._values[0]  = x; this._values[1]  = 0; this._values[2]  = 0; this._values[3]  = 0;
    this._values[4]  = 0; this._values[5]  = y; this._values[6]  = 0; this._values[7]  = 0;
    this._values[8]  = 0; this._values[9]  = 0; this._values[10] = z; this._values[11] = 0;
-   this._values[12] = 0; this._values[13] = 0; this._values[14] = 0; this._values[15] = w;
+   this._values[12] = 0; this._values[13] = 0; this._values[14] = 0; this._values[15] = 1;
    
    return true;
    
@@ -222,10 +190,10 @@ mat4.prototype.RotationX = function(angle)
    
    var fSin = Math.sin(angle);
    var fCos = Math.cos(angle);
-   this._values[0]  = 1; this._values[1]  = 0;     this._values[2]  = 0;     this._values[3]  = 0;
-   this._values[4]  = 0; this._values[5]  = fCos;  this._values[6]  = -fSin; this._values[7]  = 0;
-   this._values[8]  = 0; this._values[9]  = fSin;  this._values[10] = fCos;  this._values[11] = 0;
-   this._values[12] = 0; this._values[13] = 0;     this._values[14] = 0;     this._values[15] = 1;
+   this._values[0]  = 1; this._values[1]  = 0;      this._values[2]  = 0;     this._values[3]  = 0;
+   this._values[4]  = 0; this._values[5]  = fCos;   this._values[6]  = fSin;  this._values[7]  = 0;
+   this._values[8]  = 0; this._values[9]  = -fSin;  this._values[10] = fCos;  this._values[11] = 0;
+   this._values[12] = 0; this._values[13] = 0;      this._values[14] = 0;     this._values[15] = 1;
 }
 
 //------------------------------------------------------------------------------
@@ -236,9 +204,9 @@ mat4.prototype.RotationY = function(angle)
 {
    var fSin = Math.sin(angle);
    var fCos = Math.cos(angle);
-   this._values[0]  = fCos;  this._values[1]  = 0;     this._values[2]  = fSin;  this._values[3]  = 0;
+   this._values[0]  = fCos;  this._values[1]  = 0;     this._values[2]  = -fSin; this._values[3]  = 0;
    this._values[4]  = 0;     this._values[5]  = 1;     this._values[6]  = 0;     this._values[7]  = 0;
-   this._values[8]  = -fSin; this._values[9]  = 0;     this._values[10] = fCos;  this._values[11] = 0;
+   this._values[8]  = fSin;  this._values[9]  = 0;     this._values[10] = fCos;  this._values[11] = 0;
    this._values[12] = 0;     this._values[13] = 0;     this._values[14] = 0;     this._values[15] = 1;
 }
 
@@ -249,8 +217,8 @@ mat4.prototype.RotationZ = function(angle)
 {   
    var fSin = Math.sin(angle);
    var fCos = Math.cos(angle);
-   this._values[0]  = fCos;  this._values[1]  = -fSin; this._values[2]  = 0;     this._values[3]  = 0;
-   this._values[4]  = fSin;  this._values[5]  = fCos;  this._values[6]  = 0;     this._values[7]  = 0;
+   this._values[0]  = fCos;  this._values[1]  = fSin;  this._values[2]  = 0;      this._values[3]  = 0;
+   this._values[4]  = -fSin; this._values[5]  = fCos;  this._values[6]  = 0;     this._values[7]  = 0;
    this._values[8]  = 0;     this._values[9]  = 0;     this._values[10] = 1;     this._values[11] = 0;
    this._values[12] = 0;     this._values[13] = 0;     this._values[14] = 0;     this._values[15] = 1;
 }
@@ -315,14 +283,14 @@ mat4.prototype.MultiplyVec3 = function(vec)
       {
        resVec = new vec3("double");
       }  
-      resVec._values[0]=this._values[0]*vec._values[0]+this._values[1]*vec._values[1]+this._values[2]*vec._values[2]+this._values[3]*1;
-      resVec._values[1]=this._values[4]*vec._values[0]+this._values[5]*vec._values[1]+this._values[6]*vec._values[2]+this._values[7]*1;
-      resVec._values[2]=this._values[8]*vec._values[0]+this._values[9]*vec._values[1]+this._values[10]*vec._values[2]+this._values[11]*1;
-      var a=this._values[12]*vec._values[0]+this._values[13]*vec._values[1]+this._values[14]*vec._values[2]+this._values[15]*1; //ToDo Martin: Homogene Koordinaten? Durch letztes Element Teilen?
+      resVec._values[0]=this._values[0]*vec._values[0]+this._values[4]*vec._values[1]+this._values[8]*vec._values[2]+this._values[12];
+      resVec._values[1]=this._values[1]*vec._values[0]+this._values[5]*vec._values[1]+this._values[9]*vec._values[2]+this._values[13];
+      resVec._values[2]=this._values[2]*vec._values[0]+this._values[6]*vec._values[1]+this._values[10]*vec._values[2]+this._values[14];
+      var w=this._values[3]*vec._values[0]+this._values[7]*vec._values[1]+this._values[11]*vec._values[2]+this._values[15]; 
       
-      resVec._values[0]=this._values[0]/a;
-      resVec._values[1]=this._values[0]/a;
-      resVec._values[2]=this._values[0]/a;
+      resVec._values[0]=resVec._values[0]/w;
+      resVec._values[1]=resVec._values[1]/w;
+      resVec._values[2]=resVec._values[2]/w;
              
       return resVec;
    }
@@ -330,69 +298,52 @@ mat4.prototype.MultiplyVec3 = function(vec)
 //------------------------------------------------------------------------------
 // Frustum
 //------------------------------------------------------------------------------
-mat4.prototype.getFrustum = function(left, right, bottom, top, znear, zfar)
+mat4.prototype.Frustum = function(left, right, bottom, top, znear, zfar)
 {
-    r = new mat4("double"); //ToDo Martin: default double? oder wählbar als type-parameter
-    r.Zero();
-    var X = 2*znear/(right-left);
-    var Y = 2*znear/(top-bottom);
-    var A = (right+left)/(right-left);
-    var B = (top+bottom)/(top-bottom);
-    var C = -(zfar+znear)/(zfar-znear);
-    var D = -2*zfar*znear/(zfar-znear);
 
-    r._values[0] = 2*znear/(right-left);
-    r._values[5] = 2*znear/(top-bottom);
-    r._values[8] = (right+left)/(right-left);
-    r._values[9] = (top+bottom)/(top-bottom);
-    r._values[10] = -(zfar+znear)/(zfar-znear);
-    r._values[11] = -1;
-    r._values[14] = -2*zfar*znear/(zfar-znear);
+    this._values[0] = 2*znear/(right-left);
+    this._values[5] = 2*znear/(top-bottom);
+    this._values[8] = (right+left)/(right-left);
+    this._values[9] = (top+bottom)/(top-bottom);
+    this._values[10] = -(zfar+znear)/(zfar-znear);
+    this._values[11] = -1;
+    this._values[14] = -2*zfar*znear/(zfar-znear);
 
-    return r;
 }
 //------------------------------------------------------------------------------
 // Perspective
 //------------------------------------------------------------------------------
-mat4.prototype.getPerspective = function(fovy, aspect, znear, zfar)
+mat4.prototype.Perspective = function(fovy, aspect, znear, zfar)
 {
-    var ymax = znear * Math.tan(fovy * Math.PI / 360.0); //ToDo: Welche Einheit hat fovy? (rad oder grad?) komische Umrechnung.
+    var ymax = znear * Math.tan(fovy * Math.PI / 360.0); 
     var ymin = -ymax;
     var xmin = ymin * aspect;
     var xmax = ymax * aspect;
 
-    return this.getFrustum(xmin, xmax, ymin, ymax, znear, zfar);
+    return this.Frustum(xmin, xmax, ymin, ymax, znear, zfar);
 }
 //------------------------------------------------------------------------------
 // Orthogonal
 //------------------------------------------------------------------------------
-mat4.prototype.getOrtho = function(left, right, bottom, top, znear, zfar)
+mat4.prototype.Ortho = function(left, right, bottom, top, znear, zfar)
 {
-    r = new mat4("double"); //ToDo Martin: default double? oder wählbar als type-parameter
-    r.Zero();
-    var tX = -(right+left)/(right-left);
-    var tY = -(top+bottom)/(top-bottom);
-    var tZ = -(zfar+znear)/(zfar-znear);
-    var X = 2 / (right-left);
-    var Y = 2 / (top-bottom);
-    var Z = -2 / (zfar-znear);
 
-    r._values[0] = 2 / (right-left);
-    r._values[5] = 2 / (top-bottom);
-    r._values[10] = -2 / (zfar-znear);
-    r._values[12] = -(right+left)/(right-left);
-    r._values[13] = -(top+bottom)/(top-bottom);
-    r._values[14] = -(zfar+znear)/(zfar-znear);
-    r._values[15] = 1;
-
-    return r; 
+    this._values[0] = 2 / (right-left);
+    this._values[5] = 2 / (top-bottom);
+    this._values[10] = -2 / (zfar-znear);
+    this._values[12] = -(right+left)/(right-left);
+    this._values[13] = -(top+bottom)/(top-bottom);
+    this._values[14] = -(zfar+znear)/(zfar-znear);
+    this._values[15] = 1;
+ 
 }
 //------------------------------------------------------------------------------
 // Orthogonal 2D
 //------------------------------------------------------------------------------
-mat4.prototype.getOrtho2D = function(left, right, bottom, top) {
+mat4.prototype.Ortho2D = function(left, right, bottom, top) 
+{
 
-    return this.getOrtho(left, right, bottom, top, -1, 1);
+    return this.Ortho(left, right, bottom, top, -1, 1);
 };
 //------------------------------------------------------------------------------
 // Print Matrix using console.log

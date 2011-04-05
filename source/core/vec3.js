@@ -17,8 +17,6 @@
 #           University of Applied Sciences Northwestern Switzerland            #
 #                           martin.christen@fhnw.ch                            #
 ********************************************************************************
-.......This engine is based on Algos3D Engine created by Martin Christen........
-................................................................................
 
 This file is part of the OpenWebGlobe SDK
 

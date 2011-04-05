@@ -3,5 +3,5 @@ attribute vec3 aPosition;
 
 void main()
 {
-   gl_Position = gl_Position = matMVP * aPosition;
+   gl_Position = matMVP * vec4(aPosition,1.0);
 }

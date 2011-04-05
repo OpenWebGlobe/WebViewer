@@ -17,8 +17,6 @@
 #           University of Applied Sciences Northwestern Switzerland            #
 #                           martin.christen@fhnw.ch                            #
 ********************************************************************************
-.......This engine is based on Algos3D Engine created by Martin Christen........
-................................................................................
 
 This file is part of the OpenWebGlobe SDK
 
@@ -94,6 +92,8 @@ function engine3d()
 
     this.gl = null;          // opengl context
 	this.context = null;
+	
+	this.shadermanager = null;
 	
 	this.vs_default = null; // default vertex shader
 	this.fs_default = null; // default fragment shader
@@ -345,9 +345,13 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    this.gl.enable(this.gl.DEPTH_TEST);
    
    // Create Default Shaders
+   //this.CreateDefaultShaders();
+   //this.UseShaderDefault();
+   
+   //Init Shaders
+   this.shadermanager = new ShaderManager(this.gl);
+   this.shadermanager.InitShaders();
   
-   this.CreateDefaultShaders();
-   this.UseShaderDefault();
 
    
    canvas.addEventListener("mousedown", _fncMouseDown, false);
@@ -524,7 +528,12 @@ function draw(gl, engine)
    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 
    // setup shader
-   engine.UseShaderDefault();
+   //engine.UseShaderDefault();
+   
+  
+   mvp=new mat4();
+   engine.shadermanager.UseShader_PNT(mvp);
+   
 
    // setup interleaved VBO and IBO
    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
@@ -596,6 +605,16 @@ Mesh.prototype.Create = function(nvertex)
 //    PC:   Position, Color
 //    PT:   Position, Texcoord
 //    PNCT: Position, Normal, Color, Texcoord
+
+
+/*sm = new ShaderManager(gl);
+
+myMesh = new Mesh(gl);
+myMesh.SetBufferP([0,0,0,   1,0,0,   1,1,0,]);
+myMesh.SetIndexBuffer("TRIANGLE", [0,1,2]);
+myMesh.ToGPU();
+*/
+
 
 Mesh.prototype.SetBufferPNT = function(pnt)
 {
