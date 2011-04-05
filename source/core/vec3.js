@@ -80,21 +80,26 @@ function vec3(typeparam)
       this._values = new Float32Array([0.0, 0.0, 0.0]);
    }
 }
+
+/*function vec3(typeparam,x,y,z)
+{
+   if (typeparam == "double")
+   {
+      this._values = new Float64Array([x, y, z]);  
+   }
+   else //(typeparam == "float")
+   {
+      this._values = new Float32Array([x, y, z]);
+   }
+}*/
 //------------------------------------------------------------------------------
 // Set Values
 //------------------------------------------------------------------------------
-vec3.prototype.Set = function(oVec)
+vec3.prototype.Set = function(x,y,z)
 {
-   if (oVec instanceof Array || 
-      oVec instanceof Float32Array || 
-      oVec instanceof Float64Array)
-   {
-      this._values[0]=oVec[0];
-      this._values[1]=oVec[1];
-      this._values[2]=oVec[2];
-      return true;
-   }
-   return false;
+      this._values[0]=x;
+      this._values[1]=y;
+      this._values[2]=z;
 }
 //------------------------------------------------------------------------------
 // Get Values (returns an array)
@@ -118,7 +123,7 @@ vec3.prototype.Copy = function()
       cpy = new vec3("double");
    }
 
-   cpy.Set([this._values[0],this._values[1],this._values[2]]);
+   cpy.Set(this._values[0],this._values[1],this._values[2]);
     
    return cpy;  
 }
@@ -193,9 +198,12 @@ vec3.prototype.Length = function()
 vec3.prototype.Normalize = function()
 {
    var l=this.Length();
-   this._values[0]=this._values[0]/l;
-   this._values[1]=this._values[1]/l;
-   this._values[2]=this._values[2]/l;
+   if (l!=0)
+   {
+      this._values[0]=this._values[0]/l;
+      this._values[1]=this._values[1]/l;
+      this._values[2]=this._values[2]/l;
+   }
    return this;
 }
 //------------------------------------------------------------------------------

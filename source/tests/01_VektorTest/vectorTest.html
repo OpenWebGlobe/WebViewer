@@ -13,10 +13,10 @@
          y1=document.getElementById("elem11").value;
          z1=document.getElementById("elem12").value;
          
-         vector.Set(new Float64Array([parseFloat(x1),parseFloat(y1),parseFloat(z1)]));
+         vector.Set(parseFloat(x1),parseFloat(y1),parseFloat(z1));
          
          vector2=new vec3("double");
-         vector2.Set([1,2,3]);
+         vector2.Set(1.5,2.5,3.5);
          
          
          vector.Test(vector2);
