@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Vektor Test</title>
+      <script type="text/javascript" src="../../core/vec3.js"></script>
+      <script type="text/javascript" src="../../core/mat4.js"></script>
+      <script type="text/javascript">
+      
+      function calc()
+      {
+         var mat=new mat4("float");
+         mat.Set(new Float32Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16));
+         
+         var vec=new vec3("float");
+         vec.Set([1,2,3]);
+         
+         mat.MultiplyVec3(vec);
+         mat.Print();
+        
+      } 
+      </script>
+    </head>
+    <body onload="calc()">
+     
+    </body>
+</html>
