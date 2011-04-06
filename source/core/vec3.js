@@ -173,6 +173,21 @@ vec3.prototype.Cross = function(vec)
     }
 }  
 //------------------------------------------------------------------------------
+
+Cross = function(result, v1, v2)
+{
+   var x1=v1._values[0];
+   var y1=v1._values[1];
+   var z1=v1._values[2];
+   var x2=v2._values[0];
+   var y2=v2._values[1];
+   var z2=v2._values[2];
+   result._values[0]=y1*z2-y2*z1;
+   result._values[1]=z1*x2-z2*x1;
+   result._values[2]=x1*y2-x2*y1;
+}
+
+//------------------------------------------------------------------------------
 // Dot Product
 //------------------------------------------------------------------------------
 vec3.prototype.Dot = function(vec)
