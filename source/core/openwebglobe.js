@@ -108,6 +108,8 @@ function engine3d()
 
 engine3d.prototype._resize = function(w,h)
 {
+   this.width = w;
+   this.height = h;
    // called on resize...
    if (this.cbfResize)
    {
@@ -344,6 +346,9 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    this.gl.clearColor(0, 0, 0, 1);
    this.gl.enable(this.gl.DEPTH_TEST);
    
+   this.gl.frontFace(this.gl.CCW);
+   this.gl.cullFace(this.gl.FRONT_AND_BACK);
+   
    // Create Default Shaders
    //this.CreateDefaultShaders();
    //this.UseShaderDefault();
@@ -365,12 +370,15 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    
    
    
+   
+   
    //-----------------------------------------------
    // SETUP DEMO GEOMETRY  (this will be removed)
    //-----------------------------------------------
    
    // setup VBO
    // define some vertexdata
+   /*
    var vertices = [
        // position XYZ, normal XYZ, texcoord UV => 8 floats per vertex
        -0.5,  0.5,  0.0,  0.6,  0.0,  0.8,  0.0,  0.0,
@@ -380,6 +388,37 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    ];
    
    var indices = [ 0, 1, 2, 2, 1, 3];
+   */
+   
+  //--------------------------------------------------
+  // CUBE
+  //--------------------------------------------------
+  
+   var vertices = [
+       // position XYZ, color RGBA => 7 floats per vertex
+       -0.5,   0.5,  -0.5,  1.0,  0.0,  0.0,  1.0,
+        0.5,   0.5,  -0.5,  0.0,  1.0,  0.0,  1.0,
+       -0.5,  -0.5,  -0.5,  0.0,  0.0,  1.0,  1.0,
+        0.5,  -0.5,  -0.5,  1.0,  1.0,  0.0,  1.0,
+        0.5,  -0.5,   0.5,  1.0,  0.0,  1.0,  1.0,
+        0.5,   0.5,   0.5,  0.0,  0.0,  1.0,  1.0,
+       -0.5,   0.5,   0.5,  1.0,  1.0,  1.0,  1.0,
+       -0.5,  -0.5,   0.5,  0.0,  0.0,  0.0,  1.0,
+   ];
+   
+   var indices = [ 0, 1, 2, 1, 2, 3, 1, 3, 4, 1, 5, 4, 0, 1, 6, 1, 5, 6, 5, 6, 7, 4, 5, 7, 0, 6, 7, 0, 2, 7, 2, 3, 7, 3, 4, 7];
+   
+   mesh=new Mesh(this);
+   mesh.Create(8);
+   mesh.SetBufferPC(vertices);
+   mesh.SetIndexBuffer(indices,"TRIANGLES");
+   mesh.ToGPU();
+
+   
+   
+   
+   /*
+   
    // Create vertex buffer
    vbo = this.gl.createBuffer();
    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vbo);
@@ -392,14 +431,17 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    // Create texture (async)
    //texture = loadTexture("texture.png");
    fonttexture = this._loadFontTexture();
-   
+   */
    
    // draw scene every 30 milliseconds
    dtStart = new Date(); // setup main timer...
    setInterval(fncTimer, 30);
+  
 }
 
 //------------------------------------------------------------------------------
+
+rotation = 0;
 
 function fncTimer()
 {
@@ -415,9 +457,33 @@ function fncTimer()
       {
          _g_vInstances[i].cbfTimer(nMSeconds);
       }
-	   
-	   // internal draw
-      draw(_g_vInstances[i].gl, _g_vInstances[i]);
+	  
+      _g_vInstances[i].gl.activeTexture(_g_vInstances[i].gl.TEXTURE0);
+      _g_vInstances[i].gl.bindTexture(_g_vInstances[i].gl.TEXTURE_2D, fonttexture);
+      
+      projection = new mat4();
+      fovy = 45; aspect = _g_vInstances[i].width / _g_vInstances[i].height;
+      projection.Perspective(fovy, aspect, 0.001, 1000);
+      
+      rotation = rotation + nMSeconds/1000;
+      
+       
+      model = new mat4();
+      //model.Translation(0,0,-50);
+      
+      view = new mat4();
+      view.RotationX(rotation);
+      
+      modelview = new mat4();
+      modelview.Multiply(model, view);
+      
+      mvp = new mat4();  
+      mvp.Multiply(modelview, projection);
+      
+      //mat.Zero();
+      //console.log(mat.ToString());
+      mesh.SetModelViewProjection(mvp);
+      mesh.Draw();
       
       // draw callback:
       if (_g_vInstances[i].cbfRender)
@@ -520,143 +586,6 @@ engine3d.prototype._loadFontTexture = function()
    return texture; 
 }
 
-//------------------------------------------------------------------------------
-
-function draw(gl, engine) 
-{
-   gl.viewport(0, 0, engine.context.width, engine.context.height);
-   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
-
-   // setup shader
-   //engine.UseShaderDefault();
-   
-  
-   mvp=new mat4();
-   engine.shadermanager.UseShader_PNT(mvp);
-   
-
-   // setup interleaved VBO and IBO
-   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
-   gl.enableVertexAttribArray(0);
-   gl.enableVertexAttribArray(1);
-   gl.enableVertexAttribArray(2);
-   gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 8*4, 0*4); // position
-   gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 8*4, 3*4); // normal
-   gl.vertexAttribPointer(2, 2, gl.FLOAT, false, 8*4, 6*4); // texcoord
-
-   // setup texture
-   gl.activeTexture(gl.TEXTURE0);
-   gl.bindTexture(gl.TEXTURE_2D, fonttexture);
-
-   // draw the buffer
-   gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-}
 
 
-//------------------------------------------------------------------------------
-//   __  __          _        ____  _     _           _   
-//  |  \/  |        | |      / __ \| |   (_)         | |  
-//  | \  / | ___ ___| |__   | |  | | |__  _  ___  ___| |_ 
-//  | |\/| |/ _ \ __| '_ \  | |  | | '_ \| |/ _ \/ __| __|
-//  | |  | |  __\__ \ | | | | |__| | |_) | |  __/ (__| |_ 
-//  |_|  |_|\___|___/_| |_|  \____/|_.__/| |\___|\___|\__|
-//                                      _/ |    
-//                                     |__/               
-//------------------------------------------------------------------------------
 
-function Mesh()
-{
-   this.gl = null;
-   
-	this.vbo = null;  // vertex buffer
-	this.ibo = null;  // index buffer
-	
-	this.positiondata = null;  // position data
-	this.normaldata = null;    // normals
-	this.texcoorddata = null;  // texture coordinates
-	this.mode = "";
-	this.numvertex = 0;
-	
-	this.vertexbufferdata = null; // new 
-	this.indexbufferdata = null;  // new Uint16Array(indices)
-}
-
-//------------------------------------------------------------------------------
-
-Mesh.prototype.Create = function(nvertex) 
-{
-	this.numvertex = nvertex;
-}
-//------------------------------------------------------------------------------
-
-//------------------
-// VERTEX SEMANTICS
-//------------------
-
-// P: Position
-// N: Normal
-// T: Texture
-// C: Color
-
-// Currently the following vertex semantics are supported:
-//    P:    Position only
-//    PNT:  Position, Normal, Texcoord
-//    PC:   Position, Color
-//    PT:   Position, Texcoord
-//    PNCT: Position, Normal, Color, Texcoord
-
-
-/*sm = new ShaderManager(gl);
-
-myMesh = new Mesh(gl);
-myMesh.SetBufferP([0,0,0,   1,0,0,   1,1,0,]);
-myMesh.SetIndexBuffer("TRIANGLE", [0,1,2]);
-myMesh.ToGPU();
-*/
-
-
-Mesh.prototype.SetBufferPNT = function(pnt)
-{
-   if ((pnt.length / 3) == this.numvertex)
-   {
-      this.vertexbufferdata = new Float32Array(pnt);
-      this.mode = "pnt";
-   }
-}
-
-//------------------------------------------------------------------------------
-
-Mesh.prototype.SetIndexBuffer = function(idx)
-{
-	this.vertexbufferdata = Uint16Array(idx); 
-}
-
-//------------------------------------------------------------------------------
-
-Mesh.prototype.ToGPU = function(gl)
-{
-  this.gl = gl;
-  
-  if (this.mode == "pnt")
-  {
-  	// Create VB
-  	this.vbo = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vbo);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, this.vertexbufferdata, this.gl.STATIC_DRAW);
-    
-    // Create IB
-  	ibo = this.gl.createBuffer();
-   	this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, ibo);
-   	this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.indexbufferdata, this.gl.STATIC_DRAW);
-  }
-}
-
-//------------------------------------------------------------------------------
-
-Mesh.prototype.Draw = function(gl)
-{
-	
-}
-
-//------------------------------------------------------------------------------
