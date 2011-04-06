@@ -72,6 +72,7 @@ var _gcbfKeyUp       = null;           // global key up event
 function engine3d()
 {
 	// Callbacks:
+	this.cbfInit = null;
 	this.cbfTimer = null;
 	this.cbfRender = null;
 	this.cbfMouseClicked = null;
@@ -101,11 +102,11 @@ function engine3d()
 	
 	// engine instance voodoo for timer event
 	_g_vInstances[_g_nInstanceCnt] = this;
-    _g_nInstanceCnt++;
+   _g_nInstanceCnt++;
 }
 
-//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 engine3d.prototype._resize = function(w,h)
 {
    this.width = w;
@@ -115,6 +116,13 @@ engine3d.prototype._resize = function(w,h)
    {
       this.cbfResize(w, h);
    }
+}
+
+//------------------------------------------------------------------------------
+
+engine3d.prototype.SetInitCallback = function(f)
+{
+   this.cbfInit = f;
 }
 
 //------------------------------------------------------------------------------
@@ -356,8 +364,9 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    //Init Shaders
    this.shadermanager = new ShaderManager(this.gl);
    this.shadermanager.InitShaders();
-  
-
+   
+   // call init callback 
+   this.cbfInit();
    
    canvas.addEventListener("mousedown", _fncMouseDown, false);
    canvas.addEventListener("mouseup", _fncMouseUp, false);
@@ -367,11 +376,7 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    window.addEventListener("keyup", _fncKeyUp, false);
    
  
-   
-   
-   
-   
-   
+
    //-----------------------------------------------
    // SETUP DEMO GEOMETRY  (this will be removed)
    //-----------------------------------------------
@@ -390,48 +395,9 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    var indices = [ 0, 1, 2, 2, 1, 3];
    */
    
-  //--------------------------------------------------
-  // CUBE
-  //--------------------------------------------------
+   
   
-   var vertices = [
-       // position XYZ, color RGBA => 7 floats per vertex
-       -0.5,   0.5,  -0.5,  1.0,  0.0,  0.0,  1.0,
-        0.5,   0.5,  -0.5,  0.0,  1.0,  0.0,  1.0,
-       -0.5,  -0.5,  -0.5,  0.0,  0.0,  1.0,  1.0,
-        0.5,  -0.5,  -0.5,  1.0,  1.0,  0.0,  1.0,
-        0.5,  -0.5,   0.5,  1.0,  0.0,  1.0,  1.0,
-        0.5,   0.5,   0.5,  0.0,  0.0,  1.0,  1.0,
-       -0.5,   0.5,   0.5,  1.0,  1.0,  1.0,  1.0,
-       -0.5,  -0.5,   0.5,  0.0,  0.0,  0.0,  1.0,
-   ];
-   
-   var indices = [ 0, 1, 2, 1, 2, 3, 1, 3, 4, 1, 5, 4, 0, 1, 6, 1, 5, 6, 5, 6, 7, 4, 5, 7, 0, 6, 7, 0, 2, 7, 2, 3, 7, 3, 4, 7];
-   
-   mesh=new Mesh(this);
-   mesh.Create(8);
-   mesh.SetBufferPC(vertices);
-   mesh.SetIndexBuffer(indices,"TRIANGLES");
-   mesh.ToGPU();
 
-   
-   
-   
-   /*
-   
-   // Create vertex buffer
-   vbo = this.gl.createBuffer();
-   this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vbo);
-   this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
-   // Create index buffer
-   ibo = this.gl.createBuffer();
-   this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, ibo);
-   this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), this.gl.STATIC_DRAW);
-   
-   // Create texture (async)
-   //texture = loadTexture("texture.png");
-   fonttexture = this._loadFontTexture();
-   */
    
    // draw scene every 30 milliseconds
    dtStart = new Date(); // setup main timer...
@@ -461,29 +427,7 @@ function fncTimer()
       _g_vInstances[i].gl.activeTexture(_g_vInstances[i].gl.TEXTURE0);
       _g_vInstances[i].gl.bindTexture(_g_vInstances[i].gl.TEXTURE_2D, fonttexture);
       
-      projection = new mat4();
-      fovy = 45; aspect = _g_vInstances[i].width / _g_vInstances[i].height;
-      projection.Perspective(fovy, aspect, 0.001, 1000);
       
-      rotation = rotation + nMSeconds/1000;
-      
-       
-      model = new mat4();
-      //model.Translation(0,0,-50);
-      
-      view = new mat4();
-      view.RotationX(rotation);
-      
-      modelview = new mat4();
-      modelview.Multiply(model, view);
-      
-      mvp = new mat4();  
-      mvp.Multiply(modelview, projection);
-      
-      //mat.Zero();
-      //console.log(mat.ToString());
-      mesh.SetModelViewProjection(mvp);
-      mesh.Draw();
       
       // draw callback:
       if (_g_vInstances[i].cbfRender)

@@ -17,6 +17,7 @@
          
          var totaltime = 0;
          var engine = null;
+         var cube = null;
          
          //---------------------------------------------------------------------
          
@@ -46,6 +47,70 @@
          function OnRender()
          {
             // engine.DrawCube()
+         /*   projection = new mat4();
+            fovy = 45; 
+            aspect = engine.width / engine.height;
+            projection.Perspective(fovy, aspect, 0.001, 1000);
+            
+            rotation = 1;//rotation + nMSeconds/1000;
+            
+             
+            model = new mat4();
+            //model.Translation(0,0,-50);
+            
+            view = new mat4();
+            view.RotationX(rotation);
+            
+            modelview = new mat4();
+            modelview.Multiply(model, view);
+            */
+            mvp = new mat4();  
+          //  mvp.Multiply(modelview, projection);
+            
+            //mat.Zero();
+            //console.log(mat.ToString());
+            if(cube.Ready)
+            {
+               cube.SetModelViewProjection(mvp);
+               cube.Draw();    
+            }
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnInit()
+         {
+              //--------------------------------------------------
+              // CUBE
+              //--------------------------------------------------
+              /*
+               var vertices = [
+                   // position XYZ, color RGBA => 7 floats per vertex
+                   -0.5,   0.5,  -0.5,  1.0,  0.0,  0.0,  1.0,
+                    0.5,   0.5,  -0.5,  0.0,  1.0,  0.0,  1.0,
+                   -0.5,  -0.5,  -0.5,  0.0,  0.0,  1.0,  1.0,
+                    0.5,  -0.5,  -0.5,  1.0,  1.0,  0.0,  1.0,
+                    0.5,  -0.5,   0.5,  1.0,  0.0,  1.0,  1.0,
+                    0.5,   0.5,   0.5,  0.0,  0.0,  1.0,  1.0,
+                   -0.5,   0.5,   0.5,  1.0,  1.0,  1.0,  1.0,
+                   -0.5,  -0.5,   0.5,  0.0,  0.0,  0.0,  1.0,
+               ];
+               
+               var indices = [ 0, 1, 2, 1, 2, 3, 1, 3, 4, 1, 5, 4, 0, 1, 6, 1, 5, 6, 5, 6, 7, 4, 5, 7, 0, 6, 7, 0, 2, 7, 2, 3, 7, 3, 4, 7];
+               */
+               cube = new Mesh(engine);
+               cube.SetJSONLoadCallback(cbfCubeLoaded);
+               cube.loadFromJSON("../../tests/00_JSONDemoFiles/cube.json");
+               /*
+               cube.Create(8);
+               cube.SetBufferPC(vertices);
+               cube.SetIndexBuffer(indices,"TRIANGLES");*/
+           
+         }
+         
+         function cbfCubeLoaded()
+         {
+            cube.ToGPU();
          }
         
          //---------------------------------------------------------------------
@@ -55,12 +120,14 @@
          	engine = new engine3d();
            
             // Set Callbacks:
+            engine.SetInitCallback(OnInit);
             engine.SetTimerCallback(OnTimer);
             engine.SetRenderCallback(OnRender);
             engine.SetResizeCallback(OnResize);
             
             // Start engine...
             engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
+       
          }
          
          //---------------------------------------------------------------------

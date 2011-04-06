@@ -65,9 +65,11 @@ function Mesh(engine)
    this.indexsemantic = null;    // triangle, line etc.
    this.mvp = null;              // modelview projection matrix
    
-   this.jsonDownloadFinished = false;  //True as soon as all data is fully loaded from json url.
+   this.Ready = false;           //Ready to draw
+   this.http = null; 
+   this.jsonUrl = null;
+   this.cbfJSONLoad = null;
 }
-
 //------------------------------------------------------------------------------
 
 Mesh.prototype.Create = function(nvertex) 
@@ -132,7 +134,7 @@ Mesh.prototype.SetBufferPC = function(pc)
 //------------------------------------------------------------------------------
 Mesh.prototype.SetBufferPT = function(pt)
 {
-   if ((pc.length / 5) == this.numvertex)
+   if ((pt.length / 5) == this.numvertex)
    {
       this.vertexbufferdata = new Float32Array(pt);
       this.mode = "pt";
@@ -141,7 +143,7 @@ Mesh.prototype.SetBufferPT = function(pt)
 //------------------------------------------------------------------------------
 Mesh.prototype.SetBufferPNCT = function(pnct)
 {
-   if ((pc.length / 12) == this.numvertex)
+   if ((pnct.length / 12) == this.numvertex)
    {
       this.vertexbufferdata = new Float32Array(pnct);
       this.mode = "pnct";
@@ -234,10 +236,9 @@ Mesh.prototype.Draw = function()
                         engine.shadermanager.UseShader_PNCT(this.mvp);
                         break;
                              
-         
-         
+             
          default:       
-                        alert("unknown mesh mode!!")
+                        alert("unknown mesh mode!!");
          
       }
   
@@ -265,20 +266,95 @@ Mesh.prototype.Draw = function()
      this.gl.disableVertexAttribArray(2);
      this.gl.disableVertexAttribArray(3);  
 }
+
 //------------------------------------------------------------------------------
-Mesh.prototype.getFromJSON = function(url)
+Mesh.prototype.loadFromJSON = function(url)
 {
    
+   if(url == null) 
+   {
+      alert("invalid json-url");
+      return;
+   }  
+   this.jsonUrl=url;
+   
+   http=new window.XMLHttpRequest();
+   http.open("GET",this.jsonUrl,true);
+   me=this;
+   http.onreadystatechange = function(){_cbfjsondownload(me);};
+   http.send();  
+}
+
+
+//------------------------------------------------------------------------------
+_cbfjsondownload = function(mesh)
+{
+   if (http.readyState==4)
+   {
+      if(http.status==404)
+      {
+         console.log('Mesh, JSON Download. File not found.');
+      }
+      else
+      {
+         var data=http.responseText;      
+         var jsonobject=JSON.parse(data);
+         
+         switch(jsonobject.VertexSemantic)
+         {
+            case "p":      mesh.numvertex = jsonobject.Vertices.length/3;    
+                           mesh.SetBufferP(jsonobject.Vertices);
+                           mesh.mode = "p";
+                                
+                           break;
+                            
+            case "pnt":    mesh.numvertex = jsonobject.Vertices.length/8;
+                           mesh.SetBufferPNT(jsonobject.Vertices);
+                           mesh.mode = "pnt";
+                           
+                           break;
+                           
+            case "pc":     mesh.numvertex = jsonobject.Vertices.length/7; 
+                           mesh.mode = "pc";
+                           mesh.SetBufferPC(jsonobject.Vertices); 
+                           break;
+                           
+            case "pt":     mesh.numvertex = jsonobject.Vertices.length/5; 
+                           mesh.mode = "pt";   
+                           mesh.SetBufferPT(jsonobject.Vertices);                     
+                           break;
+                           
+            case "pnct":   mesh.numvertex = jsonobject.Vertices.length/12;
+                           mesh.mode = "p";
+                           mesh.SetBufferPNCT(jsonobject.Vertices); 
+                           break;
+        
+            default:       
+                           alert("unknown mesh mode!!");
+         }      
+         mesh.SetIndexBuffer(jsonobject.Indices,jsonobject.IndexSemantic);
+         
+         
+         mesh.numindex = jsonobject.Indices.length;         // number of elements of index vector
+         mesh.Ready = true; 
+         
+         if(mesh.cbfJSONLoad)
+         {
+            mesh.cbfJSONLoad();
+         }
+      }     
+   }    
 }
 
 //------------------------------------------------------------------------------
-Mesh.prototype._cbf_jsonDownload = function()
+
+Mesh.prototype.SetJSONLoadCallback = function(f)
 {
-   this.jsonDownloadFinished=true;
-}
-//------------------------------------------------------------------------------
-Mesh.prototype.jsonDownloadFinished = function()
-{
-   
+   this.cbfJSONLoad = f;
    
 }
+
+
+
+
+
