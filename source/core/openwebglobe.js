@@ -375,29 +375,6 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    window.addEventListener("keydown", _fncKeyDown, false);
    window.addEventListener("keyup", _fncKeyUp, false);
    
- 
-
-   //-----------------------------------------------
-   // SETUP DEMO GEOMETRY  (this will be removed)
-   //-----------------------------------------------
-   
-   // setup VBO
-   // define some vertexdata
-   /*
-   var vertices = [
-       // position XYZ, normal XYZ, texcoord UV => 8 floats per vertex
-       -0.5,  0.5,  0.0,  0.6,  0.0,  0.8,  0.0,  0.0,
-        0.5,  0.5,  0.0,  0.6,  0.0,  0.8,  1.0,  0.0,
-       -0.5, -0.5,  0.0,  0.0,  0.0,  1.0,  0.0,  1.0,
-        0.5, -0.5,  0.0,  0.0,  0.6,  0.8,  1.0,  1.0,
-   ];
-   
-   var indices = [ 0, 1, 2, 2, 1, 3];
-   */
-   
-   
-  
-
    
    // draw scene every 30 milliseconds
    dtStart = new Date(); // setup main timer...
