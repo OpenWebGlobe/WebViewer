@@ -162,7 +162,7 @@ mat4.prototype.Zero = function()
 //------------------------------------------------------------------------------
 mat4.prototype.Translation = function(x,y,z)
 {     
-   this._values[0] = 1; this._values[4] = 0; this._values[8]  = 0; this._values[13] = x;
+   this._values[0] = 1; this._values[4] = 0; this._values[8]  = 0; this._values[12] = x;
    this._values[1] = 0; this._values[5] = 1; this._values[9]  = 0; this._values[13] = y;
    this._values[2] = 0; this._values[6] = 0; this._values[10] = 1; this._values[14] = z;
    this._values[3] = 0; this._values[7] = 0; this._values[11] = 0; this._values[15] = 1;
