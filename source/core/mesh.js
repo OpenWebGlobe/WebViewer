@@ -90,14 +90,6 @@ function Mesh(engine)
    this.cbfJSONLoad = null;
 }
 
-/**
- * Brauchts diese Funtkion wirklich???
- * @extends Mesh.js
- */
-Mesh.prototype.Create = function(nvertex) 
-{
-   this.numvertex = nvertex;
-}
 //------------------------------------------------------------------------------
 
 //------------------
@@ -133,7 +125,7 @@ myMesh.ToGPU();
  */
 Mesh.prototype.SetBufferP = function(p)
 {
-   if ((p.length / 3) == this.numvertex)
+   if ((p.length % 3) == 0)
    {
       this.vertexbufferdata = new Float32Array(p);
       this.mode = "p";
@@ -147,7 +139,7 @@ Mesh.prototype.SetBufferP = function(p)
  */
 Mesh.prototype.SetBufferPNT = function(pnt)
 {
-   if ((pnt.length / 8) == this.numvertex)
+   if ((pnt.length % 8) == 0)
    {
       this.vertexbufferdata = new Float32Array(pnt);
       this.mode = "pnt";
@@ -161,7 +153,7 @@ Mesh.prototype.SetBufferPNT = function(pnt)
  */
 Mesh.prototype.SetBufferPC = function(pc)
 {
-   if ((pc.length / 7) == this.numvertex)
+   if ((pc.length % 7) == 0)
    {
       this.vertexbufferdata = new Float32Array(pc);
       this.mode = "pc";
@@ -175,7 +167,7 @@ Mesh.prototype.SetBufferPC = function(pc)
  */
 Mesh.prototype.SetBufferPT = function(pt)
 {
-   if ((pt.length / 5) == this.numvertex)
+   if ((pt.length % 5) == 0)
    {
       this.vertexbufferdata = new Float32Array(pt);
       this.mode = "pt";
@@ -189,7 +181,7 @@ Mesh.prototype.SetBufferPT = function(pt)
  */
 Mesh.prototype.SetBufferPNCT = function(pnct)
 {
-   if ((pnct.length / 12) == this.numvertex)
+   if ((pnct.length % 12) == 0)
    {
       this.vertexbufferdata = new Float32Array(pnct);
       this.mode = "pnct";
@@ -199,7 +191,8 @@ Mesh.prototype.SetBufferPNCT = function(pnct)
 /**
  * 
  * @extends Mesh.js
- * @param{float32Array} pnct the point,normal,color texture-coordinates array.
+ * @param{float32Array} idx indices array.
+ * @param{string} idxsem supports "TRIANGLES","POINTS" or "LINES".
  */
 Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
 {
@@ -208,7 +201,10 @@ Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
    this.numindex = idx.length;
 }
 
-//------------------------------------------------------------------------------
+/**
+ * Writes the internal bufferdata to the GPU.
+ * @extends Mesh.js
+ */
 Mesh.prototype.ToGPU = function()
 {
    //test vertexbufferdata ungleich null
@@ -223,13 +219,20 @@ Mesh.prototype.ToGPU = function()
     this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.indexbufferdata, this.gl.STATIC_DRAW);
 }
 
-//------------------------------------------------------------------------------
+/**
+ *
+ * @extends Mesh.js
+ * @param{mat4} mvp the model-view-projection matrix.
+ */
 Mesh.prototype.SetModelViewProjection = function(mvp)
 {
   this.mvp = mvp;
 }
 
-//------------------------------------------------------------------------------
+/**
+ * Draws the mesh element. Ensure that "toGPU" is called before calling this method.
+ * @extends Mesh.js
+ */
 Mesh.prototype.Draw = function()
 {
    if (this.mvp == null)
@@ -318,7 +321,11 @@ Mesh.prototype.Draw = function()
      this.gl.disableVertexAttribArray(3);  
 }
 
-//------------------------------------------------------------------------------
+/**
+ * load mesh-data from a json file.
+ * @extends Mesh.js
+ * @param {sting} url the json-file url.
+ */
 Mesh.prototype.loadFromJSON = function(url)
 {
    
@@ -337,7 +344,7 @@ Mesh.prototype.loadFromJSON = function(url)
 }
 
 
-//------------------------------------------------------------------------------
+//internal function ---------------------------------------------------------------
 _cbfjsondownload = function(mesh)
 {
    if (http.readyState==4)
@@ -397,8 +404,12 @@ _cbfjsondownload = function(mesh)
    }    
 }
 
-//------------------------------------------------------------------------------
 
+/**
+ * Is called as soon as the JSOn File is fully loaded.
+ * @extends Mesh.js
+ * @param {function} callback handler.
+ */
 Mesh.prototype.SetJSONLoadCallback = function(f)
 {
    this.cbfJSONLoad = f;
