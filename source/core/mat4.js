@@ -199,11 +199,10 @@ mat4.prototype.Zero = function()
  */
 mat4.prototype.Translation = function(x,y,z)
 {     
-   this._values[0]  = 1; this._values[1]  = 0; this._values[2]  = 0; this._values[3]  = x;
-   this._values[4]  = 0; this._values[5]  = 1; this._values[6]  = 0; this._values[7]  = y;
-   this._values[8]  = 0; this._values[9]  = 0; this._values[10] = 1; this._values[11] = z;
-   this._values[12] = 0; this._values[13] = 0; this._values[14] = 0; this._values[15] = 1;
-  
+   this._values[0] = 1; this._values[4] = 0; this._values[8]  = 0; this._values[12] = x;
+   this._values[1] = 0; this._values[5] = 1; this._values[9]  = 0; this._values[13] = y;
+   this._values[2] = 0; this._values[6] = 0; this._values[10] = 1; this._values[14] = z;
+   this._values[3] = 0; this._values[7] = 0; this._values[11] = 0; this._values[15] = 1;
 }
 
 /**
@@ -217,10 +216,10 @@ mat4.prototype.Translation = function(x,y,z)
  */
 mat4.prototype.Scale = function(x,y,z)
 {
-   this._values[0]  = x; this._values[1]  = 0; this._values[2]  = 0; this._values[3]  = 0;
-   this._values[4]  = 0; this._values[5]  = y; this._values[6]  = 0; this._values[7]  = 0;
-   this._values[8]  = 0; this._values[9]  = 0; this._values[10] = z; this._values[11] = 0;
-   this._values[12] = 0; this._values[13] = 0; this._values[14] = 0; this._values[15] = 1;
+   this._values[0]  = x; this._values[4]  = 0; this._values[8]  = 0; this._values[12]  = 0;
+   this._values[1]  = 0; this._values[5]  = y; this._values[9]  = 0; this._values[13]  = 0;
+   this._values[2]  = 0; this._values[6]  = 0; this._values[10] = z; this._values[14] = 0;
+   this._values[3] = 0;  this._values[7] = 0;  this._values[11] = 0; this._values[15] = 1;
    
    return true;
    
@@ -238,10 +237,10 @@ mat4.prototype.RotationX = function(angle)
 {
    var fSin = Math.sin(angle);
    var fCos = Math.cos(angle);
-   this._values[0]  = 1; this._values[1]  = 0;      this._values[2]  = 0;     this._values[3]  = 0;
-   this._values[4]  = 0; this._values[5]  = fCos;   this._values[6]  = fSin;  this._values[7]  = 0;
-   this._values[8]  = 0; this._values[9]  = -fSin;  this._values[10] = fCos;  this._values[11] = 0;
-   this._values[12] = 0; this._values[13] = 0;      this._values[14] = 0;     this._values[15] = 1;
+   this._values[0] = 1;  this._values[1] = 0;      this._values[2]  = 0;    this._values[3]  = 0;
+   this._values[4] = 0;  this._values[5] = fCos;   this._values[6]  = fSin; this._values[7]  = 0;
+   this._values[8] = 0;  this._values[9] = -fSin;  this._values[10] = fCos; this._values[11] = 0;
+   this._values[12] = 0; this._values[13] = 0;     this._values[14] = 0;    this._values[15] = 1;
 }
 
 /**
@@ -273,11 +272,57 @@ mat4.prototype.RotationZ = function(angle)
 {   
    var fSin = Math.sin(angle);
    var fCos = Math.cos(angle);
-   this._values[0]  = fCos;  this._values[1]  = fSin;  this._values[2]  = 0;      this._values[3]  = 0;
-   this._values[4]  = -fSin; this._values[5]  = fCos;  this._values[6]  = 0;     this._values[7]  = 0;
-   this._values[8]  = 0;     this._values[9]  = 0;     this._values[10] = 1;     this._values[11] = 0;
-   this._values[12] = 0;     this._values[13] = 0;     this._values[14] = 0;     this._values[15] = 1;
+   this._values[0]  = fCos;  this._values[1]  = fSin;  this._values[2]  = 0;    this._values[3]  = 0;
+   this._values[4]  = -fSin; this._values[5]  = fCos;  this._values[6]  = 0;    this._values[7]  = 0;
+   this._values[8]  = 0;     this._values[9]  = 0;     this._values[10] = 1;    this._values[11] = 0;
+   this._values[12] = 0;      this._values[13] = 0;     this._values[14] = 0;   this._values[15] = 1;
 }
+
+//------------------------------------------------------------------------------
+// Set Matrix to Look At
+//------------------------------------------------------------------------------
+mat4.prototype.LookAt = function(eyex, eyey, eyez, centerx, centery, centerz, upx, upy, upz)
+{
+   var z0,z1,z2,x0,x1,x2,y0,y1,y2,len;
+   
+   z0 = eyex - centerx;
+   z1 = eyey - centery;
+   z2 = eyez - centerz;
+   
+   len = 1/Math.sqrt(z0*z0 + z1*z1 + z2*z2);
+   z0 *= len; z1 *= len; z2 *= len;
+   
+   x0 = upy*z2 - upz*z1; x1 = upz*z0 - upx*z2; x2 = upx*z1 - upy*z0;
+   len = Math.sqrt(x0*x0 + x1*x1 + x2*x2);
+   if (!len) 
+   {
+      x0 = 0; x1 = 0; x2 = 0;
+   } 
+   else 
+   {
+      len = 1/len; x0 *= len; x1 *= len; x2 *= len;
+   };
+   
+   y0 = z1*x2 - z2*x1; y1 = z2*x0 - z0*x2; y2 = z0*x1 - z1*x0;
+   
+   len = Math.sqrt(y0*y0 + y1*y1 + y2*y2);
+   if (!len)
+   {
+      y0 = 0; y1 = 0; y2 = 0;
+   } 
+   else 
+   {
+      len = 1/len;
+      y0 *= len; y1 *= len; y2 *= len;
+   }
+   
+   this._values[0] = x0; this._values[4] = x1; this._values[8] = x2;  this._values[12] = -eyex;
+   this._values[1] = y0; this._values[5] = y1; this._values[9] = y2;  this._values[13] = -eyey;
+   this._values[2] = z0; this._values[6] = z1; this._values[10] = z2; this._values[14] = -eyez;
+   this._values[3] = 0;  this._values[7] = 0;  this._values[11] = 0;  this._values[15] = 1;
+   
+}
+
 
 /**
  * Multiply
@@ -285,32 +330,42 @@ mat4.prototype.RotationZ = function(angle)
  * Ensure that wheter matA nor matB is an instance of this mat4 object.
  * @extends mat4
  * 
- * @param {mat4} matA 
- * @param {mat4} matB 
+ * @param {mat4} a 
+ * @param {mat4} b 
  */ 
-mat4.prototype.Multiply = function(matA,matB)
+mat4.prototype.Multiply = function(a,b)
 {
-   if (matA instanceof mat4 && matB instanceof mat4)
+   if (a instanceof mat4 && b instanceof mat4)
    {
-   if (matA._values.length == 16 && matB._values.length == 16)
-      {
-        this._values[0]  = matA._values[0]  * matB._values[0] + matA._values[1]  * matB._values[4] + matA._values[2]  * matB._values[8]  + matA._values[3]  * matB._values[12];
-        this._values[1]  = matA._values[0]  * matB._values[1] + matA._values[1]  * matB._values[5] + matA._values[2]  * matB._values[9]  + matA._values[3]  * matB._values[13];
-        this._values[2]  = matA._values[0]  * matB._values[2] + matA._values[1]  * matB._values[6] + matA._values[2]  * matB._values[10] + matA._values[3]  * matB._values[14];
-        this._values[3]  = matA._values[0]  * matB._values[3] + matA._values[1]  * matB._values[7] + matA._values[2]  * matB._values[11] + matA._values[3]  * matB._values[15];
-        this._values[4]  = matA._values[4]  * matB._values[0] + matA._values[5]  * matB._values[4] + matA._values[6]  * matB._values[8]  + matA._values[7]  * matB._values[12];
-        this._values[5]  = matA._values[4]  * matB._values[1] + matA._values[5]  * matB._values[5] + matA._values[6]  * matB._values[9]  + matA._values[7]  * matB._values[13];
-        this._values[6]  = matA._values[4]  * matB._values[2] + matA._values[5]  * matB._values[6] + matA._values[6]  * matB._values[10] + matA._values[7]  * matB._values[14];
-        this._values[7]  = matA._values[4]  * matB._values[3] + matA._values[5]  * matB._values[7] + matA._values[6]  * matB._values[11] + matA._values[7]  * matB._values[15];
-        this._values[8]  = matA._values[8]  * matB._values[0] + matA._values[9]  * matB._values[4] + matA._values[10] * matB._values[8]  + matA._values[11] * matB._values[12];
-        this._values[9]  = matA._values[8]  * matB._values[1] + matA._values[9]  * matB._values[5] + matA._values[10] * matB._values[9]  + matA._values[11] * matB._values[13];
-        this._values[10] = matA._values[8]  * matB._values[2] + matA._values[9]  * matB._values[6] + matA._values[10] * matB._values[10] + matA._values[11] * matB._values[14];
-        this._values[11] = matA._values[8]  * matB._values[3] + matA._values[9]  * matB._values[7] + matA._values[10] * matB._values[11] + matA._values[11] * matB._values[15];
-        this._values[12] = matA._values[12] * matB._values[0] + matA._values[13] * matB._values[4] + matA._values[14] * matB._values[8]  + matA._values[15] * matB._values[12];
-        this._values[13] = matA._values[12] * matB._values[1] + matA._values[13] * matB._values[5] + matA._values[14] * matB._values[9]  + matA._values[15] * matB._values[13];
-        this._values[14] = matA._values[12] * matB._values[2] + matA._values[13] * matB._values[6] + matA._values[14] * matB._values[10] + matA._values[15] * matB._values[14];
-        this._values[15] = matA._values[12] * matB._values[3] + matA._values[13] * matB._values[7] + matA._values[14] * matB._values[11] + matA._values[15] * matB._values[15];
-      }
+      var a00 = a._values[0],  a01 = a._values[1],  a02 = a._values[2],  a03 = a._values[3];
+      var a10 = a._values[4],  a11 = a._values[5],  a12 = a._values[6],  a13 = a._values[7];
+      var a20 = a._values[8],  a21 = a._values[9],  a22 = a._values[10], a23 = a._values[11];
+      var a30 = a._values[12], a31 = a._values[13], a32 = a._values[14], a33 = a._values[15];
+   
+      var b00 = b._values[0],  b01 = b._values[1],  b02 = b._values[2],  b03 = b._values[3];
+      var b10 = b._values[4],  b11 = b._values[5],  b12 = b._values[6],  b13 = b._values[7];
+      var b20 = b._values[8],  b21 = b._values[9],  b22 = b._values[10], b23 = b._values[11];
+      var b30 = b._values[12], b31 = b._values[13], b32 = b._values[14], b33 = b._values[15];
+      
+      this._values[0] = b00*a00 + b01*a10 + b02*a20 + b03*a30;
+      this._values[1] = b00*a01 + b01*a11 + b02*a21 + b03*a31;
+      this._values[2] = b00*a02 + b01*a12 + b02*a22 + b03*a32;
+      this._values[3] = b00*a03 + b01*a13 + b02*a23 + b03*a33;
+      
+      this._values[4] = b10*a00 + b11*a10 + b12*a20 + b13*a30;
+      this._values[5] = b10*a01 + b11*a11 + b12*a21 + b13*a31;
+      this._values[6] = b10*a02 + b11*a12 + b12*a22 + b13*a32;
+      this._values[7] = b10*a03 + b11*a13 + b12*a23 + b13*a33;
+      
+      this._values[8] = b20*a00 + b21*a10 + b22*a20 + b23*a30;
+      this._values[9] = b20*a01 + b21*a11 + b22*a21 + b23*a31;
+      this._values[10] = b20*a02 + b21*a12 + b22*a22 + b23*a32;
+      this._values[11] = b20*a03 + b21*a13 + b22*a23 + b23*a33;
+      
+      this._values[12] = b30*a00 + b31*a10 + b32*a20 + b33*a30;
+      this._values[13] = b30*a01 + b31*a11 + b32*a21 + b33*a31;
+      this._values[14] = b30*a02 + b31*a12 + b32*a22 + b33*a32;
+      this._values[15] = b30*a03 + b31*a13 + b32*a23 + b33*a33;
    }
 }
 
@@ -381,18 +436,17 @@ mat4.prototype.MultiplyVec3 = function(vec)
  * 
  */
 mat4.prototype.Frustum = function(left, right, bottom, top, znear, zfar)
-{
-
-    this._values[0] = 2*znear/(right-left);
-    this._values[5] = 2*znear/(top-bottom);
-    this._values[8] = (right+left)/(right-left);
-    this._values[9] = (top+bottom)/(top-bottom);
-    this._values[10] = -(zfar+znear)/(zfar-znear);
-    this._values[11] = -1;
-    this._values[14] = -2*zfar*znear/(zfar-znear);
-
+{    
+   var rl = (right - left);
+   var tb = (top - bottom);
+   var fn = (zfar - znear);
+   
+   this._values[0] = (znear*2)/rl; this._values[4] = 0;            this._values[8] = (right+left)/rl;   this._values[12] = 0;
+   this._values[1] = 0;            this._values[5] = (znear*2)/tb; this._values[9] = (top+bottom)/tb;   this._values[13] = 0;
+   this._values[2] = 0;            this._values[6] = 0;            this._values[10] = -(zfar+znear)/fn; this._values[14] = -(zfar*znear*2) / fn;
+   this._values[3] = 0;            this._values[7] = 0;            this._values[11] = -1;               this._values[15] = 0; 
+   
 }
-
 /**
  * Perspective
  * sets the matrix to be a perspective matrix.
@@ -405,13 +459,22 @@ mat4.prototype.Frustum = function(left, right, bottom, top, znear, zfar)
  * 
  */
 mat4.prototype.Perspective = function(fovy, aspect, znear, zfar)
-{
-    var ymax = znear * Math.tan(fovy * Math.PI / 360.0); 
-    var ymin = -ymax;
-    var xmin = ymin * aspect;
-    var xmax = ymax * aspect;
-
-    return this.Frustum(xmin, xmax, ymin, ymax, znear, zfar);
+{  
+   /*var top = znear*Math.tan(fovy*Math.PI / 360.0);
+   var right = top*aspect;
+   this.Frustum(-right, right, -top, top, znear, zfar);*/
+   
+   var f = 1.0 / Math.tan(fovy * Math.PI / 360.0)
+   var r0 = f / aspect;
+   
+   var r10 = (zfar+znear) / (znear-zfar);
+   var r11 = 2*zfar*znear / (znear-zfar);
+    
+   this._values[0] = r0; this._values[4] = 0; this._values[8]  = 0;   this._values[12] = 0;
+   this._values[1] = 0;  this._values[5] = f; this._values[9]  = 0;   this._values[13] = 0;
+   this._values[2] = 0;  this._values[6] = 0; this._values[10] = r10; this._values[14] = r11;
+   this._values[3] = 0;  this._values[7] = 0; this._values[11] = -1;  this._values[15] = 0; 
+   
 }
 
 /**
@@ -427,16 +490,29 @@ mat4.prototype.Perspective = function(fovy, aspect, znear, zfar)
  * @param{float} zfar
  */
 mat4.prototype.Ortho = function(left, right, bottom, top, znear, zfar)
-{
-
-    this._values[0] = 2 / (right-left);
-    this._values[5] = 2 / (top-bottom);
-    this._values[10] = -2 / (zfar-znear);
-    this._values[12] = -(right+left)/(right-left);
-    this._values[13] = -(top+bottom)/(top-bottom);
-    this._values[14] = -(zfar+znear)/(zfar-znear);
-    this._values[15] = 1;
- 
+{   
+   var rl = (right - left);
+   var tb = (top - bottom);
+   var fn = (zfar - znear);
+   this._values[0] = 2 / rl;
+   this._values[1] = 0;
+   this._values[2] = 0;
+   this._values[3] = 0;
+   
+   this._values[4] = 0;
+   this._values[5] = 2 / tb;
+   this._values[6] = 0;
+   this._values[7] = 0;
+   
+   this._values[8] = 0;
+   this._values[9] = 0;
+   this._values[10] = -2 / fn;
+   this._values[11] = 0;
+   
+   this._values[12] = -(left + right) / rl;
+   this._values[13] = -(top + bottom) / tb;
+   this._values[14] = -(zfar + znear) / fn;
+   this._values[15] = 1;
 }
 
 /**
@@ -451,8 +527,7 @@ mat4.prototype.Ortho = function(left, right, bottom, top, znear, zfar)
  */
 mat4.prototype.Ortho2D = function(left, right, bottom, top) 
 {
-
-    return this.Ortho(left, right, bottom, top, -1, 1);
+    this.Ortho(left, right, bottom, top, -1, 1);
 };
 
 /**
@@ -506,8 +581,8 @@ mat4.prototype.Print = function()
  */
 mat4.prototype.ToString = function()
 {
- return "[ "+this._values[0]+" "+this._values[1]+" "+this._values[2]+" "+this._values[3]+
-         "\n  "+this._values[4]+" "+this._values[5]+" "+this._values[6]+" "+this._values[7]+
-         "\n  "+this._values[8]+" "+this._values[9]+" "+this._values[10]+" "+this._values[11]+
-         "\n  "+this._values[12]+" "+this._values[13]+" "+this._values[14]+" "+this._values[15]+" ]";      
+ return "[ "+this._values[0]+" "+this._values[4]+" "+this._values[8]+" "+this._values[12]+
+         "\n  "+this._values[1]+" "+this._values[5]+" "+this._values[9]+" "+this._values[13]+
+         "\n  "+this._values[2]+" "+this._values[6]+" "+this._values[10]+" "+this._values[14]+
+         "\n  "+this._values[3]+" "+this._values[7]+" "+this._values[11]+" "+this._values[15]+" ]";      
 }

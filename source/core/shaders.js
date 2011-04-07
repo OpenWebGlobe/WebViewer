@@ -341,7 +341,7 @@ ShaderManager.prototype.InitShader_PNCT = function()
       this.gl.attachShader(this.program_pnct, this.fs_pnct);
       
       // setup attributes
-       this.gl.bindAttribLocation(this.program_pnct, 0, "aPosition"); 
+      this.gl.bindAttribLocation(this.program_pnct, 0, "aPosition"); 
       this.gl.bindAttribLocation(this.program_pnct, 1, "aNormal");
       this.gl.bindAttribLocation(this.program_pnct, 2, "aTexCoord");
       this.gl.bindAttribLocation(this.program_pnct, 3, "aColor");
