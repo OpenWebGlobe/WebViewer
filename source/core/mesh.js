@@ -45,6 +45,25 @@ distribute the source code for the commercially licensed software under  version
 license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
 *******************************************************************************/
+
+
+/** 
+ * @fileoverview Mesh.js
+ * Represents a Mesh Object.
+ * 
+ * {@link http://www.openwebglobe.org} 
+ *
+ * @author Benjamin Loesch benjamin.loesch@fhnw.ch  
+ * @version 0.1  
+ */
+
+
+/**
+ * Create a new Matrix Object
+ * @class This is the basic mesh.class
+ * @param {engine3d} engine the 3d engine. 
+ * @constructor
+ */
 function Mesh(engine)
 {
    this.engine = engine;
@@ -70,8 +89,11 @@ function Mesh(engine)
    this.jsonUrl = null;
    this.cbfJSONLoad = null;
 }
-//------------------------------------------------------------------------------
 
+/**
+ * Brauchts diese Funtkion wirklich???
+ * @extends Mesh.js
+ */
 Mesh.prototype.Create = function(nvertex) 
 {
    this.numvertex = nvertex;
@@ -104,7 +126,11 @@ myMesh.ToGPU();
 */
 
 
-//------------------------------------------------------------------------------
+/**
+ * 
+ * @extends Mesh.js
+ * @param{float32Array} p the points.
+ */
 Mesh.prototype.SetBufferP = function(p)
 {
    if ((p.length / 3) == this.numvertex)
@@ -113,7 +139,12 @@ Mesh.prototype.SetBufferP = function(p)
       this.mode = "p";
    }
 }
-//------------------------------------------------------------------------------
+
+/**
+ * 
+ * @extends Mesh.js
+ * @param{float32Array} pnt the point,normal,texture-coordinates array.
+ */
 Mesh.prototype.SetBufferPNT = function(pnt)
 {
    if ((pnt.length / 8) == this.numvertex)
@@ -122,7 +153,12 @@ Mesh.prototype.SetBufferPNT = function(pnt)
       this.mode = "pnt";
    }
 }
-//------------------------------------------------------------------------------
+
+/**
+ * 
+ * @extends Mesh.js
+ * @param{float32Array} pc the point,color array.
+ */
 Mesh.prototype.SetBufferPC = function(pc)
 {
    if ((pc.length / 7) == this.numvertex)
@@ -131,7 +167,12 @@ Mesh.prototype.SetBufferPC = function(pc)
       this.mode = "pc";
    }
 }
-//------------------------------------------------------------------------------
+
+/**
+ * 
+ * @extends Mesh.js
+ * @param{float32Array} pt the point,texture-coordinates array.
+ */
 Mesh.prototype.SetBufferPT = function(pt)
 {
    if ((pt.length / 5) == this.numvertex)
@@ -140,7 +181,12 @@ Mesh.prototype.SetBufferPT = function(pt)
       this.mode = "pt";
    }
 }
-//------------------------------------------------------------------------------
+
+/**
+ * 
+ * @extends Mesh.js
+ * @param{float32Array} pnct the point,normal,color texture-coordinates array.
+ */
 Mesh.prototype.SetBufferPNCT = function(pnct)
 {
    if ((pnct.length / 12) == this.numvertex)
@@ -149,7 +195,12 @@ Mesh.prototype.SetBufferPNCT = function(pnct)
       this.mode = "pnct";
    }
 }
-//------------------------------------------------------------------------------
+
+/**
+ * 
+ * @extends Mesh.js
+ * @param{float32Array} pnct the point,normal,color texture-coordinates array.
+ */
 Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
 {
    this.indexbufferdata = Uint16Array(idx); 

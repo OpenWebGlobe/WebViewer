@@ -46,26 +46,38 @@ license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
 *******************************************************************************/
 
-// Constructor
-// mat4(string type)     with type "double", "float" or "native". Matrix is initialized with identity.
-// Set(array mat)        mat is an array with 16 values (4x4)
-// Copy()                copy matrix, returs an exact copy of the matrix
 
-// Creators
-// Identity()            set identity matrix
-// Zero()                set zero matrix
-// Translation([x,y,z])  set translation matrix
-// Scale([x,y,z])        set scale matrix
-// RotationX(angle)      create rotation matrix around X-Axis. Angle in rad.
-// RotationY(angle)      create rotation matrix around Y-Axis. Angle in rad.
-// RotationZ(angle)      create rotation matrix around Z-Axis. Angle in rad.
-// Operations:
-// Transpose()           transpose current matrix
-// Multiply(A,B)         multiply A * B and store in current matrix
+/** 
+ * @fileoverview Mat4.js
+ * mat4(string type)     with type "double", "float" or "native". Matrix is initialized with identity.
+ * Set(array mat)        mat is an array with 16 values (4x4)
+ * Copy()                copy matrix, returs an exact copy of the matrix
+ * Creators
+ * Identity()            set identity matrix
+ * Zero()                set zero matrix
+ * Translation([x,y,z])  set translation matrix
+ * Scale([x,y,z])        set scale matrix
+ * RotationX(angle)      create rotation matrix around X-Axis. Angle in rad.
+ * RotationY(angle)      create rotation matrix around Y-Axis. Angle in rad.
+ * RotationZ(angle)      create rotation matrix around Z-Axis. Angle in rad.
+ * Operations:
+ * Transpose()           transpose current matrix
+ * Multiply(A,B)         multiply A * B and store in current matrix
+ * 
+ * {@link http://www.openwebglobe.org} 
+ *
+ * @author Martin Christen martin.christen@fhnw.ch  
+ * @version 0.1  
+ */
 
-//------------------------------------------------------------------------------
-// Constructor
-//------------------------------------------------------------------------------
+
+/**
+ * Create a new Matrix Object
+ * @class This is the basic mat4.class 
+ * @param {string} typeparam "float": matrix values will be stored as float32. "double": matrix values will be stored as float64. 
+ * @constructor
+ * @return A new 4 x 4 Identity-Matrix
+ */
 function mat4(typeparam)
 {
    if (typeparam == "double")
@@ -77,9 +89,13 @@ function mat4(typeparam)
       this._values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
    }
 }
-//------------------------------------------------------------------------------
-// Set Values
-//------------------------------------------------------------------------------
+
+/**
+ * Set Values
+ * @extends mat4
+ *
+ * @param {Float32Array} oMatrix Float32Array or Float64Array with the 16 element values. 
+ */
 mat4.prototype.Set = function(oMatrix)
 {
    if (oMatrix instanceof Float32Array || 
@@ -98,9 +114,13 @@ mat4.prototype.Set = function(oMatrix)
 
   return false;
 }
-//------------------------------------------------------------------------------
-// Get
-//------------------------------------------------------------------------------
+
+/**
+ * Get Values
+ * @extends mat4
+ * 
+ * @return Float32Array or Float64Array with the 16 element values.
+ */
 mat4.prototype.Get = function()
 {
    return this._values;
@@ -108,9 +128,12 @@ mat4.prototype.Get = function()
 
 
 
-//------------------------------------------------------------------------------
-// Copy matrix
-//------------------------------------------------------------------------------
+/**
+ * Copy
+ * @extends mat4
+ * 
+ * @return a copy of this mat4 object.
+ */
 mat4.prototype.Copy = function()
 {
    var cpy;
@@ -135,9 +158,13 @@ mat4.prototype.Copy = function()
    
    return cpy;
 }
-//------------------------------------------------------------------------------
-// Set Identity
-//------------------------------------------------------------------------------
+
+/**
+ * Identity
+ * sets the matrix elements to identity. 
+ * @extends mat4
+ *
+ */
 mat4.prototype.Identity = function()
 {
    this.Set([1,0,0,0,
@@ -146,9 +173,12 @@ mat4.prototype.Identity = function()
              0,0,0,1]);
 }
 
-//------------------------------------------------------------------------------
-// Set Zero
-//------------------------------------------------------------------------------
+/**
+ * Zero
+ * sets all matrix element to zero.
+ * @extends mat4
+ *
+ */
 mat4.prototype.Zero = function()
 {
    this.Set([0,0,0,0,
@@ -157,9 +187,16 @@ mat4.prototype.Zero = function()
              0,0,0,0]);
 }
 
-//------------------------------------------------------------------------------
-// Create Translation matrix
-//------------------------------------------------------------------------------
+/**
+ * Translation
+ * sets the matrix values to a translation matrix.
+ * @extends mat4
+ * 
+ * 
+ * @param {float} x sets the translation in x direction.
+ * @param {float} y sets the translation in y direction.
+ * @param {float} z sets the translation in z direction.
+ */
 mat4.prototype.Translation = function(x,y,z)
 {     
    this._values[0]  = 1; this._values[1]  = 0; this._values[2]  = 0; this._values[3]  = x;
@@ -169,9 +206,15 @@ mat4.prototype.Translation = function(x,y,z)
   
 }
 
-//------------------------------------------------------------------------------
-// Create Scale Matrix
-//------------------------------------------------------------------------------
+/**
+ * Scale
+ * sets the matrix values to a translation matrix. 
+ * @extends mat4
+ * 
+ * @param {float} x Sets the x scale factor.
+ * @param {float} y Sets the y scale factor.
+ * @param {float} z Sets the z scale factor.
+ */
 mat4.prototype.Scale = function(x,y,z)
 {
    this._values[0]  = x; this._values[1]  = 0; this._values[2]  = 0; this._values[3]  = 0;
@@ -182,12 +225,17 @@ mat4.prototype.Scale = function(x,y,z)
    return true;
    
 }
-//------------------------------------------------------------------------------
-// Set Matrix to RotationX
-//------------------------------------------------------------------------------
+
+/**
+ * RotationX
+ * sets the matrix to a x-rotation matrix.
+ * @extends mat4
+ *
+ * 
+ * @param {float} angle the rotation angle in degrees.
+ */
 mat4.prototype.RotationX = function(angle)
 {
-   
    var fSin = Math.sin(angle);
    var fCos = Math.cos(angle);
    this._values[0]  = 1; this._values[1]  = 0;      this._values[2]  = 0;     this._values[3]  = 0;
@@ -196,10 +244,14 @@ mat4.prototype.RotationX = function(angle)
    this._values[12] = 0; this._values[13] = 0;      this._values[14] = 0;     this._values[15] = 1;
 }
 
-//------------------------------------------------------------------------------
-// Set Matrix to RotationY
-//------------------------------------------------------------------------------
-  
+/**
+ * RotationY
+ * sets the matrix to a y-rotation matrix.
+ * @extends mat4
+ *
+ * 
+ * @param {float} angle the rotation angle in degrees.
+ */ 
 mat4.prototype.RotationY = function(angle)
 {
    var fSin = Math.sin(angle);
@@ -210,9 +262,13 @@ mat4.prototype.RotationY = function(angle)
    this._values[12] = 0;     this._values[13] = 0;     this._values[14] = 0;     this._values[15] = 1;
 }
 
-//------------------------------------------------------------------------------
-// Set Matrix to RotationZ
-//------------------------------------------------------------------------------
+/**
+ * RotationZ
+ * sets the matrix to a z-rotation matrix.
+ * @extends mat4
+ * 
+ * @param {float} angle the rotation angle in degrees.
+ */ 
 mat4.prototype.RotationZ = function(angle)
 {   
    var fSin = Math.sin(angle);
@@ -223,9 +279,15 @@ mat4.prototype.RotationZ = function(angle)
    this._values[12] = 0;     this._values[13] = 0;     this._values[14] = 0;     this._values[15] = 1;
 }
 
-//------------------------------------------------------------------------------
-// Multiply 2 matrices.
-//------------------------------------------------------------------------------
+/**
+ * Multiply
+ * overwrites the element values to the resulting elements of matA times matB.
+ * Ensure that wheter matA nor matB is an instance of this mat4 object.
+ * @extends mat4
+ * 
+ * @param {mat4} matA 
+ * @param {mat4} matB 
+ */ 
 mat4.prototype.Multiply = function(matA,matB)
 {
    if (matA instanceof mat4 && matB instanceof mat4)
@@ -252,9 +314,13 @@ mat4.prototype.Multiply = function(matA,matB)
    }
 }
 
-//------------------------------------------------------------------------------
-// Transpose Matrix
-//------------------------------------------------------------------------------
+/**
+ * Transpose
+ * Transpose the matrix.
+ * @extends mat4
+ *
+ * 
+ */ 
 mat4.prototype.Transpose = function()
 {
    var cpy = this.Copy();  // Copy current matrix
@@ -268,9 +334,14 @@ mat4.prototype.Transpose = function()
    }
 }
 
-//------------------------------------------------------------------------------
-// Multiply Vec3
-//------------------------------------------------------------------------------
+/**
+ * MultiplyVec3
+ * Multiply the matrix by a 3-element vector.
+ * The vector is changed internally to a homogenous coordinate vector.
+ * @extends mat4
+ * 
+ * @param{vec3} vec3 
+ */ 
 mat4.prototype.MultiplyVec3 = function(vec)
 {
    if(vec instanceof vec3)
@@ -295,9 +366,20 @@ mat4.prototype.MultiplyVec3 = function(vec)
       return resVec;
    }
 }
-//------------------------------------------------------------------------------
-// Frustum
-//------------------------------------------------------------------------------
+
+/**
+ * Frustum
+ * Sets the matrix to a frustum matrix.
+ * @extends mat4
+ * 
+ * @param{float} left
+ * @param{float} right
+ * @param{float} bottom
+ * @param{float} top
+ * @param{float} znear
+ * @param{float} zfar
+ * 
+ */
 mat4.prototype.Frustum = function(left, right, bottom, top, znear, zfar)
 {
 
@@ -310,9 +392,18 @@ mat4.prototype.Frustum = function(left, right, bottom, top, znear, zfar)
     this._values[14] = -2*zfar*znear/(zfar-znear);
 
 }
-//------------------------------------------------------------------------------
-// Perspective
-//------------------------------------------------------------------------------
+
+/**
+ * Perspective
+ * sets the matrix to be a perspective matrix.
+ * @extends mat4
+ * 
+ * @param{float} fovy
+ * @param{float} aspect
+ * @param{float} znear
+ * @param{float} zfar
+ * 
+ */
 mat4.prototype.Perspective = function(fovy, aspect, znear, zfar)
 {
     var ymax = znear * Math.tan(fovy * Math.PI / 360.0); 
@@ -322,9 +413,19 @@ mat4.prototype.Perspective = function(fovy, aspect, znear, zfar)
 
     return this.Frustum(xmin, xmax, ymin, ymax, znear, zfar);
 }
-//------------------------------------------------------------------------------
-// Orthogonal
-//------------------------------------------------------------------------------
+
+/**
+ * Ortho
+ * sets the matrix to be a perspective matrix.
+ * @extends mat4
+ * 
+ * @param{float} left
+ * @param{float} right
+ * @param{float} bottom
+ * @param{float} top
+ * @param{float} znear
+ * @param{float} zfar
+ */
 mat4.prototype.Ortho = function(left, right, bottom, top, znear, zfar)
 {
 
@@ -337,17 +438,30 @@ mat4.prototype.Ortho = function(left, right, bottom, top, znear, zfar)
     this._values[15] = 1;
  
 }
-//------------------------------------------------------------------------------
-// Orthogonal 2D
-//------------------------------------------------------------------------------
+
+/**
+ * Ortho2D
+ * sets the matrix to be a orthogonal 2D matrix.
+ * @extends mat4
+ * 
+ * @param{float} left
+ * @param{float} right
+ * @param{float} bottom
+ * @param{float} top
+ */
 mat4.prototype.Ortho2D = function(left, right, bottom, top) 
 {
 
     return this.Ortho(left, right, bottom, top, -1, 1);
 };
-//------------------------------------------------------------------------------
-// Print Matrix using console.log
-//------------------------------------------------------------------------------
+
+/**
+ * Print
+ * plots the matrix elements using console.log
+ * @extends mat4
+ *
+ *
+ */
 mat4.prototype.Print = function()
 {
    if (this._values.length != 16)
@@ -381,11 +495,15 @@ mat4.prototype.Print = function()
          console.log(this._values[4*j+i] + " ");
       }
    }
-   return true;
 }
-//------------------------------------------------------------------------------
-// ToString()
-//------------------------------------------------------------------------------
+
+/**
+ * ToString
+ * @extends mat4
+ *
+ * @return A string with all matrix elements.
+ *
+ */
 mat4.prototype.ToString = function()
 {
  return "[ "+this._values[0]+" "+this._values[1]+" "+this._values[2]+" "+this._values[3]+
