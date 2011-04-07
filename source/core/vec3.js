@@ -44,29 +44,26 @@ distribute the source code for the commercially licensed software under  version
 2 of the  GNU General Public  License (the "GPL")  must enter into  a commercial
 license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
-*******************************************************************************/
+*******************************************************************************/        
+
+/** 
+ * @fileoverview vec3.js
+
+ * 
+ * {@link http://www.openwebglobe.org} 
+ *
+ * @author Benjamin Loesch benjamin.loesch@fhnw.ch  
+ * @version 0.1  
+ */
 
 
-//Constructor
-//vec3(string type)     with "double" or "float"(default) Vector is initialized with [0.0,0.0,0.0]
-//Set(array values)         
-//Get                   returns the values as array
-//Copy                  returns a vec3 object
-//Add(vec3 vec)         Adds the vector vec to this instance
-//Sub(vec3 vec)         Subtracts the vector vec from this instance
-//Cross(vec3 vec)       Calculates the cross product of this instance and the vector vec
-//Dot(vec3 vec)         Calculates the dot product of this instance and the vector vec     
-//Length                Returns the vector length
-//Normalize             Normalizes this vector instance, the length will then be equal to 1
-//Neg                   Negates every element of this instance
-//ToString              Returns a string like this: "[1.0,2.44,1.2]"
-//Test(vec3 vec)        Tests all implemented functions, displays the results using "console.log(..)"           
-
-
-
-//------------------------------------------------------------------------------
-// Constructor
-//------------------------------------------------------------------------------
+/**
+ * Create a new Vector Object
+ * Initialised the vector as [0,0,0]
+ * @class This is the basic vec3.class 
+ * @param {string} typeparam "float": vector values will be stored as float32. "double": vector values will be stored as float64. 
+ * @constructor
+ */
 function vec3(typeparam)
 {
    if (typeparam == "double")
@@ -79,36 +76,37 @@ function vec3(typeparam)
    }
 }
 
-/*function vec3(typeparam,x,y,z)
-{
-   if (typeparam == "double")
-   {
-      this._values = new Float64Array([x, y, z]);  
-   }
-   else //(typeparam == "float")
-   {
-      this._values = new Float32Array([x, y, z]);
-   }
-}*/
-//------------------------------------------------------------------------------
-// Set Values
-//------------------------------------------------------------------------------
+
+/**
+ * Set Values
+ * @extends vec3
+ *
+ * @param {float} x 
+ * @param {float} y 
+ * @param {float} z
+ */
 vec3.prototype.Set = function(x,y,z)
 {
       this._values[0]=x;
       this._values[1]=y;
       this._values[2]=z;
 }
-//------------------------------------------------------------------------------
-// Get Values (returns an array)
-//------------------------------------------------------------------------------
+
+/**
+ * Returns the values as array
+ * @extends vec3
+ *
+ */
 vec3.prototype.Get = function()
 {
    return this._values;
 }
-//------------------------------------------------------------------------------
-// Get a Copy (returns a vec3 object)
-//------------------------------------------------------------------------------
+
+/**
+ * returns a copy of this vec3 object
+ * @extends vec3
+ *
+ */
 vec3.prototype.Copy = function()
 {
    var cpy;
@@ -125,9 +123,12 @@ vec3.prototype.Copy = function()
     
    return cpy;  
 }
-//------------------------------------------------------------------------------
-// Add 
-//------------------------------------------------------------------------------
+
+/**
+ * Adds the vector vec to this instance
+ * @extends vec3
+ * @param {vec3} 
+ */
 vec3.prototype.Add = function(vec)
 {   
    if(vec instanceof vec3)
@@ -138,9 +139,12 @@ vec3.prototype.Add = function(vec)
       return this;  
    }
 }
-//------------------------------------------------------------------------------
-// Sub
-//------------------------------------------------------------------------------
+
+/**
+ * Subtracts the vector vec from this instance
+ * @extends vec3
+ * @param {vec3} 
+ */
 vec3.prototype.Sub = function(vec)
 {
    if(vec instanceof vec3)
@@ -151,9 +155,12 @@ vec3.prototype.Sub = function(vec)
       return this;
    }
 }
-//------------------------------------------------------------------------------
-// Cross Product
-//------------------------------------------------------------------------------
+
+/**
+ * Calculates the cross product of this instance and the vector vec.
+ * @extends vec3
+ * @param {vec3} 
+ */
 vec3.prototype.Cross = function(vec)
 {
    if(vec instanceof vec3)
@@ -172,9 +179,12 @@ vec3.prototype.Cross = function(vec)
       return this;
     }
 }  
-//------------------------------------------------------------------------------
-// Dot Product
-//------------------------------------------------------------------------------
+
+/**
+ * Calculates the dot product.
+ * @extends vec3
+ * @param {vec3} 
+ */
 vec3.prototype.Dot = function(vec)
 {
    if(vec instanceof vec3)
@@ -183,16 +193,22 @@ vec3.prototype.Dot = function(vec)
    }
    
 }
-//------------------------------------------------------------------------------
-// Length
-//------------------------------------------------------------------------------
+
+/**
+ * Calculates the length of the vector.
+ * @extends vec3
+ * @return length of the current vector instance. length=sqrt(x^2+y^2+z^2)
+ */
 vec3.prototype.Length = function()
 {
    return Math.sqrt(Math.pow(this._values[0],2)+Math.pow(this._values[1],2)+Math.pow(this._values[2],2));
 }
-//------------------------------------------------------------------------------
-// Normalize
-//------------------------------------------------------------------------------
+
+/**
+ * Normalizes this vector instance. Afterward the vector length will be 1.
+ * @extends vec3
+ * @return length of the current vector instance. length=sqrt(x^2+y^2+z^2)
+ */
 vec3.prototype.Normalize = function()
 {
    var l=this.Length();
@@ -204,9 +220,11 @@ vec3.prototype.Normalize = function()
    }
    return this;
 }
-//------------------------------------------------------------------------------
-// Neg
-//------------------------------------------------------------------------------
+
+/**
+ * Negates all elements.
+ * @extends vec3
+ */
 vec3.prototype.Neg = function()
 {
    var l=this.Length();
@@ -215,16 +233,23 @@ vec3.prototype.Neg = function()
    this._values[2]=-this._values[2];
    return this;
 }
-//------------------------------------------------------------------------------  
-// To String
-//------------------------------------------------------------------------------
+
+/**
+ * 
+ * @extends vec3
+ * @return a string like: "[1,2,3]";
+ */
 vec3.prototype.ToString = function()
 {
    return "["+this._values[0]+","+this._values[1]+","+this._values[2]+"]";
 }
-//------------------------------------------------------------------------------
-// Test all class functions. 
-//------------------------------------------------------------------------------
+
+/**
+ * Internal test function. Tests for all functions.
+ * Plots the results using console.log.
+ * @extends vec3
+ * @param vec the vector for testing adding or subtracting methods.
+ */
 vec3.prototype.Test=function(vec){
    if(vec instanceof vec3 && vec._values.length == 3)
    {

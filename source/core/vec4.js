@@ -55,9 +55,15 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 
 
 
-//------------------------------------------------------------------------------
-// Constructor
-//------------------------------------------------------------------------------
+/** 
+ * @fileoverview vec4.js
+ * vec4 object for colors. (R,G,B,A)
+ * 
+ * {@link http://www.openwebglobe.org} 
+ *
+ * @author Benjamin Loesch benjamin.loesch@fhnw.ch  
+ * @version 0.1  
+ */
 function vec4(typeparam)
 {
    if (typeparam == "double")
@@ -69,9 +75,16 @@ function vec4(typeparam)
       this._values = new Float32Array([0.0, 0.0, 0.0]);
    }
 }
-//------------------------------------------------------------------------------
-// Set Values
-//------------------------------------------------------------------------------
+
+/**
+ * Set Values
+ * @extends vec3
+ *
+ * @param {float} r - red
+ * @param {float} g - green
+ * @param {float} b - blue
+ * @param {float} a - alpha
+ */
 vec4.prototype.Set = function(r,g,b,a)
 {
       this._values[0]=r;
@@ -79,16 +92,24 @@ vec4.prototype.Set = function(r,g,b,a)
       this._values[2]=b;
       this._values[3]=a;
 }
-//------------------------------------------------------------------------------
-// Get Values (returns an array)
-//------------------------------------------------------------------------------
+
+/**
+ * Get Values 
+ * @extends vec3
+ *
+ * @return returns an array with all values [r,g,b,a]
+ */
 vec4.prototype.Get = function()
 {
    return this._values;
 }
-//------------------------------------------------------------------------------  
-// To String
-//------------------------------------------------------------------------------
+
+/**
+ * ToString
+ * @extends vec3
+ *
+ * @return returns a string like: [1,0,1,1]
+ */
 vec4.prototype.ToString = function()
 {
    return "["+this._values[0]+","+this._values[1]+","+this._values[2]+","+this._values[3]+"]";

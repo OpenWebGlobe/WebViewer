@@ -60,6 +60,12 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 //
 //------------------------------------------------------------------------------
 
+/**
+ * Create a new ShaderManager
+ * @class 
+ * @param {gl_context}  the webGL context.
+ * @constructor
+ */
 function ShaderManager(gl)
 {
    this.gl = gl;
@@ -91,8 +97,12 @@ function ShaderManager(gl)
    this.fs_pnct = null;  
 }
 
-//------------------------------------------------------------------------------
 
+/**
+ *  
+ * @param {mat4} mvp-matrix 
+ * @param {vec4} color
+ */
 ShaderManager.prototype.UseShader_P = function(modelviewprojection,color)
 {
    if (this.vs_p && this.fs_p)
@@ -103,7 +113,10 @@ ShaderManager.prototype.UseShader_P = function(modelviewprojection,color)
    }   
 }
 
-
+/**
+ *  
+ * @param {mat4} mvp-matrix 
+ */
 ShaderManager.prototype.UseShader_PNT = function(modelviewprojection)
 {
    if (this.program_pnt)
@@ -114,7 +127,10 @@ ShaderManager.prototype.UseShader_PNT = function(modelviewprojection)
    }   
 }
 
-
+/**
+ *  
+ * @param {mat4} mvp-matrix 
+ */
 ShaderManager.prototype.UseShader_PC = function(modelviewprojection)
 {
    if (this.program_pc)
@@ -124,7 +140,10 @@ ShaderManager.prototype.UseShader_PC = function(modelviewprojection)
    }    
 }
 
-
+/**
+ *  
+ * @param {mat4} mvp-matrix 
+ */
 ShaderManager.prototype.UseShader_PT = function(modelviewprojection)
 {
    if (this.program_pt)
@@ -134,6 +153,10 @@ ShaderManager.prototype.UseShader_PT = function(modelviewprojection)
    }    
 }
 
+/**
+ *  
+ * @param {mat4} mvp-matrix 
+ */
 ShaderManager.prototype.UseShader_PNCT = function(modelviewprojection)
 {
    if (this.program_pnct)
@@ -144,9 +167,11 @@ ShaderManager.prototype.UseShader_PNCT = function(modelviewprojection)
 }
 
 
-
-//------------------------------------------------------------------------------
-
+/**
+ *  Initializes the point shader 
+ *  internal use
+ * 
+ */
 ShaderManager.prototype.InitShader_P = function()
 {
    src_vertexshader_P= "uniform mat4 matMVP;\nattribute vec3 aPosition;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n}\n";
@@ -181,8 +206,10 @@ ShaderManager.prototype.InitShader_P = function()
    
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ *  Initializes the point,normal, texture shader 
+ *  internal use
+ */
 ShaderManager.prototype.InitShader_PNT = function()
 {
    var src_vertexshader_PNT= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute vec2 aTexCoord;\nvarying vec3 vNormal;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n   vNormal = aNormal;\n}\n";
@@ -218,8 +245,10 @@ ShaderManager.prototype.InitShader_PNT = function()
    }
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ *  Initializes the point,color shader 
+ *  internal use
+ */
 ShaderManager.prototype.InitShader_PC = function()
 {
    var src_vertexshader_PC= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec4 aColor;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition, 1.0);\n   vColor = aColor;\n}\n";
@@ -253,8 +282,10 @@ ShaderManager.prototype.InitShader_PC = function()
    }
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ *  Initializes the point,texture
+ *  internal use
+ */
 ShaderManager.prototype.InitShader_PT = function()
 {
    src_vertexshader_PT= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n}\n";
@@ -288,8 +319,10 @@ ShaderManager.prototype.InitShader_PT = function()
   
 } 
 
-//------------------------------------------------------------------------------
-
+/**
+ *  Initializes the point,normal,color,texture shader 
+ *  internal use
+ */
 ShaderManager.prototype.InitShader_PNCT = function()
 {
    src_vertexshader_PNCT= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute vec2 aTexCoord;\nattribute vec4 aColor;\nvarying vec3 vNormal;\nvarying vec2 vTexCoord;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n   vNormal = aNormal;\n   vColor = aColor;\n}\n";
@@ -324,8 +357,10 @@ ShaderManager.prototype.InitShader_PNCT = function()
    
 } 
 
-//------------------------------------------------------------------------------
-
+/**
+ *  Initializes all shaders. 
+ * 
+ */
 ShaderManager.prototype.InitShaders = function()
 {
    this.init = true;
@@ -337,8 +372,10 @@ ShaderManager.prototype.InitShaders = function()
    this.InitShader_PNCT();
 } 
 
-//------------------------------------------------------------------------------
-
+/**
+ *  internal use.
+ * 
+ */
 ShaderManager.prototype._createShader = function(shaderType, shaderSource) 
 {
    var shader = this.gl.createShader(shaderType);
