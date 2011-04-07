@@ -165,7 +165,7 @@ mat4.prototype.Translation = function(x,y,z)
    this._values[0] = 1; this._values[4] = 0; this._values[8]  = 0; this._values[13] = x;
    this._values[1] = 0; this._values[5] = 1; this._values[9]  = 0; this._values[13] = y;
    this._values[2] = 0; this._values[6] = 0; this._values[10] = 1; this._values[14] = z;
-   this._values[13] = 0; this._values[7] = 0; this._values[11] = 0; this._values[15] = 1;
+   this._values[3] = 0; this._values[7] = 0; this._values[11] = 0; this._values[15] = 1;
 }
 
 //------------------------------------------------------------------------------
@@ -188,9 +188,9 @@ mat4.prototype.RotationX = function(angle)
 {
    var fSin = Math.sin(angle);
    var fCos = Math.cos(angle);
-   this._values[0] = 1; this._values[1] = 0;     this._values[2]  = 0;    this._values[3]  = 0;
-   this._values[4] = 0; this._values[5] = fCos;  this._values[6]  = fSin; this._values[7]  = 0;
-   this._values[8] = 0; this._values[9] = -fSin; this._values[10] = fCos; this._values[11] = 0;
+   this._values[0] = 1;  this._values[1] = 0;      this._values[2]  = 0;    this._values[3]  = 0;
+   this._values[4] = 0;  this._values[5] = fCos;   this._values[6]  = fSin; this._values[7]  = 0;
+   this._values[8] = 0;  this._values[9] = -fSin;  this._values[10] = fCos; this._values[11] = 0;
    this._values[12] = 0; this._values[13] = 0;     this._values[14] = 0;    this._values[15] = 1;
 }
 
@@ -218,7 +218,7 @@ mat4.prototype.RotationZ = function(angle)
    this._values[0]  = fCos;  this._values[1]  = fSin;  this._values[2]  = 0;    this._values[3]  = 0;
    this._values[4]  = -fSin; this._values[5]  = fCos;  this._values[6]  = 0;    this._values[7]  = 0;
    this._values[8]  = 0;     this._values[9]  = 0;     this._values[10] = 1;    this._values[11] = 0;
-   this._values[12] = 0;      this._values[13] = 0;     this._values[14] = 0;     this._values[15] = 1;
+   this._values[12] = 0;      this._values[13] = 0;     this._values[14] = 0;   this._values[15] = 1;
 }
 
 //------------------------------------------------------------------------------
@@ -233,13 +233,9 @@ mat4.prototype.LookAt = function(eyex, eyey, eyez, centerx, centery, centerz, up
    z2 = eyez - centerz;
    
    len = 1/Math.sqrt(z0*z0 + z1*z1 + z2*z2);
-   z0 *= len;
-   z1 *= len;
-   z2 *= len;
+   z0 *= len; z1 *= len; z2 *= len;
    
-   x0 = upy*z2 - upz*z1;
-   x1 = upz*z0 - upx*z2;
-   x2 = upx*z1 - upy*z0;
+   x0 = upy*z2 - upz*z1; x1 = upz*z0 - upx*z2; x2 = upx*z1 - upy*z0;
    len = Math.sqrt(x0*x0 + x1*x1 + x2*x2);
    if (!len) 
    {
@@ -247,14 +243,10 @@ mat4.prototype.LookAt = function(eyex, eyey, eyez, centerx, centery, centerz, up
    } 
    else 
    {
-      len = 1/len;
-      x0 *= len; x1 *= len; x2 *= len;
+      len = 1/len; x0 *= len; x1 *= len; x2 *= len;
    };
    
-
-   y0 = z1*x2 - z2*x1;
-   y1 = z2*x0 - z0*x2;
-   y2 = z0*x1 - z1*x0;
+   y0 = z1*x2 - z2*x1; y1 = z2*x0 - z0*x2; y2 = z0*x1 - z1*x0;
    
    len = Math.sqrt(y0*y0 + y1*y1 + y2*y2);
    if (!len)
@@ -281,18 +273,15 @@ mat4.prototype.Multiply = function(a,b)
 {
    if (a instanceof mat4 && b instanceof mat4)
    {
-      var mat = a._values;
-      var mat2 = b._values;
-       
-      var a00 = mat[0], a01 = mat[1], a02 = mat[2], a03 = mat[3];
-      var a10 = mat[4], a11 = mat[5], a12 = mat[6], a13 = mat[7];
-      var a20 = mat[8], a21 = mat[9], a22 = mat[10], a23 = mat[11];
-      var a30 = mat[12], a31 = mat[13], a32 = mat[14], a33 = mat[15];
+      var a00 = a._values[0],  a01 = a._values[1],  a02 = a._values[2],  a03 = a._values[3];
+      var a10 = a._values[4],  a11 = a._values[5],  a12 = a._values[6],  a13 = a._values[7];
+      var a20 = a._values[8],  a21 = a._values[9],  a22 = a._values[10], a23 = a._values[11];
+      var a30 = a._values[12], a31 = a._values[13], a32 = a._values[14], a33 = a._values[15];
    
-      var b00 = mat2[0], b01 = mat2[1], b02 = mat2[2], b03 = mat2[3];
-      var b10 = mat2[4], b11 = mat2[5], b12 = mat2[6], b13 = mat2[7];
-      var b20 = mat2[8], b21 = mat2[9], b22 = mat2[10], b23 = mat2[11];
-      var b30 = mat2[12], b31 = mat2[13], b32 = mat2[14], b33 = mat2[15];
+      var b00 = b._values[0],  b01 = b._values[1],  b02 = b._values[2],  b03 = b._values[3];
+      var b10 = b._values[4],  b11 = b._values[5],  b12 = b._values[6],  b13 = b._values[7];
+      var b20 = b._values[8],  b21 = b._values[9],  b22 = b._values[10], b23 = b._values[11];
+      var b30 = b._values[12], b31 = b._values[13], b32 = b._values[14], b33 = b._values[15];
       
       this._values[0] = b00*a00 + b01*a10 + b02*a20 + b03*a30;
       this._values[1] = b00*a01 + b01*a11 + b02*a21 + b03*a31;

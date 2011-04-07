@@ -60,7 +60,7 @@
          
          //---------------------------------------------------------------------
          
-         var zpos = 5;
+         var zpos = 10;
          var xpos = 0;
         
          function OnKey(key)
@@ -87,15 +87,16 @@
          
          function OnRender()
          {
+            engine.SetClearColor(0.5,0.5,0.5,1);
             var aspect = width / height;
-            matProjection.Perspective(45, aspect, 0.6, 500);
+            matProjection.Perspective(45, aspect, 0.1, 500);
             //matProjection.Frustum(-1, 1, -1, 1, 2, 10);
 
             matModel.RotationZ(rot);
             matView.LookAt(xpos,0,zpos, 0,0,0, 0,1,0);
             matModelView.Multiply(matView, matModel); 
             
-            console.log(matProjection.ToString());
+            //console.log(matProjection.ToString());
             
             mvp.Multiply(matProjection, matModelView);
             

@@ -354,8 +354,9 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    this.gl.clearColor(0, 0, 0, 1);
    this.gl.enable(this.gl.DEPTH_TEST);
    
-   this.gl.frontFace(this.gl.CW);
-   this.gl.cullFace(this.gl.FRONT_AND_BACK);
+   this.gl.frontFace(this.gl.CCW);
+   //this.gl.cullFace(this.gl.FRONT_AND_BACK);
+   this.gl.cullFace(this.gl.BACK);
    
    // Create Default Shaders
    //this.CreateDefaultShaders();
