@@ -46,6 +46,16 @@ license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
 *******************************************************************************/
 
+/** 
+ * @fileoverview openwebglobe.js
+ * @class engine3d
+ * 
+ * {@link http://www.openwebglobe.org} 
+ *
+ * @author Martin Christen martin.christen@fhnw.ch  
+ * @version 0.1  
+ */
+
 //------------------------------------------------------------------------------
 // Global Variables
 //------------------------------------------------------------------------------
@@ -69,6 +79,13 @@ var _g_nInstanceCnt  = 0;              // total number of engine instances
 var _gcbfKeyDown     = null;           // global key down event
 var _gcbfKeyUp       = null;           // global key up event
 //------------------------------------------------------------------------------
+
+
+/**
+ * Create a new engine3d object
+ * @class 
+ * @constructor
+ */
 function engine3d()
 {
 	// Callbacks:
@@ -91,7 +108,7 @@ function engine3d()
 	
 	this.bFullscreen = false;
 
-    this.gl = null;          // opengl context
+   this.gl = null;          // opengl context
 	this.context = null;
 	
 	this.shadermanager = null;
@@ -106,7 +123,11 @@ function engine3d()
 }
 
 
-//------------------------------------------------------------------------------
+/**
+ * internal _resize
+ *
+ *
+ */
 engine3d.prototype._resize = function(w,h)
 {
    this.width = w;
@@ -118,70 +139,99 @@ engine3d.prototype._resize = function(w,h)
    }
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * sets the init callback function
+ *
+ * param {function} f init callback handler.
+ */
 engine3d.prototype.SetInitCallback = function(f)
 {
    this.cbfInit = f;
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * sets the timer callback function
+ *
+ * param {function} f timer callback handler.
+ */
 engine3d.prototype.SetTimerCallback = function(f)
 {
    this.cbfTimer = f;
 }
-//------------------------------------------------------------------------------
 
+/**
+ * sets the render callback function
+ *
+ * param {function} f render callback handler.
+ */
 engine3d.prototype.SetRenderCallback = function(f)
 {
    this.cbfRender = f;
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * sets the mousedown callback function
+ *
+ * param {function} f mousedown callback handler.
+ */
 engine3d.prototype.SetMouseDownCallback = function(f)
 {
    this.cbfMouseDown = f;
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * sets the mouseup callback function
+ *
+ * param {function} f mouseup callback handler.
+ */
 engine3d.prototype.SetMouseUpCallback = function(f)
 {
    this.cbfMouseUp = f;
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * sets the mousemoveup callback function
+ *
+ * param {function} f mousemove callback handler.
+ */
 engine3d.prototype.SetMouseMoveCallback = function(f)
 {
    this.cbfMouseMove = f;
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * sets the resize callback function
+ *
+ * param {function} f resize callback handler.
+ */
 engine3d.prototype.SetResizeCallback = function(f)
 {
    this.cbfResize = f;
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * sets the keydown callback function
+ *
+ * param {function} f keydown callback handler.
+ */
 engine3d.prototype.SetKeyDownCallback = function(f)
 {
    _gcbfKeyDown = f;
 }
 
-//------------------------------------------------------------------------------
-
-engine3d.prototype.SetKeyUpCallback = function(f)
+/**
+ * sets the keyup callback function
+ *
+ * param {function} f keyup callback handler.
+ */
+ engine3d.prototype.SetKeyUpCallback = function(f)
 {
    _gcbfKeyUp = f;
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * internal key up
+ */
 _fncKeyDown = function(evt)
 {
 	if (_gcbfKeyDown)
@@ -191,8 +241,9 @@ _fncKeyDown = function(evt)
 	return;
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * internal key up
+ */
 _fncKeyUp = function(evt)
 {
 	if (_gcbfKeyUp)
@@ -202,8 +253,9 @@ _fncKeyUp = function(evt)
 	return;
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * internal mouse up
+ */
 _fncMouseUp = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
@@ -218,8 +270,10 @@ _fncMouseUp = function(evt)
       }
    }
 }
-//------------------------------------------------------------------------------
 
+/**
+ * internal mousedown
+ */
 _fncMouseDown = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
@@ -234,8 +288,10 @@ _fncMouseDown = function(evt)
       }
    }
 }
-//------------------------------------------------------------------------------
 
+/**
+ * internal mousemove
+ */
 _fncMouseMove = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
@@ -251,8 +307,9 @@ _fncMouseMove = function(evt)
    }
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * internal resize
+ */
 _fncResize = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
@@ -267,8 +324,9 @@ _fncResize = function(evt)
    }
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * brauchen wir nicht mehr. oder?
+ */
 engine3d.prototype.CreateDefaultShaders = function()
 {
    var vertexShaderSource = "          attribute vec3 aPosition;\n          attribute vec3 aNormal;\n          attribute vec2 aTexCoord;\n          varying vec3 vNormal;\n          varying vec2 vTexCoord;\n          void main()\n          {\n              gl_Position = vec4(aPosition, 1.0);\n              vTexCoord = aTexCoord;\n              vNormal = aNormal;\n          }\n";
@@ -301,8 +359,9 @@ engine3d.prototype.CreateDefaultShaders = function()
    }
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * brauchen wir nicht mehr. wird jetzt von shader manager übernommen.
+ */
 engine3d.prototype.UseShaderDefault = function()
 {
 	if (this.vs_default && this.fs_default)
@@ -312,8 +371,9 @@ engine3d.prototype.UseShaderDefault = function()
 	}
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * internal key up
+ */
 engine3d.prototype.InitEngine = function(canvasid, bFullscreen) 
 { 
    var canvas = document.getElementById(canvasid);
@@ -415,8 +475,14 @@ function fncTimer()
    }
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * Sets the clear color
+ * @param {float} r
+ * @param {float} g
+ * @param {float} b
+ * @param {float} a
+ *
+ */
 engine3d.prototype.SetClearColor = function(r,g,b,a)
 {
    if (r>=0 && r<=1 && g>=0 && g<=1 && b>=0 && b<=1 && a>=0 && a<=1)
@@ -425,8 +491,10 @@ engine3d.prototype.SetClearColor = function(r,g,b,a)
    }
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * Braucht es nicht mehr oder?
+ *
+ */
 engine3d.prototype._getShaderSource = function(id) 
 {
    var script = document.getElementById(id);
@@ -446,8 +514,10 @@ engine3d.prototype._getShaderSource = function(id)
    return source;
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * Braucht es nicht mehr oder?
+ *
+ */
 engine3d.prototype._createShader = function(shaderType, shaderSource) 
 {
    var shader = this.gl.createShader(shaderType);
@@ -464,8 +534,9 @@ engine3d.prototype._createShader = function(shaderType, shaderSource)
    return shader;
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * ??
+ */
 function _handleLoadedTexture(gl, texture) 
 {
    gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -476,8 +547,10 @@ function _handleLoadedTexture(gl, texture)
    gl.bindTexture(gl.TEXTURE_2D, null);
 }
 
-//------------------------------------------------------------------------------
-
+/**
+ * Kommt noch ins material objekt.
+ *
+ */
 engine3d.prototype.loadTexture = function(filename) 
 {
    // preparations
