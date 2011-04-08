@@ -240,7 +240,7 @@ Mesh.prototype.Draw = function()
       alert("argh!!! ModelViewProjection not set!!");
       return;
    }
-     this.gl.viewport(0, 0, engine.context.width, engine.context.height);
+     this.gl.viewport(0, 0, this.engine.context.width, this.engine.context.height);
      this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
      // setup interleaved VBO and IBO
      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
@@ -259,7 +259,7 @@ Mesh.prototype.Draw = function()
                         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 8*4, 0*4); // position
                         this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 8*4, 3*4); // normal
                         this.gl.vertexAttribPointer(2, 2, this.gl.FLOAT, false, 8*4, 6*4); // texcoord
-                        engine.shadermanager.UseShader_PNT(this.mvp);
+                        this.engine.shadermanager.UseShader_PNT(this.mvp);
                         break;
                         
           case "pc": 
@@ -267,7 +267,7 @@ Mesh.prototype.Draw = function()
                         this.gl.enableVertexAttribArray(1);
                         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
                         this.gl.vertexAttribPointer(1, 4, this.gl.FLOAT, false, 7*4, 3*4); // color
-                        engine.shadermanager.UseShader_PC(this.mvp);
+                        this.engine.shadermanager.UseShader_PC(this.mvp);
                         break;
                         
           case "pt": 
@@ -275,7 +275,7 @@ Mesh.prototype.Draw = function()
                         this.gl.enableVertexAttribArray(1);
                         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
                         this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
-                        engine.shadermanager.UseShader_PT(this.mvp);
+                        this.engine.shadermanager.UseShader_PT(this.mvp);
                         break;
                         
           case "pnct": 
@@ -287,7 +287,7 @@ Mesh.prototype.Draw = function()
                         this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 12*4, 3*4); // normal
                         this.gl.vertexAttribPointer(2, 4, this.gl.FLOAT, false, 12*4, 6*4); // color
                         this.gl.vertexAttribPointer(3, 2, this.gl.FLOAT, false, 12*4, 10*4); // texture
-                        engine.shadermanager.UseShader_PNCT(this.mvp);
+                        this.engine.shadermanager.UseShader_PNCT(this.mvp);
                         break;
                              
              
@@ -336,26 +336,26 @@ Mesh.prototype.loadFromJSON = function(url)
    }  
    this.jsonUrl=url;
    
-   http=new window.XMLHttpRequest();
-   http.open("GET",this.jsonUrl,true);
-   me=this;
-   http.onreadystatechange = function(){_cbfjsondownload(me);};
-   http.send();  
+   this.http=new window.XMLHttpRequest();
+   this.http.open("GET",this.jsonUrl,true);
+   var me=this;
+   this.http.onreadystatechange = function(){_cbfjsondownload(me);};
+   this.http.send();  
 }
 
 
 //internal function ---------------------------------------------------------------
 _cbfjsondownload = function(mesh)
 {
-   if (http.readyState==4)
+   if (mesh.http.readyState==4)
    {
-      if(http.status==404)
+      if(mesh.http.status==404)
       {
          console.log('Mesh, JSON Download. File not found.');
       }
       else
       {
-         var data=http.responseText;      
+         var data=mesh.http.responseText;      
          var jsonobject=JSON.parse(data);
          
          switch(jsonobject.VertexSemantic)
@@ -395,10 +395,10 @@ _cbfjsondownload = function(mesh)
          
          mesh.numindex = jsonobject.Indices.length;         // number of elements of index vector
          mesh.Ready = true; 
-         
+       
          if(mesh.cbfJSONLoad)
          {
-            mesh.cbfJSONLoad();
+            mesh.cbfJSONLoad(mesh);
          }
       }     
    }    
@@ -406,7 +406,7 @@ _cbfjsondownload = function(mesh)
 
 
 /**
- * Is called as soon as the JSOn File is fully loaded.
+ * Is called as soon as the JSON File is fully loaded.
  * @extends Mesh.js
  * @param {function} callback handler.
  */
