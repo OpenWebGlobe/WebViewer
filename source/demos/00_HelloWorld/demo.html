@@ -97,8 +97,7 @@
             matView.LookAt(xpos,0,zpos, 0,0,0, 0,1,0);
             matModelView.Multiply(matView, matModel); 
             
-            //console.log(matProjection.ToString());
-            
+            //console.log(matProjection.ToString());            
             mvp.Multiply(matProjection, matModelView);
             
             //mvp = matProjection;
