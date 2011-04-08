@@ -99,9 +99,9 @@ function _cbHandleLoadedTexture(gl, texture)
  * @extends material
  * 
  */
-material.prototype.UseTexture = function()
+material.prototype.EnableTexture = function()
 {
-    this.gl.activeTexture(this.gl.TEXTURE0);
+    //this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
     
 }
@@ -113,7 +113,7 @@ material.prototype.UseTexture = function()
  */
 material.prototype.DisableTexture = function()
 {   
-   gl.bindTexture(gl.TEXTURE_2D, null);
+   this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 }
 
 

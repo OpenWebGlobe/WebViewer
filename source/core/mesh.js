@@ -240,8 +240,6 @@ Mesh.prototype.Draw = function()
       alert("argh!!! ModelViewProjection not set!!");
       return;
    }
-     this.gl.viewport(0, 0, this.engine.context.width, this.engine.context.height);
-     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
      // setup interleaved VBO and IBO
      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
      this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);

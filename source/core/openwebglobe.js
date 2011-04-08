@@ -417,7 +417,6 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    this.gl.frontFace(this.gl.CW);
    this.gl.cullFace(this.gl.FRONT_AND_BACK);
    
-   this.gl.enable(this.gl.TEXTURE2D);
    //this.gl.cullFace(this.gl.BACK);
    
    // Create Default Shaders
@@ -463,9 +462,13 @@ function fncTimer()
       {
          _g_vInstances[i].cbfTimer(nMSeconds);
       }
-	  
-      _g_vInstances[i].gl.activeTexture(_g_vInstances[i].gl.TEXTURE0);
-      _g_vInstances[i].gl.bindTexture(_g_vInstances[i].gl.TEXTURE_2D, fonttexture);
+      
+      _g_vInstances[i].gl.viewport(0, 0, _g_vInstances[i].width, _g_vInstances[i].height);
+      _g_vInstances[i].gl.clear(_g_vInstances[i].gl.COLOR_BUFFER_BIT | _g_vInstances[i].gl.DEPTH_BUFFER_BIT );
+	    
+      //_g_vInstances[i].gl.activeTexture(_g_vInstances[i].gl.TEXTURE0);
+      //_g_vInstances[i].gl.bindTexture(_g_vInstances[i].gl.TEXTURE_2D, fonttexture);
+      
       
       
       

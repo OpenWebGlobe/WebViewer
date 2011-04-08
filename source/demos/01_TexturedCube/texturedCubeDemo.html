@@ -113,13 +113,13 @@
          
          function OnRender()
          {
-            engine.SetClearColor(0,0,0,1);
+            engine.SetClearColor(0.5,0.5,0.5,1);
             
            CreateMVP(0,0,0, mvp1);
            console.log(mvp1.ToString());
             
               
-            tex.UseTexture();
+            tex.EnableTexture();
                                     
             if(cube)            
             {   
@@ -129,6 +129,7 @@
                   cube.Draw();
                }       
             }
+            tex.DisableTexture();
             
             
             CreateMVP(5,0,0, mvp2);
@@ -174,12 +175,12 @@
                
                cube = new Mesh(engine);
                cube.SetJSONLoadCallback(cbfCubeLoaded);
-               cube.loadFromJSON("../../tests/00_JSONDemoFiles/cubePC.json");
+               cube.loadFromJSON("../../tests/00_JSONDemoFiles/cubePT.json");
                
                 
                cube2 = new Mesh(engine);
                cube2.SetJSONLoadCallback(cbfCubeLoaded);
-               cube2.loadFromJSON("../../tests/00_JSONDemoFiles/cubePT.json");
+               cube2.loadFromJSON("../../tests/00_JSONDemoFiles/cubePC.json");
                
         
          }
