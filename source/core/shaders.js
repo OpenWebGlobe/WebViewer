@@ -150,6 +150,7 @@ ShaderManager.prototype.UseShader_PT = function(modelviewprojection)
    {
       this.gl.useProgram(this.program_pt);
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt, "matMVP"), false, modelviewprojection.Get());
+      this.gl.uniform1i(this.gl.getUniformLocation(this.program_pt, "uTexture"), 0);   
    }    
 }
 

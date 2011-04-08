@@ -40,47 +40,83 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 
-//------------------------------------------------------------------------------
-
+/** 
+ * @fileoverview material.js
+ * @class Texture handling class.
+ * 
+ * {@link http://www.openwebglobe.org} 
+ * 
+ * @version 0.1  
+ */
 function material(engine)
 {
    this.engine = engine;
    this.gl = engine.gl;
+   this.texture = null;
 } 
 
-//------------------------------------------------------------------------------
-
-material.prototype.loadTexture = function(filename) 
+/** 
+ * Loads the Texture image.
+ * @extends material
+ * 
+ * {@link http://www.openwebglobe.org} 
+ * 
+ * @version 0.1  
+ */
+material.prototype.loadTexture = function(url) 
 {
    // preparations
-   var texture = this.gl.createTexture();
+   this.texture = this.gl.createTexture();
+   var texture=this.texture;
    var curgl = this.gl;
-   texture.image = new Image();
-   texture.image.onload = function() { _handleLoadedTexture(curgl, texture); }
-   texture.image.src = filename;
+   this.texture.image = new Image();
+   this.texture.image.onload = function() { _cbHandleLoadedTexture(curgl, texture); }
+   this.texture.image.src = url;
    /*texture.image.onerror = function() 
       {
       alert("error while loading image '"+filename+"'.");
    }*/
 
-   return texture;
+   return this.texture;
 }
 
-//------------------------------------------------------------------------------
-
+/** 
+ * Internal callback function
+ * 
+ */
 function _cbHandleLoadedTexture(gl, texture) 
 {
    gl.bindTexture(gl.TEXTURE_2D, texture);
-   //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
    gl.bindTexture(gl.TEXTURE_2D, null);
 }
 
-//------------------------------------------------------------------------------
-// Material Manager
-//------------------------------------------------------------------------------
+/** 
+ * Texture Binding, must be called before mesh.draw() called.
+ * @extends material
+ * 
+ */
+material.prototype.UseTexture = function()
+{
+    this.gl.activeTexture(this.gl.TEXTURE0);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+    
+}
+
+/** 
+ * Unbinds the texture
+ * @extends material
+ * 
+ */
+material.prototype.DisableTexture = function()
+{   
+   gl.bindTexture(gl.TEXTURE_2D, null);
+}
+
+
 
 
 

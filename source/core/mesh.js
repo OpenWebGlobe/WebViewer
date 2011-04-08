@@ -273,8 +273,8 @@ Mesh.prototype.Draw = function()
           case "pt": 
                         this.gl.enableVertexAttribArray(0);
                         this.gl.enableVertexAttribArray(1);
-                        this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 6*4, 0*4); // position
-                        this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 6*4, 3*4); // texture
+                        this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
+                        this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
                         engine.shadermanager.UseShader_PT(this.mvp);
                         break;
                         
