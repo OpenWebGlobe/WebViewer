@@ -55,102 +55,121 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 
 
 //------------------------------------------------------------------------------
-/** 
- * @class material
- * {@link http://www.openwebglobe.org} 
- * @author Martin Christen martin.christen@fhnw.ch
- * @version 0.1  
+/**
+ * @constructor
+ * @description This class is used to store the traversal state of the scene graph
+ * @author Martin Christen, martin.christen@fhnw.ch
  */
-function material(engine)
+function traversalstate()
 {
-   this.engine = engine;   // pointer to the engine
-   this.gl = engine.gl;    // pointer to the gl
-   this.texture = null;    // the texture
-   this.ready = false;     // is true when texture is ready to use
-   this.failed = false;    // is true when texture creation / download failed
+   this.MatrixStackView = new Array();
+   this.MatrixStackModel = new Array();
+   this.MatrixStackProjection = new Array();
 } 
 
 //------------------------------------------------------------------------------
-/** 
- * Loads the Texture image.
- * @extends material
- * 
+/**
+ * @description Push a new view matrix to stack
+ * @param{mat4} matrix view matrix
  */
-material.prototype.loadTexture = function(url) 
+traversalstate.prototype.PushView = function(matrix)
 {
-   // preparations
-   this.texture = this.gl.createTexture();
-   var texture=this.texture;
-   var curgl = this.gl;
-   var thismat = this;
-   this.texture.image = new Image();
-   this.texture.image.onload = function() { _cbHandleLoadedTexture(curgl, texture); thismat.ready = true;}
-   this.texture.image.src = url;
-   this.texture.image.onerror = function() { failed = true; }
-   return this.texture;
+   this.MatrixStackView.push(matrix);
 }
-
 //------------------------------------------------------------------------------
-/** 
- * Internal callback function
- * 
+/**
+ * @description Pop view matrix from stack and return it
  */
-function _cbHandleLoadedTexture(gl, texture) 
+traversalstate.prototype.PopView = function()
 {
-   // Create texture:
-   gl.bindTexture(gl.TEXTURE_2D, texture);
-   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-   gl.bindTexture(gl.TEXTURE_2D, null);
+   return this.MatrixStackView.pop();
 }
-
 //------------------------------------------------------------------------------
-/** 
- * Texture Binding, must be called before mesh.draw() called.
- * @extends material
- * 
+/**
+ * @description Push a new model matrix to stack
+ * @param{mat4} matrix model matrix
  */
-material.prototype.EnableTexture = function()
+traversalstate.prototype.PushModel = function(matrix)
 {
-   if (this.ready)
+   this.MatrixStackModel.push(matrix);
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Pop model matrix from stack and return it
+ */
+traversalstate.prototype.PopModel = function()
+{
+   return this.MatrixStackModel.pop();
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Push a new projection matrix to stack
+ * @param{mat4} matrix model matrix
+ */
+traversalstate.prototype.PushProjection = function(matrix)
+{
+   this.MatrixStackProjection.push(matrix);
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Pop projection matrix from stack and return it
+ */
+traversalstate.prototype.PopProjection = function()
+{
+   return this.MatrixStackProjection.pop();
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Return current modelviewprojection matrix from stack and return it
+ * @param{mat4} matrix the current modelviewprojection matrix
+ */
+traversalstate.prototype.GetModelViewProjectionMatrix = function(matrix)
+{
+
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Return current modelview matrix from stack and return it
+ * @param{mat4} matrix the current modelview matrix
+ */
+traversalstate.prototype.GetModelViewMatrix = function(matrix)
+{
+   
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Return current view matrix from stack and return it
+ * @param{mat4} matrix the current view matrix
+ */
+traversalstate.prototype.GetViewMatrix = function(matrix)
+{
+   var l = this.MatrixStackView.length();
+   if (l>0)
    {
-      this.gl.activeTexture(this.gl.TEXTURE0);
-      this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+      matrix.CopyFrom(this.MatrixStackView[l-1]);
    }
 }
-
 //------------------------------------------------------------------------------
-/** 
- * Unbinds the texture
- * @extends material
- * 
+/**
+ * @description Return current model matrix from stack and return it
+ * @param{mat4} matrix the current model matrix
  */
-material.prototype.DisableTexture = function()
-{  
-   if (this.ready)
-   { 
-      this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-   }
-}
-
-//------------------------------------------------------------------------------
-/** 
- * Blit Texture: Draw texture on screen
- * @extends material
- * 
- */
-material.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend) 
+traversalstate.prototype.GetModelMatrix = function(matrix)
 {
-   // todo
+   var l = this.MatrixStackModel.length();
+   matrix.CopyFrom(this.MatrixStackModel[l-1]);
 }
-
 //------------------------------------------------------------------------------
-
-
-
-
+/**
+ * @description Return current projection matrix from stack and return it
+ * @param{mat4} matrix the current projection matrix
+ */
+traversalstate.prototype.GetProjectionMatrix = function(matrix)
+{
+   var l = this.MatrixStackProjection.length();
+   matrix = this.MatrixStackProjection[l-1];
+}
+//------------------------------------------------------------------------------
 
 
 

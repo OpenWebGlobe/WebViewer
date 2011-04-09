@@ -58,6 +58,7 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  * mat4(string type)     with type "double", "float" or "native". Matrix is initialized with identity.
  * Set(array mat)        mat is an array with 16 values (4x4)
  * Copy()                copy matrix, returs an exact copy of the matrix
+ * CopyFrom(M)           copy matrix from another matrix
  * Creators
  * Identity()            set identity matrix
  * Zero()                set zero matrix
@@ -164,13 +165,28 @@ mat4.prototype.Copy = function()
    
    return cpy;
 }
-
+//------------------------------------------------------------------------------
+/**
+ * CopyFrom
+ * @param{mat4} cpy The matrix to copy from
+ * 
+ * @return a copy of this mat4 object.
+ */
+mat4.prototype.CopyFrom = function(cpy)
+{
+   for (var i = 0; i < 16; i++)
+   {
+      this._values[i] = cpy._values[i];
+   } 
+}
+//------------------------------------------------------------------------------
 /**
  * Identity
  * sets the matrix elements to identity. 
  * @extends mat4
  *
  */
+//------------------------------------------------------------------------------ 
 mat4.prototype.Identity = function()
 {
    this.Set([1,0,0,0,

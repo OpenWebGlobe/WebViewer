@@ -125,7 +125,7 @@ myMesh.SetIndexBuffer("TRIANGLE", [0,1,2]);
 myMesh.ToGPU();
 */
 
-
+//------------------------------------------------------------------------------
 /**
  * 
  * @param{float32Array} p the points.
@@ -139,6 +139,7 @@ Mesh.prototype.SetBufferP = function(p)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
  * 
  * @param{float32Array} pnt the point,normal,texture-coordinates array.
@@ -152,6 +153,7 @@ Mesh.prototype.SetBufferPNT = function(pnt)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
  * 
  * @param{float32Array} pc the point,color array.
@@ -165,6 +167,7 @@ Mesh.prototype.SetBufferPC = function(pc)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
  * 
  * @param{float32Array} pt the point,texture-coordinates array.
@@ -178,6 +181,7 @@ Mesh.prototype.SetBufferPT = function(pt)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
  * 
  * @param{float32Array} pnct the point,normal,color texture-coordinates array.
@@ -191,6 +195,7 @@ Mesh.prototype.SetBufferPNCT = function(pnct)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
  * 
  * @param{float32Array} idx indices array.
@@ -203,6 +208,7 @@ Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
    this.numindex = idx.length;
 }
 
+//------------------------------------------------------------------------------
 /**
  * Writes the internal bufferdata to the GPU.
  */
@@ -220,6 +226,7 @@ Mesh.prototype.ToGPU = function()
     this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.indexbufferdata, this.gl.STATIC_DRAW);
 }
 
+//------------------------------------------------------------------------------
 /**
  *
  * @param{mat4} mvp the model-view-projection matrix.
@@ -229,6 +236,7 @@ Mesh.prototype.SetModelViewProjection = function(mvp)
   this.mvp = mvp;
 }
 
+//------------------------------------------------------------------------------
 /**
  * Draws the mesh element. Ensure that "toGPU" is called before calling this method.
  */
@@ -318,6 +326,7 @@ Mesh.prototype.Draw = function()
      this.gl.disableVertexAttribArray(3);  
 }
 
+//------------------------------------------------------------------------------
 /**
  * load mesh-data from a json file.
  * @param {sting} url the json-file url.
@@ -339,8 +348,11 @@ Mesh.prototype.loadFromJSON = function(url)
    this.http.send();  
 }
 
-
-//internal function ---------------------------------------------------------------
+//------------------------------------------------------------------------------
+/** 
+ * @desciption download callback
+ * @internal
+ */
 _cbfjsondownload = function(mesh)
 {
    if (mesh.http.readyState==4)
@@ -400,10 +412,10 @@ _cbfjsondownload = function(mesh)
    }    
 }
 
-
+//------------------------------------------------------------------------------
 /**
- * Is called as soon as the JSON File is fully loaded.
- * @param {function} callback handler.
+ * @description Specify the function called as soon as the JSON File is fully loaded.
+ * @param {function} f Callback Function which has "mesh" as param.
  */
 Mesh.prototype.SetJSONLoadCallback = function(f)
 {

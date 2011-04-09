@@ -85,19 +85,30 @@ var _gcbfKeyDown     = null;           // global key down event
 var _gcbfKeyUp       = null;           // global key up event
 //------------------------------------------------------------------------------
 
+/* Planed functions (9.4.2011)
+ * 
+     engine.InitEngine(settings)       initialize Entine with specified settings
+     engine.SetClearColor(vec4)        set clear color
+     engine.GetClearColor(vec4)        retrieve clear color
+     engine.Clear()                    clear the screen
+     engine.SetViewport(x,y,w,h)       set viewport dimension
+     engine.SetProjectionMatrix(mat4)  set projection matrix
+     engine.SetViewMatrix(mat4)        set view matrix
+     engine.SetModelMatrix(mat4)       set model matrix
+     engine.DrawMesh(mesh);            draw mesh (using current model, view, projection matrix)
+     engine.BlitTexture(texture,x,y,z,angle,scalex,scaley,blend);  blit texture directly on screen
+     engine.DrawText(x,y,text);        draw text on screen 
+     
+     mesh = engine.CreateMeshAsync(url);
+     texture = engine.CreateTextureAsync(url);
+ */
+
+
 //------------------------------------------------------------------------------
 /**
  * @description Create a new engine3d object
  * The Engine 3D has the following methods:
- *    InitEngine(settings)
- *    SetClearColor(vec4)
- *    GetClearColor(vec4)
- *    Clear()
- *    SetViewport(x,y,w,h)
- *    SetProjectionMatrix(mat4)
- *    SetViewMatrix(mat4)
- *    SetModelMatrix(mat4)
- *    BlitTexture(texture,x,y,z,angle,scalex,scaley,blend);
+ *
  * @class 
  * @constructor
  */
