@@ -35,6 +35,13 @@ details.
 You should have received a copy of the GNU General Public License along with i3D
 OpenWebGlobe SDK.  If not, see <http://www.gnu.org/licenses/>.
 
+As a special  exception to the  GPL, any HTML  file which merely  makes function
+calls to  this code,  and for  that purpose  includes it  by reference, shall be
+deemed a separate work for copyright law purposes. If you modify this code,  you
+may extend this exception to your version of the code, but you are not obligated
+to do so. If you do not wish to do so, delete this exception statement from your
+version.
+
 Commercial License
 
 OEMs (Original  Equipment Manufacturers),  ISVs (Independent  Software Vendors),
@@ -44,15 +51,14 @@ distribute the source code for the commercially licensed software under  version
 2 of the  GNU General Public  License (the "GPL")  must enter into  a commercial
 license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
-*******************************************************************************/        
+*******************************************************************************/       
 
 /** 
- * @fileoverview vec3.js
-
  * 
  * {@link http://www.openwebglobe.org} 
  *
- * @author Benjamin Loesch benjamin.loesch@fhnw.ch  
+ * @author Benjamin Loesch benjamin.loesch@fhnw.ch 
+ * @author Martin Christen martin.christen@fhnw.ch  
  * @version 0.1  
  */
 
@@ -60,7 +66,8 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 /**
  * Create a new Vector Object
  * Initialised the vector as [0,0,0]
- * @class This is the basic vec3.class 
+ * @class vec3
+ * This is the basic vec3.class 
  * @param {string} typeparam "float": vector values will be stored as float32. "double": vector values will be stored as float64. 
  * @constructor
  */

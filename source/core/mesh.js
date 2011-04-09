@@ -15,7 +15,7 @@
 #                                                                              #
 #                              (c) 2010-2011 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
-#                          martin.christen@fhnw.ch                             #
+#                           martin.christen@fhnw.ch                            #
 ********************************************************************************
 
 This file is part of the OpenWebGlobe SDK
@@ -35,6 +35,13 @@ details.
 You should have received a copy of the GNU General Public License along with i3D
 OpenWebGlobe SDK.  If not, see <http://www.gnu.org/licenses/>.
 
+As a special  exception to the  GPL, any HTML  file which merely  makes function
+calls to  this code,  and for  that purpose  includes it  by reference, shall be
+deemed a separate work for copyright law purposes. If you modify this code,  you
+may extend this exception to your version of the code, but you are not obligated
+to do so. If you do not wish to do so, delete this exception statement from your
+version.
+
 Commercial License
 
 OEMs (Original  Equipment Manufacturers),  ISVs (Independent  Software Vendors),
@@ -48,19 +55,20 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 
 
 /** 
- * @fileoverview Mesh.js
+ * @class mesh 
  * Represents a Mesh Object.
  * 
  * {@link http://www.openwebglobe.org} 
  *
- * @author Benjamin Loesch benjamin.loesch@fhnw.ch  
+ * @author Benjamin Loesch benjamin.loesch@fhnw.ch 
+ * @author Martin Christen martin.christen@fhnw.ch
  * @version 0.1  
  */
 
 
 /**
- * Create a new Matrix Object
- * @class This is the basic mesh.class
+ * Create a new Mesh Object
+ * This is the mesh class
  * @param {engine3d} engine the 3d engine. 
  * @constructor
  */
@@ -120,7 +128,6 @@ myMesh.ToGPU();
 
 /**
  * 
- * @extends Mesh.js
  * @param{float32Array} p the points.
  */
 Mesh.prototype.SetBufferP = function(p)
@@ -134,7 +141,6 @@ Mesh.prototype.SetBufferP = function(p)
 
 /**
  * 
- * @extends Mesh.js
  * @param{float32Array} pnt the point,normal,texture-coordinates array.
  */
 Mesh.prototype.SetBufferPNT = function(pnt)
@@ -148,7 +154,6 @@ Mesh.prototype.SetBufferPNT = function(pnt)
 
 /**
  * 
- * @extends Mesh.js
  * @param{float32Array} pc the point,color array.
  */
 Mesh.prototype.SetBufferPC = function(pc)
@@ -162,7 +167,6 @@ Mesh.prototype.SetBufferPC = function(pc)
 
 /**
  * 
- * @extends Mesh.js
  * @param{float32Array} pt the point,texture-coordinates array.
  */
 Mesh.prototype.SetBufferPT = function(pt)
@@ -176,7 +180,6 @@ Mesh.prototype.SetBufferPT = function(pt)
 
 /**
  * 
- * @extends Mesh.js
  * @param{float32Array} pnct the point,normal,color texture-coordinates array.
  */
 Mesh.prototype.SetBufferPNCT = function(pnct)
@@ -190,7 +193,6 @@ Mesh.prototype.SetBufferPNCT = function(pnct)
 
 /**
  * 
- * @extends Mesh.js
  * @param{float32Array} idx indices array.
  * @param{string} idxsem supports "TRIANGLES","POINTS" or "LINES".
  */
@@ -203,7 +205,6 @@ Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
 
 /**
  * Writes the internal bufferdata to the GPU.
- * @extends Mesh.js
  */
 Mesh.prototype.ToGPU = function()
 {
@@ -221,7 +222,6 @@ Mesh.prototype.ToGPU = function()
 
 /**
  *
- * @extends Mesh.js
  * @param{mat4} mvp the model-view-projection matrix.
  */
 Mesh.prototype.SetModelViewProjection = function(mvp)
@@ -231,7 +231,6 @@ Mesh.prototype.SetModelViewProjection = function(mvp)
 
 /**
  * Draws the mesh element. Ensure that "toGPU" is called before calling this method.
- * @extends Mesh.js
  */
 Mesh.prototype.Draw = function()
 {
@@ -321,7 +320,6 @@ Mesh.prototype.Draw = function()
 
 /**
  * load mesh-data from a json file.
- * @extends Mesh.js
  * @param {sting} url the json-file url.
  */
 Mesh.prototype.loadFromJSON = function(url)
@@ -405,7 +403,6 @@ _cbfjsondownload = function(mesh)
 
 /**
  * Is called as soon as the JSON File is fully loaded.
- * @extends Mesh.js
  * @param {function} callback handler.
  */
 Mesh.prototype.SetJSONLoadCallback = function(f)

@@ -35,6 +35,13 @@ details.
 You should have received a copy of the GNU General Public License along with i3D
 OpenWebGlobe SDK.  If not, see <http://www.gnu.org/licenses/>.
 
+As a special  exception to the  GPL, any HTML  file which merely  makes function
+calls to  this code,  and for  that purpose  includes it  by reference, shall be
+deemed a separate work for copyright law purposes. If you modify this code,  you
+may extend this exception to your version of the code, but you are not obligated
+to do so. If you do not wish to do so, delete this exception statement from your
+version.
+
 Commercial License
 
 OEMs (Original  Equipment Manufacturers),  ISVs (Independent  Software Vendors),
@@ -47,7 +54,7 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 *******************************************************************************/
 
 /** 
- * @fileoverview openwebglobe.js
+ * 
  * @class engine3d
  * 
  * {@link http://www.openwebglobe.org} 
@@ -55,17 +62,6 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  * @author Martin Christen martin.christen@fhnw.ch  
  * @version 0.1  
  */
-
-//------------------------------------------------------------------------------
-// Include dependencies
-//------------------------------------------------------------------------------
-
-document.writeln('<script type="text/javascript" src="../../core/shaders.js"></script>');
-document.writeln('<script type="text/javascript" src="../../core/vec4.js"></script>');
-document.writeln('<script type="text/javascript" src="../../core/mat4.js"></script>');
-document.writeln('<script type="text/javascript" src="../../core/vec3.js"></script>');
-document.writeln('<script type="text/javascript" src="../../core/mesh.js"></script>');
-document.writeln('<script type="text/javascript" src="../../core/material.js"></script>');
 
 //------------------------------------------------------------------------------
 // Global Variables
