@@ -172,7 +172,6 @@
                tex = new material(engine);
                tex.loadTexture("Earth.gif");         
 
-               
                cube = new Mesh(engine);
                cube.SetJSONLoadCallback(cbfCubeLoaded);
                cube.loadFromJSON("../../tests/00_JSONDemoFiles/cubePT.json");
@@ -187,12 +186,8 @@
          
          function cbfCubeLoaded(loadedmesh)
          {          
-               console.log(" MESH 1 or 2 TO GPU");
                loadedmesh.ToGPU();    
          }
-         
-         
-         
          
 
          function init()

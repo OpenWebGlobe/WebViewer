@@ -1,0 +1,2 @@
+java -jar ../external/closure/compiler.jar --js=../source/core/openwebglobe.js --js=../source/core/shaders.js --js=../source/core/vec4.js --js=../source/core/mat4.js --js=../source/core/vec3.js --js=../source/core/mesh.js --js=../source/core/material.js   --js_output_file=../compiled/owg.js
+pause

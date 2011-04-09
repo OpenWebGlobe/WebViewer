@@ -57,6 +57,17 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  */
 
 //------------------------------------------------------------------------------
+// Include dependencies
+//------------------------------------------------------------------------------
+
+document.writeln('<script type="text/javascript" src="../../core/shaders.js"></script>');
+document.writeln('<script type="text/javascript" src="../../core/vec4.js"></script>');
+document.writeln('<script type="text/javascript" src="../../core/mat4.js"></script>');
+document.writeln('<script type="text/javascript" src="../../core/vec3.js"></script>');
+document.writeln('<script type="text/javascript" src="../../core/mesh.js"></script>');
+document.writeln('<script type="text/javascript" src="../../core/material.js"></script>');
+
+//------------------------------------------------------------------------------
 // Global Variables
 //------------------------------------------------------------------------------
 var vbo;                // vertexbuffer object
