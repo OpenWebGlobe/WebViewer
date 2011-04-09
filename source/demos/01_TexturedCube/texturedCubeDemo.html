@@ -28,22 +28,9 @@
          
          
          //---------------------------------------------------------------------
-         rot = 0;
          function OnTimer(delta)
          {
-            rot= rot + delta / 550.0;
-            
-            totaltime = totaltime + delta;
-            
-            if (totaltime > 50)
-            {
-               /*var r=Math.abs(Math.random());
-               var g=Math.abs(Math.random());
-               var b=Math.abs(Math.random());
-               engine.SetClearColor(r,g,b,1);*/
-               totaltime = 0;
-               
-            }
+
          }
          
          //---------------------------------------------------------------------
@@ -54,7 +41,6 @@
             height = h;
             console.log("Resize: " + w + ", " + h);
             
-            // update projection matrix:
            
          }
          

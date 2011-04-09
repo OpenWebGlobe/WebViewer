@@ -66,8 +66,6 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 //------------------------------------------------------------------------------
 // Global Variables
 //------------------------------------------------------------------------------
-var vbo;                // vertexbuffer object
-var ibo;                // indexbuffer object
 
 //------------------------------------------------------------------------------
 // STANDARD FONT
@@ -87,9 +85,19 @@ var _gcbfKeyDown     = null;           // global key down event
 var _gcbfKeyUp       = null;           // global key up event
 //------------------------------------------------------------------------------
 
-
+//------------------------------------------------------------------------------
 /**
- * Create a new engine3d object
+ * @description Create a new engine3d object
+ * The Engine 3D has the following methods:
+ *    InitEngine(settings)
+ *    SetClearColor(vec4)
+ *    GetClearColor(vec4)
+ *    Clear()
+ *    SetViewport(x,y,w,h)
+ *    SetProjectionMatrix(mat4)
+ *    SetViewMatrix(mat4)
+ *    SetModelMatrix(mat4)
+ *    BlitTexture(texture,x,y,z,angle,scalex,scaley,blend);
  * @class 
  * @constructor
  */
@@ -120,20 +128,26 @@ function engine3d()
 	
 	this.shadermanager = null;
 	
-	this.vs_default = null; // default vertex shader
-	this.fs_default = null; // default fragment shader
-	this.program_default = null; // default shader program
+	// Default Background color
+	this.bg_r = 0;
+   this.bg_g = 0;
+   this.bg_b = 0;
+   this.bg_a = 1;
+   
+   // Model, View and Projection Matrices
+   this.matModel = new mat4();
+   this.matView = new mat4();
+   this.matProjection = new mat4();
 	
-	// engine instance voodoo for timer event
+	// engine instance voodoo
 	_g_vInstances[_g_nInstanceCnt] = this;
    _g_nInstanceCnt++;
 }
 
-
+//------------------------------------------------------------------------------
 /**
- * internal _resize
- *
- *
+ * @description internal _resize
+ * @ignore
  */
 engine3d.prototype._resize = function(w,h)
 {
@@ -146,98 +160,107 @@ engine3d.prototype._resize = function(w,h)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
- * sets the init callback function
- *
- * param {function} f init callback handler.
+ * @description sets the init callback function
+ * @param {function} f init callback handler.
  */
 engine3d.prototype.SetInitCallback = function(f)
 {
    this.cbfInit = f;
 }
 
+//------------------------------------------------------------------------------
 /**
- * sets the timer callback function
- *
- * param {function} f timer callback handler.
+ * @description sets the timer callback function
+ * @param {function} f timer callback handler.
  */
 engine3d.prototype.SetTimerCallback = function(f)
 {
    this.cbfTimer = f;
 }
 
+//------------------------------------------------------------------------------
 /**
- * sets the render callback function
+ * @description sets the render callback function
  *
- * param {function} f render callback handler.
+ * @param {function} f render callback handler.
  */
 engine3d.prototype.SetRenderCallback = function(f)
 {
    this.cbfRender = f;
 }
 
+//------------------------------------------------------------------------------
 /**
- * sets the mousedown callback function
+ * @description sets the mousedown callback function
  *
- * param {function} f mousedown callback handler.
+ * @param {function} f mousedown callback handler.
  */
 engine3d.prototype.SetMouseDownCallback = function(f)
 {
    this.cbfMouseDown = f;
 }
 
+//------------------------------------------------------------------------------
 /**
- * sets the mouseup callback function
+ * @description sets the mouseup callback function
  *
- * param {function} f mouseup callback handler.
+ * @param {function} f mouseup callback handler.
  */
 engine3d.prototype.SetMouseUpCallback = function(f)
 {
    this.cbfMouseUp = f;
 }
 
+//------------------------------------------------------------------------------
 /**
- * sets the mousemoveup callback function
+ * @description sets the mousemoveup callback function
  *
- * param {function} f mousemove callback handler.
+ * @param {function} f mousemove callback handler.
  */
 engine3d.prototype.SetMouseMoveCallback = function(f)
 {
    this.cbfMouseMove = f;
 }
 
+//------------------------------------------------------------------------------
 /**
- * sets the resize callback function
+ * @description sets the resize callback function
  *
- * param {function} f resize callback handler.
+ * @param {function} f resize callback handler.
  */
 engine3d.prototype.SetResizeCallback = function(f)
 {
    this.cbfResize = f;
 }
 
+//------------------------------------------------------------------------------
 /**
- * sets the keydown callback function
+ * @description sets the keydown callback function
  *
- * param {function} f keydown callback handler.
+ * @param {function} f keydown callback handler.
  */
 engine3d.prototype.SetKeyDownCallback = function(f)
 {
    _gcbfKeyDown = f;
 }
 
+//------------------------------------------------------------------------------
 /**
- * sets the keyup callback function
+ * @description sets the keyup callback function
  *
- * param {function} f keyup callback handler.
+ * @param {function} f keyup callback handler.
  */
  engine3d.prototype.SetKeyUpCallback = function(f)
 {
    _gcbfKeyUp = f;
 }
 
+//------------------------------------------------------------------------------
 /**
- * internal key up
+ * @description internal key up
+ * @ignore
  */
 _fncKeyDown = function(evt)
 {
@@ -248,8 +271,10 @@ _fncKeyDown = function(evt)
 	return;
 }
 
+//------------------------------------------------------------------------------
 /**
- * internal key up
+ * @description internal key up
+ * @ignore
  */
 _fncKeyUp = function(evt)
 {
@@ -260,8 +285,10 @@ _fncKeyUp = function(evt)
 	return;
 }
 
+//------------------------------------------------------------------------------
 /**
- * internal mouse up
+ * @description internal mouse up
+ * @ignore
  */
 _fncMouseUp = function(evt)
 {
@@ -278,8 +305,10 @@ _fncMouseUp = function(evt)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
- * internal mousedown
+ * @description internal mousedown
+ * @ignore
  */
 _fncMouseDown = function(evt)
 {
@@ -296,8 +325,10 @@ _fncMouseDown = function(evt)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
- * internal mousemove
+ * @description internal mousemove
+ * @ignore
  */
 _fncMouseMove = function(evt)
 {
@@ -314,8 +345,10 @@ _fncMouseMove = function(evt)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
- * internal resize
+ * @ignore
+ * @description internal resize
  */
 _fncResize = function(evt)
 {
@@ -331,55 +364,11 @@ _fncResize = function(evt)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
- * brauchen wir nicht mehr. oder?
- */
-engine3d.prototype.CreateDefaultShaders = function()
-{
-   var vertexShaderSource = "          attribute vec3 aPosition;\n          attribute vec3 aNormal;\n          attribute vec2 aTexCoord;\n          varying vec3 vNormal;\n          varying vec2 vTexCoord;\n          void main()\n          {\n              gl_Position = vec4(aPosition, 1.0);\n              vTexCoord = aTexCoord;\n              vNormal = aNormal;\n          }\n";
-   var fragmentShaderSource = "          #ifdef GL_ES\n          precision highp float;\n          #endif\n          varying vec3 vNormal;\n          varying vec2 vTexCoord;\n          uniform sampler2D uTexture;\n          void main()\n           {\n              gl_FragColor = texture2D(uTexture, vTexCoord);\n}\n";
-  
-   this.vs_default = this._createShader(this.gl.VERTEX_SHADER, vertexShaderSource);
-   this.fs_default = this._createShader(this.gl.FRAGMENT_SHADER, fragmentShaderSource);
-   
-   if (this.vs_default && this.fs_default)
-   {
-      // create program object
-	   this.program_default = this.gl.createProgram();
-	   
-	   // attach our two shaders to the program
-	   this.gl.attachShader(this.program_default, this.vs_default);
-	   this.gl.attachShader(this.program_default, this.fs_default);
-	   
-	   // setup attributes
-	   this.gl.bindAttribLocation(this.program_default, 0, "aPosition");
-	   this.gl.bindAttribLocation(this.program_default, 1, "aNormal");
-	   this.gl.bindAttribLocation(this.program_default, 2, "aTexCoord");
-	   
-	   // linking
-	   this.gl.linkProgram(this.program_default);
-	   if (!this.gl.getProgramParameter(this.program_default, this.gl.LINK_STATUS)) 
-	   {
-	       alert(this.gl.getProgramInfoLog(this.program_default));
-	       return;
-	   }
-   }
-}
-
-/**
- * brauchen wir nicht mehr. wird jetzt von shader manager übernommen.
- */
-engine3d.prototype.UseShaderDefault = function()
-{
-	if (this.vs_default && this.fs_default)
-	{
-		this.gl.useProgram(this.program_default);
-      this.gl.uniform1i(this.gl.getUniformLocation(this.program_default, "uTexture"), 0);
-	}
-}
-
-/**
- * internal key up
+ * @description Initialize Engine 
+ * @param{String} canvasid The id of the webgl canvas
+ * @param{Bool} bFullscreen True if the canvas should autofit the browser window
  */
 engine3d.prototype.InitEngine = function(canvasid, bFullscreen) 
 { 
@@ -452,136 +441,66 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
 }
 
 //------------------------------------------------------------------------------
-
-rotation = 0;
-
+/**
+ * @description timer function (internal)
+ * @ignore
+ */
 function fncTimer()
 {
    dtEnd = new Date();
    var nMSeconds = dtEnd.valueOf() - dtStart.valueOf();
    dtStart = dtEnd;
-
+   
    for (var i=0;i<_g_vInstances.length;i++)
    {
-
-		//---------------------------------------------------------------------
-		if (_g_vInstances[i].cbfTimer)
+      var engine = _g_vInstances[i];
+		// (1) Call Timer Event
+		if (engine.cbfTimer)
       {
-         _g_vInstances[i].cbfTimer(nMSeconds);
+         engine.cbfTimer(nMSeconds);
       }
       
-      _g_vInstances[i].gl.viewport(0, 0, _g_vInstances[i].width, _g_vInstances[i].height);
-      _g_vInstances[i].gl.clear(_g_vInstances[i].gl.COLOR_BUFFER_BIT | _g_vInstances[i].gl.DEPTH_BUFFER_BIT );
-	    
-      //_g_vInstances[i].gl.activeTexture(_g_vInstances[i].gl.TEXTURE0);
-      //_g_vInstances[i].gl.bindTexture(_g_vInstances[i].gl.TEXTURE_2D, fonttexture);
-      
-      
-      
-      
-      // draw callback:
-      if (_g_vInstances[i].cbfRender)
+      // (2) Set Current Viewport and clear
+      engine.gl.viewport(0, 0, engine.width, engine.height);
+      engine.gl.clearColor(engine.bg_r, engine.bg_g, engine.bg_b, engine.bg_a);
+      engine.gl.clear(engine.gl.COLOR_BUFFER_BIT | engine.gl.DEPTH_BUFFER_BIT );
+            
+	   // (3) Draw Scenegraph 
+	   // .. todo ..      
+	        
+	   // (4) Call Render Callback (-> integrate in Scenegraph)
+      if (engine.cbfRender)
       {
-         _g_vInstances[i].cbfRender(); // call  draw callback function
+         engine.cbfRender(); // call  draw callback function
       }
    }
 }
 
+//------------------------------------------------------------------------------
 /**
- * Sets the clear color
- * @param {float} r
- * @param {float} g
- * @param {float} b
- * @param {float} a
+ * @description Sets the clear color
+ * @param {float} r red component ([0..1])
+ * @param {float} g green component ([0..1])
+ * @param {float} b blue component ([0..1])
+ * @param {float} a alpha component ([0..1])
  *
  */
 engine3d.prototype.SetClearColor = function(r,g,b,a)
 {
    if (r>=0 && r<=1 && g>=0 && g<=1 && b>=0 && b<=1 && a>=0 && a<=1)
    {
-      this.gl.clearColor(r, g, b, a);
+      this.bg_r = r;
+      this.bg_g = g;
+      this.bg_b = b;
+      this.bg_a = a;
    }
-}
-
-/**
- * Braucht es nicht mehr oder?
- *
- */
-engine3d.prototype._getShaderSource = function(id) 
-{
-   var script = document.getElementById(id);
-   if (!script) { return null; }
-
-   var source = "";
-   var child = script.firstChild;
-   while (child) 
-   {
-      // node is a "textnode" ?
-      if (child.nodeType == 3) 
-      {
-         source += child.textContent;
-      }
-      child = child.nextSibling;
-   }
-   return source;
-}
-
-/**
- * Braucht es nicht mehr oder?
- *
- */
-engine3d.prototype._createShader = function(shaderType, shaderSource) 
-{
-   var shader = this.gl.createShader(shaderType);
-   if (!shader) { return null; }    
-   this.gl.shaderSource(shader, shaderSource);
-   this.gl.compileShader(shader);
-
-   if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) 
-   {
-      alert(this.gl.getShaderInfoLog(shader));
-      return null;
-   }    
-
-   return shader;
-}
-
-/**
- * ??
- */
-function _handleLoadedTexture(gl, texture) 
-{
-   gl.bindTexture(gl.TEXTURE_2D, texture);
-   //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-   gl.bindTexture(gl.TEXTURE_2D, null);
-}
-
-/**
- * Kommt noch ins material objekt.
- *
- */
-engine3d.prototype.loadTexture = function(filename) 
-{
-   // preparations
-   var texture = this.gl.createTexture();
-   var curgl = this.gl;
-   texture.image = new Image();
-   texture.image.onload = function() { _handleLoadedTexture(curgl, texture); }
-   texture.image.src = filename;
-   /*texture.image.onerror = function() 
-      {
-      alert("error while loading image '"+filename+"'.");
-   }*/
-
-   return texture;
 }
 
 //------------------------------------------------------------------------------
-// a default font texture is embedded. This way the engine doesn't need a special
-// artwork directory.
+// This will be moved to the font class
+/** @ignore
+ * 
+ */
 engine3d.prototype._loadFontTexture = function() 
 {
    var texture = this.gl.createTexture();
@@ -593,6 +512,5 @@ engine3d.prototype._loadFontTexture = function()
    return texture; 
 }
 
-
-
+//------------------------------------------------------------------------------
 
