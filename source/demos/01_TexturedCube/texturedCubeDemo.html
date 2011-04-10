@@ -27,24 +27,17 @@
          var mvp1 =  new mat4();
          var mvp2 =  new mat4();
          
-         
          //---------------------------------------------------------------------
          function OnTimer(delta)
          {
 
          }
-         
          //---------------------------------------------------------------------
-         
          function OnResize(w,h)
          {
             width = w;
-            height = h;
-            console.log("Resize: " + w + ", " + h);
-            
-           
+            height = h;  
          }
-         
          //---------------------------------------------------------------------
          
          var zpos = 10;
@@ -71,11 +64,8 @@
          }
          
          //---------------------------------------------------------------------
-         modelx=0;
-         
          function CreateMVP(x,y,z, mvp)
          {
-            
             var matModel = new mat4();
             var matView = new mat4();
             var matModelView = new mat4();
@@ -85,96 +75,43 @@
          
             var aspect = width / height;
             matProjection.Perspective(45, aspect, 0.1, 500);
-            //matProjection.Frustum(-1, 1, -1, 1, 2, 10);
-            
-            //matModel.RotationZ(rot);
             matView.LookAt(xpos,0,zpos, 0,0,0, 0,1,0);
-            //rotMat=new mat4();
-            //rotMat.RotationY(xpos);
-
             matModelView.Multiply(matView, matModel);
-            mvp.Multiply(matProjection, matModelView);
-            
-            
+            mvp.Multiply(matProjection, matModelView); 
          }
+         //---------------------------------------------------------------------
          
          function OnRender()
          {
             engine.SetClearColor(0.5,0.5,0.5,1);
             
             CreateMVP(0,0,0, mvp1);
- 
-            
-            tex.Enable();
-                                    
-            if(cube)            
-            {   
-               if(cube.Ready)
-               {   
-                  cube.SetModelViewProjection(mvp1); 
-                  cube.Draw();
-               }       
-            }
-            tex.Disable();
-            
+                                   
+            cube.SetModelViewProjection(mvp1); 
+            cube.Draw();      
             
             CreateMVP(5,0,0, mvp2);
             
-           
-            if(cube2)
-            {  
-               if(cube2.Ready)
-               {
-                  cube2.SetModelViewProjection(mvp2);                     
-                  cube2.Draw();  
-               }                
-            }          
+            cube2.SetModelViewProjection(mvp2);                     
+            cube2.Draw();                
          }
          
          //---------------------------------------------------------------------
          
          function OnInit()
          {
-              //--------------------------------------------------
-              // CUBE
-              //--------------------------------------------------
-              /*
-               var vertices = [
-                   // position XYZ, color RGBA => 7 floats per vertex
-                   -0.5,   0.5,  -0.5,  1.0,  0.0,  0.0,  1.0,
-                    0.5,   0.5,  -0.5,  0.0,  1.0,  0.0,  1.0,
-                   -0.5,  -0.5,  -0.5,  0.0,  0.0,  1.0,  1.0,
-                    0.5,  -0.5,  -0.5,  1.0,  1.0,  0.0,  1.0,
-                    0.5,  -0.5,   0.5,  1.0,  0.0,  1.0,  1.0,
-                    0.5,   0.5,   0.5,  0.0,  0.0,  1.0,  1.0,
-                   -0.5,   0.5,   0.5,  1.0,  1.0,  1.0,  1.0,
-                   -0.5,  -0.5,   0.5,  0.0,  0.0,  0.0,  1.0,
-               ];
-               
-               var indices = [ 0, 1, 2, 1, 2, 3, 1, 3, 4, 1, 5, 4, 0, 1, 6, 1, 5, 6, 5, 6, 7, 4, 5, 7, 0, 6, 7, 0, 2, 7, 2, 3, 7, 3, 4, 7];
-               */
                tex = new texture(engine);
                tex.loadTexture("Earth.gif");         
 
                cube = new Mesh(engine);
-               cube.SetJSONLoadCallback(cbfCubeLoaded);
+               cube.SetTexture(tex);
                cube.loadFromJSON("../../tests/00_JSONDemoFiles/cubePT.json");
                
-                
                cube2 = new Mesh(engine);
-               cube2.SetJSONLoadCallback(cbfCubeLoaded);
                cube2.loadFromJSON("../../tests/00_JSONDemoFiles/cubePC.json");
-               
-        
          }
          
-         function cbfCubeLoaded(loadedmesh)
-         {          
-               loadedmesh.ToGPU();    
-         }
-         
-
-         function init()
+         function main()
          {
          	engine = new engine3d();
            
@@ -187,14 +124,13 @@
             
             // Start engine...
             engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
-       
          }
          
          //---------------------------------------------------------------------
          
       </script>
     </head>
-    <body onload="init()">
+    <body onload="main()">
         <div style="text-align: center">
             <canvas id="canvas" width="640" height="480"></canvas>
         </div>

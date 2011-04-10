@@ -143,7 +143,11 @@ texture.prototype.Disable = function()
  */
 texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend) 
 {
-   // todo
+   // todo:
+   // engine->GetMVP(orig_mvp);
+   // engine->SetMVP(ortho_2d);
+   // do blit
+   // engine->SetMVP(dest_mvp);
 }
 
 //------------------------------------------------------------------------------

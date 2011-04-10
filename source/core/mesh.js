@@ -53,7 +53,7 @@ license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
 *******************************************************************************/
 
-
+//------------------------------------------------------------------------------
 /** 
  * @class mesh 
  * Represents a Mesh Object.
@@ -64,8 +64,37 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  * @author Martin Christen martin.christen@fhnw.ch
  * @version 0.1  
  */
+//------------------------------------------------------------------------------
+/*
+ One Mesh supports one vertex buffer, one index buffer and one texture
+ The following semanic is used for vertices:
+ 
+ P: Position
+ N: Normal
+ T: Texture
+ C: Color
 
+ Currently the following vertex semantics are supported:
+    P:    Position only
+    PNT:  Position, Normal, Texcoord
+    PC:   Position, Color
+    PT:   Position, Texcoord
+    PNCT: Position, Normal, Color, Texcoord
 
+ For Indices the following semantics are used:
+ 
+ "TRIANGLE" for triangles rendering
+ "LINE" for line rendering
+ "POINT" for point rendering
+
+example:
+ myMesh = new Mesh(engine);
+ myMesh.SetBufferP([0,0,0,   1,0,0,   1,1,0,]);
+ myMesh.SetIndexBuffer("TRIANGLE", [0,1,2]);
+ myMesh.ToGPU();
+
+*/
+//------------------------------------------------------------------------------
 /**
  * Create a new Mesh Object
  * This is the mesh class
@@ -77,57 +106,31 @@ function Mesh(engine)
    this.engine = engine;
    this.gl = engine.gl;
    
-   this.vbo = null;  // vertex buffer
-   this.ibo = null;  // index buffer
+   this.vbo = null;              // vertex buffer (WebGL)
+   this.ibo = null;              // index buffer  (WebGL)
+   this.texture = null;          // Texture (texture class)
    
-   this.positiondata = null;  // position data
-   this.normaldata = null;    // normals
-   this.texcoorddata = null;  // texture coordinates
-   this.mode = "";
-   this.numvertex = 0;        // number of vertices
-   this.numindex = 0;         // number of elements of index vector
+   this.vertexbufferdata = null; // interleaved vertex buffer data
+   this.mode = "";               // vertex semantic
+   this.numvertex = 0;           // number of vertices
+   this.numindex = 0;            // number of elements of index vector
    
-   this.vertexbufferdata = null; // new 
-   this.indexbufferdata = null;  // new Uint16Array(indices)
-   this.indexsemantic = null;    // triangle, line etc.
-   this.mvp = null;              // modelview projection matrix
+   this.indexbufferdata = null;  // Uint16Array(indices)
+   this.indexsemantic = null;    // triangle, line, or point.
+   
+   this.mvp = null;              // modelview projection matrix (deprecated)
    
    this.Ready = false;           //Ready to draw
    this.http = null; 
    this.jsonUrl = null;
    this.cbfJSONLoad = null;
+   
 }
 
-//------------------------------------------------------------------------------
-
-//------------------
-// VERTEX SEMANTICS
-//------------------
-
-// P: Position
-// N: Normal
-// T: Texture
-// C: Color
-
-// Currently the following vertex semantics are supported:
-//    P:    Position only
-//    PNT:  Position, Normal, Texcoord
-//    PC:   Position, Color
-//    PT:   Position, Texcoord
-//    PNCT: Position, Normal, Color, Texcoord
-
-
-/*sm = new ShaderManager(gl);
-
-myMesh = new Mesh(engine);
-myMesh.SetBufferP([0,0,0,   1,0,0,   1,1,0,]);
-myMesh.SetIndexBuffer("TRIANGLE", [0,1,2]);
-myMesh.ToGPU();
-*/
 
 //------------------------------------------------------------------------------
 /**
- * 
+ * @description Specify a buffer with the vertex semantic "p"
  * @param{float32Array} p the points.
  */
 Mesh.prototype.SetBufferP = function(p)
@@ -141,7 +144,7 @@ Mesh.prototype.SetBufferP = function(p)
 
 //------------------------------------------------------------------------------
 /**
- * 
+ * @description Specify a buffer with the vertex semantic "pnt"
  * @param{float32Array} pnt the point,normal,texture-coordinates array.
  */
 Mesh.prototype.SetBufferPNT = function(pnt)
@@ -155,7 +158,7 @@ Mesh.prototype.SetBufferPNT = function(pnt)
 
 //------------------------------------------------------------------------------
 /**
- * 
+ * @description Specify a buffer with the vertex semantic "pc"
  * @param{float32Array} pc the point,color array.
  */
 Mesh.prototype.SetBufferPC = function(pc)
@@ -169,7 +172,7 @@ Mesh.prototype.SetBufferPC = function(pc)
 
 //------------------------------------------------------------------------------
 /**
- * 
+ * @description Specify a buffer with the vertex semantic "pt"
  * @param{float32Array} pt the point,texture-coordinates array.
  */
 Mesh.prototype.SetBufferPT = function(pt)
@@ -183,7 +186,7 @@ Mesh.prototype.SetBufferPT = function(pt)
 
 //------------------------------------------------------------------------------
 /**
- * 
+ * @description Specify a buffer with the vertex semantic "pnct"
  * @param{float32Array} pnct the point,normal,color texture-coordinates array.
  */
 Mesh.prototype.SetBufferPNCT = function(pnct)
@@ -197,7 +200,7 @@ Mesh.prototype.SetBufferPNCT = function(pnct)
 
 //------------------------------------------------------------------------------
 /**
- * 
+ * @description Specify a an index buffer with the specified index semantic
  * @param{float32Array} idx indices array.
  * @param{string} idxsem supports "TRIANGLES","POINTS" or "LINES".
  */
@@ -210,9 +213,19 @@ Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
 
 //------------------------------------------------------------------------------
 /**
- * Writes the internal bufferdata to the GPU.
+ * @description Set Texture for this mesh
+ * @param{texture} tex the the texture.
  */
-Mesh.prototype.ToGPU = function()
+Mesh.prototype.SetTexture = function(tex)
+{
+   this.texture = tex; 
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Create Buffers on GPU
+ * @internal
+ */
+Mesh.prototype._ToGPU = function()
 {
    //test vertexbufferdata ungleich null
    // Create VB
@@ -228,7 +241,7 @@ Mesh.prototype.ToGPU = function()
 
 //------------------------------------------------------------------------------
 /**
- *
+ * @deprecated
  * @param{mat4} mvp the model-view-projection matrix.
  */
 Mesh.prototype.SetModelViewProjection = function(mvp)
@@ -238,10 +251,23 @@ Mesh.prototype.SetModelViewProjection = function(mvp)
 
 //------------------------------------------------------------------------------
 /**
- * Draws the mesh element. Ensure that "toGPU" is called before calling this method.
+ * @description Draws the mesh element. Ensure that "toGPU" is called before calling this method.
+ * note: this method still needs some optimization
+ * note: ranged draw must be supported soon
  */
 Mesh.prototype.Draw = function()
 {
+   if (!this.Ready)
+   {
+      return;  // not yet loaded
+   }
+   
+   // this will be changed, but for now the draw function creates the GPU buffers.
+   if (this.vbo == null)
+   {
+      this._ToGPU();
+   }
+   
    if (this.mvp == null)
    {
       alert("argh!!! ModelViewProjection not set!!");
@@ -250,7 +276,7 @@ Mesh.prototype.Draw = function()
      // setup interleaved VBO and IBO
      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
      this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);
-      
+           
      switch (this.mode) 
      {
          case "p":      this.gl.enableVertexAttribArray(0);
@@ -301,6 +327,10 @@ Mesh.prototype.Draw = function()
          
       }
   
+      if (this.texture)
+      {
+         this.texture.Enable();
+      }
 
       switch(this.indexsemantic)
       {
@@ -319,17 +349,22 @@ Mesh.prototype.Draw = function()
          default:          
                            alert("unknown indexsemantic");
       }
+      
+      if (this.texture)
+      {
+         this.texture.Disable();
+      }
           
-     this.gl.disableVertexAttribArray(0);
-     this.gl.disableVertexAttribArray(1);
-     this.gl.disableVertexAttribArray(2);
-     this.gl.disableVertexAttribArray(3);  
+      this.gl.disableVertexAttribArray(0);
+      this.gl.disableVertexAttribArray(1);
+      this.gl.disableVertexAttribArray(2);
+      this.gl.disableVertexAttribArray(3);  
 }
 
 //------------------------------------------------------------------------------
 /**
- * load mesh-data from a json file.
- * @param {sting} url the json-file url.
+ * @description Load mesh-data from a JSON file.
+ * @param {sting} url the url to the JSON file.
  */
 Mesh.prototype.loadFromJSON = function(url)
 {
@@ -403,7 +438,7 @@ _cbfjsondownload = function(mesh)
          
          mesh.numindex = jsonobject.Indices.length;         // number of elements of index vector
          mesh.Ready = true; 
-       
+         
          if(mesh.cbfJSONLoad)
          {
             mesh.cbfJSONLoad(mesh);
@@ -414,13 +449,12 @@ _cbfjsondownload = function(mesh)
 
 //------------------------------------------------------------------------------
 /**
- * @description Specify the function called as soon as the JSON File is fully loaded.
+ * @description Specify the function called as soon as the JSON File is fully loaded. This is optional.
  * @param {function} f Callback Function which has "mesh" as param.
- */
+ * */
 Mesh.prototype.SetJSONLoadCallback = function(f)
 {
    this.cbfJSONLoad = f;
-   
 }
 
 
