@@ -85,16 +85,17 @@ var _gcbfKeyDown     = null;           // global key down event
 var _gcbfKeyUp       = null;           // global key up event
 //------------------------------------------------------------------------------
 
-/* Planed functions (9.4.2011)
+/* Planned functions (9.4.2011)
  * 
      engine.InitEngine(settings)       initialize Entine with specified settings
-     engine.SetClearColor(vec4)        set clear color
-     engine.GetClearColor(vec4)        retrieve clear color
-     engine.Clear()                    clear the screen
-     engine.SetViewport(x,y,w,h)       set viewport dimension
-     engine.SetProjectionMatrix(mat4)  set projection matrix
-     engine.SetViewMatrix(mat4)        set view matrix
-     engine.SetModelMatrix(mat4)       set model matrix
+     engine.SetClearColor(r,g,b,a)     set clear color [OK]
+     r = engine.GetClearColor()        retrieve clear color (stored int r.r, r.g, r.b, r.a) [OK]
+     engine.Clear()                    clear the screen [OK]
+     engine.SetViewport(x,y,w,h)       set viewport dimension [OK]
+     r = engine.GetViewport();         get viewport (stored in r.x, r.y, r.w, r.h) [OK]
+     engine.SetProjectionMatrix(mat4)  set projection matrix [OK]
+     engine.SetViewMatrix(mat4)        set view matrix [OK]
+     engine.SetModelMatrix(mat4)       set model matrix [OK]
      engine.DrawMesh(mesh);            draw mesh (using current model, view, projection matrix)
      engine.BlitTexture(texture,x,y,z,angle,scalex,scaley,blend);  blit texture directly on screen
      engine.DrawText(x,y,text);        draw text on screen 
@@ -145,10 +146,18 @@ function engine3d()
    this.bg_b = 0;
    this.bg_a = 1;
    
+   // Viewport
+   this.vp_x = 0;
+   this.vp_y = 0;
+   this.vp_w = 0;
+   this.vp_h = 0;
+   
    // Model, View and Projection Matrices
    this.matModel = new mat4();
    this.matView = new mat4();
    this.matProjection = new mat4();
+   this.matModelView = new mat4();
+   this.matModelViewProjection = new mat4();
 	
 	// engine instance voodoo
 	_g_vInstances[_g_nInstanceCnt] = this;
@@ -472,9 +481,8 @@ function fncTimer()
       }
       
       // (2) Set Current Viewport and clear
-      engine.gl.viewport(0, 0, engine.width, engine.height);
-      engine.gl.clearColor(engine.bg_r, engine.bg_g, engine.bg_b, engine.bg_a);
-      engine.gl.clear(engine.gl.COLOR_BUFFER_BIT | engine.gl.DEPTH_BUFFER_BIT );
+      engine.SetViewport(0, 0, engine.width, engine.height);
+      engine.Clear();
             
 	   // (3) Draw Scenegraph 
 	   // .. todo ..      
@@ -490,11 +498,10 @@ function fncTimer()
 //------------------------------------------------------------------------------
 /**
  * @description Sets the clear color
- * @param {float} r red component ([0..1])
- * @param {float} g green component ([0..1])
- * @param {float} b blue component ([0..1])
- * @param {float} a alpha component ([0..1])
- *
+ * @param{float} r red component, range [0,1]
+ * @param{float} g green component, range [0,1]
+ * @param{float} b blue component, range [0,1]
+ * @param{float} a alpha component, range [0,1]
  */
 engine3d.prototype.SetClearColor = function(r,g,b,a)
 {
@@ -507,6 +514,93 @@ engine3d.prototype.SetClearColor = function(r,g,b,a)
    }
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Gets the clear color
+ * returns an array A. You can access components using A.r, A.g, A.b, A.a
+ */
+engine3d.prototype.GetClearColor = function(color)
+{
+   return {r: this.bg_r, g: this.bg_g, b: this.bg_b, a: this.bg_a};
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Clear color and depth buffer (using current clear color)
+ */
+engine3d.prototype.Clear = function()
+{
+   this.gl.clearColor(engine.bg_r, engine.bg_g, engine.bg_b, engine.bg_a);
+   this.gl.clear(engine.gl.COLOR_BUFFER_BIT | engine.gl.DEPTH_BUFFER_BIT);
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Set Viewport
+ * @param x x-Screen-Position
+ * @param y y-Screen-Position
+ * @param w Screen width
+ * @param h Screen height
+ */
+engine3d.prototype.SetViewport = function(x,y,w,h)
+{
+   this.vp_x = x; this.vp_y = y; this.vp_w = w; this.vp_h = h;
+   this.gl.viewport(x, y, w, h);
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Retrieve current Viewport
+ * returns an array A. You can access components using A.x, A.y, A.w, A.h
+ */
+engine3d.prototype.GetViewport = function()
+{
+   return {x: this.vp_x, y: this.vp_y, w: this.vp_w, h: this.vp_h};
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Set projection matrix
+ * @param{mat4} mat4 The projection matrix to copy from.
+ */
+engine3d.prototype.SetProjectionMatrix = function(mat4)
+{
+   this.matProjection.CopyFrom(mat4);
+   this._UpdateMatrices();
+}  
+//------------------------------------------------------------------------------
+/**
+ * @description set view matrix
+ * @param{mat4} mat4 The view matrix to copy from.
+ */
+engine3d.prototype.SetViewMatrix = function(mat4)  
+{
+   this.matView.CopyFrom(mat4);
+   this._UpdateMatrices();
+}      
+
+//------------------------------------------------------------------------------
+/**
+ * @description Set model matrix
+ * @param{mat4} mat4 The model matrix to copy from.
+ */
+engine3d.prototype.SetModelMatrix = function(mat4)
+{
+   this.matModel.CopyFrom(mat4);
+   this._UpdateMatrices();
+} 
+
+//------------------------------------------------------------------------------
+/**
+ * @description Update matrices: calc ModelView, ModelViewProjection
+ * @ignore
+ */
+engine3d.prototype._UpdateMatrices = function()
+{
+   this.matModelView.Multiply(this.matView, this.matModel);
+   this.matModelViewProjection.Multiply(this.matProjection, this.matModelView); 
+}
+  
 //------------------------------------------------------------------------------
 // This will be moved to the font class
 /** @ignore

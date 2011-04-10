@@ -53,20 +53,22 @@ license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
 *******************************************************************************/       
 
+//------------------------------------------------------------------------------
 /** 
+ * @class vec3
+ * @description Vector class which handles float32 and float64 vectors
  * 
  * {@link http://www.openwebglobe.org} 
  *
- * @author Benjamin Loesch benjamin.loesch@fhnw.ch 
  * @author Martin Christen martin.christen@fhnw.ch  
+ * @author Benjamin Loesch benjamin.loesch@fhnw.ch 
  * @version 0.1  
  */
 
-
+//------------------------------------------------------------------------------
 /**
  * Create a new Vector Object
  * Initialised the vector as [0,0,0]
- * @class vec3
  * This is the basic vec3.class 
  * @param {string} typeparam "float": vector values will be stored as float32. "double": vector values will be stored as float64. 
  * @constructor
@@ -83,7 +85,7 @@ function vec3(typeparam)
    }
 }
 
-
+//------------------------------------------------------------------------------
 /**
  * Set Values
  * @extends vec3
@@ -99,8 +101,9 @@ vec3.prototype.Set = function(x,y,z)
       this._values[2]=z;
 }
 
+//------------------------------------------------------------------------------
 /**
- * Returns the values as array
+ * Returns the values as array (Float32Array or Float64Array)
  * @extends vec3
  *
  */
@@ -109,8 +112,9 @@ vec3.prototype.Get = function()
    return this._values;
 }
 
+//------------------------------------------------------------------------------
 /**
- * returns a copy of this vec3 object
+ * @description Returns a copy of the vec3 object. (Allocates memory)
  * @extends vec3
  *
  */
@@ -131,10 +135,11 @@ vec3.prototype.Copy = function()
    return cpy;  
 }
 
+//------------------------------------------------------------------------------
 /**
  * Adds the vector vec to this instance
  * @extends vec3
- * @param {vec3} 
+ * @param{vec3} vec
  */
 vec3.prototype.Add = function(vec)
 {   
@@ -147,10 +152,11 @@ vec3.prototype.Add = function(vec)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
  * Subtracts the vector vec from this instance
  * @extends vec3
- * @param {vec3} 
+ * @param{vec3} vec
  */
 vec3.prototype.Sub = function(vec)
 {
@@ -163,10 +169,11 @@ vec3.prototype.Sub = function(vec)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
  * Calculates the cross product of this instance and the vector vec.
  * @extends vec3
- * @param {vec3} 
+ * @param{vec3} vec
  */
 vec3.prototype.Cross = function(vec)
 {
@@ -187,6 +194,14 @@ vec3.prototype.Cross = function(vec)
     }
 }  
 
+//------------------------------------------------------------------------------
+/**
+ * Calculates the cross product of two vectors and stores the result in a previously allocated vector
+ * @param {vec3} result previously allocated result vec
+ * @param {vec3} v1 first vector to calculate cross product
+ * @param {vec3} v2 second vector to calculate cross product
+ * @ignore
+ */
 Cross = function(result, v1, v2)
 {
    var x1=v1._values[0];
@@ -200,7 +215,7 @@ Cross = function(result, v1, v2)
    result._values[2]=x1*y2-x2*y1;
 }
 
-
+//------------------------------------------------------------------------------
 /**
  * Calculates the dot product.
  * @extends vec3
@@ -212,9 +227,9 @@ vec3.prototype.Dot = function(vec)
    {
       return this._values[0]*vec._values[0]+this._values[1]*vec._values[1]+this._values[2]*vec._values[2];
    }
-   
 }
 
+//------------------------------------------------------------------------------
 /**
  * Calculates the length of the vector.
  * @extends vec3
@@ -225,6 +240,7 @@ vec3.prototype.Length = function()
    return Math.sqrt(Math.pow(this._values[0],2)+Math.pow(this._values[1],2)+Math.pow(this._values[2],2));
 }
 
+//------------------------------------------------------------------------------
 /**
  * Normalizes this vector instance. Afterward the vector length will be 1.
  * @extends vec3
@@ -242,6 +258,7 @@ vec3.prototype.Normalize = function()
    return this;
 }
 
+//------------------------------------------------------------------------------
 /**
  * Negates all elements.
  * @extends vec3
@@ -255,6 +272,7 @@ vec3.prototype.Neg = function()
    return this;
 }
 
+//------------------------------------------------------------------------------
 /**
  * 
  * @extends vec3
@@ -265,28 +283,33 @@ vec3.prototype.ToString = function()
    return "["+this._values[0]+","+this._values[1]+","+this._values[2]+"]";
 }
 
+//------------------------------------------------------------------------------
 /**
  * Internal test function. Tests for all functions.
  * Plots the results using console.log.
  * @extends vec3
  * @param vec the vector for testing adding or subtracting methods.
  */
-vec3.prototype.Test=function(vec){
+vec3.prototype.Test=function(vec)
+{
    if(vec instanceof vec3 && vec._values.length == 3)
    {
-    console.log(this.ToString()+".Copy() = "+this.Copy().ToString()); 
-    console.log(this.ToString()+".Add("+vec.ToString()+") = "+this.Add(vec).ToString());
-    console.log(this.ToString()+".Sub("+vec.ToString()+") = "+this.Sub(vec).ToString());
-    console.log(this.ToString()+".Dot("+vec.ToString()+") = "+this.Dot(vec));
-    console.log(this.ToString()+".Cross("+vec.ToString()+") = "+this.Cross(vec).ToString());
-    console.log(this.ToString()+".Length("+vec.ToString()+") = "+this.Length(vec));
-    console.log(this.ToString()+".Neg"+vec.ToString()+") = "+this.Neg(vec).ToString());
-    console.log(this.ToString()+".Normalize = "+this.Normalize().ToString());
+      console.log(this.ToString()+".Copy() = "+this.Copy().ToString()); 
+      console.log(this.ToString()+".Add("+vec.ToString()+") = "+this.Add(vec).ToString());
+      console.log(this.ToString()+".Sub("+vec.ToString()+") = "+this.Sub(vec).ToString());
+      console.log(this.ToString()+".Dot("+vec.ToString()+") = "+this.Dot(vec));
+      console.log(this.ToString()+".Cross("+vec.ToString()+") = "+this.Cross(vec).ToString());
+      console.log(this.ToString()+".Length("+vec.ToString()+") = "+this.Length(vec));
+      console.log(this.ToString()+".Neg"+vec.ToString()+") = "+this.Neg(vec).ToString());
+      console.log(this.ToString()+".Normalize = "+this.Normalize().ToString());
     }
     else
     {
-       console.log("Wrong Datatype in Argument");
+       console.log("error: wrong datatype");
     }
 }
+
+//------------------------------------------------------------------------------
+
 
 

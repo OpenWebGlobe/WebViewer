@@ -92,8 +92,8 @@ texture.prototype.loadTexture = function(url)
 
 //------------------------------------------------------------------------------
 /** 
- * Internal callback function
- * 
+ * @description Create WebGL texture object once it is available
+ * @ignore
  */
 function _cbHandleLoadedTexture(gl, textureobject) 
 {

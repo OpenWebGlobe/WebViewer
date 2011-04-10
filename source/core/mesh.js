@@ -386,7 +386,7 @@ Mesh.prototype.loadFromJSON = function(url)
 //------------------------------------------------------------------------------
 /** 
  * @desciption download callback
- * @internal
+ * @ignore
  */
 _cbfjsondownload = function(mesh)
 {
