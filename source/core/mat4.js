@@ -73,11 +73,10 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  * 
  * {@link http://www.openwebglobe.org} 
  *
- * @author Martin Christen martin.christen@fhnw.ch  
- * @version 0.1  
+ * @author Martin Christen martin.christen@fhnw.ch   
  */
 
-
+//------------------------------------------------------------------------------
 /**
  * Create a new Matrix Object
  * @class This is the basic mat4.class 
@@ -97,6 +96,7 @@ function mat4(typeparam)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
  * Set Values
  * @extends mat4
@@ -122,6 +122,7 @@ mat4.prototype.Set = function(oMatrix)
   return false;
 }
 
+//------------------------------------------------------------------------------
 /**
  * Get Values
  * @extends mat4
@@ -133,8 +134,7 @@ mat4.prototype.Get = function()
    return this._values;
 }
 
-
-
+//------------------------------------------------------------------------------
 /**
  * Copy
  * @extends mat4
@@ -165,6 +165,7 @@ mat4.prototype.Copy = function()
    
    return cpy;
 }
+
 //------------------------------------------------------------------------------
 /**
  * CopyFrom
@@ -189,12 +190,13 @@ mat4.prototype.CopyFrom = function(cpy)
 //------------------------------------------------------------------------------ 
 mat4.prototype.Identity = function()
 {
-   this.Set([1,0,0,0,
-             0,1,0,0,
-             0,0,1,0,
-             0,0,0,1]);
+   this._values[0] = 1; this._values[4] = 0; this._values[8]  = 0; this._values[12] = 0;
+   this._values[1] = 0; this._values[5] = 1; this._values[9]  = 0; this._values[13] = 0;
+   this._values[2] = 0; this._values[6] = 0; this._values[10] = 1; this._values[14] = 0;
+   this._values[3] = 0; this._values[7] = 0; this._values[11] = 0; this._values[15] = 1;
 }
 
+//------------------------------------------------------------------------------ 
 /**
  * Zero
  * sets all matrix element to zero.
@@ -203,10 +205,10 @@ mat4.prototype.Identity = function()
  */
 mat4.prototype.Zero = function()
 {
-   this.Set([0,0,0,0,
-             0,0,0,0,
-             0,0,0,0,
-             0,0,0,0]);
+   this._values[0] = 0; this._values[4] = 0; this._values[8]  = 0; this._values[12] = 0;
+   this._values[1] = 0; this._values[5] = 0; this._values[9]  = 0; this._values[13] = 0;
+   this._values[2] = 0; this._values[6] = 0; this._values[10] = 0; this._values[14] = 0;
+   this._values[3] = 0; this._values[7] = 0; this._values[11] = 0; this._values[15] = 1;
 }
 
 /**
@@ -227,6 +229,7 @@ mat4.prototype.Translation = function(x,y,z)
    this._values[3] = 0; this._values[7] = 0; this._values[11] = 0; this._values[15] = 1;
 }
 
+//------------------------------------------------------------------------------
 /**
  * Scale
  * sets the matrix values to a translation matrix. 
@@ -238,13 +241,12 @@ mat4.prototype.Translation = function(x,y,z)
  */
 mat4.prototype.Scale = function(x,y,z)
 {
-   this._values[0]  = x; this._values[4]  = 0; this._values[8]  = 0; this._values[12]  = 0;
-   this._values[1]  = 0; this._values[5]  = y; this._values[9]  = 0; this._values[13]  = 0;
-   this._values[2]  = 0; this._values[6]  = 0; this._values[10] = z; this._values[14] = 0;
+   this._values[0]  = x; this._values[4] = 0; this._values[8]   = 0; this._values[12] = 0;
+   this._values[1]  = 0; this._values[5] = y; this._values[9]   = 0; this._values[13] = 0;
+   this._values[2]  = 0; this._values[6] = 0; this._values[10]  = z; this._values[14] = 0;
    this._values[3] = 0;  this._values[7] = 0;  this._values[11] = 0; this._values[15] = 1;
    
    return true;
-   
 }
 
 /**
@@ -323,7 +325,7 @@ mat4.prototype.LookAt = function(eyex, eyey, eyez, centerx, centery, centerz, up
    else 
    {
       len = 1/len; x0 *= len; x1 *= len; x2 *= len;
-   };
+   }
    
    y0 = z1*x2 - z2*x1; y1 = z2*x0 - z0*x2; y2 = z0*x1 - z1*x0;
    

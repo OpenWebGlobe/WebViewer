@@ -24,6 +24,11 @@
          var cube2 = null;
          var width = 0;
          var height = 0;
+         
+         var projection = new mat4(); // projection matrix
+         var view = new mat4();       // view matrix
+         var model = new mat4();
+         
          var mvp1 =  new mat4();
          var mvp2 =  new mat4();
          
@@ -37,6 +42,11 @@
          {
             width = w;
             height = h;  
+            
+            // update projection matrix on resize
+            var aspect = width / height;
+            projection.Perspective(45, aspect, 0.1, 500);
+            engine.SetProjectionMatrix(projection);
          }
          //---------------------------------------------------------------------
          
@@ -83,16 +93,18 @@
          
          function OnRender()
          {
-            engine.SetClearColor(0.5,0.5,0.5,1);
+            // create look at matrix
+            view.LookAt(xpos,0,zpos, 0,0,0, 0,1,0);
             
-            CreateMVP(0,0,0, mvp1);
-                                   
-            cube.SetModelViewProjection(mvp1); 
+            engine.SetClearColor(0.5,0.5,1.0,1);  
+            engine.SetViewMatrix(view);
+            
+            model.Identity();
+            engine.SetModelMatrix(model);
             cube.Draw();      
             
-            CreateMVP(5,0,0, mvp2);
-            
-            cube2.SetModelViewProjection(mvp2);                     
+            model.Translation(5,0,0);
+            engine.SetModelMatrix(model);                    
             cube2.Draw();                
          }
          

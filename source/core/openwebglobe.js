@@ -85,21 +85,11 @@ var _gcbfKeyDown     = null;           // global key down event
 var _gcbfKeyUp       = null;           // global key up event
 //------------------------------------------------------------------------------
 
-/* Planned functions (9.4.2011)
+/* functions todo (high priority)
  * 
-     engine.InitEngine(settings)       initialize Entine with specified settings
-     engine.SetClearColor(r,g,b,a)     set clear color [OK]
-     r = engine.GetClearColor()        retrieve clear color (stored int r.r, r.g, r.b, r.a) [OK]
-     engine.Clear()                    clear the screen [OK]
-     engine.SetViewport(x,y,w,h)       set viewport dimension [OK]
-     r = engine.GetViewport();         get viewport (stored in r.x, r.y, r.w, r.h) [OK]
-     engine.SetProjectionMatrix(mat4)  set projection matrix [OK]
-     engine.SetViewMatrix(mat4)        set view matrix [OK]
-     engine.SetModelMatrix(mat4)       set model matrix [OK]
      engine.DrawMesh(mesh);            draw mesh (using current model, view, projection matrix)
      engine.BlitTexture(texture,x,y,z,angle,scalex,scaley,blend);  blit texture directly on screen
      engine.DrawText(x,y,text);        draw text on screen 
-     
      mesh = engine.CreateMeshAsync(url);
      texture = engine.CreateTextureAsync(url);
  */

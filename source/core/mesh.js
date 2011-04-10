@@ -117,9 +117,7 @@ function Mesh(engine)
    
    this.indexbufferdata = null;  // Uint16Array(indices)
    this.indexsemantic = null;    // triangle, line, or point.
-   
-   this.mvp = null;              // modelview projection matrix (deprecated)
-   
+  
    this.Ready = false;           //Ready to draw
    this.http = null; 
    this.jsonUrl = null;
@@ -241,16 +239,6 @@ Mesh.prototype._ToGPU = function()
 
 //------------------------------------------------------------------------------
 /**
- * @deprecated
- * @param{mat4} mvp the model-view-projection matrix.
- */
-Mesh.prototype.SetModelViewProjection = function(mvp)
-{
-  this.mvp = mvp;
-}
-
-//------------------------------------------------------------------------------
-/**
  * @description Draws the mesh element. Ensure that "toGPU" is called before calling this method.
  * note: this method still needs some optimization
  * note: ranged draw must be supported soon
@@ -268,11 +256,7 @@ Mesh.prototype.Draw = function()
       this._ToGPU();
    }
    
-   if (this.mvp == null)
-   {
-      alert("argh!!! ModelViewProjection not set!!");
-      return;
-   }
+
      // setup interleaved VBO and IBO
      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
      this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);
@@ -290,7 +274,7 @@ Mesh.prototype.Draw = function()
                         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 8*4, 0*4); // position
                         this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 8*4, 3*4); // normal
                         this.gl.vertexAttribPointer(2, 2, this.gl.FLOAT, false, 8*4, 6*4); // texcoord
-                        this.engine.shadermanager.UseShader_PNT(this.mvp);
+                        this.engine.shadermanager.UseShader_PNT(engine.matModelViewProjection);
                         break;
                         
           case "pc": 
@@ -298,7 +282,7 @@ Mesh.prototype.Draw = function()
                         this.gl.enableVertexAttribArray(1);
                         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
                         this.gl.vertexAttribPointer(1, 4, this.gl.FLOAT, false, 7*4, 3*4); // color
-                        this.engine.shadermanager.UseShader_PC(this.mvp);
+                        this.engine.shadermanager.UseShader_PC(engine.matModelViewProjection);
                         break;
                         
           case "pt": 
@@ -306,7 +290,7 @@ Mesh.prototype.Draw = function()
                         this.gl.enableVertexAttribArray(1);
                         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
                         this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
-                        this.engine.shadermanager.UseShader_PT(this.mvp);
+                        this.engine.shadermanager.UseShader_PT(engine.matModelViewProjection);
                         break;
                         
           case "pnct": 
@@ -318,7 +302,7 @@ Mesh.prototype.Draw = function()
                         this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 12*4, 3*4); // normal
                         this.gl.vertexAttribPointer(2, 4, this.gl.FLOAT, false, 12*4, 6*4); // color
                         this.gl.vertexAttribPointer(3, 2, this.gl.FLOAT, false, 12*4, 10*4); // texture
-                        this.engine.shadermanager.UseShader_PNCT(this.mvp);
+                        this.engine.shadermanager.UseShader_PNCT(engine.matModelViewProjection);
                         break;
                              
              
