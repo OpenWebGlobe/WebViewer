@@ -212,7 +212,7 @@ Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
 //------------------------------------------------------------------------------
 /**
  * @description Set Texture for this mesh
- * @param{texture} tex the the texture.
+ * @param{texture} tex This is the texture to set.
  */
 Mesh.prototype.SetTexture = function(tex)
 {
@@ -221,7 +221,7 @@ Mesh.prototype.SetTexture = function(tex)
 //------------------------------------------------------------------------------
 /**
  * @description Create Buffers on GPU
- * @internal
+ * @ignore
  */
 Mesh.prototype._ToGPU = function()
 {
@@ -256,58 +256,57 @@ Mesh.prototype.Draw = function()
       this._ToGPU();
    }
    
-
-     // setup interleaved VBO and IBO
-     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
-     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);
+   // setup interleaved VBO and IBO
+   this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
+   this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);
            
-     switch (this.mode) 
-     {
-         case "p":      this.gl.enableVertexAttribArray(0);
-                        this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 8*4, 0*4); // position
-                        break;
-                         
-         case "pnt": 
-                        this.gl.enableVertexAttribArray(0);
-                        this.gl.enableVertexAttribArray(1);
-                        this.gl.enableVertexAttribArray(2);
-                        this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 8*4, 0*4); // position
-                        this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 8*4, 3*4); // normal
-                        this.gl.vertexAttribPointer(2, 2, this.gl.FLOAT, false, 8*4, 6*4); // texcoord
-                        this.engine.shadermanager.UseShader_PNT(engine.matModelViewProjection);
-                        break;
+   switch (this.mode) 
+   {
+       case "p":      this.gl.enableVertexAttribArray(0);
+                      this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 8*4, 0*4); // position
+                      break;
+                       
+       case "pnt": 
+                      this.gl.enableVertexAttribArray(0);
+                      this.gl.enableVertexAttribArray(1);
+                      this.gl.enableVertexAttribArray(2);
+                      this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 8*4, 0*4); // position
+                      this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 8*4, 3*4); // normal
+                      this.gl.vertexAttribPointer(2, 2, this.gl.FLOAT, false, 8*4, 6*4); // texcoord
+                      this.engine.shadermanager.UseShader_PNT(engine.matModelViewProjection);
+                      break;
                         
-          case "pc": 
-                        this.gl.enableVertexAttribArray(0);
-                        this.gl.enableVertexAttribArray(1);
-                        this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
-                        this.gl.vertexAttribPointer(1, 4, this.gl.FLOAT, false, 7*4, 3*4); // color
-                        this.engine.shadermanager.UseShader_PC(engine.matModelViewProjection);
-                        break;
+        case "pc": 
+                      this.gl.enableVertexAttribArray(0);
+                      this.gl.enableVertexAttribArray(1);
+                      this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
+                      this.gl.vertexAttribPointer(1, 4, this.gl.FLOAT, false, 7*4, 3*4); // color
+                      this.engine.shadermanager.UseShader_PC(engine.matModelViewProjection);
+                      break;
                         
-          case "pt": 
-                        this.gl.enableVertexAttribArray(0);
-                        this.gl.enableVertexAttribArray(1);
-                        this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
-                        this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
-                        this.engine.shadermanager.UseShader_PT(engine.matModelViewProjection);
-                        break;
+        case "pt": 
+                      this.gl.enableVertexAttribArray(0);
+                      this.gl.enableVertexAttribArray(1);
+                      this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
+                      this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
+                      this.engine.shadermanager.UseShader_PT(engine.matModelViewProjection);
+                      break;
                         
-          case "pnct": 
-                        this.gl.enableVertexAttribArray(0);
-                        this.gl.enableVertexAttribArray(1);
-                        this.gl.enableVertexAttribArray(2);
-                        this.gl.enableVertexAttribArray(3);
-                        this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 12*4, 0*4); // position
-                        this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 12*4, 3*4); // normal
-                        this.gl.vertexAttribPointer(2, 4, this.gl.FLOAT, false, 12*4, 6*4); // color
-                        this.gl.vertexAttribPointer(3, 2, this.gl.FLOAT, false, 12*4, 10*4); // texture
-                        this.engine.shadermanager.UseShader_PNCT(engine.matModelViewProjection);
-                        break;
+        case "pnct": 
+                      this.gl.enableVertexAttribArray(0);
+                      this.gl.enableVertexAttribArray(1);
+                      this.gl.enableVertexAttribArray(2);
+                      this.gl.enableVertexAttribArray(3);
+                      this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 12*4, 0*4); // position
+                      this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 12*4, 3*4); // normal
+                      this.gl.vertexAttribPointer(2, 4, this.gl.FLOAT, false, 12*4, 6*4); // color
+                      this.gl.vertexAttribPointer(3, 2, this.gl.FLOAT, false, 12*4, 10*4); // texture
+                      this.engine.shadermanager.UseShader_PNCT(engine.matModelViewProjection);
+                      break;
                              
              
-         default:       
-                        alert("unknown mesh mode!!");
+        default:       
+                      alert("unknown mesh mode!!");
          
       }
   
@@ -369,7 +368,7 @@ Mesh.prototype.loadFromJSON = function(url)
 
 //------------------------------------------------------------------------------
 /** 
- * @desciption download callback
+ * @description download callback
  * @ignore
  */
 _cbfjsondownload = function(mesh)
