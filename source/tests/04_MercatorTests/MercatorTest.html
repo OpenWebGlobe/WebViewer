@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Vektor Test</title>
+      <script type="text/javascript" src="../../core/geocoord.js"></script>
+      <script type="text/javascript" src="../../core/mercator.js"></script>
+      <script type="text/javascript">
+      
+      function calc()
+      {
+      merc = new Mercator();
+      result = new Float64Array(2);
+      
+      merc.WGS84ToMercatorE(90,90,result); 
+      console.log("Result[0]: "+result[0]+" Result[1]: "+result[1]);
+      
+      //backwards
+      merc.MercatorEToWGS84(result[0],result[1],result);
+      console.log("Result[0]: "+result[0]+" Result[1]: "+result[1]);
+      
+      result2 = new Float64Array(2);
+      //Sphere test
+      merc.WGS84ToMercator(90,90,result2);
+      console.log("Result[0]: "+result2[0]+" Result[1]: "+result2[1]);
+      
+      merc.MercatorToWGS84(result2[0],result2[1],result2);
+      console.log("Result[0]: "+result2[0]+" Result[1]: "+result2[1]);
+      
+      
+      }     
+      </script>
+    </head>
+    <body onload="calc()">
+     
+    </body>
+</html>

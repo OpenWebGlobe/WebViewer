@@ -69,16 +69,17 @@ const CARTESIAN_SCALE = 8388607.0;
  * @author Benjamin Loesch, benjamin.loesch@fhnw.ch
  * @version 0.1
  */
- function geocoord(longitude, latitude, elevation)
+ function GeoCoord(longitude, latitude, elevation)
  {  
     this._wgscoords = new Float64Array([longitude, latitude, elevation]);      //Array elements = [latitude,longitude,elevation]
  }
- //------------------------------------------------------------------------------
+ 
+//------------------------------------------------------------------------------
 /**
  * @description Get the longitude value
  * @return Longitude
  */
- geocoord.prototype.GetLongitude = function()
+ GeoCoord.prototype.GetLongitude = function()
  {
     return this._wgscoords[0];
  }
@@ -87,7 +88,7 @@ const CARTESIAN_SCALE = 8388607.0;
  * @description Get the latitude value
  * @return Latitude 
  */
- geocoord.prototype.GetLatitude = function()
+ GeoCoord.prototype.GetLatitude = function()
  {
     return this._wgscoords[1];
  }
@@ -97,7 +98,7 @@ const CARTESIAN_SCALE = 8388607.0;
  * @description Get the elevation value
  * @return elevation
  */
- geocoord.prototype.GetElevation = function()
+ GeoCoord.prototype.GetElevation = function()
  {
     return this._wgscoords[2];
  }
@@ -107,16 +108,16 @@ const CARTESIAN_SCALE = 8388607.0;
  * @description transforms the wgs84 coordinates to cartesian coordinates.
  * @param{Float64Array} result float 64 array to store the results. 
  */
- geocoord.prototype.ToCartesian = function(result)
+ GeoCoord.prototype.ToCartesian = function(result)
  {
     if (!(result instanceof Float64Array) && result.length!=3)
     {
        return;
     }
-    var sinlat = Math.sin(this._deg2rad(this._wgscoords[1]));    // sin of latitude
-    var coslat = Math.cos(this._deg2rad(this._wgscoords[1]));    // cos of latitude
-    var sinlong = Math.sin(this._deg2rad(this._wgscoords[0]));    // sin of latitude
-    var coslong = Math.cos(this._deg2rad(this._wgscoords[0]));    // cos of latitude
+    var sinlat = Math.sin(_deg2rad(this._wgscoords[1]));    // sin of latitude
+    var coslat = Math.cos(_deg2rad(this._wgscoords[1]));    // cos of latitude
+    var sinlong = Math.sin(_deg2rad(this._wgscoords[0]));    // sin of latitude
+    var coslong = Math.cos(_deg2rad(this._wgscoords[0]));    // cos of latitude
     
     var Rn = WGS84_a / Math.sqrt(1.0-WGS84_E_SQUARED*sinlat*sinlat);
     
@@ -137,7 +138,7 @@ const CARTESIAN_SCALE = 8388607.0;
  * @param{float} y the cartesian y coordinate.
  * @param{float} z the cartesian z coordinate.
  */
- geocoord.prototype.FromCartesian = function(x,y,z)
+ GeoCoord.prototype.FromCartesian = function(x,y,z)
  {
     var _longitude = Math.atan2(y,x);
     var _latitude = Math.atan2(z,Math.sqrt(x*x+y*y));
@@ -160,8 +161,8 @@ const CARTESIAN_SCALE = 8388607.0;
        _latitude = Math.atan2(z/Math.sqrt(x*x+y*y), 1-(Rn*WGS84_E_SQUARED)/(Rn+_elevation)); 
     }
      
-   this._wgscoords[0] = this._rad2deg(_longitude);
-   this._wgscoords[1] = this._rad2deg(_latitude);
+   this._wgscoords[0] = _rad2deg(_longitude);
+   this._wgscoords[1] = _rad2deg(_latitude);
    this._wgscoords[2] = _elevation;
  }
  
@@ -171,7 +172,7 @@ const CARTESIAN_SCALE = 8388607.0;
  * @description internal degree to radiant conversion function.
  * @ignore
  */
- geocoord.prototype._deg2rad = function(deg)
+ _deg2rad = function(deg)
  {
     return ((deg)*0.017453292519943295769236907684886); //3.14159265358979323846/180.0)
     //return deg*Math.PI/180;
@@ -182,13 +183,15 @@ const CARTESIAN_SCALE = 8388607.0;
  * @description internal radiant to degree conversion function.
  * @ignore
  */
- geocoord.prototype._rad2deg = function(rad)
+ _rad2deg = function(rad)
  {
     //return rad*180/Math.PI;
     return ((rad)*57.295779513082320876798154814105);
  }
  
- geocoord.prototype.ToString = function()
+ GeoCoord.prototype.ToString = function()
  {
     return " Longitude: "+this.GetLongitude().toPrecision(17)+" Latitude: "+this.GetLatitude().toPrecision(17)+" Elevation: "+this.GetElevation().toPrecision(17);
  }
+ 
+ 

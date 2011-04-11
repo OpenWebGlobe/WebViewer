@@ -10,25 +10,19 @@
       {
        var geoCoord = new geocoord(47.56123456789,7.6123456789,250);
        console.log(geoCoord._wgscoords[0]);
-       
-       
+
        var result = new Float64Array(3);
-       //console.log(geoCoord.ToString());
- 
-        
+       console.log(geoCoord.ToString());
+
        geoCoord.ToCartesian(result);
-       
-     
-       
+  
        console.log("x: "+result[0].toPrecision(23)+" y: "+result[1].toPrecision(23)+" z: "+result[2].toPrecision(23));
-       
-       
+   
        //backwards
        geoCoord.FromCartesian(result[0],result[1],result[2]);
-       alert(geoCoord.ToString());
+       console.log(geoCoord.ToString());
       
-      } 
-      
+      }     
       </script>
     </head>
     <body onload="calc()">
