@@ -58,8 +58,7 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 /** 
  * @class texture
  * {@link http://www.openwebglobe.org} 
- * @author Martin Christen martin.christen@fhnw.ch
- * @version 0.1  
+ * @author Martin Christen martin.christen@fhnw.ch 
  */
 function texture(engine)
 {
