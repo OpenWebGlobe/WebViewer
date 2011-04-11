@@ -62,7 +62,6 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  *
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch 
  * @author Martin Christen martin.christen@fhnw.ch
- * @version 0.1  
  */
 //------------------------------------------------------------------------------
 /*
@@ -351,7 +350,6 @@ Mesh.prototype.Draw = function()
  */
 Mesh.prototype.loadFromJSON = function(url)
 {
-   
    if(url == null) 
    {
       alert("invalid json-url");

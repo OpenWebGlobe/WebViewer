@@ -249,6 +249,7 @@ mat4.prototype.Scale = function(x,y,z)
    return true;
 }
 
+//------------------------------------------------------------------------------
 /**
  * RotationX
  * sets the matrix to a x-rotation matrix.
@@ -267,6 +268,7 @@ mat4.prototype.RotationX = function(angle)
    this._values[12] = 0; this._values[13] = 0;     this._values[14] = 0;    this._values[15] = 1;
 }
 
+//------------------------------------------------------------------------------
 /**
  * RotationY
  * sets the matrix to a y-rotation matrix.
@@ -285,6 +287,7 @@ mat4.prototype.RotationY = function(angle)
    this._values[12] = 0;     this._values[13] = 0;     this._values[14] = 0;     this._values[15] = 1;
 }
 
+//------------------------------------------------------------------------------
 /**
  * RotationZ
  * sets the matrix to a z-rotation matrix.
@@ -302,9 +305,19 @@ mat4.prototype.RotationZ = function(angle)
    this._values[12] = 0;      this._values[13] = 0;     this._values[14] = 0;   this._values[15] = 1;
 }
 
-//------------------------------------------------------------------------------
-// Set Matrix to Look At
-//------------------------------------------------------------------------------
+/**
+ * Creates a LookAt matrix
+ * 
+ * @param{float} eyex x-coordinate of eye
+ * @param{float} eyey y-coordinate of eye
+ * @param{float} eyez z-coordinate of eye
+ * @param{float} centerx x-coordinate of position to look at
+ * @param{float} centery y-coordinate of position to look at
+ * @param{float} centerz z-coordinate of position to look at
+ * @param{float} upx x-coordinate of up-vector
+ * @param{float} upy y-coordinate of up-vector
+ * @param{float} upz z-coordinate of up-vector
+ */ 
 mat4.prototype.LookAt = function(eyex, eyey, eyez, centerx, centery, centerz, upx, upy, upz)
 {
    var z0,z1,z2,x0,x1,x2,y0,y1,y2,len;
@@ -347,7 +360,7 @@ mat4.prototype.LookAt = function(eyex, eyey, eyez, centerx, centery, centerz, up
    
 }
 
-
+//------------------------------------------------------------------------------
 /**
  * Multiply
  * overwrites the element values to the resulting elements of matA times matB.
@@ -393,6 +406,7 @@ mat4.prototype.Multiply = function(a,b)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
  * Transpose
  * Transpose the matrix.
@@ -413,6 +427,7 @@ mat4.prototype.Transpose = function()
    }
 }
 
+//------------------------------------------------------------------------------
 /**
  * MultiplyVec3
  * Multiply the matrix by a 3-element vector.
@@ -446,6 +461,7 @@ mat4.prototype.MultiplyVec3 = function(vec)
    }
 }
 
+//------------------------------------------------------------------------------
 /**
  * Frustum
  * Sets the matrix to a frustum matrix.
@@ -471,6 +487,8 @@ mat4.prototype.Frustum = function(left, right, bottom, top, znear, zfar)
    this._values[3] = 0;            this._values[7] = 0;            this._values[11] = -1;               this._values[15] = 0; 
    
 }
+
+//------------------------------------------------------------------------------
 /**
  * Perspective
  * sets the matrix to be a perspective matrix.
@@ -501,6 +519,7 @@ mat4.prototype.Perspective = function(fovy, aspect, znear, zfar)
    
 }
 
+//------------------------------------------------------------------------------
 /**
  * Ortho
  * sets the matrix to be a perspective matrix.
@@ -539,6 +558,7 @@ mat4.prototype.Ortho = function(left, right, bottom, top, znear, zfar)
    this._values[15] = 1;
 }
 
+//------------------------------------------------------------------------------
 /**
  * Ortho2D
  * sets the matrix to be a orthogonal 2D matrix.
@@ -554,48 +574,7 @@ mat4.prototype.Ortho2D = function(left, right, bottom, top)
     this.Ortho(left, right, bottom, top, -1, 1);
 };
 
-/**
- * Print
- * plots the matrix elements using console.log
- * @extends mat4
- *
- *
- */
-mat4.prototype.Print = function()
-{
-   if (this._values.length != 16)
-   {
-      console.log("Wrong matrix dimension! How can this happen!!<br/>");
-      return false;
-   }
-   
-   if (this._values instanceof Array)
-   {
-      //document.write("Matrix is native Array<br/>");
-   }
-   else if (this._values instanceof Float32Array)
-   {
-      //document.write("Matrix is Float32Array<br/>");
-   }
-   else if (this._values instanceof Float64Array)
-   {
-      //document.write("Matrix is Float64Array<br/>");
-   }
-   else
-   {
-      document.write("Error: Matrix type is wrong<br/>");
-      return false;
-   }
-   
-   for (var j = 0; j < 4; j++)
-   {
-      for (var i = 0; i < 4; i++)
-      {
-         console.log(this._values[4*j+i] + " ");
-      }
-   }
-}
-
+//------------------------------------------------------------------------------
 /**
  * ToString
  * @extends mat4
