@@ -114,10 +114,10 @@ const CARTESIAN_SCALE = 8388607.0;
     {
        return;
     }
-    var sinlat = Math.sin(_deg2rad(this._wgscoords[1]));    // sin of latitude
-    var coslat = Math.cos(_deg2rad(this._wgscoords[1]));    // cos of latitude
-    var sinlong = Math.sin(_deg2rad(this._wgscoords[0]));    // sin of latitude
-    var coslong = Math.cos(_deg2rad(this._wgscoords[0]));    // cos of latitude
+    var sinlat = Math.sin(MathUtils.Deg2Rad(this._wgscoords[1]));    // sin of latitude
+    var coslat = Math.cos(MathUtils.Deg2Rad(this._wgscoords[1]));    // cos of latitude
+    var sinlong = Math.sin(MathUtils.Deg2Rad(this._wgscoords[0]));    // sin of latitude
+    var coslong = Math.cos(MathUtils.Deg2Rad(this._wgscoords[0]));    // cos of latitude
     
     var Rn = WGS84_a / Math.sqrt(1.0-WGS84_E_SQUARED*sinlat*sinlat);
     
@@ -161,34 +161,12 @@ const CARTESIAN_SCALE = 8388607.0;
        _latitude = Math.atan2(z/Math.sqrt(x*x+y*y), 1-(Rn*WGS84_E_SQUARED)/(Rn+_elevation)); 
     }
      
-   this._wgscoords[0] = _rad2deg(_longitude);
-   this._wgscoords[1] = _rad2deg(_latitude);
+   this._wgscoords[0] = MathUtils.Rad2Deg(_longitude);
+   this._wgscoords[1] = MathUtils.Rad2Deg(_latitude);
    this._wgscoords[2] = _elevation;
  }
  
- 
-//------------------------------------------------------------------------------
-/**
- * @description internal degree to radiant conversion function.
- * @ignore
- */
- _deg2rad = function(deg)
- {
-    return ((deg)*0.017453292519943295769236907684886); //3.14159265358979323846/180.0)
-    //return deg*Math.PI/180;
- }
- 
-//------------------------------------------------------------------------------
-/**
- * @description internal radiant to degree conversion function.
- * @ignore
- */
- _rad2deg = function(rad)
- {
-    //return rad*180/Math.PI;
-    return ((rad)*57.295779513082320876798154814105);
- }
- 
+
  GeoCoord.prototype.ToString = function()
  {
     return " Longitude: "+this.GetLongitude().toPrecision(17)+" Latitude: "+this.GetLatitude().toPrecision(17)+" Elevation: "+this.GetElevation().toPrecision(17);

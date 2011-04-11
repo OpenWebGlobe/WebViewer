@@ -2,13 +2,13 @@
 <html lang="en">
    <head>
       <title>Vektor Test</title>
-      <script type="text/javascript" src="../../core/vec3.js"></script>
+      <script type="text/javascript" src="../../core/mathutils.js"></script>
       <script type="text/javascript" src="../../core/geocoord.js"></script>
       <script type="text/javascript">
       
       function calc()
       {
-       var geoCoord = new geocoord(47.56123456789,7.6123456789,250);
+       var geoCoord = new GeoCoord(47.56123456789,7.6123456789,250);
        console.log(geoCoord._wgscoords[0]);
 
        var result = new Float64Array(3);

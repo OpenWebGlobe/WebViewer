@@ -86,8 +86,8 @@ Mercator.prototype.WGS84ToMercatorE = function(longitude, latitude, result)
       return;
    }
    
-   var lngRad = _deg2rad(longitude);
-   var latRad = _deg2rad(latitude);
+   var lngRad = MathUtils.Deg2Rad(longitude);
+   var latRad = MathUtils.Deg2Rad(latitude);
    result[0] = (lngRad - LNG_RAD0);
    result[1] =  Math.log(Math.tan(Math.PI/4.0+latRad/2.0)*Math.pow((1.0-WGS84_E * Math.sin(latRad))/(1.0 + WGS84_E * Math.sin(latRad)),0.5*WGS84_E));
    result[0] /= Math.PI;
@@ -125,8 +125,8 @@ Mercator.prototype.MercatorEToWGS84 = function(x, y, result)
    
    var lng = x + LNG_RAD0;
    
-   lat = _rad2deg(lat);
-   lng = _rad2deg(lng);
+   lat = MathUtils.Rad2Deg(lat);
+   lng = MathUtils.Rad2Deg(lng);
    
    while (lng > 180)
    {
@@ -165,8 +165,8 @@ Mercator.prototype.WGS84ToMercator = function(longitude, latitude, result)
       return;
    }
    
-   var lngRad = _deg2rad(longitude);
-   var latRad = _deg2rad(latitude); 
+   var lngRad = MathUtils.Deg2Rad(longitude);
+   var latRad = MathUtils.Deg2Rad(latitude); 
    
    var x = lngRad - LNG_RAD0;
    var y = Math.log(Math.tan(Math.PI / 4.0 + latRad / 2));
@@ -201,8 +201,8 @@ Mercator.prototype.MercatorToWGS84 = function(x, y, result)
    
    var lng = x / 1.0 + LNG_RAD0;
    
-   lat = _rad2deg(lat);
-   lng = _rad2deg(lng);
+   lat = MathUtils.Rad2Deg(lat);
+   lng = MathUtils.Rad2Deg(lng);
    
    while (lng > 180)
    {
