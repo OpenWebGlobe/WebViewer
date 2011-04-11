@@ -90,10 +90,7 @@ var _gcbfKeyUp       = null;           // global key up event
      engine.DrawMesh(mesh);            draw mesh (using current model, view, projection matrix)
      engine.BlitTexture(texture,x,y,z,angle,scalex,scaley,blend);  blit texture directly on screen
      engine.DrawText(x,y,text);        draw text on screen 
-     mesh = engine.CreateMeshAsync(url);
-     texture = engine.CreateTextureAsync(url);
  */
-
 
 //------------------------------------------------------------------------------
 /**
@@ -148,12 +145,268 @@ function engine3d()
    this.matProjection = new mat4();
    this.matModelView = new mat4();
    this.matModelViewProjection = new mat4();
-	
+   
+   // Content Arrays
+   this.vecMeshes = new Array();
+   this.vecTextures = new Array();
+   
 	// engine instance voodoo
 	_g_vInstances[_g_nInstanceCnt] = this;
    _g_nInstanceCnt++;
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Initialize Engine 
+ * @param{String} canvasid The id of the webgl canvas
+ * @param{Bool} bFullscreen True if the canvas should autofit the browser window
+ */
+engine3d.prototype.InitEngine = function(canvasid, bFullscreen) 
+{ 
+   var canvas = document.getElementById(canvasid);
+   this.context = canvas;
+   
+   if (bFullscreen)
+   {
+         canvas.width = window.innerWidth-20;
+         canvas.height = window.innerHeight-20;
+         this.bFullscreen = true;
+   }
+  
+   var names = [ "webgl", "experimental-webgl", "moz-webgl", "webkit-3d" ];
+   for (var i=0; names.length>i; i++) 
+   {
+      try 
+      { 
+         this.gl = canvas.getContext(names[i]);
+         if (this.gl) 
+         { 
+            break; 
+         }
+      } 
+      catch (e) 
+      {
+      }
+   }
+   if (!this.gl) 
+   {
+      alert("Can't find webgl context. It seems your browser is not compatible! For example, you can get the latest Firefoxor Chrome");
+      return;
+   }
+   
+   // Call OnResize(canvas.width, canvas.height)
+   this._resize(this.context.width, this.context.height);
+   
+   // basic settings
+   this.gl.clearColor(0, 0, 0, 1);
+   this.gl.enable(this.gl.DEPTH_TEST);
+   
+   this.gl.frontFace(this.gl.CW);
+   this.gl.cullFace(this.gl.FRONT_AND_BACK);
+   
+   //this.gl.cullFace(this.gl.BACK);
+   
+   // Create Default Shaders
+   //this.CreateDefaultShaders();
+   //this.UseShaderDefault();
+   
+   //Init Shaders
+   this.shadermanager = new ShaderManager(this.gl);
+   this.shadermanager.InitShaders();
+   
+   // call init callback 
+   this.cbfInit();
+   
+   canvas.addEventListener("mousedown", _fncMouseDown, false);
+   canvas.addEventListener("mouseup", _fncMouseUp, false);
+   canvas.addEventListener("mousemove", _fncMouseMove, false);
+   window.addEventListener("resize", _fncResize, false);
+   window.addEventListener("keydown", _fncKeyDown, false);
+   window.addEventListener("keyup", _fncKeyUp, false);
+   
+   
+   // draw scene every 30 milliseconds
+   dtStart = new Date(); // setup main timer...
+   setInterval(fncTimer, 30);
+  
+}
+
+
+
+//------------------------------------------------------------------------------
+/**
+ * @description Sets the clear color
+ * @param{float} r red component, range [0,1]
+ * @param{float} g green component, range [0,1]
+ * @param{float} b blue component, range [0,1]
+ * @param{float} a alpha component, range [0,1]
+ */
+engine3d.prototype.SetClearColor = function(r,g,b,a)
+{
+   if (r>=0 && r<=1 && g>=0 && g<=1 && b>=0 && b<=1 && a>=0 && a<=1)
+   {
+      this.bg_r = r;
+      this.bg_g = g;
+      this.bg_b = b;
+      this.bg_a = a;
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Gets the clear color
+ * returns an array A. You can access components using A.r, A.g, A.b, A.a
+ */
+engine3d.prototype.GetClearColor = function(color)
+{
+   return {r: this.bg_r, g: this.bg_g, b: this.bg_b, a: this.bg_a};
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Clear color and depth buffer (using current clear color)
+ */
+engine3d.prototype.Clear = function()
+{
+   this.gl.clearColor(engine.bg_r, engine.bg_g, engine.bg_b, engine.bg_a);
+   this.gl.clear(engine.gl.COLOR_BUFFER_BIT | engine.gl.DEPTH_BUFFER_BIT);
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Set Viewport
+ * @param x x-Screen-Position
+ * @param y y-Screen-Position
+ * @param w Screen width
+ * @param h Screen height
+ */
+engine3d.prototype.SetViewport = function(x,y,w,h)
+{
+   this.vp_x = x; this.vp_y = y; this.vp_w = w; this.vp_h = h;
+   this.gl.viewport(x, y, w, h);
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Retrieve current Viewport
+ * returns an array A. You can access components using A.x, A.y, A.w, A.h
+ */
+engine3d.prototype.GetViewport = function()
+{
+   return {x: this.vp_x, y: this.vp_y, w: this.vp_w, h: this.vp_h};
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Set projection matrix
+ * @param{mat4} mat4 The projection matrix to copy from.
+ */
+engine3d.prototype.SetProjectionMatrix = function(mat4)
+{
+   this.matProjection.CopyFrom(mat4);
+   this._UpdateMatrices();
+}  
+//------------------------------------------------------------------------------
+/**
+ * @description set view matrix
+ * @param{mat4} mat4 The view matrix to copy from.
+ */
+engine3d.prototype.SetViewMatrix = function(mat4)  
+{
+   this.matView.CopyFrom(mat4);
+   this._UpdateMatrices();
+}      
+
+//------------------------------------------------------------------------------
+/**
+ * @description Set model matrix
+ * @param{mat4} mat4 The model matrix to copy from.
+ */
+engine3d.prototype.SetModelMatrix = function(mat4)
+{
+   this.matModel.CopyFrom(mat4);
+   this._UpdateMatrices();
+} 
+
+//------------------------------------------------------------------------------
+/**
+ * @description Update matrices: calc ModelView, ModelViewProjection
+ * @ignore
+ */
+engine3d.prototype._UpdateMatrices = function()
+{
+   this.matModelView.Multiply(this.matView, this.matModel);
+   this.matModelViewProjection.Multiply(this.matProjection, this.matModelView); 
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Load Texture from url (async)
+ * @param{string} url The URL to the texture
+ * @return{texture} the texture
+ */
+engine3d.prototype.LoadTexture = function(url)
+{
+   var tex = new texture(this);
+   tex.loadTexture(url);
+   this.vecTextures.push(tex);
+   
+   return tex;
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Load Mesh from url (async)
+ * @param{string} url The URL to the mesh (JSON)
+ */
+engine3d.prototype.LoadMesh = function(url)
+{
+   var m = new Mesh(this);
+   m.loadFromJSON(url);
+   this.vecMeshes.push(m);
+   
+   return m;
+}
+
+//------------------------------------------------------------------------------
+// MAIN TIMER FUNCTION
+//------------------------------------------------------------------------------
+
+/**
+ * @description timer function (internal)
+ * @ignore
+ */
+function fncTimer()
+{
+   dtEnd = new Date();
+   var nMSeconds = dtEnd.valueOf() - dtStart.valueOf();
+   dtStart = dtEnd;
+   
+   for (var i=0;i<_g_vInstances.length;i++)
+   {
+      var engine = _g_vInstances[i];
+      // (1) Call Timer Event
+      if (engine.cbfTimer)
+      {
+         engine.cbfTimer(nMSeconds);
+      }
+      
+      // (2) Set Current Viewport and clear
+      engine.SetViewport(0, 0, engine.width, engine.height);
+      engine.Clear();
+            
+      // (3) Draw Scenegraph 
+      // .. todo ..      
+           
+      // (4) Call Render Callback (-> integrate in Scenegraph)
+      if (engine.cbfRender)
+      {
+         engine.cbfRender(); // call  draw callback function
+      }
+   }
+}
+
+//------------------------------------------------------------------------------
+// *** ENGINE CALLBACK MANAGEMENT ** (INTERNAL FUNCTIONS)
 //------------------------------------------------------------------------------
 /**
  * @description internal _resize
@@ -274,11 +527,11 @@ engine3d.prototype.SetKeyDownCallback = function(f)
  */
 _fncKeyDown = function(evt)
 {
-	if (_gcbfKeyDown)
-	{
-		_gcbfKeyDown(evt.keyCode); 
-	}
-	return;
+   if (_gcbfKeyDown)
+   {
+      _gcbfKeyDown(evt.keyCode); 
+   }
+   return;
 }
 
 //------------------------------------------------------------------------------
@@ -288,11 +541,11 @@ _fncKeyDown = function(evt)
  */
 _fncKeyUp = function(evt)
 {
-	if (_gcbfKeyUp)
-	{
-		_gcbfKeyUp(evt.keyCode);
-	}
-	return;
+   if (_gcbfKeyUp)
+   {
+      _gcbfKeyUp(evt.keyCode);
+   }
+   return;
 }
 
 //------------------------------------------------------------------------------
@@ -372,223 +625,6 @@ _fncResize = function(evt)
       
       _g_vInstances[i]._resize(_g_vInstances[i].context.width, _g_vInstances[i].context.height);
    }
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description Initialize Engine 
- * @param{String} canvasid The id of the webgl canvas
- * @param{Bool} bFullscreen True if the canvas should autofit the browser window
- */
-engine3d.prototype.InitEngine = function(canvasid, bFullscreen) 
-{ 
-   var canvas = document.getElementById(canvasid);
-   this.context = canvas;
-   
-   if (bFullscreen)
-   {
-         canvas.width = window.innerWidth-20;
-         canvas.height = window.innerHeight-20;
-         this.bFullscreen = true;
-   }
-  
-   var names = [ "webgl", "experimental-webgl", "moz-webgl", "webkit-3d" ];
-   for (var i=0; names.length>i; i++) 
-   {
-      try 
-      { 
-         this.gl = canvas.getContext(names[i]);
-         if (this.gl) 
-         { 
-            break; 
-         }
-      } 
-      catch (e) 
-      {
-      }
-   }
-   if (!this.gl) 
-   {
-      alert("Can't find webgl context. It seems your browser is not compatible! For example, you can get the latest Firefoxor Chrome");
-      return;
-   }
-   
-   // Call OnResize(canvas.width, canvas.height)
-   this._resize(this.context.width, this.context.height);
-   
-   // basic settings
-   this.gl.clearColor(0, 0, 0, 1);
-   this.gl.enable(this.gl.DEPTH_TEST);
-   
-   this.gl.frontFace(this.gl.CW);
-   this.gl.cullFace(this.gl.FRONT_AND_BACK);
-   
-   //this.gl.cullFace(this.gl.BACK);
-   
-   // Create Default Shaders
-   //this.CreateDefaultShaders();
-   //this.UseShaderDefault();
-   
-   //Init Shaders
-   this.shadermanager = new ShaderManager(this.gl);
-   this.shadermanager.InitShaders();
-   
-   // call init callback 
-   this.cbfInit();
-   
-   canvas.addEventListener("mousedown", _fncMouseDown, false);
-   canvas.addEventListener("mouseup", _fncMouseUp, false);
-   canvas.addEventListener("mousemove", _fncMouseMove, false);
-   window.addEventListener("resize", _fncResize, false);
-   window.addEventListener("keydown", _fncKeyDown, false);
-   window.addEventListener("keyup", _fncKeyUp, false);
-   
-   
-   // draw scene every 30 milliseconds
-   dtStart = new Date(); // setup main timer...
-   setInterval(fncTimer, 30);
-  
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description timer function (internal)
- * @ignore
- */
-function fncTimer()
-{
-   dtEnd = new Date();
-   var nMSeconds = dtEnd.valueOf() - dtStart.valueOf();
-   dtStart = dtEnd;
-   
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-		// (1) Call Timer Event
-		if (engine.cbfTimer)
-      {
-         engine.cbfTimer(nMSeconds);
-      }
-      
-      // (2) Set Current Viewport and clear
-      engine.SetViewport(0, 0, engine.width, engine.height);
-      engine.Clear();
-            
-	   // (3) Draw Scenegraph 
-	   // .. todo ..      
-	        
-	   // (4) Call Render Callback (-> integrate in Scenegraph)
-      if (engine.cbfRender)
-      {
-         engine.cbfRender(); // call  draw callback function
-      }
-   }
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description Sets the clear color
- * @param{float} r red component, range [0,1]
- * @param{float} g green component, range [0,1]
- * @param{float} b blue component, range [0,1]
- * @param{float} a alpha component, range [0,1]
- */
-engine3d.prototype.SetClearColor = function(r,g,b,a)
-{
-   if (r>=0 && r<=1 && g>=0 && g<=1 && b>=0 && b<=1 && a>=0 && a<=1)
-   {
-      this.bg_r = r;
-      this.bg_g = g;
-      this.bg_b = b;
-      this.bg_a = a;
-   }
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description Gets the clear color
- * returns an array A. You can access components using A.r, A.g, A.b, A.a
- */
-engine3d.prototype.GetClearColor = function(color)
-{
-   return {r: this.bg_r, g: this.bg_g, b: this.bg_b, a: this.bg_a};
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description Clear color and depth buffer (using current clear color)
- */
-engine3d.prototype.Clear = function()
-{
-   this.gl.clearColor(engine.bg_r, engine.bg_g, engine.bg_b, engine.bg_a);
-   this.gl.clear(engine.gl.COLOR_BUFFER_BIT | engine.gl.DEPTH_BUFFER_BIT);
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description Set Viewport
- * @param x x-Screen-Position
- * @param y y-Screen-Position
- * @param w Screen width
- * @param h Screen height
- */
-engine3d.prototype.SetViewport = function(x,y,w,h)
-{
-   this.vp_x = x; this.vp_y = y; this.vp_w = w; this.vp_h = h;
-   this.gl.viewport(x, y, w, h);
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description Retrieve current Viewport
- * returns an array A. You can access components using A.x, A.y, A.w, A.h
- */
-engine3d.prototype.GetViewport = function()
-{
-   return {x: this.vp_x, y: this.vp_y, w: this.vp_w, h: this.vp_h};
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description Set projection matrix
- * @param{mat4} mat4 The projection matrix to copy from.
- */
-engine3d.prototype.SetProjectionMatrix = function(mat4)
-{
-   this.matProjection.CopyFrom(mat4);
-   this._UpdateMatrices();
-}  
-//------------------------------------------------------------------------------
-/**
- * @description set view matrix
- * @param{mat4} mat4 The view matrix to copy from.
- */
-engine3d.prototype.SetViewMatrix = function(mat4)  
-{
-   this.matView.CopyFrom(mat4);
-   this._UpdateMatrices();
-}      
-
-//------------------------------------------------------------------------------
-/**
- * @description Set model matrix
- * @param{mat4} mat4 The model matrix to copy from.
- */
-engine3d.prototype.SetModelMatrix = function(mat4)
-{
-   this.matModel.CopyFrom(mat4);
-   this._UpdateMatrices();
-} 
-
-//------------------------------------------------------------------------------
-/**
- * @description Update matrices: calc ModelView, ModelViewProjection
- * @ignore
- */
-engine3d.prototype._UpdateMatrices = function()
-{
-   this.matModelView.Multiply(this.matView, this.matModel);
-   this.matModelViewProjection.Multiply(this.matProjection, this.matModelView); 
 }
   
 //------------------------------------------------------------------------------
