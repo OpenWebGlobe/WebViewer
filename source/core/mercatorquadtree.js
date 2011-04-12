@@ -52,182 +52,116 @@ distribute the source code for the commercially licensed software under  version
 license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
 *******************************************************************************/
-
-
-
-
 //------------------------------------------------------------------------------
 /** 
- * @class Mercator used for Mercator <-> wgs84 coordinate transformation
+ * @class MercatorQuadtree
  * 
  * {@link http://www.openwebglobe.org} 
  *
  * @author Martin Christen martin.christen@fhnw.ch
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch 
  */
-function Mercator()
+function MercatorQuadtree()
 {
    
 }
 
-//------------------------------------------------------------------------------
-/**
- * @description Transforms WGS84 lat & lng in Mercator ELLIPSOID coordinates.
- * 
- * @param longitude the wgs84 longitude
- * @param latitude the wgs84 latitude
- * @param result Float64Array for result values.
- */
-Mercator.prototype.WGS84ToMercatorE = function(longitude, latitude, result)
+
+
+
+MercatorQuadtree.prototype.QuadKeyToMercatorCoord = function(quadKey, coords)
 {
-   if(!(result instanceof Float64Array))
+   this.QuadKeyToNormalizedCoord(quadKey,coords);
+   
+   coords[0] = 2 * coords[0] -1.0;
+   coords[1] = 2 * coords[1] -1.0;
+   coords[2] = 2 * coords[2] -1.0;
+   coords[3] = 2 * coords[3] -1.0;
+   
+}
+
+MercatorQuadtree.prototype.QuadKeyToNormalizedCoord = function(quadKey, coords)
+{
+   var nLevelOfDetail = quadKey.length;
+   var x = 0;
+   var y = 0;
+   var scale = 1.0;
+   
+   for(var i=1; i< nLevelOfDetail; i++)
    {
-      return;
+      scale /= 2.0;
+      
+      switch(quadKey[i])
+      {
+         case "0":
+            y += scale;
+            break;
+            
+         case "1":
+            x += scale;
+            y += scale;
+            
+         case "2":
+            break;
+            
+         case "3":
+            x += scale;
+            break;
+            
+         default:
+            alert("Wrong quadKey: "+quadKey);     
+      }
    }
    
-   var lngRad = MathUtils.Deg2Rad(longitude);
-   var latRad = MathUtils.Deg2Rad(latitude);
-   result[0] = (lngRad - LNG_RAD0);
-   result[1] =  Math.log(Math.tan(Math.PI/4.0+latRad/2.0)*Math.pow((1.0-WGS84_E * Math.sin(latRad))/(1.0 + WGS84_E * Math.sin(latRad)),0.5*WGS84_E));
-   result[0] /= Math.PI;
-   result[1] /= Math.PI;
+   coords[0] = x;          //swap(y0,y1) coordinates for pixel based coordinates.
+   coords[1] = y + scale;
+   coords[2] = x + scale;
+   coords[3] = y;          
 }
 
 //------------------------------------------------------------------------------
 /**
- * @description Transforms x and y Mercator ELLIPSOID coordinates in WGS84 lat, lng coordinates.
+ * @description returns the quadkey of the parent quad.
  * 
- * @param x x values of Mercator ELLIPSOID Coordinates
- * @param y y values of Mercator ELLIPSOID Coordinates
- * @param result Float64Array for result values.
+ * @param{string} quadKey the quadKey as string for example "0123"
  */
-Mercator.prototype.MercatorEToWGS84 = function(x, y, result)
+MercatorQuadtree.prototype.GetParent = function(quadKey)
 {
-   if(!(result instanceof Float64Array))
-   {
-      return;
-   }
-   
-   x *= Math.PI;
-   y *= Math.PI;
-  
-   
-   var t = Math.exp(-y);   
-   var lat = Math.PI/2 - 2.0 * Math.atan(t);    //initial value for iteration
-   
-   var F = 0.0;
-   for(var i=0;i<10;i++)
-   {
-      F = Math.pow((1.0 - WGS84_E * Math.sin(lat))/(1.0+WGS84_E * Math.sin(lat)),0.5 * WGS84_E);
-      lat = Math.PI/2.0 -2 * Math.atan(t * F);
-   }
-   
-   var lng = x + LNG_RAD0;
-   
-   lat = MathUtils.Rad2Deg(lat);
-   lng = MathUtils.Rad2Deg(lng);
-   
-   while (lng > 180)
-   {
-      lng -= 180;
-   }
-   while (lng < -180)
-   { 
-      lng += 180;
-   }
-   while (lat > 90)
-   {
-      lat -= 180;
-   }
-   while (lat < -90)
-   {
-      lat += 180;
-   }
-   
-   result[0] = lng;
-   result[1] = lat;
+  if(quadKey.length < 2)
+  {
+   return;   
+  }
+  return quadKey.slice(0,quadKey.length-1);
+}
+
+
+MercatorQuadtree.prototype.GetQuad = function(quadKey)
+{
+   var l = quadKey.length;  
 }
 
 //------------------------------------------------------------------------------
 /**
- * @description Transforms WGS84 lng & lat in Mercator SPHERE coordinates.
+ * @description calculates the tile coord of the specific quadkey, origin is set to left bottom corner.
  * 
- * @param longitude the wgs84 longitude
- * @param latitude the wgs84 latitude
- * @param result Float64Array for result values.
+ * @param{string} quadKey the quadKey as string for example "0123"
+ * @param coords an empty array to store the tile coordinates in it.
  */
-Mercator.prototype.WGS84ToMercator = function(longitude, latitude, result)
+MercatorQuadtree.prototype.QuadKeyToTileCoord = function(quadKey, coords)
 {
+   var lod = quadKey.length;
+   var x = 0;
+   var y = 0;
+   this.QuadKeyToNormalizedCoord(quadKey, coords); 
    
-   if(!(result instanceof Float64Array))
-   {
-      return;
-   }
-   
-   var lngRad = MathUtils.Deg2Rad(longitude);
-   var latRad = MathUtils.Deg2Rad(latitude); 
-   
-   var x = lngRad - LNG_RAD0;
-   var y = Math.log(Math.tan(Math.PI / 4.0 + latRad / 2));
-   
-   x /= Math.PI;
-   y /= Math.PI;
-   
-   result[0] = x;
-   result[1] = y;
-}
+   var x0 = coords[0];
+   var y1 = coords[3];
 
-//------------------------------------------------------------------------------
-/**
- * @description Transforms x and y Mercator SPHERE coordinates in WGS84 lat, lng coordinates.
- * 
- * @param x x values of Mercator SPHERE Coordinates
- * @param y y values of Mercator SPHERE Coordinates
- * @param result Float64Array for result values.
- */
-Mercator.prototype.MercatorToWGS84 = function(x, y, result)
-{
-   if(!(result instanceof Float64Array))
-   {
-      return;
-   }
-   
-   x *= Math.PI;
-   y *= Math.PI;
-   
-   var t = Math.exp(-y);   
-   var lat = Math.PI/2 - 2.0 * Math.atan(t);    //initial value for iteration
-   
-   var lng = x / 1.0 + LNG_RAD0;
-   
-   lat = MathUtils.Rad2Deg(lat);
-   lng = MathUtils.Rad2Deg(lng);
-   
-   while (lng > 180)
-   {
-      lng -= 180;
-   }
-   while (lng < -180)
-   { 
-      lng += 180;
-   }
-   while (lat > 90)
-   {
-      lat -= 180;
-   }
-   while (lat < -90)
-   {
-      lat += 180;
-   }
-   
-   result[0] = lng;
-   result[1] = lat;  
+   coords[0] = Math.floor(x0 * Math.pow(2,lod-1));   
+   coords[1] = Math.floor(y1 * Math.pow(2,lod-1));  
+   coords[2] = null;
+   coords[3] = null;  
 }
-   
-   
-   
-   
-   
 
 
 

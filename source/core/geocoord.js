@@ -53,12 +53,7 @@ license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
 *******************************************************************************/
 
-//Constants
-const WGS84_a = 6378137.0;                  // grosse Halbachse [m]
-const WGS84_E_SQUARED = 0.006739496742;     // second numeric excentrity squared
-const WGS84_E_SQQ = 0.993260503258;         // 1-WGS84_E_SQUARED 
-const CARTESIAN_SCALE_INV = 1.1920930376163765926810017443897e-7;
-const CARTESIAN_SCALE = 8388607.0;
+
     
 //------------------------------------------------------------------------------
 /**
