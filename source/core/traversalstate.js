@@ -60,7 +60,7 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  * @description This class is used to store the traversal state of the scene graph
  * @author Martin Christen, martin.christen@fhnw.ch
  */
-function traversalstate()
+function TraversalState()
 {
    this.MatrixStackView = new Array();
    this.MatrixStackModel = new Array();
@@ -72,7 +72,7 @@ function traversalstate()
  * @description Push a new view matrix to stack
  * @param{mat4} matrix view matrix
  */
-traversalstate.prototype.PushView = function(matrix)
+TraversalState.prototype.PushView = function(matrix)
 {
    this.MatrixStackView.push(matrix);
 }
@@ -80,7 +80,7 @@ traversalstate.prototype.PushView = function(matrix)
 /**
  * @description Pop view matrix from stack and return it
  */
-traversalstate.prototype.PopView = function()
+TraversalState.prototype.PopView = function()
 {
    return this.MatrixStackView.pop();
 }
@@ -89,7 +89,7 @@ traversalstate.prototype.PopView = function()
  * @description Push a new model matrix to stack
  * @param{mat4} matrix model matrix
  */
-traversalstate.prototype.PushModel = function(matrix)
+TraversalState.prototype.PushModel = function(matrix)
 {
    this.MatrixStackModel.push(matrix);
 }
@@ -97,7 +97,7 @@ traversalstate.prototype.PushModel = function(matrix)
 /**
  * @description Pop model matrix from stack and return it
  */
-traversalstate.prototype.PopModel = function()
+TraversalState.prototype.PopModel = function()
 {
    return this.MatrixStackModel.pop();
 }
@@ -106,7 +106,7 @@ traversalstate.prototype.PopModel = function()
  * @description Push a new projection matrix to stack
  * @param{mat4} matrix model matrix
  */
-traversalstate.prototype.PushProjection = function(matrix)
+TraversalState.prototype.PushProjection = function(matrix)
 {
    this.MatrixStackProjection.push(matrix);
 }
@@ -114,7 +114,7 @@ traversalstate.prototype.PushProjection = function(matrix)
 /**
  * @description Pop projection matrix from stack and return it
  */
-traversalstate.prototype.PopProjection = function()
+TraversalState.prototype.PopProjection = function()
 {
    return this.MatrixStackProjection.pop();
 }
@@ -123,7 +123,7 @@ traversalstate.prototype.PopProjection = function()
  * @description Return current modelviewprojection matrix from stack and return it
  * @param{mat4} matrix the current modelviewprojection matrix
  */
-traversalstate.prototype.GetModelViewProjectionMatrix = function(matrix)
+TraversalState.prototype.GetModelViewProjectionMatrix = function(matrix)
 {
 
 }
@@ -132,7 +132,7 @@ traversalstate.prototype.GetModelViewProjectionMatrix = function(matrix)
  * @description Return current modelview matrix from stack and return it
  * @param{mat4} matrix the current modelview matrix
  */
-traversalstate.prototype.GetModelViewMatrix = function(matrix)
+TraversalState.prototype.GetModelViewMatrix = function(matrix)
 {
    
 }
@@ -141,7 +141,7 @@ traversalstate.prototype.GetModelViewMatrix = function(matrix)
  * @description Return current view matrix from stack and return it
  * @param{mat4} matrix the current view matrix
  */
-traversalstate.prototype.GetViewMatrix = function(matrix)
+TraversalState.prototype.GetViewMatrix = function(matrix)
 {
    var l = this.MatrixStackView.length();
    if (l>0)
@@ -154,7 +154,7 @@ traversalstate.prototype.GetViewMatrix = function(matrix)
  * @description Return current model matrix from stack and return it
  * @param{mat4} matrix the current model matrix
  */
-traversalstate.prototype.GetModelMatrix = function(matrix)
+TraversalState.prototype.GetModelMatrix = function(matrix)
 {
    var l = this.MatrixStackModel.length();
    matrix.CopyFrom(this.MatrixStackModel[l-1]);
@@ -164,7 +164,7 @@ traversalstate.prototype.GetModelMatrix = function(matrix)
  * @description Return current projection matrix from stack and return it
  * @param{mat4} matrix the current projection matrix
  */
-traversalstate.prototype.GetProjectionMatrix = function(matrix)
+TraversalState.prototype.GetProjectionMatrix = function(matrix)
 {
    var l = this.MatrixStackProjection.length();
    matrix = this.MatrixStackProjection[l-1];

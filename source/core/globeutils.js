@@ -56,31 +56,31 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 
 //------------------------------------------------------------------------------
 /**
- * @constructor
- * @class
- * @description This is a class including some utility functions.
+ * @namespace GlobeUtils are a collection of utility function for the virtual globe
  * @author Martin Christen, martin.christen@fhnw.ch
  * @author Benjamin Loesch, benjamin.loesch@fhnw.ch
- * @version 0.1
  */
-var GlobeUtils = {       //Static class initialisation...JSON Style. 
+var GlobeUtils = {};     
    
-      "MakeHierarchicalFilename" : function(filename)
+/**
+ * @description Make filename hierarchical
+ * @param{string} filename The filename to make hierarchical
+ */
+ GlobeUtils.MakeHierarchicalFilename = function(filename)
+ {
+   var newstring = "";
+   for(var i=0;i < filename.length; i++)
+   { 
+      if(i%2==0 && i>0 && i<filename.length-4)
       {
-        
-         var newstring = "";
-         for(var i=0;i < filename.length; i++)
-         { 
-            if(i%2==0 && i>0 && i<filename.length-4)
-            {
-               newstring = newstring.concat("/");    
-            }  
-            newstring = newstring.concat(filename[i]);
-         }
+         newstring = newstring.concat("/");    
+      }  
+      newstring = newstring.concat(filename[i]);
+   }
          
-         return newstring;  
-      } 
+   return newstring;  
+} 
      
-}
+
 
 

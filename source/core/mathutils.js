@@ -53,30 +53,67 @@ license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
 *******************************************************************************/
 
-
-
-// Global Constants
-const WGS84_a = 6378137.0;  // semi major axis [m] 
+//------------------------------------------------------------------------------
+// Constants
+//------------------------------------------------------------------------------
+/**
+ * @description semi major axis [m]
+ */
+const WGS84_a = 6378137.0; 
+//------------------------------------------------------------------------------
+/**
+ * @description semi major axis [m]
+ */
 const WGS84_E_SQUARED = 0.006739496742;     // second numeric excentrity squared
+//------------------------------------------------------------------------------
+/**
+ * @description second numeric excentrity
+ */
 const WGS84_E = 0.081819190842961775161887117288255; 
-const WGS84_E_SQQ = 0.993260503258;         // 1-WGS84_E_SQUARED 
+//------------------------------------------------------------------------------
+/**
+ * @description 1 - WGS84_E_SQUARED
+ */
+const WGS84_E_SQQ = 0.993260503258;
+//------------------------------------------------------------------------------
+/**
+ * @description factor to convert geocentric cartesian coordinates to interal representation
+ */
 const CARTESIAN_SCALE_INV = 1.1920930376163765926810017443897e-7;
-const CARTESIAN_SCALE = 8388607.0;        
-const LNG_RAD0 = 0;   //used in mercator.js
- 
-
+//------------------------------------------------------------------------------
+/**
+ * @description factor to convert internal coordinates to geocentric cartesian coordinates
+ */
+const CARTESIAN_SCALE = 8388607.0;
+//------------------------------------------------------------------------------        
+/**
+ * @description position of prime meridian (0 for Royal Greenwich Observatory)
+ */
+const LNG_RAD0 = 0;   
 //------------------------------------------------------------------------------
 /**
  * @constructor
- * @class
- * @description This is a class including math utility functions.
+ * @namespace This namespace contains math utility functions.
  * @author Martin Christen, martin.christen@fhnw.ch
  * @author Benjamin Loesch, benjamin.loesch@fhnw.ch
- * @version 0.1
  */
-var MathUtils = {       //Static class initialisation...JSON Style. 
-   
-      "Deg2Rad" : function(deg){ return ((deg)*0.017453292519943295769236907684886); },
-      "Rad2Deg" : function(rad){ return ((rad)*57.295779513082320876798154814105);   }   
+var MathUtils = {};
+
+//------------------------------------------------------------------------------
+/**
+ * @description convert degree to rad
+ */
+MathUtils.Deg2Rad = function(deg)
+{ 
+   return ((deg)*0.017453292519943295769236907684886);
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description convert rad to degree
+ */
+MathUtils.Rad2Deg = function(rad)
+{ 
+   return ((rad)*57.295779513082320876798154814105);     
 }
 //------------------------------------------------------------------------------
