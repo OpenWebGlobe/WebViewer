@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Generate Font mesh</title>
+      <script type="text/javascript" src="../../core/globeutils.js"></script>
+      <script type="text/javascript" src="../../core/mercatorquadtree.js"></script>
+      <script type="text/javascript">
+      
+      function calc()
+      {
+            var data = "";
+            for(var row=0; row < 16; row++)
+            {
+               for(var col=0; col < 16; col++)
+               {
+                  texcoor_row = row * 1/16;
+                  texcoor_col = col * 1/16;
+                  data = data.concat("\n  0, 31,  0, "+texcoor_row+", "+texcoor_col+", ");
+                  data = data.concat("\n 31,  0,  0, "+texcoor_row+", "+(texcoor_col+1/16)+", ");
+                  data = data.concat("\n 31, 31,  0, "+(texcoor_row+1/16)+", "+(texcoor_col+1/16)+", ");
+                  data = data.concat("\n  0, 31,  0, "+(texcoor_row+1/16)+", "+texcoor_col+", ");
+               }  
+            } 
+            
+            //console.log(data);
+            
+            console.log("INDEX DATA =======================================================================");
+            var index = "";
+            for(var a=0; a < 16*16; a++)
+            {
+              index = index.concat(a+", "+(a+1)+", "+(a+3)+", "+(a+1)+", "+(a+2)+", "+(a+3)+", \n");
+            } 
+            
+            console.log(index);
+      }     
+      
+      console.log
+      </script>
+    </head>
+    <body onload="calc()">
+     
+    </body>
+</html>

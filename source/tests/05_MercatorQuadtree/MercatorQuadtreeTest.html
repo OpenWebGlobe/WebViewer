@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Vektor Test</title>
+      <script type="text/javascript" src="../../core/globeutils.js"></script>
+      <script type="text/javascript" src="../../core/mercatorquadtree.js"></script>
+      <script type="text/javascript">
+      
+      function calc()
+      {
+            mqtree = new MercatorQuadtree();
+            result = new Float64Array(4);
+            mqtree.QuadKeyToNormalizedCoord("0123", result);
+            console.log("result[0]: "+result[0]+" result[1]: "+result[1]+" result[2]: "+result[2]+" result[3]: "+result[3]);
+            
+            
+            mqtree.QuadKeyToMercatorCoord("0123", result);
+            console.log("result[0]: "+result[0]+" result[1]: "+result[1]+" result[2]: "+result[2]+" result[3]: "+result[3]);
+            
+           
+           console.log("parent: "+mqtree.GetParent("0123"));
+           
+           mqtree.QuadKeyToTileCoord("0121", result);
+           console.log("result[0]: "+result[0]+" result[1]: "+result[1]+" result[2]: "+result[2]+" result[3]: "+result[3]);
+           
+           console.log(GlobeUtils.MakeHierarchicalFilename("diesIsteinTest.jpg"));
+
+      }     
+      </script>
+    </head>
+    <body onload="calc()">
+     
+    </body>
+</html>
