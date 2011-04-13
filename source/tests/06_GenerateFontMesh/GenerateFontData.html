@@ -16,13 +16,13 @@
                   texcoor_row = row * 1/16;
                   texcoor_col = col * 1/16;
                   data = data.concat("\n  0, 31,  0, "+texcoor_row+", "+texcoor_col+", ");
-                  data = data.concat("\n 31,  0,  0, "+texcoor_row+", "+(texcoor_col+1/16)+", ");
-                  data = data.concat("\n 31, 31,  0, "+(texcoor_row+1/16)+", "+(texcoor_col+1/16)+", ");
-                  data = data.concat("\n  0, 31,  0, "+(texcoor_row+1/16)+", "+texcoor_col+", ");
+                  data = data.concat("\n  0,  0,  0, "+texcoor_row+", "+(texcoor_col+1/16)+", ");
+                  data = data.concat("\n 31,  0,  0, "+(texcoor_row+1/16)+", "+(texcoor_col+1/16)+", ");
+                  data = data.concat("\n 31, 31,  0, "+(texcoor_row+1/16)+", "+texcoor_col+", ");
                }  
             } 
             
-            //console.log(data);
+            console.log(data);
             
             console.log("INDEX DATA =======================================================================");
             var index = "";
@@ -31,7 +31,7 @@
               index = index.concat(a+", "+(a+1)+", "+(a+3)+", "+(a+1)+", "+(a+2)+", "+(a+3)+", \n");
             } 
             
-            console.log(index);
+          //  console.log(index);
       }     
       
       console.log

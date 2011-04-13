@@ -14,6 +14,7 @@
       <script type="text/javascript" src="../../core/mesh.js"></script>
       <script type="text/javascript" src="../../core/texture.js"></script>
       <script type="text/javascript" src="../../core/traversalstate.js"></script>
+            <script type="text/javascript" src="../../core/font.js"></script>
       <script type="text/javascript">
          
          //---------------------------------------------------------------------
@@ -22,6 +23,7 @@
          var engine = null;
          var cube = null;
          var cube2 = null;
+         var font = null;
          var width = 0;
          var height = 0;
          
@@ -50,7 +52,7 @@
          }
          //---------------------------------------------------------------------
          
-         var zpos = 10;
+         var zpos = 100;
          var xpos = 0;
         
          function OnKey(key)
@@ -76,31 +78,34 @@
          //---------------------------------------------------------------------
          
          function OnRender()
-         {
+         {  
             // create look at matrix
             view.LookAt(xpos,0,zpos, 0,0,0, 0,1,0);
             
             engine.SetClearColor(0.5,0.5,1.0,1);  
             engine.SetViewMatrix(view);
             
+            
             model.Identity();
             engine.SetModelMatrix(model);
-            cube.Draw();      
+            font.DrawText();      
             
-            model.Translation(5,0,0);
+            /*model.Translation(5,0,0);
             engine.SetModelMatrix(model);                    
-            cube2.Draw();                
+            cube2.Draw();*/                
          }
          
          //---------------------------------------------------------------------
          
          function OnInit()
          {
+            /*
                tex = engine.LoadTexture("Earth.gif");         
                cube = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePT.json");
                cube.SetTexture(tex);
-
                cube2 = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePC.json");
+               */
+               font = new Font(engine);
          }
          
          //---------------------------------------------------------------------
