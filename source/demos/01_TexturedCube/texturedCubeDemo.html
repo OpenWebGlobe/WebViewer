@@ -24,6 +24,7 @@
          var cube2 = null;
          var width = 0;
          var height = 0;
+         var tex = 0;
          
          var projection = new mat4(); // projection matrix
          var view = new mat4();       // view matrix
@@ -32,10 +33,19 @@
          var mvp1 =  new mat4();
          var mvp2 =  new mat4();
          
+         var mx = 0;
+         var my = 0; // current mouse pos
+         
          //---------------------------------------------------------------------
          function OnTimer(delta)
          {
 
+         }
+         //---------------------------------------------------------------------
+         function OnMouse(x,y)
+         {
+            mx = x;
+            my = height-y-1;
          }
          //---------------------------------------------------------------------
          function OnResize(w,h)
@@ -77,7 +87,7 @@
          
          function OnRender()
          {
-            // create look at matrix
+            // create look-at matrix
             view.LookAt(xpos,0,zpos, 0,0,0, 0,1,0);
             
             engine.SetClearColor(0.5,0.5,1.0,1);  
@@ -89,7 +99,9 @@
             
             model.Translation(5,0,0);
             engine.SetModelMatrix(model);                    
-            cube2.Draw();                
+            cube2.Draw();            
+            
+            tex.Blit(mx,my);
          }
          
          //---------------------------------------------------------------------
@@ -114,7 +126,8 @@
             engine.SetTimerCallback(OnTimer);
             engine.SetRenderCallback(OnRender);
             engine.SetResizeCallback(OnResize);
-            engine.SetKeyDownCallback(OnKey)
+            engine.SetKeyDownCallback(OnKey);
+            engine.SetMouseMoveCallback(OnMouse);
             
             // Start engine...
             engine.InitEngine("canvas", true);  // (canvasid, fullscreen)

@@ -388,9 +388,14 @@ engine3d.prototype.PushMatrices = function()
  */
 engine3d.prototype.PopMatrices = function()
 {
-   this.matModel.CopyFrom(this.TravState.PopModel());
-   this.matView.CopyFrom(this.TravState.PopView());
-   this.matProjection.CopyFrom(this.TravState.PopProjection());
+   var model = this.TravState.PopModel()
+   this.matModel.CopyFrom(model);
+   
+   var view = this.TravState.PopView();
+   this.matView.CopyFrom(view);
+   
+   var proj = this.TravState.PopProjection();
+   this.matProjection.CopyFrom(proj);
    // update matrices again:
    this._UpdateMatrices();
 }
@@ -402,6 +407,7 @@ engine3d.prototype.SetOrtho2D = function()
    this.matModel.Identity();
    this.matView.Identity();
    this.matProjection.Ortho2D(0,this.width,0,this.height);
+   this._UpdateMatrices();
 }
 
 //------------------------------------------------------------------------------
@@ -594,7 +600,7 @@ _fncMouseUp = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
    {
-      if (evt.currentTarget == _g_vInstances[i].context.canvas)
+      if (evt.currentTarget == _g_vInstances[i].context)
       {
          if (_g_vInstances[i].cbfMouseUp)
          {
@@ -614,7 +620,7 @@ _fncMouseDown = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
    {
-      if (evt.currentTarget == _g_vInstances[i].context.canvas)
+      if (evt.currentTarget == _g_vInstances[i].context)
       {
          if (_g_vInstances[i].cbfMouseDown)
          {
@@ -634,7 +640,7 @@ _fncMouseMove = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
    {
-      if (evt.currentTarget == _g_vInstances[i].context.canvas)
+      if (evt.currentTarget == _g_vInstances[i].context)
       {
          if (_g_vInstances[i].cbfMouseMove)
          {

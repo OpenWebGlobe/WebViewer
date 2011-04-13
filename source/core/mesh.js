@@ -262,7 +262,7 @@ Mesh.prototype.Destroy = function()
    
    if (this.ibo )
    {
-      this.gl.deleteBuffers(this.ibo);
+      this.gl.deleteBuffer(this.ibo);
       this.ibo = 0;
    }
    
