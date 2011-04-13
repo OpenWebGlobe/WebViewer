@@ -170,10 +170,10 @@ texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend)
       {
          this.blitMesh = new Mesh(this.engine);
          
-         this.blitMesh.SetBufferPT([0,0,0,   0,0,
-                              w,0,0,   1,0,
-                              w,h,0,   1,1,
-                              0,h,0,   0,1]);
+         this.blitMesh.SetBufferPT([0,0,0,   0,1,
+                              w,0,0,   1,1,
+                              w,h,0,   1,0,
+                              0,h,0,   0,0]);
                               
          this.blitMesh.SetIndexBuffer([0,1,2,0,2,3], "TRIANGLES");
          this.blitMesh.SetTexture(this);

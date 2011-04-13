@@ -62,19 +62,36 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  */
 function SceneGraph(engine)
 {
-   this.engine = engine;      // Render Engine
-   this.RootNode = null;      // Root Node!
+   this.engine = engine;         // Render Engine
+   
+   // Access Nodes:
+   this.nodeRoot = null;         // Root Node!
+   this.nodeNavigation = null;   // Navigation Node
+   this.nodeCamera = null;       // Camera Node ("projection")
+   this.nodeBeginRender = null;  // Begin Render Node
+   this.nodeRenderObject = null; // Render Object Node
+   this.nodeRender = null;       // Generic Rendering Node
+   this.nodeEndRender = null;    // End Render Node
+   this.nodeLogos = null;        // Node for rendering logos
 } 
+//------------------------------------------------------------------------------
+/**
+ * @description Set root node of scenegraph
+ * @param{RootNode} root The root node
+ */
+SceneGraph.prototype.SetRootNode = function(root)
+{
+   this.nodeRoot = root;
+}
 
 //------------------------------------------------------------------------------
-
 /**
  * Traverse Scenegraph and call for each nodep a callback function
  * @param{function} func The callback function func(node) which is called for each node
  */
 SceneGraph.prototype.Traverse(func)
 {
-   if (this.RootNode)
+   if (this.nodeRoot)
    {
       _traverse(this.RootNode, func);
    }

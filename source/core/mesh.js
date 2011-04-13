@@ -124,11 +124,10 @@ function Mesh(engine)
    this.indexbufferdata = null;  // Uint16Array(indices)
    this.indexsemantic = null;    // triangle, line, or point.
   
-   this.Ready = false;           //Ready to draw
+   this.Ready = false;           // Ready to draw
    this.http = null; 
    this.jsonUrl = null;
    this.cbfJSONLoad = null;
-   
 }
 
 

@@ -53,6 +53,11 @@ license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
 *******************************************************************************/
 
+/**
+ * Unique ID for nodes.
+ * @ignore
+ */
+_g_id = 0;
 
 //------------------------------------------------------------------------------
 /**
@@ -62,7 +67,8 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  */
 function Node()
 {
-   this.Id = 0; //_generateId();
+   this.Id = _g_id; //_generateId();
+   _g_id++;
    
    this.IsGroup = null;       // = function() {return false;}
   
