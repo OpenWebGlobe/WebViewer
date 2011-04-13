@@ -59,37 +59,37 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 /**
  * @description semi major axis [m]
  */
-const WGS84_a = 6378137.0; 
+var WGS84_a = 6378137.0; 
 //------------------------------------------------------------------------------
 /**
  * @description semi major axis [m]
  */
-const WGS84_E_SQUARED = 0.006739496742;     // second numeric excentrity squared
+var WGS84_E_SQUARED = 0.006739496742;     // second numeric excentrity squared
 //------------------------------------------------------------------------------
 /**
  * @description second numeric excentrity
  */
-const WGS84_E = 0.081819190842961775161887117288255; 
+var WGS84_E = 0.081819190842961775161887117288255; 
 //------------------------------------------------------------------------------
 /**
  * @description 1 - WGS84_E_SQUARED
  */
-const WGS84_E_SQQ = 0.993260503258;
+var WGS84_E_SQQ = 0.993260503258;
 //------------------------------------------------------------------------------
 /**
  * @description factor to convert geocentric cartesian coordinates to interal representation
  */
-const CARTESIAN_SCALE_INV = 1.1920930376163765926810017443897e-7;
+var CARTESIAN_SCALE_INV = 1.1920930376163765926810017443897e-7;
 //------------------------------------------------------------------------------
 /**
  * @description factor to convert internal coordinates to geocentric cartesian coordinates
  */
-const CARTESIAN_SCALE = 8388607.0;
+var CARTESIAN_SCALE = 8388607.0;
 //------------------------------------------------------------------------------        
 /**
  * @description position of prime meridian (0 for Royal Greenwich Observatory)
  */
-const LNG_RAD0 = 0;   
+var LNG_RAD0 = 0;   
 //------------------------------------------------------------------------------
 /**
  * @constructor

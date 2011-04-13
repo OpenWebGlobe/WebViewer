@@ -70,35 +70,32 @@ function Node()
    this.Id = _g_id; //_generateId();
    _g_id++;
    
-   this.IsGroup = null;       // = function() {return false;}
   
-   this.OnRender = null;      // = function(Engine){}
-   this.OnTraverse = null;    // = function(TraversalState){}   
+   this.OnRender = null;      // = function(){}
+   this.OnTraverse = null;    // = function(TraversalState){} 
+   this.OnChangeState = null; // = function(){}  
    this.OnInit = null;        // = function(){}
    this.OnExit = null;        // = function(){}
    
    this.OnRegisterEvents = null; // function that is called to register events (mouse/key/...)
+
+   this.engine = null;
    
    this.ParentNode = null;    // Parent node or 0 if root
    this.vecChildren = new Array();  // Child Nodes. Empty if there are none.
 }
 
 //------------------------------------------------------------------------------
-
-// Nodes for OpenWebGlobe
-
-//------------------------------------------------------------------------------
-
-function RootNode()
+Node.Prototype.SetEngine(theEngine)
 {
-   
+   this.engine = theEngine;
 }
-// Inheritance
-RootNode.prototype = new Node();
-
 
 //------------------------------------------------------------------------------
+// Nodes for OpenWebGlobe
+//------------------------------------------------------------------------------
 
+// *** NAVIGATION ***
 function NavigationNode()
 {
    
@@ -107,6 +104,40 @@ function NavigationNode()
 NavigationNode.prototype = new Node();
 
 
+//------------------------------------------------------------------------------
+// *** CAMERA ***
+function CameraNode()
+{
+      this.OnRender = function(engine)
+      {
+         
+      }
+      
+      this.OnTraverse = function(ts)
+      {
+         
+      }
+      
+      // on init..
+      this.OnInit = function()
+      {
+      
+      }
+      
+      // on exit
+      this.OnExit = function()
+      {
+      
+      }
+      
+      // register events: camera doesn't need any!
+      this.OnRegisterEvents = function()
+      {
+         
+      }
+}
+
+CameraNode.prototype = new Node();
 
 
 

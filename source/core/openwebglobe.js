@@ -154,6 +154,10 @@ function engine3d()
    
    // Event Handler
    this.eventhandler = new EventHandler();
+   
+   
+   // the scene
+   this.scene = null;
 }
 
 //------------------------------------------------------------------------------
@@ -401,13 +405,22 @@ engine3d.prototype.PopMatrices = function()
 }
 
 //------------------------------------------------------------------------------
-
+/**
+ * @description Set Matrices to 2D projection, so you can draw directly on 2D screen.
+ */
 engine3d.prototype.SetOrtho2D = function()
 {
    this.matModel.Identity();
    this.matView.Identity();
    this.matProjection.Ortho2D(0,this.width,0,this.height);
    this._UpdateMatrices();
+}
+
+//------------------------------------------------------------------------------
+
+engine3d.prototype.CreateScene = function()
+{
+   scene = new SceneGraph(this);
 }
 
 //------------------------------------------------------------------------------
@@ -440,7 +453,11 @@ function fncTimer()
       engine.Clear();
             
       // (3) Draw Scenegraph 
-      // .. todo ..      
+      if (scene)
+      {
+         scene.Traverse();
+         scene.Render();
+      }   
            
       // (4) Call Render Callback (-> integrate in Scenegraph)
       if (engine.cbfRender)

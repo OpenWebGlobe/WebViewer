@@ -65,7 +65,6 @@ function SceneGraph(engine)
    this.engine = engine;         // Render Engine
    
    // Access Nodes:
-   this.nodeRoot = null;         // Root Node!
    this.nodeNavigation = null;   // Navigation Node
    this.nodeCamera = null;       // Camera Node ("projection")
    this.nodeBeginRender = null;  // Begin Render Node
@@ -76,46 +75,22 @@ function SceneGraph(engine)
 } 
 //------------------------------------------------------------------------------
 /**
- * @description Set root node of scenegraph
- * @param{RootNode} root The root node
+ * Traverse Scenegraph 
  */
-SceneGraph.prototype.SetRootNode = function(root)
+SceneGraph.prototype.Traverse()
 {
-   this.nodeRoot = root;
-}
 
+}
 //------------------------------------------------------------------------------
 /**
- * Traverse Scenegraph and call for each nodep a callback function
- * @param{function} func The callback function func(node) which is called for each node
+ * @description Render Scenegraph
  */
-SceneGraph.prototype.Traverse(func)
+SceneGraph.prototype.Render()
 {
-   if (this.nodeRoot)
-   {
-      _traverse(this.RootNode, func);
-   }
+   // render scene
 }
 
 //------------------------------------------------------------------------------
-/**
- * recursive traversal of scenegraph
- * @internal
- */
-SceneGraph.prototype._traverse(node, func)
-{
-   // call function
-   if (func)
-   {
-      func(node);
-   }
-  
-   for (var i=0;i<node.vecChildren.length;i++)
-   {
-      _traverse(node.vecChildren[i]);
-   }  
-}
 
-//------------------------------------------------------------------------------
 
 
