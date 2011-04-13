@@ -34,10 +34,27 @@
          var mvp1 =  new mat4();
          var mvp2 =  new mat4();
          
+         var totaltime = 0;
+         var u = 1;
+         var v = 1;
+         var x_textpos = 100;
+         var y_textpos = 100;
+         
          //---------------------------------------------------------------------
          function OnTimer(delta)
          {
-
+            totaltime += delta;
+            
+            if((x_textpos > width-font.GetStringWidth()) || (x_textpos < 0) )
+            {
+               u *=-1;
+            }
+            if((y_textpos > height-font.GetStringHeight()) || (y_textpos < 0) )
+            {
+               v *=-1;
+            }
+            x_textpos += Math.round((delta * u)/5);
+            y_textpos += Math.round((delta * v)/5);
          }
          //---------------------------------------------------------------------
          function OnResize(w,h)
@@ -84,11 +101,10 @@
             
             engine.SetClearColor(0.5,0.5,1.0,1);  
             engine.SetViewMatrix(view);
-            
-            
+   
             model.Identity();
             engine.SetModelMatrix(model);
-            font.DrawText();      
+            font.DrawText("Time: "+totaltime/1000.0+" s",x_textpos,y_textpos);      
             
             /*model.Translation(5,0,0);
             engine.SetModelMatrix(model);                    
