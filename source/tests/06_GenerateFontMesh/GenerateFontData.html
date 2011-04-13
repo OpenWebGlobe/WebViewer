@@ -9,16 +9,23 @@
       function calc()
       {
             var data = "";
+
             for(var row=0; row < 16; row++)
             {
                for(var col=0; col < 16; col++)
                {
                   texcoor_row = row * 1/16;
                   texcoor_col = col * 1/16;
-                  data = data.concat("\n  0, 31,  0, "+texcoor_row+", "+texcoor_col+", ");
-                  data = data.concat("\n  0,  0,  0, "+texcoor_row+", "+(texcoor_col+1/16)+", ");
-                  data = data.concat("\n 31,  0,  0, "+(texcoor_row+1/16)+", "+(texcoor_col+1/16)+", ");
-                  data = data.concat("\n 31, 31,  0, "+(texcoor_row+1/16)+", "+texcoor_col+", ");
+                  /*
+                  data = data.concat("\n  0, 31,  0, "+texcoor_col+", "+texcoor_row+", ");
+                  data = data.concat("\n  0,  0,  0, "+texcoor_col+", "+(texcoor_row+1/16)+", ");
+                  data = data.concat("\n 31,  0,  0, "+(texcoor_col+1/16)+", "+(texcoor_row+1/16)+", ");
+                  data = data.concat("\n 31, 31,  0, "+(texcoor_col+1/16)+", "+texcoor_row+", ");
+                  */
+                  data = data.concat("\n  0, 0,  0, "+texcoor_col+", "+texcoor_row+", ");
+                  data = data.concat("\n  0,  31,  0, "+texcoor_col+", "+(texcoor_row+1/16)+", ");
+                  data = data.concat("\n 31,  31,  0, "+(texcoor_col+1/16)+", "+(texcoor_row+1/16)+", ");
+                  data = data.concat("\n 31, 31,  0, "+(texcoor_col+1/16)+", "+texcoor_row+", ");
                }  
             } 
             
@@ -26,9 +33,13 @@
             
             console.log("INDEX DATA =======================================================================");
             var index = "";
+            b=0;
             for(var a=0; a < 16*16; a++)
             {
-              index = index.concat(a+", "+(a+1)+", "+(a+3)+", "+(a+1)+", "+(a+2)+", "+(a+3)+", \n");
+              b=a*4;
+              
+              //index = index.concat(b+", "+(b+1)+", "+(b+3)+", "+(b+1)+", "+(b+2)+", "+(b+3)+", \n");
+              index = index.concat(b+", "+(b+1)+", "+(b+2)+", "+(b)+", "+(b+2)+", "+(b+3)+", \n");
             } 
             
           //  console.log(index);

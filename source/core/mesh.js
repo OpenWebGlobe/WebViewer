@@ -281,7 +281,7 @@ Mesh.prototype.Destroy = function()
  * note: this method still needs some optimization
  * note: ranged draw must be supported soon
  */
-Mesh.prototype.Draw = function()
+Mesh.prototype.Draw = function(ranged, count, offset)
 {
    if (!this.Ready)
    {
@@ -356,7 +356,14 @@ Mesh.prototype.Draw = function()
       switch(this.indexsemantic)
       {
          case "TRIANGLES":
-                           this.gl.drawElements(this.gl.TRIANGLES, this.numindex, this.gl.UNSIGNED_SHORT, 0);
+                           if(ranged)
+                           {
+                              this.gl.drawElements(this.gl.TRIANGLES, count, this.gl.UNSIGNED_SHORT, offset);
+                           }
+                           else
+                           {
+                               this.gl.drawElements(this.gl.TRIANGLES, this.numindex, this.gl.UNSIGNED_SHORT, 0);
+                           }                          
                            break;
                         
          case "LINES":     
