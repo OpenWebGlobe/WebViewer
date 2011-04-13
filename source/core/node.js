@@ -81,7 +81,24 @@ function Node()
 
 // Nodes for OpenWebGlobe
 
+//------------------------------------------------------------------------------
 
+function RootNode()
+{
+   
+}
+// Inheritance
+RootNode.prototype = new Node();
+
+
+//------------------------------------------------------------------------------
+
+function NavigationNode()
+{
+   
+}
+
+NavigationNode.prototype = new Node();
 
 
 

@@ -56,11 +56,10 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 /** 
  * 
  * @class engine3d
- * 
- * {@link http://www.openwebglobe.org} 
+ * The actual 3d engine with all functions. 
+ * Based on "ALGOS 3D Engine" created by Martin Christen
  *
  * @author Martin Christen martin.christen@fhnw.ch  
- * @version 0.1  
  */
 
 //------------------------------------------------------------------------------
@@ -88,8 +87,6 @@ var _gcbfKeyUp       = null;           // global key up event
 //------------------------------------------------------------------------------
 /**
  * @description Create a new engine3d object
- * The Engine 3D has the following methods:
- *
  * @class 
  * @constructor
  */
@@ -154,11 +151,8 @@ function engine3d()
 	_g_vInstances[_g_nInstanceCnt] = this;
    _g_nInstanceCnt++;
    
-   // RegisteredEvents
-   
-   this.vecMouseDown = new Array();
-   this.vecMouseUp = new Array();
-   
+   // Event Handler
+   this.eventhandler = new EventHandler();
 }
 
 //------------------------------------------------------------------------------
@@ -433,6 +427,8 @@ function fncTimer()
    {
       var engine = _g_vInstances[i];
       // (1) Call Timer Event
+      engine.eventhandler.Timer(nMSeconds);
+      
       if (engine.cbfTimer)
       {
          engine.cbfTimer(nMSeconds);
@@ -575,6 +571,12 @@ engine3d.prototype.SetKeyDownCallback = function(f)
  */
 _fncKeyDown = function(evt)
 {
+   for (var i=0;i<_g_vInstances.length;i++)
+   {
+      var engine = _g_vInstances[i];
+      engine.eventhandler.KeyDown(evt.keyCode);
+   }
+   
    if (_gcbfKeyDown)
    {
       _gcbfKeyDown(evt.keyCode); 
@@ -589,6 +591,12 @@ _fncKeyDown = function(evt)
  */
 _fncKeyUp = function(evt)
 {
+   for (var i=0;i<_g_vInstances.length;i++)
+   {
+      var engine = _g_vInstances[i];
+      engine.eventhandler.KeyUp(evt.keyCode);
+   }
+   
    if (_gcbfKeyUp)
    {
       _gcbfKeyUp(evt.keyCode);
@@ -605,11 +613,15 @@ _fncMouseUp = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
    {
-      if (evt.currentTarget == _g_vInstances[i].context)
+      var engine = _g_vInstances[i];
+      if (evt.currentTarget == engine.context)
       {
-         if (_g_vInstances[i].cbfMouseUp)
+         var x = evt.clientX-engine.xoffset/2;
+         var y = evt.clientY-engine.yoffset/2;
+         engine.eventhandler.MouseUp(evt.button,x,y);
+         if (_engine.cbfMouseUp)
          {
-            _g_vInstances[i].cbfMouseUp(evt.button, evt.clientX-_g_vInstances[i].xoffset/2, evt.clientY-_g_vInstances[i].yoffset/2); // call mouse up callback function
+            engine.cbfMouseUp(evt.button, x, y); // call mouse up callback function
          }
          return;
       }
@@ -625,11 +637,16 @@ _fncMouseDown = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
    {
-      if (evt.currentTarget == _g_vInstances[i].context)
+      var engine = _g_vInstances[i];
+      if (evt.currentTarget == engine.context)
       {
+         var x = evt.clientX-engine.xoffset/2;
+         var y = evt.clientY-engine.yoffset/2;
+         engine.eventhandler.MouseDown(evt.button,x,y);
+         
          if (_g_vInstances[i].cbfMouseDown)
          {
-            _g_vInstances[i].cbfMouseDown(evt.button, evt.clientX-_g_vInstances[i].xoffset/2, evt.clientY-_g_vInstances[i].yoffset/2); // call mouse down callback function
+            _g_vInstances[i].cbfMouseDown(evt.button,x,y); // call mouse down callback function
          }
          return;
       }
@@ -645,6 +662,7 @@ _fncMouseMove = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
    {
+      var engine = _g_vInstances[i];
       if (evt.currentTarget == _g_vInstances[i].context)
       {
          if (_g_vInstances[i].cbfMouseMove)
@@ -665,6 +683,7 @@ _fncResize = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
    {
+      var engine = _g_vInstances[i];
       if (_g_vInstances[i].bFullscreen)
       {
          _g_vInstances[i].context.width = window.innerWidth-20;
