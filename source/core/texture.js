@@ -83,7 +83,11 @@ texture.prototype.loadTexture = function(url)
    var curgl = this.gl;
    var thismat = this;
    this.texture.image = new Image();
-   this.texture.image.onload = function() { _cbHandleLoadedTexture(curgl, texture); thismat.ready = true;}
+   this.texture.image.onload = function() 
+      {  
+         _cbHandleLoadedTexture(curgl, texture); 
+         thismat.ready = true; 
+      }
    this.texture.image.src = url;
    this.texture.image.onerror = function() { failed = true; }
    return this.texture;
@@ -103,6 +107,7 @@ function _cbHandleLoadedTexture(gl, textureobject)
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
    gl.bindTexture(gl.TEXTURE_2D, null);
+   
 }
 
 //------------------------------------------------------------------------------
@@ -142,11 +147,12 @@ texture.prototype.Disable = function()
  */
 texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend) 
 {
-   // todo:
-   // engine->GetMVP(orig_mvp);
-   // engine->SetMVP(ortho_2d);
-   // do blit
-   // engine->SetMVP(dest_mvp);
+   engine.PushMatrices();
+   engine.SetOrtho2D();
+   
+   // draw  (w = this.texture.image.width and h = this.texture.image.height)
+   
+   engine.PopMatrices();
 }
 
 //------------------------------------------------------------------------------

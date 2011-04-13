@@ -121,7 +121,7 @@ TraversalState.prototype.PopProjection = function()
 //------------------------------------------------------------------------------
 /**
  * @description Return current modelviewprojection matrix from stack and return it
- * @param{mat4} matrix the current modelviewprojection matrix
+ * @param{mat4} matrix preallocatefor the current modelviewprojection matrix
  */
 TraversalState.prototype.GetModelViewProjectionMatrix = function(matrix)
 {

@@ -87,11 +87,18 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  "POINT" for point rendering
 
 example:
+
+ // Example 1: manual generation of a mesh
+
  myMesh = new Mesh(engine);
  myMesh.SetBufferP([0,0,0,   1,0,0,   1,1,0,]);
- myMesh.SetIndexBuffer("TRIANGLE", [0,1,2]);
- myMesh.ToGPU();
-
+ myMesh.SetIndexBuffer([0,1,2], "TRIANGLES");
+ 
+ // Example 2: load from JSON
+ 
+ myMesh = new Mesh(engine);
+ myMesh.loadFromJSON("myGeometry.json");
+ 
 */
 //------------------------------------------------------------------------------
 /**
@@ -236,6 +243,36 @@ Mesh.prototype._ToGPU = function()
     this.ibo = this.gl.createBuffer();
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);
     this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.indexbufferdata, this.gl.STATIC_DRAW);
+}
+
+
+
+//------------------------------------------------------------------------------
+/**
+ * @description Free all memory, especially the GPU buffers.
+ * @ignore
+ */
+Mesh.prototype.Destroy = function()
+{
+   if (this.vbo)
+   {
+      this.gl.deleteBuffer(this.vbo);
+      this.vbo = 0;
+   }
+   
+   if (this.ibo )
+   {
+      this.gl.deleteBuffers(this.ibo);
+      this.ibo = 0;
+   }
+   
+   this.texture = null;          
+   this.vertexbufferdata = null; 
+   this.mode = ""; 
+   this.numvertex = 0;         
+   this.numindex = 0;
+   this.indexbufferdata = null;
+   this.indexsemantic = null;
 }
 
 //------------------------------------------------------------------------------
