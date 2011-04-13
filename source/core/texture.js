@@ -67,6 +67,7 @@ function texture(engine)
    this.texture = null;    // the texture
    this.ready = false;     // is true when texture is ready to use
    this.failed = false;    // is true when texture creation / download failed
+   this.blitMesh = null;   // optional mesh used for blitting
 } 
 
 //------------------------------------------------------------------------------
@@ -154,30 +155,33 @@ texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend)
    
    if (this.ready)
    {
-      engine.PushMatrices();
-      engine.SetOrtho2D();
+      this.engine.PushMatrices();
+      this.engine.SetOrtho2D();
       
       model = new mat4();
       model.Translation(x,y,z);
-      engine.SetModelMatrix(model);
+      this.engine.SetModelMatrix(model);
       
       // draw  (w = this.texture.image.width and h = this.texture.image.height)
       var w = this.texture.image.width;
       var h = this.texture.image.height;
       
-      texMesh = new Mesh(engine);
+      if (this.blitMesh == null)
+      {
+         this.blitMesh = new Mesh(this.engine);
+         
+         this.blitMesh.SetBufferPT([0,0,0,   0,0,
+                              w,0,0,   1,0,
+                              w,h,0,   1,1,
+                              0,h,0,   0,1]);
+                              
+         this.blitMesh.SetIndexBuffer([0,1,2,0,2,3], "TRIANGLES");
+         this.blitMesh.SetTexture(this);
+      }
       
-      texMesh.SetBufferPT([0,0,0,   0,0,
-                           w,0,0,   1,0,
-                           w,h,0,   1,1,
-                           0,h,0,   0,1]);
-                           
-      texMesh.SetIndexBuffer([0,1,2,0,2,3], "TRIANGLES");
       
-      texMesh.SetTexture(this);
-      texMesh.Draw();
-      texMesh.Destroy();
-  
+      this.blitMesh.Draw();
+     
       engine.PopMatrices();
    
    }
@@ -196,6 +200,12 @@ texture.prototype.Destroy = function()
    
    this.ready = false;     
    this.failed = false;
+   
+   if (this.blitMesh)
+   {
+      this.blitMesh.Destroy();
+      this.blitMesh = null;
+   }
    
 }
 //------------------------------------------------------------------------------
