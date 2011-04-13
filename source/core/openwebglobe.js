@@ -146,6 +146,9 @@ function engine3d()
    this.matModelView = new mat4();
    this.matModelViewProjection = new mat4();
    
+   // Engine Traversal State
+   this.TravState = new TraversalState();
+   
    // Content Arrays
    this.vecMeshes = new Array();
    this.vecTextures = new Array();
@@ -365,6 +368,40 @@ engine3d.prototype.LoadMesh = function(url)
    this.vecMeshes.push(m);
    
    return m;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+ * @description Push all matrices (model, view, projectoin) to matrix stack 
+ */
+engine3d.prototype.PushMatrices = function()
+{
+   this.TravState.PushView(this.matView);
+   this.TravState.PushModel(this.matModel);
+   this.TravState.PushProjection(this.matProjection);
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Pop all matrices from matrix stack
+ */
+engine3d.prototype.PopMatrices = function()
+{
+   this.matModel.CopyFrom(this.TravState.PopModel());
+   this.matView.CopyFrom(this.TravState.PopView());
+   this.matProjection.CopyFrom(this.TravState.PopProjection());
+   // update matrices again:
+   this._UpdateMatrices();
+}
+
+//------------------------------------------------------------------------------
+
+engine3d.prototype.SetOrtho2D = function()
+{
+   this.matModel.Identity();
+   this.matView.Identity();
+   this.matProjection.Ortho2D(0,this.width,0,this.height);
 }
 
 //------------------------------------------------------------------------------
