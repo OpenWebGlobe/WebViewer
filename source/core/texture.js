@@ -67,6 +67,7 @@ function texture(engine)
    this.texture = null;    // the texture
    this.ready = false;     // is true when texture is ready to use
    this.failed = false;    // is true when texture creation / download failed
+   this.blitMesh = null;   // optional mesh used for blitting
 } 
 
 //------------------------------------------------------------------------------
@@ -147,14 +148,66 @@ texture.prototype.Disable = function()
  */
 texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend) 
 {
-   engine.PushMatrices();
-   engine.SetOrtho2D();
+   if (z==null)
+   {
+      z = 0;
+   }
    
-   // draw  (w = this.texture.image.width and h = this.texture.image.height)
+   if (this.ready)
+   {
+      this.engine.PushMatrices();
+      this.engine.SetOrtho2D();
+      
+      model = new mat4();
+      model.Translation(x,y,z);
+      this.engine.SetModelMatrix(model);
+      
+      // draw  (w = this.texture.image.width and h = this.texture.image.height)
+      var w = this.texture.image.width;
+      var h = this.texture.image.height;
+      
+      if (this.blitMesh == null)
+      {
+         this.blitMesh = new Mesh(this.engine);
+         
+         this.blitMesh.SetBufferPT([0,0,0,   0,0,
+                              w,0,0,   1,0,
+                              w,h,0,   1,1,
+                              0,h,0,   0,1]);
+                              
+         this.blitMesh.SetIndexBuffer([0,1,2,0,2,3], "TRIANGLES");
+         this.blitMesh.SetTexture(this);
+      }
+      
+      
+      this.blitMesh.Draw();
+     
+      engine.PopMatrices();
    
-   engine.PopMatrices();
+   }
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Free all memory, especially the GPU buffers.
+ * @ignore
+ */
+texture.prototype.Destroy = function()
+{
+   this.texture.image = null;
+   engine.gl.deleteTexture(this.texture);
+   this.texture = null;
+   
+   this.ready = false;     
+   this.failed = false;
+   
+   if (this.blitMesh)
+   {
+      this.blitMesh.Destroy();
+      this.blitMesh = null;
+   }
+   
+}
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 /** @ignore

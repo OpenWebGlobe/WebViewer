@@ -86,13 +86,6 @@ var _gcbfKeyDown     = null;           // global key down event
 var _gcbfKeyUp       = null;           // global key up event
 //------------------------------------------------------------------------------
 
-/* functions todo (high priority)
- * 
-     engine.DrawMesh(mesh);            draw mesh (using current model, view, projection matrix)
-     engine.BlitTexture(texture,x,y,z,angle,scalex,scaley,blend);  blit texture directly on screen
-     engine.DrawText(x,y,text);        draw text on screen 
- */
-
 //------------------------------------------------------------------------------
 /**
  * @description Create a new engine3d object
@@ -140,6 +133,10 @@ function engine3d()
    this.vp_w = 0;
    this.vp_h = 0;
    
+   // Special Offset for Fullscreen mode
+   this.xoffset = 0;
+   this.yoffset = 0;
+   
    // Model, View and Projection Matrices
    this.matModel = new mat4();
    this.matView = new mat4();
@@ -157,6 +154,12 @@ function engine3d()
 	// engine instance voodoo
 	_g_vInstances[_g_nInstanceCnt] = this;
    _g_nInstanceCnt++;
+   
+   // RegisteredEvents
+   
+   this.vecMouseDown = new Array();
+   this.vecMouseUp = new Array();
+   
 }
 
 //------------------------------------------------------------------------------
@@ -172,8 +175,10 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    
    if (bFullscreen)
    {
-         canvas.width = window.innerWidth-20;
-         canvas.height = window.innerHeight-20;
+         this.xoffset = 20;
+         this.yoffset = 20;
+         canvas.width = window.innerWidth-this.xoffset;
+         canvas.height = window.innerHeight-this.yoffset;
          this.bFullscreen = true;
    }
   
@@ -389,9 +394,14 @@ engine3d.prototype.PushMatrices = function()
  */
 engine3d.prototype.PopMatrices = function()
 {
-   this.matModel.CopyFrom(this.TravState.PopModel());
-   this.matView.CopyFrom(this.TravState.PopView());
-   this.matProjection.CopyFrom(this.TravState.PopProjection());
+   var model = this.TravState.PopModel()
+   this.matModel.CopyFrom(model);
+   
+   var view = this.TravState.PopView();
+   this.matView.CopyFrom(view);
+   
+   var proj = this.TravState.PopProjection();
+   this.matProjection.CopyFrom(proj);
    // update matrices again:
    this._UpdateMatrices();
 }
@@ -403,6 +413,7 @@ engine3d.prototype.SetOrtho2D = function()
    this.matModel.Identity();
    this.matView.Identity();
    this.matProjection.Ortho2D(0,this.width,0,this.height);
+   this._UpdateMatrices();
 }
 
 //------------------------------------------------------------------------------
@@ -595,11 +606,11 @@ _fncMouseUp = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
    {
-      if (evt.currentTarget == _g_vInstances[i].context.canvas)
+      if (evt.currentTarget == _g_vInstances[i].context)
       {
          if (_g_vInstances[i].cbfMouseUp)
          {
-            _g_vInstances[i].cbfMouseUp(evt.button, evt.clientX, evt.clientY); // call mouse up callback function
+            _g_vInstances[i].cbfMouseUp(evt.button, evt.clientX-_g_vInstances[i].xoffset/2, evt.clientY-_g_vInstances[i].yoffset/2); // call mouse up callback function
          }
          return;
       }
@@ -615,11 +626,11 @@ _fncMouseDown = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
    {
-      if (evt.currentTarget == _g_vInstances[i].context.canvas)
+      if (evt.currentTarget == _g_vInstances[i].context)
       {
          if (_g_vInstances[i].cbfMouseDown)
          {
-            _g_vInstances[i].cbfMouseDown(evt.button, evt.clientX, evt.clientY); // call mouse down callback function
+            _g_vInstances[i].cbfMouseDown(evt.button, evt.clientX-_g_vInstances[i].xoffset/2, evt.clientY-_g_vInstances[i].yoffset/2); // call mouse down callback function
          }
          return;
       }
@@ -635,11 +646,11 @@ _fncMouseMove = function(evt)
 {
    for (var i=0;i<_g_vInstances.length;i++)
    {
-      if (evt.currentTarget == _g_vInstances[i].context.canvas)
+      if (evt.currentTarget == _g_vInstances[i].context)
       {
          if (_g_vInstances[i].cbfMouseMove)
          {
-            _g_vInstances[i].cbfMouseMove(evt.clientX, evt.clientY); // call mouse up callback function
+            _g_vInstances[i].cbfMouseMove(evt.clientX-_g_vInstances[i].xoffset/2, evt.clientY-_g_vInstances[i].yoffset/2); // call mouse up callback function
          }
          return;
       }
