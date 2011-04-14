@@ -65,13 +65,39 @@ function SceneGraph(engine)
    this.engine = engine;         // Render Engine
    
    // Access Nodes:
-   this.nodeNavigation = null;   // Navigation Node
-   this.nodeCamera = null;       // Camera Node ("projection")
-   this.nodeBeginRender = null;  // Begin Render Node
-   this.nodeRenderObject = null; // Render Object Node
-   this.nodeRender = null;       // Generic Rendering Node
-   this.nodeEndRender = null;    // End Render Node
-   this.nodeLogos = null;        // Node for rendering logos
+   this.nodeNavigation = new NavigationNode();     // Navigation Node
+   this.nodeCamera = new CameraNode();             // Camera Node ("projection")
+   this.nodeBeginRender = new BeginRenderNode();   // Begin Render Node
+   this.nodeRenderObject = new RenderObjectNode(); // Render Object Node
+   this.nodeRender = new RenderNode();             // Generic Rendering Node
+   this.nodeEndRender = new EndRenderNode();       // End Render Node
+   this.nodeLogos = new LogosNode();               // Node for rendering logos
+   
+   this.nodeNavigation.SetEngine(engine);
+   this.nodeNavigation.InitNode();
+   
+   this.nodeCamera.SetEngine(engine);
+   this.nodeCamera.InitNode();
+   
+   this.nodeBeginRender.SetEngine(engine);
+   this.nodeBeginRender.InitNode();
+   
+   this.nodeRender.SetEngine(engine);
+   this.nodeRender.InitNode();
+   
+   this.nodeEndRender.SetEngine(engine);
+   this.nodeEndRender.InitNode();
+   
+   this.nodeLogos.SetEngine(engine);
+   this.nodeLogos.InitNode();
+   
+   this.traversalstate = new TraversalState();
+   
+   // init matrices
+   matModel = new mat4(); // model matrix
+   matView = new mat4(); // view matrix
+   matProj = new mat4(); // projection matrix
+   
 } 
 //------------------------------------------------------------------------------
 /**

@@ -155,6 +155,8 @@ function engine3d()
    // Event Handler
    this.eventhandler = new EventHandler();
    
+   // system font (for ASCII Text only)
+   this.systemfont = null;
    
    // the scene
    this.scene = null;
@@ -208,9 +210,8 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    this.gl.clearColor(0, 0, 0, 1);
    this.gl.enable(this.gl.DEPTH_TEST);
    
-   this.gl.frontFace(this.gl.CW);
+   this.gl.frontFace(this.gl.CCW);
    this.gl.cullFace(this.gl.FRONT_AND_BACK);
-   
    //this.gl.cullFace(this.gl.BACK);
    
    // Create Default Shaders
@@ -220,6 +221,10 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    //Init Shaders
    this.shadermanager = new ShaderManager(this.gl);
    this.shadermanager.InitShaders();
+   
+   // Create Font
+   this.systemfont = new Font(this);
+   
    
    // call init callback 
    this.cbfInit();
@@ -417,12 +422,25 @@ engine3d.prototype.SetOrtho2D = function()
 }
 
 //------------------------------------------------------------------------------
-
+/**
+ * @description Create Scene
+ */
 engine3d.prototype.CreateScene = function()
 {
-   scene = new SceneGraph(this);
+   this.scene = new SceneGraph(this);
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Draw Text using internal bitmap font
+ */
+engine3d.prototype.DrawText = function(txt,x,y)
+{
+   if (this.systemfont)
+   {
+      this.systemfont.DrawText(txt,x,y); 
+   }
+}
 //------------------------------------------------------------------------------
 // MAIN TIMER FUNCTION
 //------------------------------------------------------------------------------
@@ -637,7 +655,7 @@ _fncMouseUp = function(evt)
          var x = evt.clientX-engine.xoffset/2;
          var y = evt.clientY-engine.yoffset/2;
          engine.eventhandler.MouseUp(evt.button,x,y);
-         if (_engine.cbfMouseUp)
+         if (engine.cbfMouseUp)
          {
             engine.cbfMouseUp(evt.button, x, y); // call mouse up callback function
          }

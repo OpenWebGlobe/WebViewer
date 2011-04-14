@@ -15,6 +15,7 @@
       <script type="text/javascript" src="../../core/texture.js"></script>
       <script type="text/javascript" src="../../core/traversalstate.js"></script>
       <script type="text/javascript" src="../../core/eventhandler.js"></script>
+      <script type="text/javascript" src="../../core/font.js"></script>
       <script type="text/javascript">
          
          //---------------------------------------------------------------------
@@ -103,6 +104,8 @@
             cube2.Draw();            
             
             tex.Blit(mx,my);
+            
+            engine.DrawText("Hello World", 100,100);
          }
          
          //---------------------------------------------------------------------

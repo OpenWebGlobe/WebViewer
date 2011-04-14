@@ -71,13 +71,13 @@ function Node()
    _g_id++;
    
   
-   this.OnRender = null;      // = function(){}
-   this.OnTraverse = null;    // = function(TraversalState){} 
-   this.OnChangeState = null; // = function(){}  
-   this.OnInit = null;        // = function(){}
-   this.OnExit = null;        // = function(){}
+   this.OnRender = function(){};
+   this.OnTraverse = function(TraversalState){}; 
+   this.OnChangeState = function(){};  
+   this.OnInit = function(){};
+   this.OnExit = function(){};
    
-   this.OnRegisterEvents = null; // function that is called to register events (mouse/key/...)
+   this.OnRegisterEvents = function(){}; // function that is called to register events (mouse/key/...)
 
    this.engine = null;
    
@@ -92,13 +92,19 @@ Node.prototype.SetEngine = function(e)
 }
 
 //------------------------------------------------------------------------------
+Node.prototype.InitNode = function()
+{
+   this.OnRegisterEvents();
+   this.OnInit();
+}
+//------------------------------------------------------------------------------
 // Nodes for OpenWebGlobe
 //------------------------------------------------------------------------------
 
 // *** NAVIGATION ***
 function NavigationNode()
 {
-   
+
 }
 
 NavigationNode.prototype = new Node();
@@ -108,6 +114,8 @@ NavigationNode.prototype = new Node();
 // *** CAMERA ***
 function CameraNode()
 {
+   
+      
       this.OnRender = function(engine)
       {
          
@@ -139,6 +147,45 @@ function CameraNode()
 
 CameraNode.prototype = new Node();
 
+//------------------------------------------------------------------------------
 
+function BeginRenderNode()
+{
+ 
+}
 
+BeginRenderNode.prototype = new Node();
+//------------------------------------------------------------------------------
+
+function RenderObjectNode()
+{
+
+}
+
+RenderObjectNode.prototype = new Node();
+//------------------------------------------------------------------------------
+
+function RenderNode()
+{
+
+}
+
+RenderNode.prototype = new Node();
+//------------------------------------------------------------------------------
+
+function EndRenderNode()
+{
+
+}
+
+EndRenderNode.prototype = new Node();
+//------------------------------------------------------------------------------
+
+function LogosNode()
+{
+
+}
+
+LogosNode.prototype = new Node();
+//------------------------------------------------------------------------------
 
