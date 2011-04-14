@@ -104,24 +104,14 @@
    
             model.Identity();
             engine.SetModelMatrix(model);
-            font.DrawText("Time: "+totaltime/1000.0+" s",x_textpos,y_textpos);      
-            
-            /*model.Translation(5,0,0);
-            engine.SetModelMatrix(model);                    
-            cube2.Draw();*/                
+            font.DrawText("Time: "+totaltime/1000.0+" s",x_textpos,y_textpos);                
          }
          
          //---------------------------------------------------------------------
          
          function OnInit()
          {
-            /*
-               tex = engine.LoadTexture("Earth.gif");         
-               cube = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePT.json");
-               cube.SetTexture(tex);
-               cube2 = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePC.json");
-               */
-               font = new Font(engine);
+               font = new Font(engine); //init font class
          }
          
          //---------------------------------------------------------------------
