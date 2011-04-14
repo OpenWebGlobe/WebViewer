@@ -37,7 +37,7 @@ function NavigationNode()
          this.engine.SetViewMatrix(this.matView);  
       }
       //------------------------------------------------------------------------
-      this.OnRender = function(engine)
+      this.OnRender = function()
       {
          this.engine.DrawText("Key: " + this.lastkey + " (" + this.curtime + ")",0,100);
          

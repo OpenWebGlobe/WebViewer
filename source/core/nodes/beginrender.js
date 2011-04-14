@@ -34,7 +34,7 @@ function BeginRenderNode()
       }
      
       //------------------------------------------------------------------------
-      this.OnRender = function(engine)
+      this.OnRender = function()
       {
          
       }

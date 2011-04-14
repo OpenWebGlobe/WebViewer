@@ -35,7 +35,7 @@ function RenderObjectNode()
       }
      
       //------------------------------------------------------------------------
-      this.OnRender = function(engine)
+      this.OnRender = function()
       {
          this.cube.Draw();
       }

@@ -29,6 +29,8 @@
 function LogosNode()
 {
       this.logo = null;
+      this.compassbg = null;
+      this.compassr = null;
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {
@@ -36,9 +38,13 @@ function LogosNode()
       }
      
       //------------------------------------------------------------------------
-      this.OnRender = function(engine)
+      this.OnRender = function()
       {
          this.logo.Blit(this.engine.width-72, this.engine.height-72,0,0,1,1,true);
+         
+         this.compassbg.Blit(this.engine.width/2-64, this.engine.height/2-64,0,0,1,1,true);
+         this.compassr.Blit(this.engine.width/2-64, this.engine.height/2-64,0,0,1,1,true);
+         
       }
       
       //------------------------------------------------------------------------
@@ -52,6 +58,12 @@ function LogosNode()
       {
           this.logo = new texture(this.engine);
           this.logo.LoadLogo();
+          
+          this.compassbg = new texture(this.engine);
+          this.compassbg.LoadCompassBackground();
+          
+          this.compassr = new texture(this.engine);
+          this.compassr.LoadCompassRose();
       }
       
       //------------------------------------------------------------------------

@@ -36,7 +36,7 @@ function CameraNode()
       }
      
       //------------------------------------------------------------------------
-      this.OnRender = function(engine)
+      this.OnRender = function()
       {
          this.engine.DrawText("Hello from Camera Node", 0, 0);
       }

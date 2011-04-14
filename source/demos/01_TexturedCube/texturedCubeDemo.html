@@ -103,7 +103,7 @@
             engine.SetModelMatrix(model);                    
             cube2.Draw();            
             
-            tex.Blit(mx,my);
+            tex.Blit(mx,my,0,0,1,1,true);
             
             engine.DrawText("Hello World", 100,100);
          }
@@ -112,7 +112,7 @@
          
          function OnInit()
          {
-               tex = engine.LoadTexture("Earth.gif");         
+               tex = engine.LoadTexture("cmpr.png");         
                cube = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePT.json");
                cube.SetTexture(tex);
 
