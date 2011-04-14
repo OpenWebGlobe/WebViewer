@@ -53,6 +53,10 @@ license agreement with the Institute of Geomatics Engineering at the  University
 of Applied Sciences Northwestern Switzerland (FHNW).
 *******************************************************************************/
 
+
+/*
+ * @description array with fontwidth value example: width of char 'A' = fontwidth[65];
+ */
 var fontwidth = new Array(14,28,14,14,14,14,14,14,14,96,0,14,14,0,14,14,14,14,14,14,14,14,14,14,14,14,14,14,0,0,0,0,8,8,10,16,16,25,19,5,9,9,11,16,8,9,8,8,16,16,16,16,16,16,16,16,16,16,8,8,16,16,16,16,28,19,19,20,20,19,17,22,20,8,14,19,16,23,20,22,19,22,20,19,16,20,19,28,19,18,17,8,8,8,14,16,9,15,16,14,16,15,7,16,16,6,6,14,6,24,16,15,16,16,9,14,8,16,13,19,13,13,14,9,6,9,16,8,16,0,6,16,9,28,16,16,9,29,19,9,28,0,17,0,0,6,6,9,9,10,16,28,8,28,14,9,26,0,14,19,8,8,16,16,16,16,6,16,9,21,10,16,16,9,21,15,11,15,9,9,9,16,15,9,9,9,10,16,23,23,23,17,19,19,19,19,19,19,28,20,19,19,19,19,8,8,8,8,20,20,22,22,22,22,22,16,22,20,20,20,20,19,19,17,16,16,16,16,16,16,25,14,16,16,16,16,8,8,8,8,16,16,16,16,16,16,16,15,17,16,16,16,16,14,16,14);
 
 //------------------------------------------------------------------------------
@@ -79,7 +83,12 @@ function Font(engine)
    this.strLengthInPixel=0;
 }
 
-//ToDo Clean-up Stuff & comments!!!
+//------------------------------------------------------------------------------
+/**
+ * @description Shows the text at position x,y,
+ * @param {x} x x position of text
+ * @param {y} y y position of text
+ */
 Font.prototype.DrawText = function(text,x,y)
 {
    
@@ -90,11 +99,6 @@ Font.prototype.DrawText = function(text,x,y)
       this.engine.gl.disable(this.engine.gl.DEPTH_TEST);
       this.engine.gl.depthFunc(this.engine.gl.LEQUAL);
       this.engine.gl.blendFunc(this.engine.gl.SRC_ALPHA,this.engine.gl.ONE);
-
-      
-     
-      //model.Translation(x,y,1);
-      //this.engine.SetModelMatrix(model);
       
       var startX=x;
       var model = new mat4();
@@ -120,13 +124,24 @@ Font.prototype.DrawText = function(text,x,y)
       this.strLengthInPixel = x-startX;
 }
 
-Font.prototype.GetStringWidth = function(text,x,y)
+//------------------------------------------------------------------------------
+/**
+ * @description gets the length of text in pixel
+ * @param {x} x x position of text
+ * @param {y} y y position of text
+ * @return length in pixel
+ */
+Font.prototype.GetStringWidth = function()
 {
    return this.strLengthInPixel;
    
 }
-
-Font.prototype.GetStringHeight = function(text,x,y)
+//------------------------------------------------------------------------------
+/**
+ * @description gets the height of text in pixel
+ * @return height in pixel (32)
+ */
+Font.prototype.GetStringHeight = function()
 {
    return 32;
    
