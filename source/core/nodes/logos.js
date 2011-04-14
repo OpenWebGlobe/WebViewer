@@ -28,6 +28,7 @@
  */
 function LogosNode()
 {
+      this.logo = null;
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {
@@ -37,7 +38,7 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.OnRender = function(engine)
       {
-         
+         this.logo.Blit(this.engine.width-72, this.engine.height-72,0,0,1,1,true);
       }
       
       //------------------------------------------------------------------------
@@ -49,7 +50,8 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.OnInit = function()
       {
-
+          this.logo = new texture(this.engine);
+          this.logo.LoadLogo();
       }
       
       //------------------------------------------------------------------------

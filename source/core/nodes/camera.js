@@ -44,7 +44,7 @@ function CameraNode()
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
-         this.CreatePerspectiveProjection();
+         this.CreatePerspectiveProjection(45, 0.01, 100.0);
          //ts.overwriteProjection(this.matProjection);
       }
       

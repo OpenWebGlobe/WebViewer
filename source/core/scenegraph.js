@@ -82,6 +82,9 @@ function SceneGraph(engine)
    this.nodeBeginRender.SetEngine(engine);
    this.nodeBeginRender.InitNode();
    
+   this.nodeRenderObject.SetEngine(engine);
+   this.nodeRenderObject.InitNode();
+   
    this.nodeRender.SetEngine(engine);
    this.nodeRender.InitNode();
    

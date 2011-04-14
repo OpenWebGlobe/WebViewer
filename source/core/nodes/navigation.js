@@ -28,25 +28,29 @@
 function NavigationNode()
 {
       this.lastkey = 0;
+      this.curtime = 0;
+      this.matView = new mat4();
+      
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {
-         
+         this.engine.SetViewMatrix(this.matView);  
       }
       //------------------------------------------------------------------------
       this.OnRender = function(engine)
       {
-         this.engine.DrawText("Key: " + this.lastkey,0,100);
+         this.engine.DrawText("Key: " + this.lastkey + " (" + this.curtime + ")",0,100);
+         
       }
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
-         
+         this.matView.LookAt(0,0,2, 0,0,0, 0,1,0);
       }
       //------------------------------------------------------------------------
       this.OnInit = function()
       {
-        
+         
       }
       //------------------------------------------------------------------------
       this.OnExit = function()
@@ -57,12 +61,21 @@ function NavigationNode()
       this.OnRegisterEvents = function()
       {
           this.engine.eventhandler.AddKeyDownCallback(this, this.OnKeyDown);
+          this.engine.eventhandler.AddTimerCallback(this, this.OnTick);
       }
       //------------------------------------------------------------------------
       
+      // EVENT: OnKeyDown
       this.OnKeyDown = function(sender, key)
       {
          sender.lastkey = key;
+      }
+      
+      //------------------------------------------------------------------------
+      // EVENT: OnTick
+      this.OnTick = function(sender, dt)
+      {
+         sender.curtime += dt; 
       }
 }
 

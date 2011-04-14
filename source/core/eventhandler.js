@@ -183,7 +183,7 @@ EventHandler.prototype.Timer = function(dt)
    for (var i=0;i<this.vecTimer.length;i++)
    {
       var evtinfo = this.vecTimer[i];
-      evtinfo.func(evtinfo.sender, w,h);
+      evtinfo.func(evtinfo.sender, dt);
    }
 }
 //------------------------------------------------------------------------------
