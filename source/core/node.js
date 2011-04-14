@@ -86,9 +86,9 @@ function Node()
 }
 
 //------------------------------------------------------------------------------
-Node.Prototype.SetEngine(theEngine)
+Node.prototype.SetEngine = function(e)
 {
-   this.engine = theEngine;
+   this.engine = e;
 }
 
 //------------------------------------------------------------------------------

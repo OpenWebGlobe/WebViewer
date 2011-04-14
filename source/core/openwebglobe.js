@@ -453,10 +453,10 @@ function fncTimer()
       engine.Clear();
             
       // (3) Draw Scenegraph 
-      if (scene)
+      if (this.scene)
       {
-         scene.Traverse();
-         scene.Render();
+         this.scene.Traverse();
+         this.scene.Render();
       }   
            
       // (4) Call Render Callback (-> integrate in Scenegraph)

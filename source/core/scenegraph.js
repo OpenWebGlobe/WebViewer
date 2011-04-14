@@ -77,7 +77,7 @@ function SceneGraph(engine)
 /**
  * Traverse Scenegraph 
  */
-SceneGraph.prototype.Traverse()
+SceneGraph.prototype.Traverse = function()
 {
 
 }
@@ -85,7 +85,7 @@ SceneGraph.prototype.Traverse()
 /**
  * @description Render Scenegraph
  */
-SceneGraph.prototype.Render()
+SceneGraph.prototype.Render = function()
 {
    // render scene
 }
