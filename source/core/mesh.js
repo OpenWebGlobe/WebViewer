@@ -209,7 +209,7 @@ Mesh.prototype.SetBufferPNCT = function(pnct)
  */
 Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
 {
-   this.indexbufferdata = Uint16Array(idx); 
+   this.indexbufferdata = new Uint16Array(idx); 
    this.indexsemantic = idxsem;
    this.numindex = idx.length;
    this.Ready = true; //Discuss where to set this. ToDo
