@@ -72,6 +72,18 @@ function EventHandler()
 
 //------------------------------------------------------------------------------
 /** 
+ * @description Event sender structure, for internal use
+ * @constructor
+ * @ignore
+ */
+function EventInfo(sender, func)
+{
+   this.sender = sender;
+   this.func = func;
+}
+
+//------------------------------------------------------------------------------
+/** 
  * @description Handle Key Down Event
  * @constructor
  */
@@ -79,7 +91,8 @@ EventHandler.prototype.KeyDown = function(key)
 {
    for (var i=0;i<this.vecKeyDown.length;i++)
    {
-      this.vecKeyDown[i](key);
+      var evtinfo = this.vecKeyDown[i];
+      evtinfo.func(evtinfo.sender, key);
    }
 }
 //------------------------------------------------------------------------------
@@ -91,7 +104,8 @@ EventHandler.prototype.KeyUp = function(key)
 {
    for (var i=0;i<this.vecKeyUp.length;i++)
    {
-      this.vecKeyUp[i](key);
+      var evtinfo = this.vecKeyUp[i];
+      evtinfo.func(evtinfo.sender, key);
    }
 }
 //------------------------------------------------------------------------------
@@ -103,7 +117,8 @@ EventHandler.prototype.MouseDown = function(button, x, y)
 {
    for (var i=0;i<this.vecMouseDown.length;i++)
    {
-      this.vecMouseDown[i](button, x, y);
+      var evtinfo = this.vecMouseDown[i];
+      evtinfo.func(evtinfo.sender, button, x, y);
    }
 }
 //------------------------------------------------------------------------------
@@ -115,7 +130,8 @@ EventHandler.prototype.MouseUp = function(button, x, y)
 {
    for (var i=0;i<this.vecMouseUp.length;i++)
    {
-      this.vecMouseUp[i](button, x, y);
+      var evtinfo = this.vecMouseUp[i];
+      evtinfo.func(evtinfo.sender, button, x, y);
    }
 }
 //------------------------------------------------------------------------------
@@ -127,7 +143,8 @@ EventHandler.prototype.MouseMove = function(x, y)
 {
    for (var i=0;i<this.vecMouseMove.length;i++)
    {
-      this.vecMouseMove[i](button, x, y);
+      var evtinfo = this.vecMouseMove[i];
+      evtinfo.func(evtinfo.sender, button, x, y);
    }
 }
 //------------------------------------------------------------------------------
@@ -139,7 +156,8 @@ EventHandler.prototype.Render = function()
 {
    for (var i=0;i<this.vecRender.length;i++)
    {
-      this.vecRender[i]();
+      var evtinfo = this.vecRender[i];
+      evtinfo.func(evtinfo.sender);
    }
 }
 //------------------------------------------------------------------------------
@@ -151,19 +169,21 @@ EventHandler.prototype.Resize = function(w,h)
 {
    for (var i=0;i<this.vecResize.length;i++)
    {
-      this.vecResize[i](w,h);
+      var evtinfo = this.vecResize[i];
+      evtinfo.func(evtinfo.sender, w,h);
    }
 }
 //------------------------------------------------------------------------------
 /** 
- * @description Handle Resize Event
+ * @description Handle Timer Event
  * @constructor
  */
 EventHandler.prototype.Timer = function(dt)
 {
    for (var i=0;i<this.vecTimer.length;i++)
    {
-      this.vecTimer[i](w,h);
+      var evtinfo = this.vecTimer[i];
+      evtinfo.func(evtinfo.sender, w,h);
    }
 }
 //------------------------------------------------------------------------------
@@ -171,72 +191,80 @@ EventHandler.prototype.Timer = function(dt)
  * @description Add Key Down Event
  * @constructor
  */
-EventHandler.prototype.AddKeyDownCallback = function(cbf)
+EventHandler.prototype.AddKeyDownCallback = function(sender, cbf)
 {
-   this.vecKeyDown.push(cbf);
+   var evtinfo = new EventInfo(sender, cbf);
+   this.vecKeyDown.push(evtinfo);
 }
 //------------------------------------------------------------------------------
 /** 
  * @description Add Key Up Event
  * @constructor
  */
-EventHandler.prototype.AddKeyUpCallback = function(cbf)
+EventHandler.prototype.AddKeyUpCallback = function(sender, cbf)
 {
-   this.vecKeyUp.push(cbf);
+   var evtinfo = new EventInfo(sender, cbf);
+   this.vecKeyUp.push(evtinfo);
 }
 //------------------------------------------------------------------------------
 /** 
  * @description Add Mouse Down Event
  * @constructor
  */
-EventHandler.prototype.AddKeyDownCallback = function(cbf)
+EventHandler.prototype.AddMouseDownCallback = function(sender, cbf)
 {
-   this.vecMouseDown.push(cbf);
+   var evtinfo = new EventInfo(sender, cbf);
+   this.vecMouseDown.push(evtinfo);
 }
 //------------------------------------------------------------------------------
 /** 
  * @description Add Mouse Up Event
  * @constructor
  */
-EventHandler.prototype.AddMouseUpCallback = function(cbf)
+EventHandler.prototype.AddMouseUpCallback = function(sender, cbf)
 {
-   this.vecMouseUp.push(cbf);
+   var evtinfo = new EventInfo(sender, cbf);
+   this.vecMouseUp.push(evtinfo);
 }
 //------------------------------------------------------------------------------
 /** 
  * @description Add Mouse Move Event
  * @constructor
  */
-EventHandler.prototype.AddMouseMoveCallback = function(cbf)
+EventHandler.prototype.AddMouseMoveCallback = function(sender, cbf)
 {
-   this.vecMouseMove.push(cbf);
+   var evtinfo = new EventInfo(sender, cbf);
+   this.vecMouseMove.push(evtinfo);
 }
 //------------------------------------------------------------------------------
 /** 
  * @description Add Render Event
  * @constructor
  */
-EventHandler.prototype.AddRenderCallback = function(cbf)
+EventHandler.prototype.AddRenderCallback = function(sender, cbf)
 {
-   this.vecRender.push(cbf);
+   var evtinfo = new EventInfo(sender, cbf);
+   this.vecRender.push(evtinfo);
 }
 //------------------------------------------------------------------------------
 /** 
  * @description Add Resize Event
  * @constructor
  */
-EventHandler.prototype.AddResizeCallback = function(cbf)
+EventHandler.prototype.AddResizeCallback = function(sender, cbf)
 {
-   this.vecResize.push(cbf);
+   var evtinfo = new EventInfo(sender, cbf);
+   this.vecResize.push(evtinfo);
 }
 //------------------------------------------------------------------------------
 /** 
  * @description Add Timer Event
  * @constructor
  */
-EventHandler.prototype.AddTimerCallback = function(cbf)
+EventHandler.prototype.AddTimerCallback = function(sender, cbf)
 {
-   this.vecTimer.push(cbf);
+   var evtinfo = new EventInfo(sender, cbf);
+   this.vecTimer.push(evtinfo);
 }
 //------------------------------------------------------------------------------
 /** 

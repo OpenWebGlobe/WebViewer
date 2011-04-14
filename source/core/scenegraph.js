@@ -55,7 +55,7 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 
 //------------------------------------------------------------------------------
 /**
- * Scenegraph Class
+ * Scenegraph Class.
  * @author Martin Christen martin.christen@fhnw.ch 
  * @constructor
  * @param{engine3d} engine the engine
@@ -65,13 +65,13 @@ function SceneGraph(engine)
    this.engine = engine;         // Render Engine
    
    // Access Nodes:
-   this.nodeNavigation = new NavigationNode();     // Navigation Node
-   this.nodeCamera = new CameraNode();             // Camera Node ("projection")
-   this.nodeBeginRender = new BeginRenderNode();   // Begin Render Node
-   this.nodeRenderObject = new RenderObjectNode(); // Render Object Node
-   this.nodeRender = new RenderNode();             // Generic Rendering Node
-   this.nodeEndRender = new EndRenderNode();       // End Render Node
-   this.nodeLogos = new LogosNode();               // Node for rendering logos
+   this.nodeNavigation = new NavigationNode();     // Navigation Node (for view matrix)
+   this.nodeCamera = new CameraNode();             // Camera Node (for projection matrix)
+   this.nodeBeginRender = new BeginRenderNode();   // Begin Render Node (for multipass rendering, currently unsupported)
+   this.nodeRenderObject = new RenderObjectNode(); // Render Object Node (render openglobe objects, e.g. the virtual globe)
+   this.nodeRender = new RenderNode();             // Generic Rendering Node (currently unused, render custom objects)
+   this.nodeEndRender = new EndRenderNode();       // End Render Node (for multipass rendering, currently unsupported)
+   this.nodeLogos = new LogosNode();               // Node for rendering logos (render openwebglobe logos and navigation compass)
    
    this.nodeNavigation.SetEngine(engine);
    this.nodeNavigation.InitNode();
@@ -94,9 +94,9 @@ function SceneGraph(engine)
    this.traversalstate = new TraversalState();
    
    // init matrices
-   matModel = new mat4(); // model matrix
-   matView = new mat4(); // view matrix
-   matProj = new mat4(); // projection matrix
+   this.matModel = new mat4(); // model matrix
+   this.matView = new mat4(); // view matrix
+   this.matProj = new mat4(); // projection matrix
    
 } 
 //------------------------------------------------------------------------------
@@ -105,6 +105,22 @@ function SceneGraph(engine)
  */
 SceneGraph.prototype.Traverse = function()
 {
+   this.traversalstate.PushModel(this.matModel);
+   this.traversalstate.PushView(this.matModel);
+   this.traversalstate.PushProjection(this.matProj);
+   
+   this.nodeNavigation.OnTraverse(this.traversalstate); 
+   this.nodeCamera.OnTraverse(this.traversalstate);           
+   this.nodeBeginRender.OnTraverse(this.traversalstate);   
+   this.nodeRenderObject.OnTraverse(this.traversalstate); 
+   this.nodeRender.OnTraverse(this.traversalstate);          
+   this.nodeEndRender.OnTraverse(this.traversalstate);     
+   this.nodeLogos.OnTraverse(this.traversalstate);               
+   
+   this.traversalstate.PopModel();
+   this.traversalstate.PopView();
+   this.traversalstate.PopProjection();
+   
 
 }
 //------------------------------------------------------------------------------
@@ -113,7 +129,26 @@ SceneGraph.prototype.Traverse = function()
  */
 SceneGraph.prototype.Render = function()
 {
-   // render scene
+   this.nodeNavigation.OnChangeState();
+   this.nodeNavigation.OnRender();  
+   
+   this.nodeCamera.OnChangeState(); 
+   this.nodeCamera.OnRender();          
+    
+   this.nodeBeginRender.OnChangeState();
+   this.nodeBeginRender.OnRender();
+       
+   this.nodeRenderObject.OnChangeState();
+   this.nodeRenderObject.OnRender(); 
+   
+   this.nodeRender.OnChangeState();
+   this.nodeRender.OnRender(); 
+            
+   this.nodeEndRender.OnChangeState();
+   this.nodeEndRender.OnRender();  
+       
+   this.nodeLogos.OnChangeState();
+   this.nodeLogos.OnRender();        
 }
 
 //------------------------------------------------------------------------------

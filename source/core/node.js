@@ -97,95 +97,15 @@ Node.prototype.InitNode = function()
    this.OnRegisterEvents();
    this.OnInit();
 }
-//------------------------------------------------------------------------------
-// Nodes for OpenWebGlobe
-//------------------------------------------------------------------------------
-
-// *** NAVIGATION ***
-function NavigationNode()
-{
-
-}
-
-NavigationNode.prototype = new Node();
 
 
-//------------------------------------------------------------------------------
-// *** CAMERA ***
-function CameraNode()
-{
-   
-      
-      this.OnRender = function(engine)
-      {
-         
-      }
-      
-      this.OnTraverse = function(ts)
-      {
-         
-      }
-      
-      // on init..
-      this.OnInit = function()
-      {
-      
-      }
-      
-      // on exit
-      this.OnExit = function()
-      {
-      
-      }
-      
-      // register events: camera doesn't need any!
-      this.OnRegisterEvents = function()
-      {
-         
-      }
-}
 
-CameraNode.prototype = new Node();
 
-//------------------------------------------------------------------------------
 
-function BeginRenderNode()
-{
- 
-}
 
-BeginRenderNode.prototype = new Node();
-//------------------------------------------------------------------------------
 
-function RenderObjectNode()
-{
 
-}
 
-RenderObjectNode.prototype = new Node();
-//------------------------------------------------------------------------------
 
-function RenderNode()
-{
 
-}
-
-RenderNode.prototype = new Node();
-//------------------------------------------------------------------------------
-
-function EndRenderNode()
-{
-
-}
-
-EndRenderNode.prototype = new Node();
-//------------------------------------------------------------------------------
-
-function LogosNode()
-{
-
-}
-
-LogosNode.prototype = new Node();
-//------------------------------------------------------------------------------
 
