@@ -62,11 +62,20 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  * @description This class is used to calculate wgs84 <-> cartesian conversions.
  * @author Martin Christen, martin.christen@fhnw.ch
  * @author Benjamin Loesch, benjamin.loesch@fhnw.ch
- * @version 0.1
  */
  function GeoCoord(longitude, latitude, elevation)
  {  
     this._wgscoords = new Float64Array([longitude, latitude, elevation]);      //Array elements = [latitude,longitude,elevation]
+ }
+ //------------------------------------------------------------------------------
+ /**
+ * @description Set position
+ */
+ GeoCoord.prototype.Set = function(longitude, latitude, elevation)
+ {  
+    this._wgscoords[0] = longitude;
+    this._wgscoords[1] = latitude;
+    this._wgscoords[2] = elevation;
  }
  
 //------------------------------------------------------------------------------

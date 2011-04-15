@@ -578,6 +578,59 @@ mat4.prototype.Ortho2D = function(left, right, bottom, top)
 
 //------------------------------------------------------------------------------
 /**
+ * @description calc navigation frame, lng and lat in degree!
+ *
+ */
+mat4.prototype.CalcNavigationFrame = function(lng_deg, lat_deg)
+{
+   var lng = lng_deg*0.017453292519943295769236907684886;
+   var lat = lat_deg*0.017453292519943295769236907684886;
+   
+   var sinlat = Math.sin(lat);
+   var sinlng = Math.sin(lng);
+   var coslat = Math.cos(lat);
+   var coslng = Math.cos(lng);
+   
+   this._values[0] = -sinlat*coslng;   this._values[4] = -sinlng; this._values[8]  = -coslat*coslng;  this._values[12] = 0;
+   this._values[1] = -sinlat*sinlng;   this._values[5] = coslng;  this._values[9]  = -coslat*sinlng;  this._values[13] = 0;
+   this._values[2] = coslat;           this._values[6] = 0;       this._values[10] = sinlat;          this._values[14] = 0;
+   this._values[3] = 0;                this._values[7] = 0;       this._values[11] = 0;               this._values[15] = 1;
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description calc body frame, yaw, pitch and roll are in RAD
+ *
+ */
+mat4.prototype.CalcBodyFrame = function(yaw, pitch, roll)
+{
+   cosPitch = Math.cos(pitch);
+   cosRoll = Math.cos(roll);
+   cosYaw = Math.cos(yaw);
+   sinPitch = Math.sin(pitch);
+   sinRoll = Math.sin(roll);
+   sinYaw = Math.sin(yaw);
+   
+   this._values[0] = cosPitch*cosYaw;  this._values[4] = -cosRoll*sinYaw+sinRoll*sinPitch*cosYaw;  this._values[8]  = sinRoll*sinYaw+cosRoll*sinPitch*cosYaw;  this._values[12] = 0;
+   this._values[1] = cosPitch*sinYaw;  this._values[5] = cosRoll*cosYaw+sinRoll*sinPitch*sinYaw;   this._values[9]  = -sinRoll*cosYaw+cosRoll*sinPitch*sinYaw; this._values[13] = 0;
+   this._values[2] = -sinPitch;        this._values[6] = sinRoll*cosPitch;                         this._values[10] = cosRoll*cosPitch;                        this._values[14] = 0;
+   this._values[3] = 0;                this._values[7] = 0;                                        this._values[11] = 0;                                       this._values[15] = 1;
+}
+
+/**
+ * @description Swap Axis: geocentric cartesian system to graphics engine coordinate system
+ *
+ */
+mat4.prototype.Cami3d = function()
+{
+   this._values[0] = 0; this._values[4] = 0;  this._values[8]  = -1; this._values[12] = 0;
+   this._values[1] = 1; this._values[5] = 0;  this._values[9]  = 0;  this._values[13] = 0;
+   this._values[2] = 0; this._values[6] = -1; this._values[10] = 0;  this._values[14] = 0;
+   this._values[3] = 0; this._values[7] = 0;  this._values[11] = 0;  this._values[15] = 1;
+}
+
+//------------------------------------------------------------------------------
+/**
  * ToString
  * @extends mat4
  *

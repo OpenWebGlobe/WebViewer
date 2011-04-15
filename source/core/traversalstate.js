@@ -131,7 +131,7 @@ TraversalState.prototype.PopProjection = function()
  */
 TraversalState.prototype.GetViewMatrix = function(matrix)
 {
-   var l = this.MatrixStackView.length();
+   var l = this.MatrixStackView.length;
    if (l>0)
    {
       matrix.CopyFrom(this.MatrixStackView[l-1]);
@@ -144,7 +144,7 @@ TraversalState.prototype.GetViewMatrix = function(matrix)
  */
 TraversalState.prototype.GetModelMatrix = function(matrix)
 {
-   var l = this.MatrixStackModel.length();
+   var l = this.MatrixStackModel.length;
    matrix.CopyFrom(this.MatrixStackModel[l-1]);
 }
 //------------------------------------------------------------------------------
@@ -154,10 +154,39 @@ TraversalState.prototype.GetModelMatrix = function(matrix)
  */
 TraversalState.prototype.GetProjectionMatrix = function(matrix)
 {
-   var l = this.MatrixStackProjection.length();
+   var l = this.MatrixStackProjection.length;
    matrix = this.MatrixStackProjection[l-1];
 }
 //------------------------------------------------------------------------------
-
+/**
+ * @description Overwrite the current projection matrix
+ * @param{mat4} matrix the projection matrix to overwrite
+ */
+TraversalState.prototype.OverwriteProjectionMatrix = function(matrix)
+{
+   var l = this.MatrixStackProjection.length;
+   this.MatrixStackProjection[l-1].CopyFrom(matrix);
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Overwrite the current model matrix
+ * @param{mat4} matrix the model matrix to overwrite
+ */
+TraversalState.prototype.OverwriteModelMatrix = function(matrix)
+{
+   var l = this.MatrixStackModel.length;
+   this.MatrixStackModel[l-1].CopyFrom(matrix);
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Overwrite the current view matrix
+ * @param{mat4} matrix the view matrix to overwrite
+ */
+TraversalState.prototype.OverwriteViewMatrix = function(matrix)
+{
+   var l = this.MatrixStackView.length;
+   this.MatrixStackView[l-1].CopyFrom(matrix);
+}
+//------------------------------------------------------------------------------
 
 

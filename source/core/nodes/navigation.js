@@ -31,6 +31,54 @@ function NavigationNode()
       this.curtime = 0;
       this.matView = new mat4();
       
+      this._vEye = new vec3();
+      this._vEye.Set(1,0,0);
+      
+      this._yaw = 0;
+      this._pitch = 0;
+      this._roll = -1.570796326794896619231; // -pi/2
+      
+      this._longitude = 7.7744205094639103;
+      this._latitude = 47.472720418012834;
+      this._ellipsoidHeight = 3000000;
+      
+      this._fYawSpeed = 0;
+      this._fSurfacePitchSpeed = 0;
+      this._fRollSpeed = 0;
+      this._fPitchSpeed = 0;
+      this._fVelocityY = 0;
+      this._bMatRotChanged = false;
+      this._fSurfacePitch = 0;
+      this._fLastRoll = 0;
+      this._fSpeed = 1.0;
+      this._dFlightVelocity = 1.0;
+      this._dYawVelocity = 1.0;
+      this._dPitchVelocity = 1.0;
+      this._dRollVelocity = 1.0;
+      this._dElevationVelocity = 1.0;
+      this._pitch_increase = 0;
+      this._pitch_decrease = 0;
+      this._roll_increase = 0;
+      this._roll_decrease = 0;
+      this._bRollAnim = false;
+      this._MinElevation = 150.0;
+      this._angle = 0.001;
+      this._dist = -0.4;
+      this._bPositionChanged = false;
+      this._dAccumulatedTick = 0;
+      
+      this.geocoord = new Float64Array(3);
+      this.pos = new GeoCoord(0,0,0);
+      
+      matResult = new mat4();
+      matBody = new mat4();
+      matTrans = new mat4();
+      matNavigation = new mat4();
+      matCami3d = new mat4();
+      matView = new mat4();
+      
+      matCami3d.Cami3d();
+     
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {
@@ -39,18 +87,29 @@ function NavigationNode()
       //------------------------------------------------------------------------
       this.OnRender = function()
       {
-         this.engine.DrawText("Key: " + this.lastkey + " (" + this.curtime + ")",0,100);
-         
+         this.engine.DrawText("Key: " + this.lastkey + " (" + this.curtime + ")",0,32);
+         this.engine.DrawText("Pos: (" + this._longitude + ", " + this._latitude + "," + this._ellipsoidHeight + ")",0,134);
+         this.engine.DrawText("Cart: (" + this.geocoord[0] + ", " + this.geocoord[1] + "," + this.geocoord[2] + ")",0,100);
       }
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
          this.matView.LookAt(0,0,2, 0,0,0, 0,1,0);
+         
+         this.pos.Set(this._longitude, this._latitude, this._ellipsoidHeight);
+         this.pos.ToCartesian(this.geocoord);
+         this._vEye.Set(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
+
+         matTrans.Translation(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
+         matNavigation.CalcNavigationFrame(this._longitude, this._latitude);
+         matBody.CalcBodyFrame(this._yaw, this._pitch, this._roll);
+         
+         //matTrans.SetTranslation(_vEye);
       }
       //------------------------------------------------------------------------
       this.OnInit = function()
       {
-         
+          //
       }
       //------------------------------------------------------------------------
       this.OnExit = function()
@@ -80,3 +139,44 @@ function NavigationNode()
 }
 
 NavigationNode.prototype = new Node();
+
+//------------------------------------------------------------------------------
+
+NavigationNode.prototype.SetPosition = function(lng, lat, elv)
+{
+   this._longitude = lng;
+   this._latitude = lat;
+   this._ellipsoidHeight = elv;
+}
+   
+//------------------------------------------------------------------------------
+
+NavigationNode.prototype.GetPosition = function()
+{
+   return {longitude: this._longitude, latitude: this._latitude, elevation: this._ellipsoidHeight};
+}
+   
+//------------------------------------------------------------------------------
+
+NavigationNode.prototype.SetOrientation = function(yaw, pitch, roll)
+{
+   this._yaw = yaw;
+   this._pitch = pitch;
+   this._roll = roll;
+}
+   
+//------------------------------------------------------------------------------
+
+NavigationNode.prototype.GetOrientation = function()
+{
+   return {yaw: this._yaw, pitch: this._pitch, roll: this._roll};
+}
+
+//------------------------------------------------------------------------------
+
+NavigationNode.prototype.SetNavigationSpeed = function(fspeed)
+{
+   this._fSpeed = fspeed;
+}
+
+//------------------------------------------------------------------------------
