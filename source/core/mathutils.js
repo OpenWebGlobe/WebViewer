@@ -62,9 +62,14 @@ of Applied Sciences Northwestern Switzerland (FHNW).
 var WGS84_a = 6378137.0; 
 //------------------------------------------------------------------------------
 /**
- * @description semi major axis [m]
+ * @description first numeric exccentrity (squared)
  */
-var WGS84_E_SQUARED = 0.006739496742;     // second numeric excentrity squared
+var WGS84_E_SQUARED = 0.006694379990197;  
+//------------------------------------------------------------------------------
+/**
+ * @description second numeric exccentrity (squared)
+ */
+var WGS84_E_SQUARED2 = 0.006739496742;
 //------------------------------------------------------------------------------
 /**
  * @description second numeric excentrity

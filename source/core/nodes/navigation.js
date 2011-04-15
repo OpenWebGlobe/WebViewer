@@ -350,6 +350,29 @@ function NavigationNode()
          
          if (deltaSurface)
          {
+            // navigate along geodetic line
+            var lat_rad = sender._latitude*0.017453292519943295769236907684886; // deg2rad
+            var lng_rad = sender._longitude*0.017453292519943295769236907684886; // deg2rad
+            var sinlat = Math.sin(lat_rad);
+            var coslat = Math.cos(lat_rad);
+            var A1 = sender._yaw;
+            var B1 = lat_rad;
+            var L1 = lng_rad;
+            var Rn = WGS84_a / Math.sqrt(1.0-WGS84_E_SQUARED*sinlat*sinlat);
+            var Rm = Rn / (1+WGS84_E_SQUARED2*coslat*coslat);
+            var deltaA = (WGS84_a / Rn) * deltaSurface * Math.sin(A1) * Math.tan(B1);
+            var deltaB = (WGS84_a / Rm) * deltaSurface * Math.cos(A1);
+            var deltaL = (WGS84_a / Rn) * deltaSurface * Math.sin(A1) / Math.cos(B1);
+            var A2, B2, L2;
+            A2 = deltaA + A1;
+            B2 = deltaB + B1;
+            L2 = deltaL + L1;
+        
+            sender._longitude = 57.295779513082320876798154814105*L2; // rad2deg
+            sender._latitude = 57.295779513082320876798154814105*B2; // rad2deg
+            sender._yaw = A2;
+
+            bChanged = true;
          }
          
       }
