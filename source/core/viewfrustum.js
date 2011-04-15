@@ -61,40 +61,15 @@ of Applied Sciences Northwestern Switzerland (FHNW).
  */
 function ViewFrustum(mvpMatrix)
 {
-   this.matMVP = mvpMatrix;
    this.frustumPlanes = new Array(6);
-   
    this.frustumPlanes[0] = new plane3();
    this.frustumPlanes[1] = new plane3();
    this.frustumPlanes[2] = new plane3();
    this.frustumPlanes[3] = new plane3();
    this.frustumPlanes[4] = new plane3();
    this.frustumPlanes[5] = new plane3();
-   
-   this.mvp = mvpMatrix;
-   this.mvpVals = mvpMatrix.Get();
-   
-   this.mvpval_11 = this.mvpVals[0]; 
-   this.mvpval_12 = this.mvpVals[1];
-   this.mvpval_13 = this.mvpVals[2];
-   this.mvpval_14 = this.mvpVals[3];
-   this.mvpval_21 = this.mvpVals[4];
-   this.mvpval_22 = this.mvpVals[5];
-   this.mvpval_23 = this.mvpVals[6];
-   this.mvpval_24 = this.mvpVals[7];
-   this.mvpval_31 = this.mvpVals[8];
-   this.mvpval_32 = this.mvpVals[9];
-   this.mvpval_33 = this.mvpVals[10];
-   this.mvpval_34 = this.mvpVals[11];
-   this.mvpval_41 = this.mvpVals[12];
-   this.mvpval_42 = this.mvpVals[13];
-   this.mvpval_43 = this.mvpVals[14];
-   this.mvpval_44 = this.mvpVals[15];
-   
-   
-   this.UpdateFrustumPlanes();
-   
-   
+
+   this.Update(mvpMatrix);  
 }
 
 /** 
@@ -174,6 +149,36 @@ ViewFrustum.prototype.TestBox = function(min_x, min_y, min_z, max_x, max_y, max_
   }
   return true;    
 }
+
+//------------------------------------------------------------------------------
+/** 
+ * @description Updates the object with a new mvpMatrix
+ * @param mvpMatrix model-view-projection matrix.
+ */
+ ViewFrustum.prototype.Update = function(mvpMatrix)
+ {
+   this.mvp = mvpMatrix;
+   this.mvpVals = mvpMatrix.Get();
+   
+   this.mvpval_11 = this.mvpVals[0]; 
+   this.mvpval_12 = this.mvpVals[1];
+   this.mvpval_13 = this.mvpVals[2];
+   this.mvpval_14 = this.mvpVals[3];
+   this.mvpval_21 = this.mvpVals[4];
+   this.mvpval_22 = this.mvpVals[5];
+   this.mvpval_23 = this.mvpVals[6];
+   this.mvpval_24 = this.mvpVals[7];
+   this.mvpval_31 = this.mvpVals[8];
+   this.mvpval_32 = this.mvpVals[9];
+   this.mvpval_33 = this.mvpVals[10];
+   this.mvpval_34 = this.mvpVals[11];
+   this.mvpval_41 = this.mvpVals[12];
+   this.mvpval_42 = this.mvpVals[13];
+   this.mvpval_43 = this.mvpVals[14];
+   this.mvpval_44 = this.mvpVals[15];
+   
+   this.UpdateFrustumPlanes();
+ }
 
 
 //------------------------------------------------------------------------------
