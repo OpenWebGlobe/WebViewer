@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
    <head>
+         <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>
          <script type="text/javascript" src="../../core/openwebglobe.js"></script>
          <script type="text/javascript" src="../../core/shaders.js"></script>
          <script type="text/javascript" src="../../core/vec4.js"></script>
@@ -55,7 +56,9 @@
          
          function OnRender()
          {  
-           engine.DrawText("Welcome to OpenWebGlobe Demo", 0, height-32);
+           var fontcolor = new fontcolor();
+           fontcolor.Set(1,0,0,1);
+           engine.DrawText("Welcome to OpenWebGlobe Demo", 0, height-32,0.5,fontcolor);
          }
          
          //---------------------------------------------------------------------

@@ -203,6 +203,19 @@ Mesh.prototype.SetBufferPNCT = function(pnct)
 
 //------------------------------------------------------------------------------
 /**
+ * @description Specify a buffer with the vertex semantic "pt"
+ * @param{float32Array} pt the point,texture-coordinates array.
+ */
+Mesh.prototype.SetBufferFont= function(fontdata)
+{
+   if ((fontdata.length % 5) == 0)
+   {
+      this.vertexbufferdata = new Float32Array(fontdata);
+      this.mode = "font";
+   }
+}
+//------------------------------------------------------------------------------
+/**
  * @description Specify a an index buffer with the specified index semantic
  * @param{float32Array} idx indices array.
  * @param{string} idxsem supports "TRIANGLES","POINTS" or "LINES".
@@ -280,7 +293,7 @@ Mesh.prototype.Destroy = function()
  * note: this method still needs some optimization
  * note: ranged draw must be supported soon
  */
-Mesh.prototype.Draw = function(ranged, count, offset)
+Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
 {
    if (!this.Ready)
    {
@@ -339,6 +352,14 @@ Mesh.prototype.Draw = function(ranged, count, offset)
                       this.gl.vertexAttribPointer(2, 4, this.gl.FLOAT, false, 12*4, 6*4); // color
                       this.gl.vertexAttribPointer(3, 2, this.gl.FLOAT, false, 12*4, 10*4); // texture
                       this.engine.shadermanager.UseShader_PNCT(engine.matModelViewProjection);
+                      break;
+                      
+        case "font": 
+                      this.gl.enableVertexAttribArray(0);
+                      this.gl.enableVertexAttribArray(1);
+                      this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
+                      this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
+                      this.engine.shadermanager.UseShader_Font(engine.matModelViewProjection,fontcolor);
                       break;
                              
              

@@ -116,4 +116,11 @@ MathUtils.Rad2Deg = function(rad)
 { 
    return ((rad)*57.295779513082320876798154814105);     
 }
+
 //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+/**
+ * @description temporary will be removed soon. workaround for chrom issue...
+ * @ignore
+ */
+try { Float64Array; } catch (x) { Float64Array = Float32Array; }

@@ -77,11 +77,11 @@ function vec4(typeparam)
 {
    if (typeparam == "double")
    {
-      this._values = new Float64Array([0.0, 0.0, 0.0]);  
+      this._values = new Float64Array([0.0, 0.0, 0.0, 0.0]);  
    }
    else //(typeparam == "float")
    {
-      this._values = new Float32Array([0.0, 0.0, 0.0]);
+      this._values = new Float32Array([0.0, 0.0, 0.0, 0.0]);
    }
 }
 

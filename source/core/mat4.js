@@ -233,6 +233,24 @@ mat4.prototype.Translation = function(x,y,z)
 
 //------------------------------------------------------------------------------
 /**
+ * @description Overwrites the Translation values in matrix mat with x,y,z. 
+ *
+ * @param mat mat4 matrix wich will be overwritten
+ * @param x translation in x direction
+ * @param y translation in y direction
+ * @param z translation in z direction
+ */
+mat4.prototype.OverwriteTranslation = function(mat,x,y,z)
+{     
+ mat._values[12] = x;
+ mat._values[13] = y;
+ mat._values[14] = z;
+
+}
+
+
+//------------------------------------------------------------------------------
+/**
  * Scale
  * sets the matrix values to a translation matrix. 
  * @extends mat4
@@ -306,6 +324,8 @@ mat4.prototype.RotationZ = function(angle)
    this._values[8]  = 0;     this._values[9]  = 0;     this._values[10] = 1;    this._values[11] = 0;
    this._values[12] = 0;      this._values[13] = 0;     this._values[14] = 0;   this._values[15] = 1;
 }
+
+
 
 /**
  * Creates a LookAt matrix

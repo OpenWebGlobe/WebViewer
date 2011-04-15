@@ -104,6 +104,11 @@ function ShaderManager(gl)
    this.program_pnct = null;
    this.vs_pnct = null;
    this.fs_pnct = null;  
+   
+   //Font
+   this.program_font = null;
+   this.vs_font = null;
+   this.fs_font = null;
 }
 
 
@@ -117,8 +122,8 @@ ShaderManager.prototype.UseShader_P = function(modelviewprojection,color)
    if (this.vs_p && this.fs_p)
    {
       this.gl.useProgram(this.program_p);
-      this.gl.uniform4fv(this.gl.getUniformLocation(this.program_p, "matMVP"),modelviewprojection.Get());
-      this.gl.uniform4fv(this.gl.getUniformLocation(this.program_p, "uColor"), color);
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_p, "matMVP"),false,modelviewprojection.Get());
+      this.gl.uniform4fv(this.gl.getUniformLocation(this.program_p, "uColor"), color.Get());
    }   
 }
 
@@ -173,6 +178,20 @@ ShaderManager.prototype.UseShader_PNCT = function(modelviewprojection)
    {
       this.gl.useProgram(this.program_pnct);
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pcnt, "matMVP"), false, modelviewprojection.Get());
+   }    
+}
+
+/**
+ *  
+ * @param {mat4} mvp-matrix 
+ */
+ShaderManager.prototype.UseShader_Font = function(modelviewprojection, fontcolor)
+{
+   if (this.program_font)
+   {
+      this.gl.useProgram(this.program_font);
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_font, "matMVP"),false,modelviewprojection.Get());
+      this.gl.uniform4fv(this.gl.getUniformLocation(this.program_font, "uColor"), fontcolor.Get());  
    }    
 }
 
@@ -367,6 +386,42 @@ ShaderManager.prototype.InitShader_PNCT = function()
    
 } 
 
+
+/**
+ *  Initializes the font shader
+ *  internal use
+ */
+ShaderManager.prototype.InitShader_Font = function()
+{
+   src_vertexshader_Font= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n}\n";
+   src_fragmentshader_Font= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\n\nuniform vec4 uColor;\nvoid main()\n{\n   gl_FragColor = uColor*(texture2D(uTexture, vTexCoord));\n}\n\n";
+ 
+   this.vs_font = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_Font);
+   this.fs_font = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_Font);
+   
+   if (this.vs_font && this.fs_font)
+   {
+      // create program object
+      this.program_font = this.gl.createProgram();
+      
+      // attach our two shaders to the program
+      this.gl.attachShader(this.program_font, this.vs_font);
+      this.gl.attachShader(this.program_font, this.fs_font);
+      
+      // setup attributes
+      this.gl.bindAttribLocation(this.program_font, 0, "aPosition"); 
+      this.gl.bindAttribLocation(this.program_font, 1, "aTexCoord");
+      
+      // linking
+      this.gl.linkProgram(this.program_font);
+      if (!this.gl.getProgramParameter(this.program_font, this.gl.LINK_STATUS)) 
+      {
+          alert("font shader: "+this.gl.getProgramInfoLog(this.program_font));
+          return;
+      }
+   }
+}
+
 /**
  *  Initializes all shaders. 
  * 
@@ -380,6 +435,7 @@ ShaderManager.prototype.InitShaders = function()
    this.InitShader_PC();
    this.InitShader_PT();
    this.InitShader_PNCT();
+   this.InitShader_Font();
 } 
 
 /**
