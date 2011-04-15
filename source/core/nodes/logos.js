@@ -15,9 +15,10 @@
 #                                                                              #
 #                              (c) 2010-2011 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
 #                           martin.christen@fhnw.ch                            #
 ********************************************************************************
-*                Read the file LICENSE for licensing information               *
+*     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
 //------------------------------------------------------------------------
