@@ -144,7 +144,7 @@ EventHandler.prototype.MouseMove = function(x, y)
    for (var i=0;i<this.vecMouseMove.length;i++)
    {
       var evtinfo = this.vecMouseMove[i];
-      evtinfo.func(evtinfo.sender, button, x, y);
+      evtinfo.func(evtinfo.sender, x, y);
    }
 }
 //------------------------------------------------------------------------------

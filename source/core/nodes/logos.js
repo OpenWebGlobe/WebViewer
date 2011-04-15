@@ -31,6 +31,9 @@ function LogosNode()
       this.logo = null;
       this.compassbg = null;
       this.compassr = null;
+      this.mx = 0;
+      this.my = 0;
+      this.btn = false;
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {
@@ -42,8 +45,11 @@ function LogosNode()
       {
          this.logo.Blit(this.engine.width-72, this.engine.height-72,0,0,1,1,true);
          
-         this.compassbg.Blit(this.engine.width/2-64, this.engine.height/2-64,0,0,1,1,true);
-         this.compassr.Blit(this.engine.width/2-64, this.engine.height/2-64,0,0,1,1,true);
+         if (this.btn)
+         {
+            this.compassbg.Blit(this.mx-64, this.my-64,0,0,1,1,true);
+            this.compassr.Blit(this.mx-64, this.my-64,0,0,1,1,true);
+         }
          
       }
       
@@ -75,9 +81,28 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.OnRegisterEvents = function()
       {
-         
+         this.engine.eventhandler.AddMouseDownCallback(this, this.OnMouseDown);
+         this.engine.eventhandler.AddMouseUpCallback(this, this.OnMouseUp);
       }
       //------------------------------------------------------------------------
+      
+      this.OnMouseDown = function(sender, button, x, y)
+      {
+         if (button == 0)
+         {
+            sender.mx = x;
+            sender.my = sender.engine.height-y-1;
+            sender.btn = true;
+         }
+      }
+      
+      this.OnMouseUp = function(sender, button, x, y)
+      {
+         if (button == 0)
+         {
+            sender.btn = false;
+         }
+      }
 }
 
 LogosNode.prototype = new Node();

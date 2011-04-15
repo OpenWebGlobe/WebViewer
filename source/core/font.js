@@ -94,6 +94,7 @@ Font.prototype.DrawText = function(text,x,y,scale)
       
       this.engine.gl.enable(this.engine.gl.BLEND);
       this.engine.gl.enable(this.engine.gl.ALPHA_TEST);
+      //this.engine.gl.disable(this.engine.gl.DEPTH_TEST);
       this.engine.gl.disable(this.engine.gl.DEPTH_TEST);
       this.engine.gl.depthFunc(this.engine.gl.LEQUAL);
       this.engine.gl.blendFunc(this.engine.gl.SRC_ALPHA,this.engine.gl.ONE);
@@ -120,7 +121,7 @@ Font.prototype.DrawText = function(text,x,y,scale)
       engine.PopMatrices();
 
       this.engine.gl.disable(this.engine.gl.BLEND);
-      this.engine.gl.enable(this.engine.gl.DEPTH_TEST);
+      //this.engine.gl.enable(this.engine.gl.DEPTH_TEST);
      
       this.strLengthInPixel = x-startX;
 }
