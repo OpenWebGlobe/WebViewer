@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Vektor Test</title>
+      <script type="text/javascript" src="../../core/viewfrustum.js"></script>
+      <script type="text/javascript" src="../../core/mat4.js"></script>
+      <script type="text/javascript">
+      
+      function calc()
+      {
+         var mvp = new mat4();
+         var vf= new ViewFrustum(mvp); 
+         console.log(vf.TestBox(1,1.1,1,3,3,3));
+      }
+        
+         
+         
+      </script>
+    </head>
+    <body onload="calc()">
+     
+    </body>
+</html>
