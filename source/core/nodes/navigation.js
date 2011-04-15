@@ -35,8 +35,8 @@ function NavigationNode()
       this._vEye.Set(1,0,0);
       
       this._yaw = 0;
-      this._pitch = 0;
-      this._roll = -1.570796326794896619231; // -pi/2
+      this._pitch = -1.570796326794896619231; // -pi/2;
+      this._roll = 0;
       
       this._longitude = 7.7744205094639103;
       this._latitude = 47.472720418012834;
@@ -67,17 +67,25 @@ function NavigationNode()
       this._bPositionChanged = false;
       this._dAccumulatedTick = 0;
       
+      this._nMouseX = 0;
+      this._nMouseY = 0;
+      this._btn = false;
+      this._vR = new vec3();
+      this._ptDragOriginX = 0;
+      this._ptDragOriginY = 0;
+      this._bDragging = false;
+      
       this.geocoord = new Float64Array(3);
       this.pos = new GeoCoord(0,0,0);
       
-      matResult = new mat4();
-      matBody = new mat4();
-      matTrans = new mat4();
-      matNavigation = new mat4();
-      matCami3d = new mat4();
-      matView = new mat4();
-      
-      matCami3d.Cami3d();
+      this.matBody = new mat4();
+      this.matTrans = new mat4();
+      this.matNavigation = new mat4();
+      this.matCami3d = new mat4();
+      this.matView = new mat4();
+      this.matR1 = new mat4();
+      this.matR2 = new mat4();
+      this.matCami3d.Cami3d();
      
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -94,17 +102,21 @@ function NavigationNode()
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
-         this.matView.LookAt(0,0,2, 0,0,0, 0,1,0);
-         
          this.pos.Set(this._longitude, this._latitude, this._ellipsoidHeight);
          this.pos.ToCartesian(this.geocoord);
          this._vEye.Set(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
-
-         matTrans.Translation(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
-         matNavigation.CalcNavigationFrame(this._longitude, this._latitude);
-         matBody.CalcBodyFrame(this._yaw, this._pitch, this._roll);
          
-         //matTrans.SetTranslation(_vEye);
+         // this can be further optimized for JS
+         this.matTrans.Translation(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
+         this.matNavigation.CalcNavigationFrame(this._longitude, this._latitude);
+         this.matBody.CalcBodyFrame(this._yaw, this._pitch, this._roll);
+         this.matR1.Multiply(this.matTrans, this.matNavigation);
+         this.matR2.Multiply(this.matR1, this.matBody);
+         this.matR1.Multiply(this.matR2, this.matCami3d);
+         this.matView.Inverse(this.matR1);
+         
+         
+         ts.SetCompassDirection(this._yaw);
       }
       //------------------------------------------------------------------------
       this.OnInit = function()
@@ -114,28 +126,234 @@ function NavigationNode()
       //------------------------------------------------------------------------
       this.OnExit = function()
       {
-      
+         //   
       }
       //------------------------------------------------------------------------
       this.OnRegisterEvents = function()
       {
-          this.engine.eventhandler.AddKeyDownCallback(this, this.OnKeyDown);
-          this.engine.eventhandler.AddTimerCallback(this, this.OnTick);
+         this.engine.eventhandler.AddKeyDownCallback(this, this.OnKeyDown);
+         this.engine.eventhandler.AddKeyUpCallback(this, this.OnKeyUp);
+         this.engine.eventhandler.AddMouseDownCallback(this, this.OnMouseDown);
+         this.engine.eventhandler.AddMouseUpCallback(this, this.OnMouseUp);
+         this.engine.eventhandler.AddMouseMoveCallback(this, this.OnMouseMove);
+         this.engine.eventhandler.AddTimerCallback(this, this.OnTick);
       }
       //------------------------------------------------------------------------
-      
       // EVENT: OnKeyDown
       this.OnKeyDown = function(sender, key)
       {
+         if (key == 81) // 'Q'
+         {
+            sender._fVelocityY = sender._fSpeed*sender._dElevationVelocity;
+         }
+         else if (key == 65) // 'A'
+         {
+            sender._fVelocityY = -sender._fSpeed*sender._dElevationVelocity;
+         }
+         else if (key == 83) // 'S'
+         {
+            sender._fPitchSpeed = 0.5*sender._dPitchVelocity;
+         }
+         else if (key == 88) // 'X'
+         {
+            sender._fPitchSpeed = -0.5*sender._dPitchVelocity;  
+         }
+         
          sender.lastkey = key;
+         sender._bPositionChanged = true;
       }
-      
+      //------------------------------------------------------------------------
+      // EVENT: OnKeyUp
+      this.OnKeyUp = function(sender, key)
+      {
+         if (key == 81) // 'Q'
+         {
+            sender._fVelocityY = 0;
+         }
+         else if (key == 65) // 'A'
+         {
+            sender._fVelocityY = 0;
+         }
+         else if (key == 83) // 'S'
+         {
+            sender._fPitchSpeed = 0;
+         }
+         else if (key == 88) // 'X'
+         {
+            sender._fPitchSpeed = 0;  
+         }
+         
+         sender.lastkey = 0;
+         sender._bPositionChanged = true;
+      }
+      //------------------------------------------------------------------------
+      // EVENT: OnMouseDown
+      this.OnMouseDown = function(sender, button, x, y)
+      {
+         if (button == 0)
+         {
+            sender._dSpeed = 0.0;
+            sender._vR.Set(0,0,0);
+            sender._ptDragOriginX = x;
+            sender._ptDragOriginY = y;
+            sender._bDragging = true;
+            sender._btn = true;
+         }
+         
+         sender._nMouseX = x;
+         sender._nMouseY = y;
+         sender._bPositionChanged = true;
+      }
+      //------------------------------------------------------------------------
+      // EVENT: OnMouseUp
+      this.OnMouseUp = function(sender, button, x, y)
+      {
+         if (button == 0)
+         {
+            sender._btn = false;
+            sender._bDragging = false;
+         }
+         
+         sender._nMouseX = x;
+         sender._nMouseY = y;
+         sender._dSpeed = 0.0;
+         sender._fSurfacePitchSpeed = 0;
+         sender._fYawSpeed = 0;
+      }
+      //------------------------------------------------------------------------
+      // EVENT: OnMouseMove
+      this.OnMouseMove = function(sender, x, y)
+      {
+         sender._nMouseX = x;
+         sender._nMouseY = y;
+         
+         if (sender._bDragging)
+         {
+            var dX = (sender._ptDragOriginX-x)/sender.engine.width;
+            var dY = (sender._ptDragOriginY-y)/sender.engine.height;
+            dX *= dX;
+            dY *= dY;
+            sender._dSpeed = Math.sqrt(dX + dY);
+   
+            var mx = sender._ptDragOriginX;
+            var my = sender.engine.height-1-sender._ptDragOriginY;
+   
+            var cx = x;
+            var cy = sender.engine.height-1 - y;
+   
+            sender._vR.Set(cx - mx, cy - my, 0);
+            sender._vR.Normalize();
+            
+            var vrx = sender._vR.Get()[0];
+            var vry = sender._vR.Get()[1];
+            var sgnX = 0, sgnY = 0;
+            if (vrx>0){ sgnX = 1;}
+            else if (vrx<0){ sgnX =-1; }
+            if (vry>0) { sgnY = 1;}
+            else if (vry<0){ sgnY =-1; }
+               
+            sender._fSurfacePitchSpeed = sender._fSpeed*sender._dFlightVelocity*dY*sgnY;
+            sender._fYawSpeed = sender._dYawVelocity*dX*sgnX;
+         }
+         
+      }
       //------------------------------------------------------------------------
       // EVENT: OnTick
-      this.OnTick = function(sender, dt)
+      this.OnTick = function(sender, dTick)
       {
-         sender.curtime += dt; 
+         var deltaPitch = sender._fPitchSpeed*dTick/500.0;
+         var deltaRoll = sender._fRollSpeed*dTick/500.0;
+         var deltaYaw = sender._fYawSpeed*dTick/500;
+         var deltaH = sender._fVelocityY*dTick;
+         
+         var p = (sender._ellipsoidHeight / 500000.0 ) * (sender._ellipsoidHeight / 500000.0 );
+         if (p>10) 
+         {
+            p=10;
+         }
+         else if (p<0.001)
+         {  
+            p=0.001;
+         }
+         
+         var deltaSurface = (p*sender._fSurfacePitchSpeed*dTick)/250;
+         var bChanged = false;
+         
+         
+         if (sender._pitch_increase>0)
+         {
+            var dp = 0.5*sender._dPitchVelocity*dTick/1000.0;
+      
+            sender._pitch = sender._pitch + dp;
+            sender._pitch_increase -= dp;
+            if (sender._pitch_increase<0)
+            {
+               sender._pitch = sender._pitch + sender._pitch_increase;
+               sender._pitch_increase = 0;
+            }
+      
+            bChanged = true;
+         }
+      
+         if (sender._pitch_decrease>0)
+         {
+            var dp = 0.5*sender._dPitchVelocity*dTick/1000.0;
+      
+            sender._pitch = sender._pitch - dp;
+            sender._pitch_decrease -= dp;
+            if (sender._pitch_decrease<0)
+            {
+               sender._pitch = sender._pitch - sender._pitch_decrease;
+               sender._pitch_decrease = 0;
+            }
+      
+            bChanged = true;
+         }
+         
+         if (deltaPitch)
+         {
+            sender._pitch += deltaPitch;
+            bChanged = true;
+         }
+         
+         if (deltaYaw)
+         {
+            sender._yaw += deltaYaw;
+
+            if (sender._yaw>2.0*Math.PI)
+            {
+               sender._yaw = sender._yaw-2.0*Math.PI;
+            }
+            if (sender._yaw<0)
+            {
+               sender._yaw = 2.0*Math.PI - sender._yaw;
+            }
+            bChanged = true;
+         }
+         
+         // Change Elevation
+         if (deltaH)
+         {
+            sender._ellipsoidHeight += 1000*deltaH*p;
+
+            //limit ellipsoid height (TEMPORARY, because we have no collision atm)
+            if (sender._ellipsoidHeight<=1000)
+            {
+                sender._ellipsoidHeight = 10;
+            }
+            
+            if (sender._ellipsoidHeight>7000000)
+            { 
+               sender._ellipsoidHeight = 7000000;
+            }
+         }
+         
+         if (deltaSurface)
+         {
+         }
+         
       }
+      //------------------------------------------------------------------------
 }
 
 NavigationNode.prototype = new Node();

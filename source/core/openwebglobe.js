@@ -699,11 +699,15 @@ _fncMouseMove = function(evt)
    for (var i=0;i<_g_vInstances.length;i++)
    {
       var engine = _g_vInstances[i];
-      if (evt.currentTarget == _g_vInstances[i].context)
+      if (evt.currentTarget == engine.context)
       {
-         if (_g_vInstances[i].cbfMouseMove)
+         var x = evt.clientX-engine.xoffset/2;
+         var y = evt.clientY-engine.yoffset/2;
+         engine.eventhandler.MouseMove(x,y);
+         
+         if (engine.cbfMouseMove)
          {
-            _g_vInstances[i].cbfMouseMove(evt.clientX-_g_vInstances[i].xoffset/2, evt.clientY-_g_vInstances[i].yoffset/2); // call mouse up callback function
+            engine.cbfMouseMove(x,y); // call mouse up callback function
          }
          return;
       }
@@ -720,13 +724,13 @@ _fncResize = function(evt)
    for (var i=0;i<_g_vInstances.length;i++)
    {
       var engine = _g_vInstances[i];
-      if (_g_vInstances[i].bFullscreen)
+      if (engine.bFullscreen)
       {
-         _g_vInstances[i].context.width = window.innerWidth-20;
-         _g_vInstances[i].context.height = window.innerHeight-20;
+         engine.context.width = window.innerWidth-20;
+         engine.context.height = window.innerHeight-20;
       }
       
-      _g_vInstances[i]._resize(_g_vInstances[i].context.width, _g_vInstances[i].context.height);
+      engine._resize(engine.context.width, engine.context.height);
    }
 }
   

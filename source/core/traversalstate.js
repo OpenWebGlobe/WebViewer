@@ -188,5 +188,13 @@ TraversalState.prototype.OverwriteViewMatrix = function(matrix)
    this.MatrixStackView[l-1].CopyFrom(matrix);
 }
 //------------------------------------------------------------------------------
+/**
+ * @description Set direction for the compass
+ * @param{double} compdir the direction of the compass (RAD)
+ */
+TraversalState.prototype.SetCompassDirection = function(compdir)
+{
+   this.compassdirection = compdir;
+}
 
 

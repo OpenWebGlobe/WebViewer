@@ -593,7 +593,7 @@ mat4.prototype.CalcNavigationFrame = function(lng_deg, lat_deg)
    
    this._values[0] = -sinlat*coslng;   this._values[4] = -sinlng; this._values[8]  = -coslat*coslng;  this._values[12] = 0;
    this._values[1] = -sinlat*sinlng;   this._values[5] = coslng;  this._values[9]  = -coslat*sinlng;  this._values[13] = 0;
-   this._values[2] = coslat;           this._values[6] = 0;       this._values[10] = sinlat;          this._values[14] = 0;
+   this._values[2] = coslat;           this._values[6] = 0;       this._values[10] = -sinlat;          this._values[14] = 0;
    this._values[3] = 0;                this._values[7] = 0;       this._values[11] = 0;               this._values[15] = 1;
 }
 
@@ -617,6 +617,7 @@ mat4.prototype.CalcBodyFrame = function(yaw, pitch, roll)
    this._values[3] = 0;                this._values[7] = 0;                                        this._values[11] = 0;                                       this._values[15] = 1;
 }
 
+//------------------------------------------------------------------------------
 /**
  * @description Swap Axis: geocentric cartesian system to graphics engine coordinate system
  *
@@ -627,6 +628,55 @@ mat4.prototype.Cami3d = function()
    this._values[1] = 1; this._values[5] = 0;  this._values[9]  = 0;  this._values[13] = 0;
    this._values[2] = 0; this._values[6] = -1; this._values[10] = 0;  this._values[14] = 0;
    this._values[3] = 0; this._values[7] = 0;  this._values[11] = 0;  this._values[15] = 1;
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Calculate Inverse Matrix
+ * 
+ */
+mat4.prototype.Inverse = function(M)
+{
+   // cache values of matrix
+   var a11 = M._values[0],  a12 = M._values[1],  a13 = M._values[2],  a14 = M._values[3];
+   var a21 = M._values[4],  a22 = M._values[5],  a23 = M._values[6],  a24 = M._values[7];
+   var a31 = M._values[8],  a32 = M._values[9],  a33 = M._values[10], a34 = M._values[11];
+   var a41 = M._values[12],  a42 = M._values[13],  a43 = M._values[14], a44 = M._values[15];
+             
+   // calculate determinant (and hope there is no typo!)        
+   var det = a11*a22*a33*a44 + a11*a23*a34*a42 + a11*a24*a32*a43
+            +  a12*a21*a34*a43 + a12*a23*a31*a44 + a12*a24*a33*a41
+            +  a13*a21*a32*a44 + a13*a22*a34*a41 + a13*a24*a31*a42
+            +  a14*a21*a33*a42 + a14*a22*a31*a43 + a14*a23*a32*a41
+            -  a11*a22*a34*a43 - a11*a23*a32*a44 - a11*a24*a33*a42
+            -  a12*a21*a33*a44 - a12*a23*a34*a41 - a12*a24*a31*a43
+            -  a13*a21*a34*a42 - a13*a22*a31*a44 - a13*a24*a32*a41
+            -  a14*a21*a32*a43 - a14*a22*a33*a41 - a14*a23*a31*a42;
+   
+   var invdet = 1/det;
+   
+   var b11 = (a22*a33*a44 + a23*a34*a42 + a24*a32*a43 - a22*a34*a43 - a23*a32*a44 - a24*a33*a42) * invdet;
+   var b12 = (a12*a34*a43 + a13*a32*a44 + a14*a33*a42 - a12*a33*a44 - a13*a34*a42 - a14*a32*a43) * invdet;
+   var b13 = (a12*a23*a44 + a13*a24*a42 + a14*a22*a43 - a12*a24*a43 - a13*a22*a44 - a14*a23*a42) * invdet;
+   var b14 = (a12*a24*a33 + a13*a22*a34 + a14*a23*a32 - a12*a23*a34 - a13*a24*a32 - a14*a22*a33) * invdet;
+   var b21 = (a21*a34*a43 + a23*a31*a44 + a24*a33*a41 - a21*a33*a44 - a23*a34*a41 - a24*a31*a43) * invdet;
+   var b22 = (a11*a33*a44 + a13*a34*a41 + a14*a31*a43 - a11*a34*a43 - a13*a31*a44 - a14*a33*a41) * invdet;
+   var b23 = (a11*a24*a43 + a13*a21*a44 + a14*a23*a41 - a11*a23*a44 - a13*a24*a41 - a14*a21*a43) * invdet;
+   var b24 = (a11*a23*a34 + a13*a24*a31 + a14*a21*a33 - a11*a24*a33 - a13*a21*a34 - a14*a23*a31) * invdet;
+   var b31 = (a21*a32*a44 + a22*a34*a41 + a24*a31*a42 - a21*a34*a42 - a22*a31*a44 - a24*a32*a41) * invdet;
+   var b32 = (a11*a34*a42 + a12*a31*a44 + a14*a32*a41 - a11*a32*a44 - a12*a34*a41 - a14*a31*a42) * invdet;
+   var b33 = (a11*a22*a44 + a12*a24*a41 + a14*a21*a42 - a11*a24*a42 - a12*a21*a44 - a14*a22*a41) * invdet;
+   var b34 = (a11*a24*a32 + a12*a21*a34 + a14*a22*a31 - a11*a22*a34 - a12*a24*a31 - a14*a21*a32) * invdet;
+   var b41 = (a21*a33*a42 + a22*a31*a43 + a23*a32*a41 - a21*a32*a43 - a22*a33*a41 - a23*a31*a42) * invdet;
+   var b42 = (a11*a32*a43 + a12*a33*a41 + a13*a31*a42 - a11*a33*a42 - a12*a31*a43 - a13*a32*a41) * invdet;
+   var b43 = (a11*a23*a42 + a12*a21*a43 + a13*a22*a41 - a11*a22*a43 - a12*a23*a41 - a13*a21*a42) * invdet;
+   var b44 = (a11*a22*a33 + a12*a23*a31 + a13*a21*a32 - a11*a23*a32 - a12*a21*a33 - a13*a22*a31) * invdet;
+
+   this._values[0] = b11; this._values[4] = b21;  this._values[8]  = b31;  this._values[12] = b41;
+   this._values[1] = b12; this._values[5] = b22;  this._values[9]  = b32;  this._values[13] = b42;
+   this._values[2] = b13; this._values[6] = b23;  this._values[10] = b33;  this._values[14] = b43;
+   this._values[3] = b14; this._values[7] = b24;  this._values[11] = b34;  this._values[15] = b44;
+                   
 }
 
 //------------------------------------------------------------------------------
