@@ -201,6 +201,7 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    canvas.addEventListener("mouseup", _fncMouseUp, false);
    canvas.addEventListener("mousemove", _fncMouseMove, false);
    window.addEventListener("DOMMouseScroll", _fncMouseWheel, false);
+   canvas.addEventListener('mousewheel', _fncMouseWheel, false); // for Chrome
    window.addEventListener("resize", _fncResize, false);
    window.addEventListener("keydown", _fncKeyDown, false);
    window.addEventListener("keyup", _fncKeyUp, false);
@@ -689,10 +690,29 @@ _fncMouseMove = function(evt)
  */
 _fncMouseWheel = function(evt)
 {
+   if(evt.preventDefault) 
+   { 
+      evt.preventDefault();  // seems to work for: Chrome, Safari, Firefox
+   } 
+   
    for (var i=0;i<_g_vInstances.length;i++)
    {
       var engine = _g_vInstances[i];
-      var delta = -evt.detail/3;
+      var delta = 0; 
+      
+      if ( evt.wheelDelta ) 
+      { 
+         delta= evt.wheelDelta;
+         if (window.opera) 
+         {
+            delta= -delta;
+         }
+      }
+      else if (evt.detail)  // Firefox
+      { 
+         delta = -evt.detail/3;;
+      }
+      
       engine.eventhandler.MouseWheel(delta);
          
          /*if (engine.cbfMouseWheel)
