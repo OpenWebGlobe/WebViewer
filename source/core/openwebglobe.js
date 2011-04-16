@@ -402,11 +402,11 @@ engine3d.prototype.CreateScene = function()
 /**
  * @description Draw Text using internal bitmap font
  */
-engine3d.prototype.DrawText = function(txt,x,y,scale)
+engine3d.prototype.DrawText = function(txt,x,y,scale,fontcolor)
 {
    if (this.systemfont)
    {
-      this.systemfont.DrawText(txt,x,y,scale); 
+      this.systemfont.DrawText(txt,x,y,scale,fontcolor); 
    }
 }
 //------------------------------------------------------------------------------

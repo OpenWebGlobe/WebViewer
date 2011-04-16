@@ -50,7 +50,7 @@ function Font(engine)
  * @param {x} x x position of text
  * @param {y} y y position of text
  */
-Font.prototype.DrawText = function(text,x,y,scale)
+Font.prototype.DrawText = function(text,x,y,scale,fontcolor)
 {
       if(scale == null)
       {
@@ -64,7 +64,7 @@ Font.prototype.DrawText = function(text,x,y,scale)
       this.engine.gl.enable(this.engine.gl.ALPHA_TEST);
       //this.engine.gl.disable(this.engine.gl.DEPTH_TEST);
       this.engine.gl.depthFunc(this.engine.gl.LEQUAL);
-      this.engine.gl.blendFunc(this.engine.gl.SRC_ALPHA,this.engine.gl.ONE);
+     // this.engine.gl.blendFunc(this.engine.gl.SRC_ALPHA,this.engine.gl.ONE);
 
       
       var startX=x;
@@ -81,7 +81,7 @@ Font.prototype.DrawText = function(text,x,y,scale)
          model.Scale(scale,scale,1);
          model.OverwriteTranslation(model,x+a,y,0)
          this.engine.SetModelMatrix(model)
-         this.fontmesh.Draw(true,6,ccode*12);
+         this.fontmesh.Draw(true,6,ccode*12,fontcolor);
          a += (fontwidth[ccode]/2)*scale;   
       }
       
