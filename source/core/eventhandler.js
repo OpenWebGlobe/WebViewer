@@ -28,14 +28,15 @@
  */
 function EventHandler()
 {
-   this.vecKeyDown   = new Array(); // array containing all key down callbacks
-   this.vecKeyUp     = new Array(); // array containing all key up callbacks
-   this.vecMouseDown = new Array(); // array containing all mouse down callbacks
-   this.vecMouseUp   = new Array(); // array containing all mouse up callbacks
-   this.vecMouseMove = new Array(); // array containing all mouse move callbacks
-   this.vecRender    = new Array(); // array containing all render callbacks
-   this.vecResize    = new Array(); // array containing all resize callbacks
-   this.vecTimer     = new Array(); // array containing all timer callbacks
+   this.vecKeyDown      = new Array(); // array containing all key down callbacks
+   this.vecKeyUp        = new Array(); // array containing all key up callbacks
+   this.vecMouseDown    = new Array(); // array containing all mouse down callbacks
+   this.vecMouseUp      = new Array(); // array containing all mouse up callbacks
+   this.vecMouseMove    = new Array(); // array containing all mouse move callbacks
+   this.vecMouseWheel   = new Array(); // array containing all mouse wheel callbacks
+   this.vecRender       = new Array(); // array containing all render callbacks
+   this.vecResize       = new Array(); // array containing all resize callbacks
+   this.vecTimer        = new Array(); // array containing all timer callbacks
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +92,7 @@ EventHandler.prototype.MouseDown = function(button, x, y)
 }
 //------------------------------------------------------------------------------
 /** 
- * @description Handle Mouse Down Event
+ * @description Handle Mouse Up Event
  * @constructor
  */
 EventHandler.prototype.MouseUp = function(button, x, y)
@@ -104,7 +105,20 @@ EventHandler.prototype.MouseUp = function(button, x, y)
 }
 //------------------------------------------------------------------------------
 /** 
- * @description Handle Mouse Down Event
+ * @description Handle Mouse wheel Event
+ * @constructor
+ */
+EventHandler.prototype.MouseWheel = function(delta)
+{
+   for (var i=0;i<this.vecMouseWheel.length;i++)
+   {
+      var evtinfo = this.vecMouseWheel[i];
+      evtinfo.func(evtinfo.sender, delta);
+   }
+}
+//------------------------------------------------------------------------------
+/** 
+ * @description Handle Mouse Move Event
  * @constructor
  */
 EventHandler.prototype.MouseMove = function(x, y)
@@ -117,7 +131,7 @@ EventHandler.prototype.MouseMove = function(x, y)
 }
 //------------------------------------------------------------------------------
 /** 
- * @description Handle Mouse Down Event
+ * @description Handle Render Event
  * @constructor
  */
 EventHandler.prototype.Render = function()
@@ -193,6 +207,16 @@ EventHandler.prototype.AddMouseUpCallback = function(sender, cbf)
 {
    var evtinfo = new EventInfo(sender, cbf);
    this.vecMouseUp.push(evtinfo);
+}
+//------------------------------------------------------------------------------
+/** 
+ * @description Add Mouse Wheel Event
+ * @constructor
+ */
+EventHandler.prototype.AddMouseWheelCallback = function(sender, cbf)
+{
+   var evtinfo = new EventInfo(sender, cbf);
+   this.vecMouseWheel.push(evtinfo);
 }
 //------------------------------------------------------------------------------
 /** 

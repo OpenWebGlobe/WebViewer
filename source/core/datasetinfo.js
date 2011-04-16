@@ -49,7 +49,7 @@ function DatasetInfo()
  * @description Holds information about a dataset (image, elevation, poi, ...)
  * @param url The URL where of the dataset info (JSON)
  */
-DatasetInfo.prototype.Download(url)
+DatasetInfo.prototype.Download = function(url)
 {
    
 }

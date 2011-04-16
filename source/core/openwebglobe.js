@@ -200,6 +200,7 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    canvas.addEventListener("mousedown", _fncMouseDown, false);
    canvas.addEventListener("mouseup", _fncMouseUp, false);
    canvas.addEventListener("mousemove", _fncMouseMove, false);
+   window.addEventListener("DOMMouseScroll", _fncMouseWheel, false);
    window.addEventListener("resize", _fncResize, false);
    window.addEventListener("keydown", _fncKeyDown, false);
    window.addEventListener("keyup", _fncKeyUp, false);
@@ -679,6 +680,25 @@ _fncMouseMove = function(evt)
          }
          return;
       }
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @description internal mousewheel
+ * @ignore
+ */
+_fncMouseWheel = function(evt)
+{
+   for (var i=0;i<_g_vInstances.length;i++)
+   {
+      var engine = _g_vInstances[i];
+      var delta = -evt.detail/3;
+      engine.eventhandler.MouseWheel(delta);
+         
+         /*if (engine.cbfMouseWheel)
+         {
+            engine.cbfMouseWheel(delta); // not yet supported,
+         }*/
    }
 }
 

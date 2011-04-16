@@ -138,6 +138,36 @@ function NavigationNode()
          this.engine.eventhandler.AddMouseUpCallback(this, this.OnMouseUp);
          this.engine.eventhandler.AddMouseMoveCallback(this, this.OnMouseMove);
          this.engine.eventhandler.AddTimerCallback(this, this.OnTick);
+         this.engine.eventhandler.AddMouseWheelCallback(this, this.OnMouseWheel);
+      }
+      //------------------------------------------------------------------------
+      // EVENT: OnMouseWheel
+      this.OnMouseWheel = function(sender, delta)
+      {
+         if (delta>0)
+         {
+            if (sender._pitch_decrease > 0)
+            {
+               sender._pitch_decrease = 0;
+               sender._pitch_increase = 0;
+            }
+            else
+            {
+               sender._pitch_increase += 0.05;
+            }
+         }
+         else
+         {
+            if (sender._pitch_increase > 0)
+            {
+               sender._pitch_increase = 0;
+               sender._pitch_decrease = 0;
+            }
+            else
+            {
+               sender._pitch_decrease += 0.05;
+            }
+         }
       }
       //------------------------------------------------------------------------
       // EVENT: OnKeyDown
