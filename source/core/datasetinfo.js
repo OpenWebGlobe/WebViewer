@@ -60,7 +60,7 @@ DatasetInfo.prototype.Download = function(url)
       return;
    }  
   
-   this.http=new window.XMLHttpRequest();
+   this.http=new XMLHttpRequest();
    this.http.open("GET",url,true);
    var me=this;
    this.http.onreadystatechange = function(){_cbfdsidownload(me);};
@@ -73,12 +73,7 @@ _cbfdsidownload = function(dsi)
 {
    if (dsi.http.readyState==4)
    {
-      if(dsi.http.status==404)
-      {
-         console.log('datasetinfo: File not found.');
-         dsi.bFailed = true;
-      }
-      else
+      if (dsi.http.status==200)
       {
          var data=dsi.http.responseText;      
          var obj=JSON.parse(data);
@@ -97,6 +92,10 @@ _cbfdsidownload = function(dsi)
          dsi.vCenterCoord = obj.center;  
          
          dsi.bReady = true;     
+      }
+      else
+      {
+         dsi.bFailed = true;
       }
    }
 }

@@ -27,17 +27,19 @@
  * @description Image Layer for i3d Tile Service
  * @author Martin Christen, martin.christen@fhnw.ch
  */
-function ImageLayeri3d()
+function i3dImageLayer()
 {
+   this.dsi = new DatasetInfo();  // dataset info
+   
    //---------------------------------------------------------------------------
    this.Ready = function()
    {
-      return false;
+      return this.dsi.bReady;
    }
    //---------------------------------------------------------------------------
    this.Failed = function()
    {
-      return false;
+      return this.dsi.bFailed;
    }
    //---------------------------------------------------------------------------
    this.RequestTile = function(quadcode, cbfReady, cbfFailed)
@@ -47,15 +49,43 @@ function ImageLayeri3d()
    //---------------------------------------------------------------------------
    this.GetMinLod = function()
    {
-      return 0;
+      return 0;   // all i3d layers have min lod 0
    }
    
    //---------------------------------------------------------------------------
    this.GetMaxLod = function()
    {
-      return 0;
+      if (this.dsi.nLevelofDetail)
+      {
+         return this.dsi.nLevelofDetail;
+      }
+      else
+      {
+         return 0;
+      }
+   }
+   //---------------------------------------------------------------------------
+   
+   this.Setup = function(server, layer)
+   {
+     /* Example for i3d Tile-Service.
+        World500 Data is located at http://www.openwebglobe.org/data/img/
+        
+        server="http://www.openwebglobe.org/data/img/"
+        layer="World500"
+      */
+      datasetfile = server + "/" + layer + ".json";
+      this.dsi.Download(datasetfile);
    }
 }
 
-ImageLayeri3d.prototype = new ImageLayer();
+
+//------------------------------------------------------------------------------
+i3dImageLayer.prototype = new ImageLayer();
+//------------------------------------------------------------------------------
+
+
+
+
+
 

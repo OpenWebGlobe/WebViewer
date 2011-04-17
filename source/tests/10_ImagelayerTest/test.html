@@ -31,34 +31,26 @@
          <script type="text/javascript" src="../../core/datasetinfo.js"></script>
          <script type="text/javascript" src="../../core/terrainblock.js"></script>
          <script type="text/javascript" src="../../core/globerenderer.js"></script>
-         <script type="text/javascript" src="../../core/globecache.js"></script>
-         <script type="text/javascript" src="../../core/layer/imagelayer.js"></script>
-         <script type="text/javascript" src="../../core/layer/imagelayer_i3d.js"></script>
-         <script type="text/javascript" src="../../core/layer/imagelayer_osm.js"></script>
          <script type="text/javascript">
          
          //---------------------------------------------------------------------
         
          var engine = null;
-         var imgLayer = new i3dImageLayer();
-         var bImageLayerIsReady = false;
+         var datasetinfo = new DatasetInfo();
+         var bDone = false;
        
          
          //---------------------------------------------------------------------
          function OnTimer(delta)
          {
-            if (!bImageLayerIsReady)
+            if (!bDone)
             {
-               if (imgLayer.Ready())
+               if (datasetinfo.bReady)
                {
-                  console.log("Image Layer is ready");     
-                  bImageLayerIsReady = true;
-               }
-               
-               if (imgLayer.Failed())
-               {
-                  console.log("Creating Image Layer failed");
-                  bImageLayerIsReady = true;
+                  console.log("Finished Downloading Dataset");
+                  console.log("layer: " + datasetinfo.sLayerName);
+                  
+                  bDone = true;
                }
                
             }
@@ -82,15 +74,15 @@
          function OnRender()
          {  
            var fontcolor = new vec4();
-           fontcolor.Set(1,1,1,1);
-           engine.DrawText("This is Image Layer Test", 0, height-32,1,fontcolor);
+           fontcolor.Set(1,1,0,1); //set custom font color here...
+           engine.DrawText("Welcome to OpenWebGlobe Demo", 0, height-32,1,fontcolor);
          }
          
          //---------------------------------------------------------------------
          
          function OnInit()
          { 
-            imgLayer.Setup("http://www.openwebglobe.org/data/img", "World500");
+            datasetinfo.Download("World500.json");
          }
         
          //---------------------------------------------------------------------
