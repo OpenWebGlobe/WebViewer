@@ -24,77 +24,69 @@
 //------------------------------------------------------------------------------
 /**
  * @constructor
- * @description Terrainblock
+ * @description Cache Manager for virtual globe
  * @author Martin Christen, martin.christen@fhnw.ch
  */
-function TerrainBlock(engine, quadcode, quadtree)
+function GlobeCache(engine, imagelayerlist, elevationlayerlist, quadtree, cachesize)
 {
    this.engine = engine;
-   this.quadcode = quadcode;
+   this.imagelayerlist = imagelayerlist;
+   this.elevationlayerlist = elevationlayerlist;
    this.quadtree = quadtree;
-}
-//------------------------------------------------------------------------------
-/**
- * @description Request Data
- * @intern
- */
-TerrainBlock.prototype._AsyncRequestData = function()
-{
    
+   this.cache = new Cache(cachesize, false);
 }
 //------------------------------------------------------------------------------
 /**
- * @description Destroy Terrainblock and free all memory, especially GPU mem.
+ * @description Returns true if cache is ready to be used.
+ * Please note that for some tile services creation of cache needs async requests.
+ * You can't make tile requests before this function returns true.
  */
-TerrainBlock.prototype.Destroy = function()
+GlobeCache.prototype.IsReady = function()
 {
-   console.log("DESTROY TERRAIN BLOCK!");
+   if (!this.imagelayerlist) { return false; }
+   
+   if (this.imagelayerlist.length == 0) {return false;}
+   
+   for (var i=0;i<this.imagelayerlist.length;i++)
+   {
+      if (!this.imagelayerlist[i].Ready())
+      {
+         return false;
+      }
+   }
+  
+   return true; // all image layers are ready!
 }
+//------------------------------------------------------------------------------
+/**
+ * @description Request a new Terrainblock. This is async. 
+ * Always returns a terrain block (possibly marked as not ready)
+ */
+//------------------------------------------------------------------------------
+GlobeCache.prototype.RequestBlock = function(quadcode)
+{
+   var terrainblock = this.cache.getItem(quadcode);
+   if (terrainblock == null)
+   {
+      // item doesn't exist yet, create a new one and request data (async)
+      terrainblock = new TerrainBlock(this.engine, quadcode, this.quadtree);
+      terrainblock._AsyncRequestData();
+   }
+   
+   return terrainblock;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Get an already cached block (or null if unavailable)
+ * This doesn't force downloading a block if not available.
+ * Returns terrain block or null.
+ */
+GlobeCache.prototype.GetCachedBlock = function(quadcode)
+{
+   var terrainblock = this.cache.getItem(quadcode);
+   return terrainblock;
+}
+//------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-/**
- * @description returns true if terrain block is available (can be rendered).
- * TerrainBlock is an asynchronous object and some data may not be available yet.
- */
-TerrainBlock.prototype.IsAvailable = function()
-{
-   return false;
-}
-//------------------------------------------------------------------------------
-/**
-* @description Calculate visible pixel size
-*/
-TerrainBlock.prototype.GetPixelSize = function(mModelViewProjection, nWidth, nHeight)
-{
-   
-}
-//------------------------------------------------------------------------------
-/**
-* @description Calculate size of a block (cell size)
-*/
-TerrainBlock.prototype.GetBlockSize = function()
-{
-   
-}
-//------------------------------------------------------------------------------
-/**
-* @description Calc exact distance to another point
-* @param {vec3} vWhere The position to measure to
-* @param {vec3} outHitpoint shortest position to terrain
-*/
-TerrainBlock.prototype.CalcDistanceTo = function(vWhere, outHitpoint)
-{
-   
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description Render a terrain block. Requires model and view matrix for
- * some voodoo with floating point precision.
- */
-TerrainBlock.prototype.Render = function(oModelMatrix, oViewMatrix, qCache)
-{
-}
-
-//------------------------------------------------------------------------------
 

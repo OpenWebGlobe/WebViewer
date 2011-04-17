@@ -21,6 +21,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+//------------------------------------------------------------------------------
 /**
  * @constructor
  * @class
@@ -42,36 +43,34 @@
     this._wgscoords[1] = latitude;
     this._wgscoords[2] = elevation;
  }
- 
 //------------------------------------------------------------------------------
 /**
  * @description Get the longitude value
  * @return Longitude
  */
- GeoCoord.prototype.GetLongitude = function()
- {
-    return this._wgscoords[0];
- }
+GeoCoord.prototype.GetLongitude = function()
+{
+   return this._wgscoords[0];
+}
 //------------------------------------------------------------------------------
 /**
  * @description Get the latitude value
  * @return Latitude 
  */
- GeoCoord.prototype.GetLatitude = function()
- {
-    return this._wgscoords[1];
- }
+GeoCoord.prototype.GetLatitude = function()
+{
+   return this._wgscoords[1];
+}
 
 //------------------------------------------------------------------------------
 /**
  * @description Get the elevation value
  * @return elevation
  */
- GeoCoord.prototype.GetElevation = function()
- {
-    return this._wgscoords[2];
- }
- 
+GeoCoord.prototype.GetElevation = function()
+{
+   return this._wgscoords[2];
+}
 //------------------------------------------------------------------------------
 /**
  * @description transforms the wgs84 coordinates to cartesian coordinates.
@@ -83,6 +82,7 @@
     {
        return;
     }
+    
     var sinlat = Math.sin(MathUtils.Deg2Rad(this._wgscoords[1]));    // sin of latitude
     var coslat = Math.cos(MathUtils.Deg2Rad(this._wgscoords[1]));    // cos of latitude
     var sinlong = Math.sin(MathUtils.Deg2Rad(this._wgscoords[0]));    // sin of latitude
@@ -97,7 +97,6 @@
     result[0] *= CARTESIAN_SCALE_INV;
     result[1] *= CARTESIAN_SCALE_INV;
     result[2] *= CARTESIAN_SCALE_INV;
-    
  }
 
 //------------------------------------------------------------------------------

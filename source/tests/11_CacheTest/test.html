@@ -34,6 +34,7 @@
          <script type="text/javascript" src="../../core/terrainblock.js"></script>
          <script type="text/javascript" src="../../core/globerenderer.js"></script>
          <script type="text/javascript" src="../../core/cache.js"></script>
+         <script type="text/javascript" src="../../core/globecache.js"></script>
          <script type="text/javascript" src="../../core/layer/imagelayer.js"></script>
          <script type="text/javascript" src="../../core/layer/imagelayer_i3d.js"></script>
          <script type="text/javascript" src="../../core/layer/imagelayer_osm.js"></script>
@@ -47,8 +48,8 @@
          
          var engine = null;
          var imgLayer = new i3dImageLayer();
-         var bImageLayerIsReady = false;
-         var globecache = new Cache(10);
+         var bLayersAreReady = false;
+         var globecache;
          
          //---------------------------------------------------------------------
          // Callback function for tile service
@@ -62,38 +63,11 @@
          {
             console.log("Uh Oh!! Retrieving Image Tile " + quadcode + " failed!");
          }
-         
-         //---------------------------------------------------------------------
-         // free texture memory:
-         function OnPurgeCache(ImageObject)
-         {
-            ImageObject->Destroy();
-         }
-         
+        
          //---------------------------------------------------------------------
          function OnTimer(delta)
          {
-            if (!bImageLayerIsReady)
-            {
-               if (imgLayer.Ready())
-               {
-                  console.log("Image Layer is ready");     
-                  bImageLayerIsReady = true;
-                  
-                  imgLayer.RequestTile(engine, "01201", OnImageTileReady, OnImageTileFailed);
-                  imgLayer.RequestTile(engine, "0", OnImageTileReady, OnImageTileFailed);
-                  imgLayer.RequestTile(engine, "01", OnImageTileReady, OnImageTileFailed);
-                  imgLayer.RequestTile(engine, "012", OnImageTileReady, OnImageTileFailed);
-                  imgLayer.RequestTile(engine, "0123", OnImageTileReady, OnImageTileFailed);
-               }
-               
-               if (imgLayer.Failed())
-               {
-                  console.log("Creating Image Layer failed");
-                  bImageLayerIsReady = true;
-               }
-               
-            }
+            
          }
          
          //---------------------------------------------------------------------
@@ -113,9 +87,33 @@
          
          function OnRender()
          {  
-           var fontcolor = new vec4();
-           fontcolor.Set(1,1,1,1);
-           engine.DrawText("This is Image Layer Test", 0, height-32,1,fontcolor);
+            var fontcolor = new vec4();
+            fontcolor.Set(1,1,1,1);
+            engine.DrawText("This is Image Layer Test", 0, height-32,1,fontcolor);
+           
+           
+            // Test if globe cache is ready. if so we can make tile requests!! 
+            if (globecache.IsReady())
+            {
+               if (!bLayersAreReady)
+               {
+                  console.log("All Layers are ready!");
+               }
+               bLayersAreReady = true;
+            
+               // make some requests 
+           
+               var tb0 = globecache.RequestBlock("0");
+               var tb1 = globecache.RequestBlock("1");
+               var tb2 = globecache.RequestBlock("2");
+               var tb3 = globecache.RequestBlock("3");
+               
+               if (tb0.IsAvailable())
+               {
+                  // do something with available block
+               }
+          
+            }
            
            /*for (var i=0;i<imgObjects.length;i++)
            {
@@ -128,7 +126,20 @@
          
          function OnInit()
          { 
+            // Setup an imagelayer:
             imgLayer.Setup("http://www.openwebglobe.org/data/img", "World500");
+            
+            // Create Array of image layers: (currently only one...)
+            var imgLayerList = new Array();
+            imgLayerList.push(imgLayer);
+                  
+            // Create Quadtree
+            var quadtree = new MercatorQuadtree();
+                  
+            // Create Cache with specified size
+            var cachesize = 100;
+            globecache = new GlobeCache(engine, imgLayerList, null, quadtree, cachesize);
+            
          }
         
          //---------------------------------------------------------------------

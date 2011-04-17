@@ -28,10 +28,14 @@ and is also released under MIT license
 Copyright (c) 2007 Monsur Hossain (http://monsur.hossai.in)
 This version is slightly modified for the OpenWebGlobe cache 
 
+Modifications from original code:
+If the item has a function called "Destroy()" it is called when purged 
+from cache. This way you don't have to specify a callback function for
+every item. (i.e. using prototype function to save memory).
+
 Planned modifications:
 (1) remove debugging/logging for better performance 
 (2) remove options (Cache priority etc.) for better performance
-    (only need callback function)
 (3) rename some functions
 */
 
@@ -301,6 +305,14 @@ Cache.prototype.removeItem_ = function(key)
     setTimeout(function() 
     {
       item.options.callback.call(null, item.key, item.value);
+    }, 0);
+  }
+  
+  if (item.Destroy != null)
+  {
+    setTimeout(function() 
+    {
+       item.Destroy();
     }, 0);
   }
 };
