@@ -89,29 +89,28 @@
          {  
             var fontcolor = new vec4();
             fontcolor.Set(1,1,1,1);
-            engine.DrawText("This is Image Layer Test", 0, height-32,1,fontcolor);
-           
+            engine.DrawText("Cache Test", 0, height-32,1,fontcolor);
            
             // Test if globe cache is ready. if so we can make tile requests!! 
             if (globecache.IsReady())
             {
                if (!bLayersAreReady)
                {
-                  console.log("All Layers are ready!");
+                  console.log("Chache is ready! It is possible to make requests now");
                }
                bLayersAreReady = true;
             
-               // make some requests 
-           
+               // make some requests:
                var tb0 = globecache.RequestBlock("0");
                var tb1 = globecache.RequestBlock("1");
                var tb2 = globecache.RequestBlock("2");
                var tb3 = globecache.RequestBlock("3");
                
-               if (tb0.IsAvailable())
-               {
-                  // do something with available block
-               }
+               // and draw block once they are available:
+               if (tb0.IsAvailable()) { tb0.texture.Blit(0,256);}
+               if (tb1.IsAvailable()) { tb1.texture.Blit(256,256);}
+               if (tb2.IsAvailable()) { tb2.texture.Blit(0,0);}
+               if (tb3.IsAvailable()) { tb3.texture.Blit(256,0);}
           
             }
            

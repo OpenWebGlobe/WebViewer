@@ -71,7 +71,8 @@ GlobeCache.prototype.RequestBlock = function(quadcode)
    {
       // item doesn't exist yet, create a new one and request data (async)
       terrainblock = new TerrainBlock(this.engine, quadcode, this.quadtree);
-      terrainblock._AsyncRequestData();
+      terrainblock._AsyncRequestData(this.imagelayerlist);
+      this.cache.setItem(quadcode, terrainblock);
    }
    
    return terrainblock;

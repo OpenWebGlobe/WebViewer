@@ -32,15 +32,41 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.engine = engine;
    this.quadcode = quadcode;
    this.quadtree = quadtree;
+   this.texture = null;
+   this.available = false;
 }
 //------------------------------------------------------------------------------
 /**
  * @description Request Data
  * @intern
  */
-TerrainBlock.prototype._AsyncRequestData = function()
+TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist)
 {
-   
+   var caller = this;
+   if (imagelayerlist.length>0)
+   {
+      imagelayerlist[0].RequestTile(this.engine, this.quadcode, _cbfOnImageTileReady, _cbfOnImageTileFailed, caller);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Callback when data is ready
+ * @intern
+ */
+function _cbfOnImageTileReady(quadcode, ImageObject)
+{
+   var terrainblock = ImageObject.caller;
+   terrainblock.texture = ImageObject;
+   terrainblock.available = true;
+}
+//------------------------------------------------------------------------------       
+/**
+ * @description Callback when data failed
+ * @intern
+ */
+function _cbfOnImageTileFailed(quadcode)
+{
+   // need to think how to handle this case...
 }
 //------------------------------------------------------------------------------
 /**
@@ -48,7 +74,10 @@ TerrainBlock.prototype._AsyncRequestData = function()
  */
 TerrainBlock.prototype.Destroy = function()
 {
-   console.log("DESTROY TERRAIN BLOCK!");
+   if (this.texture)
+   {
+      this.texture.Destroy();
+   }
 }
 
 //------------------------------------------------------------------------------
@@ -58,7 +87,7 @@ TerrainBlock.prototype.Destroy = function()
  */
 TerrainBlock.prototype.IsAvailable = function()
 {
-   return false;
+   return this.available;
 }
 //------------------------------------------------------------------------------
 /**

@@ -51,7 +51,7 @@ function i3dImageLayer()
    *   cbfReady(quadcode, Texture) : called when request successfull. Holds the quadcode and the texture object
    *   cbfFailed(quadcode) : called when request failed
    */
-   this.RequestTile = function(engine, quadcode, cbfReady, cbfFailed)
+   this.RequestTile = function(engine, quadcode, cbfReady, cbfFailed, caller)
    {
       if (!this.Ready())
       {  
@@ -67,7 +67,9 @@ function i3dImageLayer()
       ImageTexture.quadcode = quadcode;   // store quadcode in texture object
       ImageTexture.cbfReady = cbfReady;   // store the ready callback in texture object
       ImageTexture.cbfFailed = cbfFailed; // store the failure callback in texture object
+      ImageTexture.caller = caller;
       ImageTexture.loadTexture(sFilename, _cbTileReady, _cbTileFailed); 
+      
       
    };
   
@@ -123,6 +125,7 @@ function _cbTileReady(imgTex)
    imgTex.cbfReady = null;
    imgTex.cbfFailed = null;
    imgTex.quadcode = null;
+   imgTex.caller = null;
 }
 //------------------------------------------------------------------------------
 /**
@@ -135,6 +138,7 @@ function _cbTileFailed(imgTex)
    imgTex.cbfReady = null;
    imgTex.cbfFailed = null;
    imgTex.quadcode = null; 
+   imgTex.caller = null;
 }
 //------------------------------------------------------------------------------
 
