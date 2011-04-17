@@ -702,7 +702,7 @@ _fncMouseWheel = function(evt)
       
       if ( evt.wheelDelta ) 
       { 
-         delta= evt.wheelDelta;
+         delta= -evt.wheelDelta;
          if (window.opera) 
          {
             delta= -delta;
@@ -710,15 +710,15 @@ _fncMouseWheel = function(evt)
       }
       else if (evt.detail)  // Firefox
       { 
-         delta = -evt.detail/3;;
+         delta = evt.detail/3;;
       }
       
       engine.eventhandler.MouseWheel(delta);
          
-         /*if (engine.cbfMouseWheel)
-         {
-            engine.cbfMouseWheel(delta); // not yet supported,
-         }*/
+      /*if (engine.cbfMouseWheel)
+      {
+        engine.cbfMouseWheel(delta); // not yet supported,
+      }*/
    }
 }
 

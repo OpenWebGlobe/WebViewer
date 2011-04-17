@@ -1,0 +1,116 @@
+<!--
+      Displaying the Globe Quadtree
+-->
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+         <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>
+         <script type="text/javascript" src="../../core/openwebglobe.js"></script>
+         <script type="text/javascript" src="../../core/shaders.js"></script>
+         <script type="text/javascript" src="../../core/vec4.js"></script>
+         <script type="text/javascript" src="../../core/mat4.js"></script>
+         <script type="text/javascript" src="../../core/vec3.js"></script>
+         <script type="text/javascript" src="../../core/mesh.js"></script>
+         <script type="text/javascript" src="../../core/texture.js"></script>
+         <script type="text/javascript" src="../../core/traversalstate.js"></script>
+         <script type="text/javascript" src="../../core/eventhandler.js"></script>
+         <script type="text/javascript" src="../../core/scenegraph.js"></script>
+         <script type="text/javascript" src="../../core/node.js"></script>
+         <script type="text/javascript" src="../../core/nodes/beginrender.js"></script>
+         <script type="text/javascript" src="../../core/nodes/camera.js"></script>
+         <script type="text/javascript" src="../../core/nodes/endrender.js"></script>
+         <script type="text/javascript" src="../../core/nodes/logos.js"></script>
+         <script type="text/javascript" src="../../core/nodes/navigation.js"></script>
+         <script type="text/javascript" src="../../core/nodes/render.js"></script>
+         <script type="text/javascript" src="../../core/nodes/renderobject.js"></script>
+         <script type="text/javascript" src="../../core/font.js"></script>
+         <script type="text/javascript" src="../../core/mathutils.js"></script>
+         <script type="text/javascript" src="../../core/geocoord.js"></script>
+         <script type="text/javascript" src="../../core/globeutils.js"></script>
+         <script type="text/javascript" src="../../core/mercatorquadtree.js"></script>
+         <script type="text/javascript" src="../../core/datasetinfo.js"></script>
+         <script type="text/javascript" src="../../core/terrainblock.js"></script>
+         <script type="text/javascript" src="../../core/globerenderer.js"></script>
+         <script type="text/javascript">
+         
+         //---------------------------------------------------------------------
+        
+         var engine = null;
+         var datasetinfo = new DatasetInfo();
+         var bDone = false;
+       
+         
+         //---------------------------------------------------------------------
+         function OnTimer(delta)
+         {
+            if (!bDone)
+            {
+               if (datasetinfo.bReady)
+               {
+                  console.log("Finished Downloading Dataset");
+                  console.log("layer: " + datasetinfo.sLayerName);
+                  
+                  bDone = true;
+               }
+               
+            }
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnResize(w,h)
+         {
+            width = w;
+            height = h;       
+         }
+         
+         //---------------------------------------------------------------------
+         function OnKey(key)
+         {
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnRender()
+         {  
+           var fontcolor = new vec4();
+           fontcolor.Set(1,1,0,1); //set custom font color here...
+           engine.DrawText("Welcome to OpenWebGlobe Demo", 0, height-32,1,fontcolor);
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnInit()
+         { 
+            datasetinfo.Download("World500.json");
+         }
+        
+         //---------------------------------------------------------------------
+        
+         function main()
+         {
+         	engine = new engine3d();
+           
+            // Set Callbacks:
+            engine.SetInitCallback(OnInit);
+            engine.SetTimerCallback(OnTimer);
+            engine.SetRenderCallback(OnRender);
+            engine.SetResizeCallback(OnResize);
+            engine.SetKeyDownCallback(OnKey)
+            
+            // Start engine...
+            engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
+            engine.CreateScene();               // Create Globe Scene
+            engine.SetClearColor(0.5,0.5,1,1);
+         }
+         
+         //---------------------------------------------------------------------
+         
+      </script>
+    </head>
+    <body onload="main()">
+        <div style="text-align: center">
+            <canvas id="canvas" width="640" height="480"></canvas>
+        </div>
+    </body>
+</html>

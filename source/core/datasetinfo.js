@@ -30,18 +30,21 @@
  */
 function DatasetInfo()
 {
-   this.sLayerName = "";               // Layer Name (string)
-   this.sLayerCopyright = "";          // Layer Copyright String
-   this.nSRS;                          // Spatial Reference System: 3395 or 3785
-   this.vBoundingBox = new Array(4);   // Bounding Box: ulx uly lrx lry
-   this.nLevelofDetail = 0;            // Level of Detail
-   this.nImageWidth;                   // for image datasets: original image width
-   this.nImageHeight;                  // for image datasets: original image width
-   this.nTileSize;                     // for image datasets: size of a tile (in pixel)
-   this.vTileLayout = new Array(2);    // Tile Dimension: x y
-   this.sTileFormat;                   // mime type of data, for example "image/png"
-   this.vBounds = new Array(5);        // Zoom, TileX0, TileY0, TileX1, TileY1
-   this.vCenterCoord = new Array(2);   // Dataset Center coord in WGS84
+   this.bReady = false;            // true if dataset info is ready
+   this.bFailed = false;           // true if download failed
+   
+   this.sLayerName = null;         // Layer Name (string)
+   this.sLayerCopyright = null;    // Layer Copyright String
+   this.nSRS = null;               // Spatial Reference System: 3395 or 3785
+   this.vBoundingBox = null;       // Bounding Box: ulx uly lrx lry
+   this.nLevelofDetail = null;     // Level of Detail
+   this.nImageWidth = null;        // for image datasets: original image width
+   this.nImageHeight = null;       // for image datasets: original image width
+   this.nTileSize = null;          // for image datasets: size of a tile (in pixel)
+   this.vTileLayout = null;        // Tile Dimension: x y
+   this.sTileFormat = null;        // mime type of data, for example "image/png"
+   this.vBounds = null;            // Zoom, TileX0, TileY0, TileX1, TileY1
+   this.vCenterCoord = null;       // Dataset Center coord in WGS84
 }
 
 //------------------------------------------------------------------------------
@@ -51,7 +54,49 @@ function DatasetInfo()
  */
 DatasetInfo.prototype.Download = function(url)
 {
-   
+   if(url == null) 
+   {
+      alert("invalid url");
+      return;
+   }  
+  
+   this.http=new window.XMLHttpRequest();
+   this.http.open("GET",url,true);
+   var me=this;
+   this.http.onreadystatechange = function(){_cbfdsidownload(me);};
+   this.http.send(); 
 }
 
 //------------------------------------------------------------------------------
+
+_cbfdsidownload = function(dsi)
+{
+   if (dsi.http.readyState==4)
+   {
+      if(dsi.http.status==404)
+      {
+         console.log('datasetinfo: File not found.');
+         dsi.bFailed = true;
+      }
+      else
+      {
+         var data=dsi.http.responseText;      
+         var obj=JSON.parse(data);
+      
+         dsi.sLayerName = obj.layer;         
+         dsi.sLayerCopyright = obj.copyright;    
+         dsi.nSRS = obj.srs;               
+         dsi.vBoundingBox = obj.boundingbox;       
+         dsi.nLevelofDetail = obj.levelofdetail;     
+         dsi.nImageWidth = obj.imagewidth;        
+         dsi.nImageHeight = obj.imageheight;       
+         dsi.nTileSize = obj.tilesize;          
+         dsi.vTileLayout = obj.tilelayout;        
+         dsi.sTileFormat = obj.tileformat;        
+         dsi.vBounds = obj.bounds;            
+         dsi.vCenterCoord = obj.center;  
+         
+         dsi.bReady = true;     
+      }
+   }
+}
