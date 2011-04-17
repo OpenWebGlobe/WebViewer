@@ -68,6 +68,7 @@ function engine3d()
 	this.cbfMouseClicked = null;
 	this.cbfMouseReleased = null;
 	this.cbfMouseMoved = null;
+	this.cbfMouseWheel = null;
 	this.cbfKeyPressed = null;
 	this.cbfKeyReleased = null;
 	this.cbfResize = null;
@@ -536,7 +537,16 @@ engine3d.prototype.SetMouseMoveCallback = function(f)
 {
    this.cbfMouseMove = f;
 }
-
+//------------------------------------------------------------------------------
+/**
+ * @description sets the mousewheel callback function
+ *
+ * @param {function} f mousewhell callback handler.
+ */
+engine3d.prototype.SetMouseWheelCallback = function(f)
+{
+   this.cbfMouseWheel = f;
+}
 //------------------------------------------------------------------------------
 /**
  * @description sets the resize callback function
@@ -558,7 +568,6 @@ engine3d.prototype.SetKeyDownCallback = function(f)
 {
    _gcbfKeyDown = f;
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description sets the keyup callback function
@@ -715,10 +724,10 @@ _fncMouseWheel = function(evt)
       
       engine.eventhandler.MouseWheel(delta);
          
-      /*if (engine.cbfMouseWheel)
+      if (engine.cbfMouseWheel)
       {
-        engine.cbfMouseWheel(delta); // not yet supported,
-      }*/
+        engine.cbfMouseWheel(delta);
+      }
    }
 }
 

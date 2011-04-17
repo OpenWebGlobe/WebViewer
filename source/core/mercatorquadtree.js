@@ -56,7 +56,7 @@ MercatorQuadtree.prototype.QuadKeyToNormalizedCoord = function(quadKey, coords)
    var y = 0;
    var scale = 1.0;
    
-   for(var i=1; i< nLevelOfDetail; i++)
+   for(var i=0; i< nLevelOfDetail; i++)
    {
       scale /= 2.0;
       

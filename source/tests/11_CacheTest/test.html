@@ -50,6 +50,8 @@
          var imgLayer = new i3dImageLayer();
          var bLayersAreReady = false;
          var globecache;
+         var zoom = 1;
+         var mx = 0,my = 0;
          
          //---------------------------------------------------------------------
          // Callback function for tile service
@@ -69,7 +71,12 @@
          {
             
          }
-         
+         //---------------------------------------------------------------------
+         function OnMouseMove(x,y)
+         {
+            mx = x;
+            my = engine.height-y-1;  
+         }
          //---------------------------------------------------------------------
          
          function OnResize(w,h)
@@ -85,11 +92,52 @@
          
          //---------------------------------------------------------------------
          
+         function OnMouseWheel(delta)
+         {
+            if (delta<0)
+            {
+               zoom += 1;
+            }
+            else if (delta>0)
+            {
+               zoom -= 1;
+            }
+            
+            if (zoom < 1) {zoom = 1;}
+            if (zoom > 3) {zoom = 3;}
+            
+            console.log("zoom="+zoom);
+         }
+         //---------------------------------------------------------------------
+         var coords = new Float32Array(4);
+         
+         function subdivide(code, qt)
+         {
+            qt.QuadKeyToNormalizedCoord(code, coords);
+            var x = coords[0];
+            var y = coords[3];
+            var len = Math.pow(2,code.length) * 256;
+            
+            centerx = mx - len/2;
+            centery = my - len/2;
+            
+            if (code.length == zoom)
+            {
+               var tb = globecache.RequestBlock(code);
+               if (tb.IsAvailable()) { tb.texture.Blit(centerx + x*len, centery + y*len);}
+            }
+            else
+            {
+               subdivide(code + "0", qt);
+               subdivide(code + "1", qt);
+               subdivide(code + "2", qt);
+               subdivide(code + "3", qt);
+            }
+         }
+         
          function OnRender()
-         {  
-            var fontcolor = new vec4();
-            fontcolor.Set(1,1,1,1);
-            engine.DrawText("Cache Test", 0, height-32,1,fontcolor);
+         { 
+            //engine.DrawText("Cache Test", 0, height-32);
            
             // Test if globe cache is ready. if so we can make tile requests!! 
             if (globecache.IsReady())
@@ -99,19 +147,14 @@
                   console.log("Chache is ready! It is possible to make requests now");
                }
                bLayersAreReady = true;
-            
-               // make some requests:
-               var tb0 = globecache.RequestBlock("0");
-               var tb1 = globecache.RequestBlock("1");
-               var tb2 = globecache.RequestBlock("2");
-               var tb3 = globecache.RequestBlock("3");
                
-               // and draw block once they are available:
-               if (tb0.IsAvailable()) { tb0.texture.Blit(0,256);}
-               if (tb1.IsAvailable()) { tb1.texture.Blit(256,256);}
-               if (tb2.IsAvailable()) { tb2.texture.Blit(0,0);}
-               if (tb3.IsAvailable()) { tb3.texture.Blit(256,0);}
-          
+               qt = new MercatorQuadtree();
+               
+                           
+               subdivide("0", qt);  
+               subdivide("1", qt);
+               subdivide("2", qt);
+               subdivide("3", qt);              
             }
            
            /*for (var i=0;i<imgObjects.length;i++)
@@ -145,6 +188,12 @@
         
          function main()
          {
+            if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1)
+            {
+               alert("Sorrys, the current version of OpenWebGlobe doesn't support Chrome! An optimized Chrome version will be available soon! You can use Firefox for now.");
+               return;
+            }
+            
             engine = new engine3d();
            
             // Set Callbacks:
@@ -152,11 +201,13 @@
             engine.SetTimerCallback(OnTimer);
             engine.SetRenderCallback(OnRender);
             engine.SetResizeCallback(OnResize);
-            engine.SetKeyDownCallback(OnKey)
+            engine.SetKeyDownCallback(OnKey);
+            engine.SetMouseWheelCallback(OnMouseWheel);
+            engine.SetMouseMoveCallback(OnMouseMove);
             
             // Start engine...
             engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
-            engine.CreateScene();               // Create Globe Scene
+            //engine.CreateScene();               // Create Globe Scene
             engine.SetClearColor(0.5,0.5,1,1);
          }
          

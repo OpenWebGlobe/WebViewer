@@ -21,3 +21,24 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+//------------------------------------------------------------------------------
+/**
+ * @constructor
+ * @description Rendering the virtual globe...
+ * @author Martin Christen, martin.christen@fhnw.ch
+ */
+function GlobeRenderer(engine)
+{
+   this.engine = engine;
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Render function
+ */
+GlobeRenderer.prototype.Render = function()
+{
+   
+}
+
+
