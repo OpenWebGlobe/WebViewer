@@ -149,7 +149,7 @@ Font.prototype.GenerateFontMesh = function()
    this.fontmesh.SetIndexBuffer(index,"TRIANGLES");
    
    
-   var tex = new texture(this.engine);
+   var tex = new Texture(this.engine);
    tex.LoadFontTexture();
    this.fontmesh.SetTexture(tex); 
 }

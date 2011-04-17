@@ -63,13 +63,13 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.OnInit = function()
       {
-          this.logo = new texture(this.engine);
+          this.logo = new Texture(this.engine);
           this.logo.LoadLogo();
           
-          this.compassbg = new texture(this.engine);
+          this.compassbg = new Texture(this.engine);
           this.compassbg.LoadCompassBackground();
           
-          this.compassr = new texture(this.engine);
+          this.compassr = new Texture(this.engine);
           this.compassr.LoadCompassRose();
       }
       

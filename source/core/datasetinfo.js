@@ -45,6 +45,7 @@ function DatasetInfo()
    this.sTileFormat = null;        // mime type of data, for example "image/png"
    this.vBounds = null;            // Zoom, TileX0, TileY0, TileX1, TileY1
    this.vCenterCoord = null;       // Dataset Center coord in WGS84
+   this.sFileExtension = "";      // file extension.   
 }
 
 //------------------------------------------------------------------------------
@@ -89,7 +90,20 @@ _cbfdsidownload = function(dsi)
          dsi.vTileLayout = obj.tilelayout;        
          dsi.sTileFormat = obj.tileformat;        
          dsi.vBounds = obj.bounds;            
-         dsi.vCenterCoord = obj.center;  
+         dsi.vCenterCoord = obj.center;
+         
+         if (dsi.sTileFormat == "image/png")
+         {
+            dsi.sFileExtension = ".png";
+         }  
+         else if (dsi.sTileFormat == "image/jpg")
+         {
+            dsi.sFileExtension = ".jpg"; 
+         }
+         else if (dsi.sTileFormat == "elevation/json")
+         {
+            dsi.sFileExtension = ".json"; 
+         }
          
          dsi.bReady = true;     
       }

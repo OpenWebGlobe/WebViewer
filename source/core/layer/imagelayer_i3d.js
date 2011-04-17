@@ -30,6 +30,8 @@
 function i3dImageLayer()
 {
    this.dsi = new DatasetInfo();  // dataset info
+   this.server = null;
+   this.layer = null;
    
    //---------------------------------------------------------------------------
    this.Ready = function()
@@ -42,10 +44,33 @@ function i3dImageLayer()
       return this.dsi.bFailed;
    }
    //---------------------------------------------------------------------------
-   this.RequestTile = function(quadcode, cbfReady, cbfFailed)
+   
+   /**
+   * @description Request an image tile (in i3d tile format) by entering a quadcode
+   * the following callback functions must be specified:
+   *   cbfReady(quadcode, Texture) : called when request successfull. Holds the quadcode and the texture object
+   *   cbfFailed(quadcode) : called when request failed
+   */
+   this.RequestTile = function(engine, quadcode, cbfReady, cbfFailed)
    {
+      if (!this.Ready())
+      {  
+         return;
+      }
+      
+      var sQCH = GlobeUtils.MakeHierarchicalFilename(quadcode+this.dsi.sFileExtension);
+      var sFilename = this.server + "/" + 
+                      this.layer + "/" + 
+                      sQCH;
+                      
+      var ImageTexture = new Texture(engine);  
+      ImageTexture.quadcode = quadcode;   // store quadcode in texture object
+      ImageTexture.cbfReady = cbfReady;   // store the ready callback in texture object
+      ImageTexture.cbfFailed = cbfFailed; // store the failure callback in texture object
+      ImageTexture.loadTexture(sFilename, _cbTileReady, _cbTileFailed); 
       
    };
+  
    //---------------------------------------------------------------------------
    this.GetMinLod = function()
    {
@@ -68,6 +93,8 @@ function i3dImageLayer()
    
    this.Setup = function(server, layer)
    {
+      this.server = server;
+      this.layer = layer;
      /* Example for i3d Tile-Service.
         World500 Data is located at http://www.openwebglobe.org/data/img/
         
@@ -85,6 +112,31 @@ i3dImageLayer.prototype = new ImageLayer();
 //------------------------------------------------------------------------------
 
 
+//------------------------------------------------------------------------------
+/**
+* @description internal callback function for tiles
+* @ignore
+*/
+function _cbTileReady(imgTex)
+{
+   imgTex.cbfReady(imgTex.quadcode, imgTex);
+   imgTex.cbfReady = null;
+   imgTex.cbfFailed = null;
+   imgTex.quadcode = null;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description internal callback function for tiles
+ * @ignore
+ */
+function _cbTileFailed(imgTex)
+{
+   imgTex.cbfFailed(imgTex.quadcode);
+   imgTex.cbfReady = null;
+   imgTex.cbfFailed = null;
+   imgTex.quadcode = null; 
+}
+//------------------------------------------------------------------------------
 
 
 

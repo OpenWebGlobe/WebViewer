@@ -328,7 +328,7 @@ engine3d.prototype._UpdateMatrices = function()
  */
 engine3d.prototype.LoadTexture = function(url)
 {
-   var tex = new texture(this);
+   var tex = new Texture(this);
    tex.loadTexture(url);
    this.vecTextures.push(tex);
    

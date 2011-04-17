@@ -44,7 +44,7 @@ function ImageLayer()
     * the ready-callback function will be called. If failed, the failed
     * callback will be called.
     */
-   this.RequestTile = function(quadcode, cbfReady, cbfFailed){};
+   this.RequestTile = function(engine, quadcode, cbfReady, cbfFailed){};
    
    /**
     * @description Returns the min level of detail supported by this dataset

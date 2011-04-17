@@ -38,12 +38,28 @@
          <script type="text/javascript">
          
          //---------------------------------------------------------------------
-        
+         // This demo shows how to use the image tile system manually,
+         // you should never do this manually!
+         //---------------------------------------------------------------------
+         
          var engine = null;
          var imgLayer = new i3dImageLayer();
          var bImageLayerIsReady = false;
-       
-         
+         var imgObjects = new Array();  // store retrieved tiles in this array
+        
+         //---------------------------------------------------------------------
+         // Callback function for tile service
+         function OnImageTileReady(quadcode, ImageObject)
+         {
+            console.log("Image Tile " + quadcode + " is now ready!");
+            imgObjects.push(ImageObject);
+         }
+         //---------------------------------------------------------------------
+         // Callback function for tile service
+         function OnImageTileFailed(quadcode)
+         {
+            console.log("Image Tile " + quadcode + " failed!");
+         }
          //---------------------------------------------------------------------
          function OnTimer(delta)
          {
@@ -53,6 +69,12 @@
                {
                   console.log("Image Layer is ready");     
                   bImageLayerIsReady = true;
+                  
+                  imgLayer.RequestTile(engine, "01201", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "0", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "01", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "012", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "0123", OnImageTileReady, OnImageTileFailed);
                }
                
                if (imgLayer.Failed())
@@ -84,6 +106,12 @@
            var fontcolor = new vec4();
            fontcolor.Set(1,1,1,1);
            engine.DrawText("This is Image Layer Test", 0, height-32,1,fontcolor);
+           
+           for (var i=0;i<imgObjects.length;i++)
+           {
+              imgObjects[i].Blit(i*256,0);
+           }
+           
          }
          
          //---------------------------------------------------------------------
