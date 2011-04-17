@@ -1,5 +1,7 @@
 <!--
-      Displaying the Globe Quadtree
+      IMAGE LAYER TEST
+      created by Martin Christen, martin.christen@fhnw.ch
+      April 2011
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -31,26 +33,56 @@
          <script type="text/javascript" src="../../core/datasetinfo.js"></script>
          <script type="text/javascript" src="../../core/terrainblock.js"></script>
          <script type="text/javascript" src="../../core/globerenderer.js"></script>
+         <script type="text/javascript" src="../../core/cache.js"></script>
+         <script type="text/javascript" src="../../core/layer/imagelayer.js"></script>
+         <script type="text/javascript" src="../../core/layer/imagelayer_i3d.js"></script>
+         <script type="text/javascript" src="../../core/layer/imagelayer_osm.js"></script>
          <script type="text/javascript">
          
          //---------------------------------------------------------------------
-        
-         var engine = null;
-         var datasetinfo = new DatasetInfo();
-         var bDone = false;
-       
+         // This demo shows how to use the image tile system manually,
+         // you should never do this manually!
+         //---------------------------------------------------------------------
          
+         var engine = null;
+         var imgLayer = new i3dImageLayer();
+         var bImageLayerIsReady = false;
+         var imgObjects = new Array();  // store retrieved tiles in this array
+        
+         //---------------------------------------------------------------------
+         // Callback function for tile service
+         function OnImageTileReady(quadcode, ImageObject)
+         {
+            console.log("Image Tile " + quadcode + " is now ready!");
+            imgObjects.push(ImageObject);
+         }
+         //---------------------------------------------------------------------
+         // Callback function for tile service
+         function OnImageTileFailed(quadcode)
+         {
+            console.log("Image Tile " + quadcode + " failed!");
+         }
          //---------------------------------------------------------------------
          function OnTimer(delta)
          {
-            if (!bDone)
+            if (!bImageLayerIsReady)
             {
-               if (datasetinfo.bReady)
+               if (imgLayer.Ready())
                {
-                  console.log("Finished Downloading Dataset");
-                  console.log("layer: " + datasetinfo.sLayerName);
+                  console.log("Image Layer is ready");     
+                  bImageLayerIsReady = true;
                   
-                  bDone = true;
+                  imgLayer.RequestTile(engine, "01201", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "0", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "01", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "012", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "0123", OnImageTileReady, OnImageTileFailed);
+               }
+               
+               if (imgLayer.Failed())
+               {
+                  console.log("Creating Image Layer failed");
+                  bImageLayerIsReady = true;
                }
                
             }
@@ -74,22 +106,28 @@
          function OnRender()
          {  
            var fontcolor = new vec4();
-           fontcolor.Set(1,1,0,1); //set custom font color here...
-           engine.DrawText("Welcome to OpenWebGlobe Demo", 0, height-32,1,fontcolor);
+           fontcolor.Set(1,1,1,1);
+           engine.DrawText("This is Image Layer Test", 0, height-32,1,fontcolor);
+           
+           for (var i=0;i<imgObjects.length;i++)
+           {
+              imgObjects[i].Blit(i*256,0);
+           }
+           
          }
          
          //---------------------------------------------------------------------
          
          function OnInit()
          { 
-            datasetinfo.Download("World500.json");
+            imgLayer.Setup("http://www.openwebglobe.org/data/img", "World500");
          }
         
          //---------------------------------------------------------------------
         
          function main()
          {
-         	engine = new engine3d();
+            engine = new engine3d();
            
             // Set Callbacks:
             engine.SetInitCallback(OnInit);

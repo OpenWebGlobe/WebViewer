@@ -1,5 +1,5 @@
 <!--
-      Dataset Info Test
+      CACHE TEST (Work in Progress, may fail)
       created by Martin Christen, martin.christen@fhnw.ch
       April 2011
 -->
@@ -40,23 +40,57 @@
          <script type="text/javascript">
          
          //---------------------------------------------------------------------
-        
+         // This demo shows how to use the image tile system together with 
+         // the cache.
+         // You should never do this manually!
+         //---------------------------------------------------------------------
+         
          var engine = null;
-         var datasetinfo = new DatasetInfo();
-         var bDone = false;
-       
+         var imgLayer = new i3dImageLayer();
+         var bImageLayerIsReady = false;
+         var globecache = new Cache(10);
+         
+         //---------------------------------------------------------------------
+         // Callback function for tile service
+         function OnImageTileReady(quadcode, ImageObject)
+         {
+            console.log("Image Tile " + quadcode + " is now available!");
+         }
+         //---------------------------------------------------------------------
+         // Callback function for tile service
+         function OnImageTileFailed(quadcode)
+         {
+            console.log("Uh Oh!! Retrieving Image Tile " + quadcode + " failed!");
+         }
+         
+         //---------------------------------------------------------------------
+         // free texture memory:
+         function OnPurgeCache(ImageObject)
+         {
+            ImageObject->Destroy();
+         }
          
          //---------------------------------------------------------------------
          function OnTimer(delta)
          {
-            if (!bDone)
+            if (!bImageLayerIsReady)
             {
-               if (datasetinfo.bReady)
+               if (imgLayer.Ready())
                {
-                  console.log("Finished Downloading Dataset");
-                  console.log("layer: " + datasetinfo.sLayerName);
+                  console.log("Image Layer is ready");     
+                  bImageLayerIsReady = true;
                   
-                  bDone = true;
+                  imgLayer.RequestTile(engine, "01201", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "0", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "01", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "012", OnImageTileReady, OnImageTileFailed);
+                  imgLayer.RequestTile(engine, "0123", OnImageTileReady, OnImageTileFailed);
+               }
+               
+               if (imgLayer.Failed())
+               {
+                  console.log("Creating Image Layer failed");
+                  bImageLayerIsReady = true;
                }
                
             }
@@ -80,15 +114,21 @@
          function OnRender()
          {  
            var fontcolor = new vec4();
-           fontcolor.Set(1,1,0,1); //set custom font color here...
-           engine.DrawText("Welcome to OpenWebGlobe Demo", 0, height-32,1,fontcolor);
+           fontcolor.Set(1,1,1,1);
+           engine.DrawText("This is Image Layer Test", 0, height-32,1,fontcolor);
+           
+           /*for (var i=0;i<imgObjects.length;i++)
+           {
+              imgObjects[i].Blit(i*256,0);
+           }*/
+           
          }
          
          //---------------------------------------------------------------------
          
          function OnInit()
          { 
-            datasetinfo.Download("World500.json");
+            imgLayer.Setup("http://www.openwebglobe.org/data/img", "World500");
          }
         
          //---------------------------------------------------------------------
