@@ -22,21 +22,15 @@
 *******************************************************************************/
 
 
-
-
 //------------------------------------------------------------------------------
 /** 
- * @class Mercator used for Mercator <-> wgs84 coordinate transformation
- * 
- * {@link http://www.openwebglobe.org} 
+ * @namespace Mercator 
+ * @description used for Mercator <-> wgs84 coordinate transformation
  *
  * @author Martin Christen martin.christen@fhnw.ch
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch 
  */
-function Mercator()
-{
-   
-}
+ var Mercator = {};
 
 //------------------------------------------------------------------------------
 /**
@@ -46,13 +40,9 @@ function Mercator()
  * @param latitude the wgs84 latitude
  * @param result Float64Array for result values.
  */
-Mercator.prototype.WGS84ToMercatorE = function(longitude, latitude, result)
+Mercator.WGS84ToMercatorE = function(longitude, latitude, result)
 {
-   if(!(result instanceof Float64Array))
-   {
-      return;
-   }
-   
+
    var lngRad = MathUtils.Deg2Rad(longitude);
    var latRad = MathUtils.Deg2Rad(latitude);
    result[0] = (lngRad - LNG_RAD0);
@@ -69,17 +59,11 @@ Mercator.prototype.WGS84ToMercatorE = function(longitude, latitude, result)
  * @param y y values of Mercator ELLIPSOID Coordinates
  * @param result Float64Array for result values.
  */
-Mercator.prototype.MercatorEToWGS84 = function(x, y, result)
+Mercator.MercatorEToWGS84 = function(x, y, result)
 {
-   if(!(result instanceof Float64Array))
-   {
-      return;
-   }
-   
    x *= Math.PI;
    y *= Math.PI;
   
-   
    var t = Math.exp(-y);   
    var lat = Math.PI/2 - 2.0 * Math.atan(t);    //initial value for iteration
    
@@ -124,14 +108,8 @@ Mercator.prototype.MercatorEToWGS84 = function(x, y, result)
  * @param latitude the wgs84 latitude
  * @param result Float64Array for result values.
  */
-Mercator.prototype.WGS84ToMercator = function(longitude, latitude, result)
+Mercator.WGS84ToMercator = function(longitude, latitude, result)
 {
-   
-   if(!(result instanceof Float64Array))
-   {
-      return;
-   }
-   
    var lngRad = MathUtils.Deg2Rad(longitude);
    var latRad = MathUtils.Deg2Rad(latitude); 
    
@@ -153,13 +131,8 @@ Mercator.prototype.WGS84ToMercator = function(longitude, latitude, result)
  * @param y y values of Mercator SPHERE Coordinates
  * @param result Float64Array for result values.
  */
-Mercator.prototype.MercatorToWGS84 = function(x, y, result)
+Mercator.MercatorToWGS84 = function(x, y, result)
 {
-   if(!(result instanceof Float64Array))
-   {
-      return;
-   }
-   
    x *= Math.PI;
    y *= Math.PI;
    

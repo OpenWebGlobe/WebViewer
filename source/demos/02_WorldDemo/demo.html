@@ -4,7 +4,9 @@
 <!DOCTYPE html>
 <html lang="en">
    <head>
+      <!--
          <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>
+      -->   
          <script type="text/javascript" src="../../core/openwebglobe.js"></script>
          <script type="text/javascript" src="../../core/shaders.js"></script>
          <script type="text/javascript" src="../../core/vec4.js"></script>
@@ -31,14 +33,15 @@
          <script type="text/javascript" src="../../core/datasetinfo.js"></script>
          <script type="text/javascript" src="../../core/terrainblock.js"></script>
          <script type="text/javascript" src="../../core/globerenderer.js"></script>
+         <script type="text/javascript" src="../../core/mercator.js"></script>
          <script type="text/javascript" src="../../core/cache.js"></script>
+         <script type="text/javascript" src="../../core/globecache.js"></script>
          <script type="text/javascript" src="../../core/layer/imagelayer.js"></script>
          <script type="text/javascript" src="../../core/layer/imagelayer_i3d.js"></script>
          <script type="text/javascript" src="../../core/layer/imagelayer_osm.js"></script>
          <script type="text/javascript">
          
          //---------------------------------------------------------------------
-        
          var engine = null;
        
          
@@ -64,9 +67,9 @@
          
          function OnRender()
          {  
-           var fontcolor = new vec4();
-           fontcolor.Set(1,1,0,1);
-           engine.DrawText("Welcome to OpenWebGlobe Demo", 0, height-32,1,fontcolor);
+            var fontcolor = new vec4();
+            fontcolor.Set(1,1,0,1);
+            engine.DrawText("OpenWebGlobe for WebGL", 0, height-32,1,fontcolor);
          }
          
          //---------------------------------------------------------------------

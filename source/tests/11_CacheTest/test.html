@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
    <head>
-         <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>
+         
          <script type="text/javascript" src="../../core/openwebglobe.js"></script>
          <script type="text/javascript" src="../../core/shaders.js"></script>
          <script type="text/javascript" src="../../core/vec4.js"></script>
@@ -44,6 +44,7 @@
          // This demo shows how to use the image tile system together with 
          // the cache.
          // You should never do this manually!
+         //rc="http://benvanik.github.com/WebGL-Inspector/core/embed.js"
          //---------------------------------------------------------------------
          
          var engine = null;
@@ -104,7 +105,7 @@
             }
             
             if (zoom < 1) {zoom = 1;}
-            if (zoom > 3) {zoom = 3;}
+            if (zoom > 4) {zoom = 4;}
             
             console.log("zoom="+zoom);
          }
@@ -156,12 +157,7 @@
                subdivide("2", qt);
                subdivide("3", qt);              
             }
-           
-           /*for (var i=0;i<imgObjects.length;i++)
-           {
-              imgObjects[i].Blit(i*256,0);
-           }*/
-           
+               
          }
          
          //---------------------------------------------------------------------
@@ -179,7 +175,7 @@
             var quadtree = new MercatorQuadtree();
                   
             // Create Cache with specified size
-            var cachesize = 100;
+            var cachesize = 1000;
             globecache = new GlobeCache(engine, imgLayerList, null, quadtree, cachesize);
             
          }
@@ -188,12 +184,12 @@
         
          function main()
          {
-            if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1)
+            /*if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1)
             {
                alert("Sorrys, the current version of OpenWebGlobe doesn't support Chrome! An optimized Chrome version will be available soon! You can use Firefox for now.");
                return;
-            }
-            
+            }*/
+           
             engine = new engine3d();
            
             // Set Callbacks:
@@ -209,6 +205,7 @@
             engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
             //engine.CreateScene();               // Create Globe Scene
             engine.SetClearColor(0.5,0.5,1,1);
+            
          }
          
          //---------------------------------------------------------------------

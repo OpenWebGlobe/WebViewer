@@ -96,9 +96,15 @@ function NavigationNode()
       //------------------------------------------------------------------------
       this.OnRender = function()
       {
-         this.engine.DrawText("Key: " + this.lastkey + " (" + this.curtime + ")",0,32);
-         this.engine.DrawText("Pos: (" + this._longitude + ", " + this._latitude + "," + this._ellipsoidHeight + ")",0,134);
-         this.engine.DrawText("Cart: (" + this.geocoord[0] + ", " + this.geocoord[1] + "," + this.geocoord[2] + ")",0,100);
+         var lng = this._longitude.toFixed(6);
+         var lat = this._latitude.toFixed(6);
+         var elv = this._ellipsoidHeight.toFixed(2);
+         //this.engine.DrawText("Key: " + this.lastkey + " (" + this.curtime + ")",0,32);
+         this.engine.DrawText("(" + lng+ ", " + lat + "," + this._ellipsoidHeight + ")",0,0,0.5);
+         //this.engine.DrawText("Cart: (" + this.geocoord[0] + ", " + this.geocoord[1] + "," + this.geocoord[2] + ")",0,100);
+      
+         
+      
       }
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
@@ -402,6 +408,11 @@ function NavigationNode()
             sender._longitude = 57.295779513082320876798154814105*L2; // rad2deg
             sender._latitude = 57.295779513082320876798154814105*B2; // rad2deg
             sender._yaw = A2;
+            
+            while (sender._longitude>180) {sender._longitude -=180;}
+            while (sender._longitude<-180) { sender._longitude +=180; }
+            while (sender._latitude>90) { sender._latitude-=180;}
+            while (sender._latitude<-90) { sender._latitude+=180;}
 
             bChanged = true;
          }

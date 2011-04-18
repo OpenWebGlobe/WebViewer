@@ -28,6 +28,7 @@
  */
 function RenderObjectNode()
 {
+      this.globerenderer = null;
       this.cube = null;
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -38,7 +39,8 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.OnRender = function()
       {
-         this.cube.Draw();
+         //this.cube.Draw();
+         this.globerenderer.Render();
       }
       
       //------------------------------------------------------------------------
@@ -50,18 +52,18 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.OnInit = function()
       {
-            this.cube = new Mesh(this.engine);
-            this.cube.SetBufferPC([ -0.5, -0.5,  0.5, 0.0, 0.0, 1.0, 1.0,
-                  -0.5,  0.5,  0.5, 0.0, 1.0, 1.0, 1.0,
-                   0.5, -0.5,  0.5, 1.0, 0.0, 1.0, 1.0,
-                   0.5,  0.5,  0.5, 1.0, 1.0, 1.0, 1.0,
-                   0.5, -0.5, -0.5, 1.0, 0.0, 0.0, 1.0,
-                   0.5,  0.5, -0.5, 1.0, 1.0, 0.0, 1.0,
-                  -0.5, -0.5, -0.5, 0.0, 0.0, 0.0, 1.0,
-                  -0.5,  0.5, -0.5, 0.0, 1.0, 0.0, 1.0]);
-            this.cube.SetIndexBuffer([3, 1, 0, 5, 3, 2, 7, 5, 4, 1, 7, 6, 5, 7, 1, 2, 0, 6, 2, 3, 0, 4, 5, 2, 6, 7, 4, 0, 1, 6, 3, 5, 1, 4, 2, 6],
-                                     "TRIANGLES");
-
+            this.globerenderer = new GlobeRenderer(this.engine);
+            
+            // #fixme temporary, in future, this is done via SDK
+            var imglayer = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "World500",
+               service : "i3d"
+            };
+            
+            this.globerenderer.AddImageLayer(imglayer);
+        
       }
       
       //------------------------------------------------------------------------
