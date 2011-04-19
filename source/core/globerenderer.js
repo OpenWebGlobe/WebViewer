@@ -35,6 +35,9 @@ function GlobeRenderer(engine)
    this.cachesize = 1000;
    this.globecache = null;
    this.lstFrustum = [];
+   
+   this.iterator = new Object();
+   this.iterator.cnt = 0;
 }
 
 //------------------------------------------------------------------------------
@@ -150,15 +153,17 @@ GlobeRenderer.prototype.Render = function()
 
 GlobeRenderer.prototype._Divide = function()
 {
-   for (var i=0;i<this.lstFrustum.length;i++)
+   this.iterator.cnt = 0;
+   while (this.iterator.cnt != this.lstFrustum.length)
    {
-      this._SubDivide(i);
+      this._SubDivide();
    }
 }
 
 //------------------------------------------------------------------------------
-GlobeRenderer.prototype._SubDivide = function(i)
+GlobeRenderer.prototype._SubDivide = function()
 {
+   var i = this.iterator.cnt;
    if (this.lstFrustum[i].IsAvailable())
    {
       if (this._CalcErrorMetric(i))
@@ -174,10 +179,17 @@ GlobeRenderer.prototype._SubDivide = function(i)
              tb2.IsAvailable() && 
              tb3.IsAvailable())
          {
-            this.lstFrustum.splice(i, 1, tb0, tb1, tb2, tb3);
+            this.lstFrustum.splice(i, 1);
+            this.lstFrustum.push(tb0);
+            this.lstFrustum.push(tb1);
+            this.lstFrustum.push(tb2);
+            this.lstFrustum.push(tb3);
+            return;
          }
       }
    }  
+   
+   this.iterator.cnt++;
 }
 
 //------------------------------------------------------------------------------
@@ -212,4 +224,21 @@ GlobeRenderer.prototype._Optimize = function()
 {
    
 }
-
+//------------------------------------------------------------------------------
+/**
+ * @description Key Event for debugging purposes.
+ * @ignore
+ */
+GlobeRenderer.prototype.OnKey = function(key)
+{
+   if (key == 66)
+   {
+      console.log("-------------------------");
+      console.log("Frustum size: " + this.lstFrustum.length);
+      for (var i=0;i<this.lstFrustum.length;i++)
+      {
+         console.log(this.lstFrustum[i].quadcode);
+      }
+      console.log("-------------------------");
+   }
+}

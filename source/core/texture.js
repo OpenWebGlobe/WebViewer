@@ -63,6 +63,7 @@ Texture.prototype.loadTexture = function(url, callbackready, callbackfailed)
    this.texture.image.src = url;
    this.texture.image.onerror = function()
    {
+      console.log("***FAILED DOWNLOADING: " + url);
       failed = true;
       if (cbf)
       {
