@@ -38,6 +38,11 @@ function TerrainBlock(engine, quadcode, quadtree)
    
    this.vOffset = null; // virtual camera offset
    this.vTilePoints = new Array(5); // corner points and mid point of tile (in cartesian coordinates)
+   this.vTilePoints[0] = new vec3();
+   this.vTilePoints[1] = new vec3();
+   this.vTilePoints[2] = new vec3();
+   this.vTilePoints[3] = new vec3();
+   this.vTilePoints[4] = new vec3();
 }
 //------------------------------------------------------------------------------
 /**
@@ -98,9 +103,31 @@ TerrainBlock.prototype.IsAvailable = function()
 /**
 * @description Calculate visible pixel size
 */
-TerrainBlock.prototype.GetPixelSize = function(mModelViewProjection, nWidth, nHeight)
+TerrainBlock.prototype.GetPixelSize = function(matMVP, nWidth, nHeight)
 {
+   var dx = -1e20;
+   var dy = -1e20;
    
+   var v0 = matMVP.MultiplyVec3(this.vTilePoints[0]);
+   var v1 = matMVP.MultiplyVec3(this.vTilePoints[1]);
+   var v2 = matMVP.MultiplyVec3(this.vTilePoints[2]);
+   var v3 = matMVP.MultiplyVec3(this.vTilePoints[3]);
+
+
+   dx= Math.max(dx, Math.abs(v0.Get()[0] / 2.0 - v1.Get()[0] / 2.0) * nWidth);
+   dy= Math.max(dy, Math.abs(v0.Get()[1] / 2.0 - v1.Get()[1] / 2.0) * nHeight);
+   
+   dx= Math.max(dx, Math.abs(v1.Get()[0] / 2.0 - v2.Get()[0] / 2.0) * nWidth);
+   dy= Math.max(dy, Math.abs(v1.Get()[1] / 2.0 - v2.Get()[1] / 2.0) * nHeight);
+
+   dx= Math.max(dx, Math.abs(v2.Get()[0] / 2.0 - v3.Get()[0] / 2.0) * nWidth);
+   dy= Math.max(dy, Math.abs(v2.Get()[1] / 2.0 - v3.Get()[1] / 2.0) * nHeight);
+
+   dx= Math.max(dx, Math.abs(v3.Get()[0] / 2.0 - v0.Get()[0] / 2.0) * nWidth);
+   dy= Math.max(dy, Math.abs(v3.Get()[1] / 2.0 - v0.Get()[1] / 2.0) * nHeight);
+  
+   var texturesize = 256; // #fixme
+   return Math.max(dx,dy) / texturesize;
 }
 //------------------------------------------------------------------------------
 /**
@@ -108,7 +135,10 @@ TerrainBlock.prototype.GetPixelSize = function(mModelViewProjection, nWidth, nHe
 */
 TerrainBlock.prototype.GetBlockSize = function()
 {
-   
+   // This is an approximate block size
+   var v = this.vTilePoints[0].Copy();
+   v.Sub(this.vTilePoints[1]);
+   return v.Length();
 }
 //------------------------------------------------------------------------------
 /**
@@ -116,9 +146,37 @@ TerrainBlock.prototype.GetBlockSize = function()
 * @param {vec3} vWhere The position to measure to
 * @param {vec3} outHitpoint shortest position to terrain
 */
-TerrainBlock.prototype.CalcDistanceTo = function(vWhere, outHitpoint)
+TerrainBlock.prototype.CalcDistanceTo = function(vWhere)
 {
+   // Calculating the distance to the terrain block is done the following way:
+   // go through all points in the mesh object and calculate the distance
+   // this is not the closest distance to the surface, but it is much faster 
+   // to calculate and sufficient for applications like error metric calculation. 
    
+   var vPos = new vec3();
+   var lenv = new vec3();
+   var curdist;
+   var len = 1e20; 
+   
+   var numpoints = this.mesh.vertexbufferdata.length / 5; // interleaved POSITION, TEXCOORD
+   for (var i=0;i<numpoints;i++)
+   {
+      vPos.Set(
+         this.mesh.vertexbufferdata[5*i] + this.vOffset[0], 
+         this.mesh.vertexbufferdata[5*i+1] + this.vOffset[1], 
+         this.mesh.vertexbufferdata[5*i+2] + this.vOffset[2]);
+         
+         lenv.Subtract(vWhere,vPos);
+         curdist = lenv.SquaredLength(); // use squared len, not useful to calculate square root for every point...
+         
+         if (curdist < len)
+         {
+            len = curdist;
+         }
+   }
+    
+   
+   return Math.sqrt(len);
 }
 
 //------------------------------------------------------------------------------
@@ -199,23 +257,23 @@ TerrainBlock.prototype._CreateElevationMesh = function()
 
          if (x==0 && y==0)
          {
-            this.vTilePoints[0] = [x_cart, y_cart, z_cart]; 
+            this.vTilePoints[0].Set(x_cart, y_cart, z_cart); 
          }
          else if (x==blocksize-1 && y==0)
          {
-            this.vTilePoints[1] = [x_cart, y_cart, z_cart]; 
+            this.vTilePoints[1].Set(x_cart, y_cart, z_cart); 
          }
          else if (x==blocksize-1 && y==blocksize-1)
          {
-            this.vTilePoints[2] = [x_cart, y_cart, z_cart]; 
+            this.vTilePoints[2].Set(x_cart, y_cart, z_cart); 
          }
          else if (x==0 && y==blocksize-1)
          {
-            this.vTilePoints[3] = [x_cart, y_cart, z_cart]; 
+            this.vTilePoints[3].Set(x_cart, y_cart, z_cart); 
          }
          else if (x==(blocksize-1)/2 && y==(blocksize-1)/2)
          {
-            this.vTilePoints[4] = [x_cart, y_cart, z_cart]; 
+            this.vTilePoints[4].Set(x_cart, y_cart, z_cart); 
          }
 
          positionbuffer[3*y*blocksize+3*x+0] = x_cart - this.vOffset[0];

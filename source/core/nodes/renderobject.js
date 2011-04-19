@@ -30,6 +30,8 @@ function RenderObjectNode()
 {
       this.globerenderer = null;
       this.cube = null;
+      this.camera = new vec3();
+      
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {
@@ -40,13 +42,15 @@ function RenderObjectNode()
       this.OnRender = function()
       {
          //this.cube.Draw();
-         this.globerenderer.Render();
+         this.globerenderer.Render(this.camera);
       }
       
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
-         
+          var pos = ts.GetPosition();
+          this.camera.Set(pos.x, pos.y, pos.z);
+          
       }
       
       //------------------------------------------------------------------------

@@ -38,6 +38,9 @@ function GlobeRenderer(engine)
    
    this.iterator = new Object();
    this.iterator.cnt = 0;
+   this.cameraposition = null;
+   
+   this.quality = 1.0; // quality parameter, reduce for lower quality
 }
 
 //------------------------------------------------------------------------------
@@ -112,8 +115,10 @@ GlobeRenderer.prototype._UpdateLayers = function()
 /**
  * @description Render function
  */
-GlobeRenderer.prototype.Render = function()
+GlobeRenderer.prototype.Render = function(vCameraPosition)
 {
+   this.cameraposition = vCameraPosition;
+   
    // before rendering make sure all layers are available
    if (!this.globecache) {return;}
    if (!this.globecache.IsReady()) {return;}
@@ -122,8 +127,6 @@ GlobeRenderer.prototype.Render = function()
    var tb1 = this.globecache.RequestBlock("1");
    var tb2 = this.globecache.RequestBlock("2");
    var tb3 = this.globecache.RequestBlock("3");
-     
-    
      
    if (!tb0.IsAvailable() || 
        !tb1.IsAvailable() ||
@@ -196,7 +199,7 @@ GlobeRenderer.prototype._SubDivide = function()
 GlobeRenderer.prototype._CalcErrorMetric = function(i)
 {
    var min_depth = 3;
-   var max_depth = 3;
+   var max_depth = 8;
    
    var bVisible = true;
    var tb = this.lstFrustum[i]; // terrainblock 
@@ -213,9 +216,22 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
        return true;
    }     
    
-   // #todo: calc error
-
-   return true;
+   // todo: frustum culling and Normal Test
+   //bVisible = this._FrustumTest(tb.GetBoundingBox());
+   //bVisible = bVisible && this._SurfaceNormalTest(tb);
+   
+   if (!bVisible)
+   {
+      return false; // early rejection, no further calculations required
+   }
+   
+   // virtual globe error metric
+   var dist = tb.CalcDistanceTo(this.cameraposition);
+   //var dDelta = tb.GetPixelSize(this.engine.matModelViewProjection, this.engine.width, this.engine.height);
+   var dCell = tb.GetBlockSize();
+   
+   var error = this.quality * dCell / dist;
+   return (error>1.0);
 }
 
 //------------------------------------------------------------------------------

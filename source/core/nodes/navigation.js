@@ -100,11 +100,7 @@ function NavigationNode()
          var lat = this._latitude.toFixed(6);
          var elv = this._ellipsoidHeight.toFixed(2);
          //this.engine.DrawText("Key: " + this.lastkey + " (" + this.curtime + ")",0,32);
-         this.engine.DrawText("(" + lng+ ", " + lat + "," + this._ellipsoidHeight + ")",0,0,0.5);
-         //this.engine.DrawText("Cart: (" + this.geocoord[0] + ", " + this.geocoord[1] + "," + this.geocoord[2] + ")",0,100);
-      
-         
-      
+         this.engine.DrawText("(" + lng+ ", " + lat + "," + this._ellipsoidHeight + ")",0,0,0.5);  
       }
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
@@ -124,6 +120,7 @@ function NavigationNode()
          
          
          ts.SetCompassDirection(this._yaw);
+         ts.SetPosition(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
       }
       //------------------------------------------------------------------------
       this.OnInit = function()

@@ -33,12 +33,16 @@ function TraversalState()
    this.MatrixStackView = new Array();
    this.MatrixStackModel = new Array();
    this.MatrixStackProjection = new Array();
+   this.camera = new Object();
+   this.camera.x = 0;
+   this.camera.y = 0;
+   this.camera.z = 0;
 } 
 
 //------------------------------------------------------------------------------
 /**
  * @description Push a new view matrix to stack
- * @param{mat4} matrix view matrix
+ * @param {mat4} matrix view matrix
  */
 TraversalState.prototype.PushView = function(matrix)
 {
@@ -57,7 +61,7 @@ TraversalState.prototype.PopView = function()
 //------------------------------------------------------------------------------
 /**
  * @description Push a new model matrix to stack
- * @param{mat4} matrix model matrix
+ * @param {mat4} matrix model matrix
  */
 TraversalState.prototype.PushModel = function(matrix)
 {
@@ -76,7 +80,7 @@ TraversalState.prototype.PopModel = function()
 //------------------------------------------------------------------------------
 /**
  * @description Push a new projection matrix to stack
- * @param{mat4} matrix model matrix
+ * @param {mat4} matrix model matrix
  */
 TraversalState.prototype.PushProjection = function(matrix)
 {
@@ -95,7 +99,7 @@ TraversalState.prototype.PopProjection = function()
 //------------------------------------------------------------------------------
 /**
  * @description Return current view matrix from stack and return it
- * @param{mat4} matrix the current view matrix
+ * @param {mat4} matrix the current view matrix
  */
 TraversalState.prototype.GetViewMatrix = function(matrix)
 {
@@ -108,7 +112,7 @@ TraversalState.prototype.GetViewMatrix = function(matrix)
 //------------------------------------------------------------------------------
 /**
  * @description Return current model matrix from stack and return it
- * @param{mat4} matrix the current model matrix
+ * @param {mat4} matrix the current model matrix
  */
 TraversalState.prototype.GetModelMatrix = function(matrix)
 {
@@ -118,7 +122,7 @@ TraversalState.prototype.GetModelMatrix = function(matrix)
 //------------------------------------------------------------------------------
 /**
  * @description Return current projection matrix from stack and return it
- * @param{mat4} matrix the current projection matrix
+ * @param {mat4} matrix the current projection matrix
  */
 TraversalState.prototype.GetProjectionMatrix = function(matrix)
 {
@@ -128,7 +132,7 @@ TraversalState.prototype.GetProjectionMatrix = function(matrix)
 //------------------------------------------------------------------------------
 /**
  * @description Overwrite the current projection matrix
- * @param{mat4} matrix the projection matrix to overwrite
+ * @param {mat4} matrix the projection matrix to overwrite
  */
 TraversalState.prototype.OverwriteProjectionMatrix = function(matrix)
 {
@@ -138,7 +142,7 @@ TraversalState.prototype.OverwriteProjectionMatrix = function(matrix)
 //------------------------------------------------------------------------------
 /**
  * @description Overwrite the current model matrix
- * @param{mat4} matrix the model matrix to overwrite
+ * @param {mat4} matrix the model matrix to overwrite
  */
 TraversalState.prototype.OverwriteModelMatrix = function(matrix)
 {
@@ -148,7 +152,7 @@ TraversalState.prototype.OverwriteModelMatrix = function(matrix)
 //------------------------------------------------------------------------------
 /**
  * @description Overwrite the current view matrix
- * @param{mat4} matrix the view matrix to overwrite
+ * @param {mat4} matrix the view matrix to overwrite
  */
 TraversalState.prototype.OverwriteViewMatrix = function(matrix)
 {
@@ -158,11 +162,32 @@ TraversalState.prototype.OverwriteViewMatrix = function(matrix)
 //------------------------------------------------------------------------------
 /**
  * @description Set direction for the compass
- * @param{double} compdir the direction of the compass (RAD)
+ * @param {double} compdir the direction of the compass (RAD)
  */
 TraversalState.prototype.SetCompassDirection = function(compdir)
 {
    this.compassdirection = compdir;
 }
-
-
+//------------------------------------------------------------------------------
+/**
+ * @description Set current position
+ * @param {double} x x-component of current camera position
+ * @param {double} y y-component of current camera position
+ * @param {double} z z-component of current camera position
+ */
+TraversalState.prototype.SetPosition = function(x,y,z)
+{
+   this.camera.x = x;
+   this.camera.y = y;
+   this.camera.z = z;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Retrieve current camera position
+ * return value is a JavaScript Object and components can be 
+ * accessed with ret.x, ret.y, ret.z
+ */
+TraversalState.prototype.GetPosition = function()
+{
+   return this.camera;
+}
