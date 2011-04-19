@@ -35,6 +35,9 @@ function LogosNode()
       this.mx = 0;
       this.my = 0;
       this.btn = false;
+      this.longitude = 0;
+      this.latitude = 0;
+      this.elevation = 0;
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {
@@ -52,12 +55,20 @@ function LogosNode()
             this.compassr.Blit(this.mx-64, this.my-64,0,0,1,1,true);
          }
          
+         // draw position
+         var lng = this.longitude.toFixed(6);
+         var lat = this.latitude.toFixed(6);
+         var elv = this.elevation.toFixed(2);
+         this.engine.DrawText("Current position: (" + lng+ ", " + lat + "," + elv + ")",0,0,0.5);  
+         
       }
       
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
-         
+           this.longitude = ts.geoposition.longitude;
+           this.latitude = ts.geoposition.latitude;
+           this.elevation = ts.geoposition.elevation;
       }
       
       //------------------------------------------------------------------------

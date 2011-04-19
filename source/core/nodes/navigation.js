@@ -96,11 +96,6 @@ function NavigationNode()
       //------------------------------------------------------------------------
       this.OnRender = function()
       {
-         var lng = this._longitude.toFixed(6);
-         var lat = this._latitude.toFixed(6);
-         var elv = this._ellipsoidHeight.toFixed(2);
-         //this.engine.DrawText("Key: " + this.lastkey + " (" + this.curtime + ")",0,32);
-         this.engine.DrawText("(" + lng+ ", " + lat + "," + this._ellipsoidHeight + ")",0,0,0.5);  
       }
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
@@ -121,6 +116,7 @@ function NavigationNode()
          
          ts.SetCompassDirection(this._yaw);
          ts.SetPosition(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
+         ts.SetGeoposition(this._longitude, this._latitude, this._ellipsoidHeight);
       }
       //------------------------------------------------------------------------
       this.OnInit = function()

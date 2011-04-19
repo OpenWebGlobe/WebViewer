@@ -33,10 +33,16 @@ function TraversalState()
    this.MatrixStackView = new Array();
    this.MatrixStackModel = new Array();
    this.MatrixStackProjection = new Array();
+   
    this.camera = new Object();
    this.camera.x = 0;
    this.camera.y = 0;
    this.camera.z = 0;
+   
+   this.geoposition = new Object();
+   this.geoposition.longitude = 0;
+   this.geoposition.latitude = 0;
+   this.geoposition.elevation = 0;
 } 
 
 //------------------------------------------------------------------------------
@@ -190,4 +196,14 @@ TraversalState.prototype.SetPosition = function(x,y,z)
 TraversalState.prototype.GetPosition = function()
 {
    return this.camera;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Set current position in lat/lng/elv
+ */
+TraversalState.prototype.SetGeoposition = function(longitude, latitude, elevation)
+{
+   this.geoposition.longitude = longitude;
+   this.geoposition.latitude = latitude;
+   this.geoposition.elevation = elevation;
 }
