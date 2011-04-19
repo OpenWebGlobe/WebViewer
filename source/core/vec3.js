@@ -128,13 +128,21 @@ vec3.prototype.Add = function(vec)
  */
 vec3.prototype.Sub = function(vec)
 {
-   if(vec instanceof vec3)
-   {
-      this._values[0]=this._values[0]-vec._values[0];
-      this._values[1]=this._values[1]-vec._values[1];
-      this._values[2]=this._values[2]-vec._values[2];
-      return this;
-   }
+   this._values[0]=this._values[0]-vec._values[0];
+   this._values[1]=this._values[1]-vec._values[1];
+   this._values[2]=this._values[2]-vec._values[2];
+   return this;
+}
+
+//-----------------------------------------------------------------------
+/**
+ * Subtracts the vector vec1-vec2 and stores the result in this instance
+ */
+vec3.prototype.Subtract = function(vec1, vec2)
+{
+   this._values[0]=vec1._values[0]-vec2._values[0];
+   this._values[1]=vec1._values[1]-vec2._values[1];
+   this._values[2]=vec1._values[2]-vec2._values[2];
 }
 
 //------------------------------------------------------------------------------
@@ -205,7 +213,25 @@ vec3.prototype.Dot = function(vec)
  */
 vec3.prototype.Length = function()
 {
-   return Math.sqrt(Math.pow(this._values[0],2)+Math.pow(this._values[1],2)+Math.pow(this._values[2],2));
+   var x2 = this._values[0]; x2 *= x2;
+   var y2 = this._values[1]; y2 *= y2;
+   var z2 = this._values[2]; z2 *= z2;
+   return Math.sqrt(x2+y2+z2);
+}
+
+
+//------------------------------------------------------------------------------
+/**
+ * Calculates the squared length of the vector.
+ * @extends vec3
+ * @return squared length of the current vector instance. len=x^2+y^2+z^2
+ */
+vec3.prototype.SquaredLength = function()
+{
+   var x2 = this._values[0]; x2 *= x2;
+   var y2 = this._values[1]; y2 *= y2;
+   var z2 = this._values[2]; z2 *= z2;
+   return x2+y2+z2;
 }
 
 //------------------------------------------------------------------------------

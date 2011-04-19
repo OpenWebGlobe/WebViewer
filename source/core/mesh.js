@@ -195,7 +195,7 @@ Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
    this.indexbufferdata = new Uint16Array(idx); 
    this.indexsemantic = idxsem;
    this.numindex = idx.length;
-   this.Ready = true; //Discuss where to set this. ToDo
+   this.Ready = true;
    
 }
 
@@ -359,7 +359,16 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                                this.gl.drawElements(this.gl.TRIANGLES, this.numindex, this.gl.UNSIGNED_SHORT, 0);
                            }                          
                            break;
-                        
+         case "TRIANGLESTRIP":
+                           if(ranged)
+                           {
+                              this.gl.drawElements(this.gl.TRIANGLE_STRIP, count, this.gl.UNSIGNED_SHORT, offset);
+                           }
+                           else
+                           {
+                               this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.numindex, this.gl.UNSIGNED_SHORT, 0);
+                           }                          
+                           break;                  
          case "LINES":     
                            this.gl.drawElements(this.gl.LINES, this.numindex, this.gl.UNSIGNED_SHORT, 0);
                            break;

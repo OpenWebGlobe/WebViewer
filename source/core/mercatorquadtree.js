@@ -24,9 +24,6 @@
 //------------------------------------------------------------------------------
 /** 
  * @class MercatorQuadtree
- * 
- * {@link http://www.openwebglobe.org} 
- *
  * @author Martin Christen martin.christen@fhnw.ch
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch 
  */
@@ -34,9 +31,7 @@ function MercatorQuadtree()
 {
    
 }
-
-
-
+//------------------------------------------------------------------------------
 
 MercatorQuadtree.prototype.QuadKeyToMercatorCoord = function(quadKey, coords)
 {
@@ -48,7 +43,7 @@ MercatorQuadtree.prototype.QuadKeyToMercatorCoord = function(quadKey, coords)
    coords[3] = 2 * coords[3] -1.0;
    
 }
-
+//------------------------------------------------------------------------------
 MercatorQuadtree.prototype.QuadKeyToNormalizedCoord = function(quadKey, coords)
 {
    var nLevelOfDetail = quadKey.length;
@@ -87,7 +82,6 @@ MercatorQuadtree.prototype.QuadKeyToNormalizedCoord = function(quadKey, coords)
    coords[2] = x + scale;
    coords[3] = y;          
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description returns the quadkey of the parent quad.
@@ -102,13 +96,11 @@ MercatorQuadtree.prototype.GetParent = function(quadKey)
   }
   return quadKey.slice(0,quadKey.length-1);
 }
-
-
+//------------------------------------------------------------------------------
 MercatorQuadtree.prototype.GetQuad = function(quadKey)
 {
    var l = quadKey.length;  
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description calculates the tile coord of the specific quadkey, origin is set to left bottom corner.
@@ -131,6 +123,8 @@ MercatorQuadtree.prototype.QuadKeyToTileCoord = function(quadKey, coords)
    coords[2] = null;
    coords[3] = null;  
 }
+//------------------------------------------------------------------------------
+
 
 
 

@@ -38,6 +38,19 @@ function GlobeCache(engine, imagelayerlist, elevationlayerlist, quadtree, caches
 }
 //------------------------------------------------------------------------------
 /**
+ * @description Destroy Cache. Clear all memory.
+ */
+GlobeCache.prototype.Destroy = function()
+{
+   this.engine = null;
+   this.imagelayerlist = null;
+   this.elevationlayerlist = null;
+   this.quadtree = null;
+   this.cache.clear();
+   this.cache = null;  
+}
+//------------------------------------------------------------------------------
+/**
  * @description Returns true if cache is ready to be used.
  * Please note that for some tile services creation of cache needs async requests.
  * You can't make tile requests before this function returns true.
@@ -89,5 +102,19 @@ GlobeCache.prototype.GetCachedBlock = function(quadcode)
    return terrainblock;
 }
 //------------------------------------------------------------------------------
-
+/**
+ * @description Retrieve maximum level of detail
+ */
+GlobeCache.prototype.GetMaxLod = function()
+{
+   var maxlod = 0;
+   
+   for (var i=0;i<this.imagelayerlist.length;i++)
+   {
+      maxlod = Math.max(maxlod, this.imagelayerlist[i].GetMaxLod());
+   }
+   
+   return maxlod;
+}
+//------------------------------------------------------------------------------
 
