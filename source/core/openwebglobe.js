@@ -250,8 +250,8 @@ engine3d.prototype.GetClearColor = function(color)
  */
 engine3d.prototype.Clear = function()
 {
-   this.gl.clearColor(engine.bg_r, engine.bg_g, engine.bg_b, engine.bg_a);
-   this.gl.clear(engine.gl.COLOR_BUFFER_BIT | engine.gl.DEPTH_BUFFER_BIT);
+   this.gl.clearColor(this.bg_r, engine.bg_g, this.bg_b, this.bg_a);
+   this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 }
 
 //------------------------------------------------------------------------------
@@ -386,9 +386,12 @@ engine3d.prototype.PopMatrices = function()
  */
 engine3d.prototype.SetOrtho2D = function()
 {
+   var vp = this.gl.getParameter(this.gl.VIEWPORT);
+   var w = vp[2]-vp[0];
+   var h = vp[3]-vp[1];
    this.matModel.Identity();
    this.matView.Identity();
-   this.matProjection.Ortho2D(0,this.width,0,this.height);
+   this.matProjection.Ortho2D(0,w,0,h);
    this._UpdateMatrices();
 }
 
