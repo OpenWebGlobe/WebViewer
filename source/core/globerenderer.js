@@ -39,6 +39,7 @@ function GlobeRenderer(engine)
    this.iterator = new Object();
    this.iterator.cnt = 0;
    this.cameraposition = null;
+   this.maxlod = 0;
    
    this.quality = 1.0; // quality parameter, reduce for lower quality
 }
@@ -123,6 +124,8 @@ GlobeRenderer.prototype.Render = function(vCameraPosition)
    if (!this.globecache) {return;}
    if (!this.globecache.IsReady()) {return;}
    
+   this.maxlod = this.globecache.GetMaxLod();
+   
    var tb0 = this.globecache.RequestBlock("0");
    var tb1 = this.globecache.RequestBlock("1");
    var tb2 = this.globecache.RequestBlock("2");
@@ -199,7 +202,7 @@ GlobeRenderer.prototype._SubDivide = function()
 GlobeRenderer.prototype._CalcErrorMetric = function(i)
 {
    var min_depth = 3;
-   var max_depth = 8;
+   var max_depth = this.maxlod; // max lod of dataset
    
    var bVisible = true;
    var tb = this.lstFrustum[i]; // terrainblock 

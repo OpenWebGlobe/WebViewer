@@ -102,5 +102,19 @@ GlobeCache.prototype.GetCachedBlock = function(quadcode)
    return terrainblock;
 }
 //------------------------------------------------------------------------------
-
+/**
+ * @description Retrieve maximum level of detail
+ */
+GlobeCache.prototype.GetMaxLod = function()
+{
+   var maxlod = 0;
+   
+   for (var i=0;i<this.imagelayerlist.length;i++)
+   {
+      maxlod = Math.max(maxlod, this.imagelayerlist[i].GetMaxLod());
+   }
+   
+   return maxlod;
+}
+//------------------------------------------------------------------------------
 
