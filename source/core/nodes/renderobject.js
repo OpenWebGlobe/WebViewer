@@ -59,14 +59,23 @@ function RenderObjectNode()
             this.globerenderer = new GlobeRenderer(this.engine);
             
             // #fixme temporary, in future, this is done via SDK
-            var imglayer = 
+            
+            var imglayer1 = 
             {
                url     : ["http://www.openwebglobe.org/data/img"],
                layer   : "World500",
                service : "i3d"
             };
             
-            this.globerenderer.AddImageLayer(imglayer);
+            var imglayer2 = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "LandsatCH",
+               service : "i3d"
+            };
+            
+            this.globerenderer.AddImageLayer(imglayer1);
+            //this.globerenderer.AddImageLayer(imglayer2);
         
       }
       

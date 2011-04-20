@@ -74,9 +74,11 @@ function _cbfOnImageTileReady(quadcode, ImageObject)
  * @description Callback when data failed
  * @intern
  */
-function _cbfOnImageTileFailed(quadcode)
+function _cbfOnImageTileFailed(quadcode, terrainblock)
 {
-   // need to think how to handle this case...
+   terrainblock.texture = terrainblock.engine.nodata; // use empty texture
+   terrainblock._CreateElevationMesh(); // create empty elevation
+   terrainblock.available = true;
 }
 //------------------------------------------------------------------------------
 /**

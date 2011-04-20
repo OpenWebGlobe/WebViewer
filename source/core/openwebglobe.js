@@ -129,6 +129,10 @@ function engine3d()
    
    // the scene
    this.scene = null;
+   
+   // an empty texture for "failed" downloads
+   this.nodata = null;
+   
 }
 
 //------------------------------------------------------------------------------
@@ -194,6 +198,9 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    // Create Font
    this.systemfont = new Font(this);
    
+   // Create Nodata texture
+   this.nodata = new Texture(this);
+   this.nodata.LoadNoDataTexture();
    
    // call init callback 
    this.cbfInit();

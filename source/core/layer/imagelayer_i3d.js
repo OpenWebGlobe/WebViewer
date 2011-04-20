@@ -84,7 +84,7 @@ function i3dImageLayer()
    {
       if (this.dsi.nLevelofDetail)
       {
-         return this.dsi.nLevelofDetail;
+         return this.dsi.nLevelofDetail-1;
       }
       else
       {
@@ -134,7 +134,7 @@ function _cbTileReady(imgTex)
  */
 function _cbTileFailed(imgTex)
 {
-   imgTex.cbfFailed(imgTex.quadcode);
+   imgTex.cbfFailed(imgTex.quadcode, imgTex.caller);
    imgTex.cbfReady = null;
    imgTex.cbfFailed = null;
    imgTex.quadcode = null; 
