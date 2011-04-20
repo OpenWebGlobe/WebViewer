@@ -362,7 +362,7 @@ ShaderManager.prototype.InitShader_PNCT = function()
 ShaderManager.prototype.InitShader_Font = function()
 {
    src_vertexshader_Font= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n}\n";
-   src_fragmentshader_Font= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\n\nuniform vec4 uColor;\nvoid main()\n{\n   if(texture2D(uTexture, vTexCoord)[2]>0.9){gl_FragColor = uColor*texture2D(uTexture, vTexCoord);}else{gl_FragColor =vec4(1.0,0.0,0.0,0.0); }\n}\n\n";
+   src_fragmentshader_Font= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\n\nuniform vec4 uColor;\nvoid main()\n{\n   gl_FragColor = uColor*texture2D(uTexture, vTexCoord);\n}\n\n";
  
    this.vs_font = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_Font);
    this.fs_font = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_Font);

@@ -36,6 +36,9 @@ function LogosNode()
       this.my = 0;
       this.btn = false;
       this.yaw = 0;
+      this.longitude = 0;
+      this.latitude = 0;
+      this.elevation = 0;
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {
@@ -53,12 +56,21 @@ function LogosNode()
             this.compassr.Blit(this.mx-64, this.my-64,0,this.yaw,1,1,true);
          }
          
+         // draw position
+         var lng = this.longitude.toFixed(6);
+         var lat = this.latitude.toFixed(6);
+         var elv = this.elevation.toFixed(2);
+         this.engine.DrawText("Current position: (" + lng+ ", " + lat + "," + elv + ")",0,0,0.5);  
+         
       }
       
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
-         this.yaw = ts.compassdirection*57.295779513082320876798154814105; //rad2deg
+           this.yaw = ts.compassdirection*57.295779513082320876798154814105; //rad2deg
+           this.longitude = ts.geoposition.longitude;
+           this.latitude = ts.geoposition.latitude;
+           this.elevation = ts.geoposition.elevation;
       }
       
       //------------------------------------------------------------------------

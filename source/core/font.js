@@ -64,7 +64,7 @@ Font.prototype.DrawText = function(text,x,y,scale,fontcolor)
       this.engine.gl.enable(this.engine.gl.ALPHA_TEST);
       //this.engine.gl.disable(this.engine.gl.DEPTH_TEST);
       this.engine.gl.depthFunc(this.engine.gl.LEQUAL);
-     // this.engine.gl.blendFunc(this.engine.gl.SRC_ALPHA,this.engine.gl.ONE);
+      this.engine.gl.blendFunc(this.engine.gl.SRC_ALPHA,this.engine.gl.ONE_MINUS_SRC_ALPHA);
 
       
       var startX=x;
