@@ -35,6 +35,7 @@ function LogosNode()
       this.mx = 0;
       this.my = 0;
       this.btn = false;
+      this.yaw = 0;
       this.longitude = 0;
       this.latitude = 0;
       this.elevation = 0;
@@ -50,9 +51,9 @@ function LogosNode()
          this.logo.Blit(this.engine.width-72, this.engine.height-72,0,0,1,1,true);
          
          if (this.btn)
-         {
+         {           
             this.compassbg.Blit(this.mx-64, this.my-64,0,0,1,1,true);
-            this.compassr.Blit(this.mx-64, this.my-64,0,0,1,1,true);
+            this.compassr.Blit(this.mx-64, this.my-64,0,this.yaw,1,1,true);
          }
          
          // draw position
@@ -66,6 +67,7 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
+           this.yaw = ts.compassdirection*57.295779513082320876798154814105; //rad2deg
            this.longitude = ts.geoposition.longitude;
            this.latitude = ts.geoposition.latitude;
            this.elevation = ts.geoposition.elevation;

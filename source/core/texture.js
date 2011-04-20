@@ -170,15 +170,22 @@ Texture.prototype.Disable = function()
  * @extends texture
  */
 Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend)
-{
+{   
    if (z==null) { z = 0; }
    if (angle==null) {angle = 0;}
    if (scalex==null) {scalex = 1;}
    if (scaley==null) { scaley = 1; }
    if (blend==null)  { blend = false;}
-
+   
+   
    if (this.ready)
    {
+      
+       var w = this.width;
+      var h = this.height;
+      
+      xr = this.width/2;
+      yr = this.height/2;
       this.engine.PushMatrices();
       this.engine.SetOrtho2D();
 
@@ -186,16 +193,57 @@ Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend)
       angle = MathUtils.Deg2Rad(angle);
       
       var model = new mat4();
+    //  model.Translation(x,y,z);
+      
  //     model.Set(new Float32Array([Math.cos(angle)*scalex, Math.sin(angle)*scalex,0,0, -Math.sin(angle)*scaley, Math.cos(angle)*scaley,0,0,0,0,1,0,Math.cos(angle)*x-Math.sin(angle)*y,Math.cos(angle)*y+Math.sin(angle)*x,z,1]));
-      model.Set(new Float32Array([Math.cos(angle)*scalex, Math.sin(angle)*scaley,0,0, -Math.sin(angle)*scalex, Math.cos(angle)*scaley,0,0,0,0,1,0,x,y,z,1])); 
-      //model.Translation(x,y,z);
+      
+     // model.Set(new Float32Array([Math.cos(angle)*scalex, Math.sin(angle)*scaley,0,0, -Math.sin(angle)*scalex, Math.cos(angle)*scaley,0,0,0,0,1,0,x,y,z,1]));
+      
+      
+      //model.Set(new Float32Array([Math.cos(angle)*scalex, Math.sin(angle)*scaley,0,0,-Math.sin(angle)*scalex,Math.cos(angle)*scaley,0,0,0,0,1,0,Math.cos(angle)*scalex*(x-xr)+Math.sin(angle)*scalex*(yr-y)+scalex*xr,Math.cos(angle)*scaley*(y-yr)+Math.sin(angle)*scaley*(x-xr)+scaley*yr,z,1]));
+      /*
+      Math.cos(angle)*scalex     -Math.sin(angle)*scalex    0     Math.cos(angle)*scalex*(x-xr)+Math.sin(angle)*sx*(yr-y)+scalex*xr
+      Math.sin(angle)*scaley     Math.cos(angle)*scaley     0     Math.cos(angle)*scaley*(y-yr)+Math.sin(angle)*sy*(x-xr)+scaley*yr
+      0                          0                          1     z
+      0 
+      0                         0                          0     1
+       */
+      // model.Set(new Float32Array([scalex,0,0,0,0,scaley,0,0,0,0,1,0,-Math.cos(angle)*scalex*xr + Math.sin(angle)*scalex*yr + scalex*(x-xr),-Math.cos(angle)*scaley*yr - Math.sin(angle)*scaley*xr + scaley*(y-yr),z,1]));
+
+          
+       /*  s*tr*r*tm*rm*t 
+       scalex,  0,           0,  -Math.cos(angle)*scalex*xr + Math.sin(angle)*scalex*yr + scalex*(x-xr),
+       0,       scaley,      0,  -Math.cos(angle)*scaley*yr - Math.sin(angle)*scaley*xr + scaley*(y-yr),
+       0,       0,           1,  z,
+       0,       0,           0,  1]));
+       */
+       
+       
+       if(angle > 0)
+       {
+           model.Set(new Float32Array([Math.cos(angle)*scalex, Math.sin(angle)*scaley,0,0,-Math.sin(angle)*scalex,Math.cos(angle)*scaley,0,0,0,0,1,0,-Math.cos(angle)*scalex*xr + Math.sin(angle)*scalex*yr + scalex*xr + x,-Math.cos(angle)*scaley*yr - Math.sin(angle)*scaley*xr + scaley*yr + y,z,1]));
+
+       }
+       else
+       {
+          model.Translation(x,y,z);
+       }
+             
+       /*
+        *t*s*tr*r*tm 
+        *
+        * Math.cos(angle)*scalex     -Math.sin(angle)*scalex   0   -Math.cos(angle)*scalex*xr + Math.sin(angle)*scalex*yr + scalex*xr + x
+        * Math.sin(angle)*scaley     Math.cos(angle)*scaley    0   -Math.cos(angle)*scaley*yr - Math.sin(angle)*scaley*xr + scaley*yr + y
+        * 0                            0                       1     z
+        * 0                            0                       0     1
+        * 
+        */
       this.engine.SetModelMatrix(model);
       
       //scale and rotation 
       
      
-      var w = this.width;
-      var h = this.height;
+     
    
 
       if (this.blitMesh == null)
