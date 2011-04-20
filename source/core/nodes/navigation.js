@@ -406,6 +406,7 @@ function NavigationNode()
             sender._latitude = 57.295779513082320876798154814105*B2; // rad2deg
             sender._yaw = A2;
             
+            
             while (sender._longitude>180) {sender._longitude -=180;}
             while (sender._longitude<-180) { sender._longitude +=180; }
             while (sender._latitude>90) { sender._latitude-=180;}
