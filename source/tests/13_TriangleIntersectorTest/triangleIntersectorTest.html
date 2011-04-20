@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Trienagle Intersector Test</title>
+      <script type="text/javascript" src="../../core/triangleintersector.js"></script>
+      <script type="text/javascript">
+      
+      function calc()
+      {
+         
+         trIntersec = new TriangleIntersector();
+ 
+         
+         
+         //origx,origy,origz,dirx,diry,dirz,vert0x,vert0y,vert0z,vert1x,vert1y,vert1z,vert2x,vert2y,vert2z)
+       
+       
+         result = trIntersec.IntersectTriangle(0,0,3,1,1,1,1,0,0,0,1,0,0,0,1);
+         
+         if(result)
+         {
+            console.log("result t: "+result.t+" result u: "+result.u+" result.v: "+result.v);
+         }
+         else
+         {
+            console.log("no result");
+         }
+         
+        
+      }
+        
+         
+         
+      </script>
+    </head>
+    <body>
+      <input type="button" onclick="calc()" value="calc..."> 
+    </body>
+</html>
