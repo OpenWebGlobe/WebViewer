@@ -423,6 +423,62 @@ engine3d.prototype.DrawText = function(txt,x,y,scale,fontcolor)
    }
 }
 //------------------------------------------------------------------------------
+/**
+ * @description returns the mousepos and direction vector of a mouse click on the canvas in ?? coordinates
+ */
+engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
+{
+   
+   var mvpInv = new mat4();
+   mvpInv.Inverse(mvp);
+   
+   var winx = x;
+   var winy = this.height-y-1;
+   var winz = 0;
+          
+   var mx = (winx-0)*2/this.width - 1;
+   var my = (winy-0)*2/this.height - 1;
+   var mz = -1;                    //cordinates on nearplane
+                  
+   var fx = (winx-0)*2/this.width - 1;
+   var fy = (winy-0)*2/this.height - 1;
+   var fz = 1;                    //coordinates on farplane
+
+   var CoorOnNearPlane = new vec3();   
+       CoorOnNearPlane.Set(mx,my,mz);      
+       CoorOnNearPlaneWorld = mvpInv.MultiplyVec3(CoorOnNearPlane);
+       // console.log("engine CoorOnNearPlaneWorld: "+CoorOnNearPlaneWorld.ToString());
+
+   var CoorOnFarPlane = new vec3();   
+       CoorOnFarPlane.Set(fx,fy,fz);              
+       CoorOnFarPlaneWorld = mvpInv.MultiplyVec3(CoorOnFarPlane);
+       // console.log("engine CoorOnFarPlaneWorld: "+CoorOnFarPlaneWorld.ToString());
+                    
+   //direction
+   var dirx = CoorOnFarPlaneWorld.Get()[0] - CoorOnNearPlaneWorld.Get()[0];
+   var diry = CoorOnFarPlaneWorld.Get()[1] - CoorOnNearPlaneWorld.Get()[1];
+   var dirz = CoorOnFarPlaneWorld.Get()[2] - CoorOnNearPlaneWorld.Get()[2];
+            
+   //normalize direction
+   var a = Math.sqrt(dirx*dirx+diry*diry+dirz*dirz);
+       a = Math.abs(a);
+              
+   dirx/=a;
+   diry/=a;
+   dirz/=a;
+
+   var res = CoorOnNearPlaneWorld.Get();
+   var pointAndDir = {};
+   pointAndDir.x = res[0];   
+   pointAndDir.y = res[1];  
+   pointAndDir.z = res[2]; 
+   pointAndDir.dirx = dirx;
+   pointAndDir.diry = diry;
+   pointAndDir.dirz = dirz;
+   
+   return pointAndDir; 
+}
+//------------------------------------------------------------------------------
 // MAIN TIMER FUNCTION
 //------------------------------------------------------------------------------
 

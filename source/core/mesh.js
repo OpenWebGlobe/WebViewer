@@ -98,6 +98,7 @@ function Mesh(engine)
    this.cbfJSONLoad = null;
    this.defaultfontcolor = new vec4();
    this.defaultfontcolor.Set(1,1,1,1);
+   this.intersector = new TriangleIntersector();
 }
 
 
@@ -488,6 +489,106 @@ Mesh.prototype.SetJSONLoadCallback = function(f)
 }
 
 
+
+Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
+{
+   
+   var hit = false;
+   var vertexlength = 0;
+   var hitresult = null;
+   var t=null;
+   
+   //check for every triangle
+  switch(this.mode)
+  {
+     case "pt": 
+                  vertexlength = 5;
+                  break;
+                  
+     case "pc":
+                  vertexlength = 7;
+                  break;
+     
+     default:    
+                  console.log("mesh: intersection test with "+this.mode+" mode not implemented.")
+                  return null;
+                  break;
+  }  
+            
+            
+            
+   for(var i=0; i < this.numindex/3; i++)
+   {
+      v1x = this.vertexbufferdata[this.indexbufferdata[i]*vertexlength];
+      v1y = this.vertexbufferdata[this.indexbufferdata[i]*vertexlength+1];
+      v1z = this.vertexbufferdata[this.indexbufferdata[i]*vertexlength+2];
+              
+      v2x = this.vertexbufferdata[this.indexbufferdata[i+1]*vertexlength];
+      v2y = this.vertexbufferdata[this.indexbufferdata[i+1]*vertexlength+1];
+      v2z = this.vertexbufferdata[this.indexbufferdata[i+1]*vertexlength+2];
+              
+      v3x = this.vertexbufferdata[this.indexbufferdata[i+2]*vertexlength];
+      v3y = this.vertexbufferdata[this.indexbufferdata[i+2]*vertexlength+1];
+      v3z = this.vertexbufferdata[this.indexbufferdata[i+2]*vertexlength+2];
+              
+      //not tested...yet !!!!        
+      if(this.modelMatrix)
+      {
+               
+         var invModelMatrix = new mat4();
+         invModelMatrix.Inverse(this.modelMatrix); 
+              
+         v1 = new vec3();
+         v1.Set(v1x,v1y,v1z);
+              
+         v2 = new vec3();
+         v2.Set(v2x,v2y,v2z);
+              
+         v3 = new vec3();
+         v3.Set(v3x,v3y,v3z);
+              
+             
+         vec = invModelMatrix.MultiplyVec3(v1);
+         v1x = vec.Get()[0];
+         v1y = vec.Get()[1];
+         v1z = vec.Get()[2];
+              
+         vec = invModelMatrix.MultiplyVec3(v2);
+         v2x = vec.Get()[0];
+         v2y = vec.Get()[1];
+         v2z = vec.Get()[2];
+              
+         vec = invModelMatrix.MultiplyVec3(v3);
+         v3x = vec.Get()[0];
+         v3y = vec.Get()[1];
+         v3z = vec.Get()[2];
+       }  
+
+        
+      result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,v1x,v1y,v1z,v2x,v2y,v2z,v3x,v3y,v3z);
+     // result.t //minimal t        
+             
+      if(result)
+      {
+         hit = true;  
+         if(hitresult)
+         {
+            if(result.t < hitresult.t)
+            {
+            hitresult = result;      
+            }  
+            
+         }
+         else
+         {
+            hitresult = result;    
+         }
+                 
+      }
+   }
+   
+   return hitresult;
+}
 
 
 
