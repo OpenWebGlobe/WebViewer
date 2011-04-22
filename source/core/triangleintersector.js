@@ -23,7 +23,7 @@
 
 //------------------------------------------------------------------------------
 /** 
- * @class triangleintersector
+ * @class triangleintersector Methods to calc ray and triangle intersection.
  * @description 
  * 
  * {@link http://www.openwebglobe.org} 
@@ -76,7 +76,23 @@
  
  
  /*
-  * cross product:
+  * @description: IntersectTriangle test if a ray interesects a triangle. 
+  *               Attention: direction vector has to be normalized before calling this.
+  *               Attention II: triangle vertices have to be defined in counterclockwise direction
+  * 
+  *               Based on: Tomas Möller, Ben Trumbore, "Fast, Minimum Storage Ray / Triangle Intersection"
+  * 
+  * @param  origx: x coordinate of ray origin
+  * @param  origy: y coordinate of ray origin
+  * @param  origz: z coordinate of ray origin
+  * @param  dirx: x coordinate of ray direction (normalized)
+  * @param  dirx: y coordinate of ray direction (normalized)
+  * @param  dirx: z coordinate of ray direction (normalized)
+  * @param  vert0x: x of the first triangle corner
+  * @param  vert0y: y of the first triangle corner
+  * @param  vert0z: z of the first triangle corner
+  * @param  vert1z: x of the first triangle corner
+  * ...
   * 
   */
  TriangleIntersector.prototype.IntersectTriangle = function(origx,origy,origz,dirx,diry,dirz,vert0x,vert0y,vert0z,vert1x,vert1y,vert1z,vert2x,vert2y,vert2z)
@@ -103,56 +119,48 @@
     this.det = this.edge1.x*this.pvec.x + this.edge1.y*this.pvec.y + this.edge1.z*this.pvec.z;
     this.invdet= 1.0 / this.det;
     
+    
+    if(this.det > -this.EPSILON && this.det < this.EPSILON)
+    {
+       return null;
+    }
+    
     //calculate the distance from vert0 to ray origin
     this.tvec.x = origx - vert0x;
     this.tvec.y = origy - vert0y;
     this.tvec.z = origz - vert0z;
+    
+    //calculate u parameter and test bounds
+    this.result.u = (this.tvec.x*this.pvec.x + this.tvec.y*this.pvec.y + this.tvec.z*this.pvec.z)*this.invdet;
+    
+    if(this.result.u<0.0 || this.result.u>1.0)
+    {
+       return null;
+    }
+    
+    
     
     //cross(tvec,edge1); 
     this.qvec.x = this.tvec.y*this.edge1.z - this.tvec.z*this.edge1.y;
     this.qvec.y = this.tvec.z*this.edge1.x - this.tvec.x*this.edge1.z;
     this.qvec.z = this.tvec.x*this.edge1.y - this.tvec.y*this.edge1.x;
     
-    if(this.det > this.EPSILON)
-    {
-       this.result.u = this.tvec.x*this.pvec.x + this.tvec.y*this.pvec.y + this.tvec.z*this.pvec.z;
-       if(this.result.u < 0.0 || this.result.u > this.det)
-       {
-          return null;
-       }
-       
-       //calculate result.v and test bounds
-       this.result.v = dirx*this.qvec.x + diry*this.qvec.y + dirz*this.qvec.z;
-       if(this.result.u<0.0 || this.result.u + this.result.v > this.det)
-       {
-          return null;
-       }
-    }
-    else if(this.det < -this.EPSILON)
-    {
-       this.result.u = this.tvec.x*this.pvec.x + this.tvec.y*this.pvec.y + this.tvec.z*this.pvec.z;
-       if(this.result.u > 0.0 || this.result.u < this.det)
-       {
-          return null;
-       }
-       
-       //calculate result.v and test bounds
-       this.result.v = dirx*this.qvec.x + diry*this.qvec.y + dirz*this.qvec.z;
-       if(this.result.u>0.0 || this.result.u + this.result.v < this.det)
-       {
-          return null;
-       }
-       
-    }
-    else
+    
+    //calculate v and test bounds
+      this.result.v = (dirx*this.qvec.x + diry*this.qvec.y + dirz*this.qvec.z)*this.invdet;
+    
+    if(this.result.v <0.0 || this.result.u + this.result.v >1.0)
     {
        return null;
     }
     
     this.result.t = (this.edge2.x*this.qvec.x + this.edge2.y*this.qvec.y + this.edge2.z*this.qvec.z)*this.invdet;
-    this.result.u *= this.invdet;
-    this.result.v *= this.invdet;
     
     return this.result;
-    
  }
+ 
+    
+    
+    
+    
+    

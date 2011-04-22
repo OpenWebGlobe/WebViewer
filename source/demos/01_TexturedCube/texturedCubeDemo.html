@@ -37,6 +37,7 @@
          <script type="text/javascript" src="../../core/layer/imagelayer.js"></script>
          <script type="text/javascript" src="../../core/layer/imagelayer_i3d.js"></script>
          <script type="text/javascript" src="../../core/layer/imagelayer_osm.js"></script>
+         <script type="text/javascript" src="../../core/triangleintersector.js"></script>
       <script type="text/javascript">
          
          //---------------------------------------------------------------------
@@ -78,7 +79,7 @@
             
             // update projection matrix on resize
             var aspect = width / height;
-            projection.Perspective(45, aspect, 0.1, 500);
+            projection.Perspective(45, aspect, 0.01, 10);
             engine.SetProjectionMatrix(projection);
          }
          //---------------------------------------------------------------------
@@ -116,17 +117,16 @@
             engine.SetClearColor(0.5,0.5,1.0,1);  
             engine.SetViewMatrix(view);
             
-            model.Identity();
+            model.Scale(1024,1024,1024);
             engine.SetModelMatrix(model);
             cube.Draw();      
             
-            model.Translation(5,0,0);
-            engine.SetModelMatrix(model);                    
-            cube2.Draw();            
+                            
+            //cube2.Draw();            
             
-            tex.Blit(mx-128,my-128,0,0,1,1,true);
+            //tex.Blit(mx-128,my-128,0,0,1,1,true);
             
-            engine.DrawText("Hello World", 100,100);
+            //engine.DrawText("Hello World", 100,100);
          }
          
          //---------------------------------------------------------------------
@@ -134,10 +134,11 @@
          function OnInit()
          {
                tex = engine.LoadTexture("texture.png");         
-               cube = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePT.json");
+               cube = engine.LoadMesh("../../tests/00_JSONDemoFiles/120221212202.json");
+                 
                cube.SetTexture(tex);
 
-               cube2 = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePC.json");
+               //cube2 = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePC.json");
          }
          
          //---------------------------------------------------------------------

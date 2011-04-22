@@ -496,7 +496,9 @@ mat4.prototype.Perspective = function(fovy, aspect, znear, zfar)
    var right = top*aspect;
    this.Frustum(-right, right, -top, top, znear, zfar);*/
    
-   var f = 1.0 / Math.tan(fovy * Math.PI / 360.0)
+  
+   var f = 1.0 / Math.tan(fovy * Math.PI / 360.0);
+   
    var r0 = f / aspect;
    
    var r10 = (zfar+znear) / (znear-zfar);
@@ -507,6 +509,7 @@ mat4.prototype.Perspective = function(fovy, aspect, znear, zfar)
    this._values[2] = 0;  this._values[6] = 0; this._values[10] = r10; this._values[14] = r11;
    this._values[3] = 0;  this._values[7] = 0; this._values[11] = -1;  this._values[15] = 0; 
    
+  
 }
 
 //------------------------------------------------------------------------------
