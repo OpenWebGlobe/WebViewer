@@ -98,6 +98,11 @@ function Mesh(engine)
    this.cbfJSONLoad = null;
    this.defaultfontcolor = new vec4();
    this.defaultfontcolor.Set(1,1,1,1);
+   
+   this.bbmin = null;
+   this.bbmax = null;
+   this.offset = null;
+   this.curtainindex = null;
 }
 
 
@@ -430,6 +435,22 @@ _cbfjsondownload = function(mesh)
       {
          var data=mesh.http.responseText;      
          var jsonobject=JSON.parse(data);
+         
+         if (jsonobject.BoundingBox)
+         {
+            mesh.bbmin = jsonobject.BoundingBox[0];
+            mesh.bbmax = jsonobject.BoundingBox[1];
+         }
+         
+         if (jsonobject.Offset)
+         {
+            mesh.offset = jsonobject.Offset;
+         }
+         
+         if (jsonobject.CurtainIndex)   
+         {
+            mesh.curtainindex = jsonobject.CurtainIndex;
+         }
          
          switch(jsonobject.VertexSemantic)
          {
