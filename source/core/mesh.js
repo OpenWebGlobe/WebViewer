@@ -103,6 +103,19 @@ function Mesh(engine)
    this.bbmax = null;
    this.offset = null;
    this.curtainindex = null;
+   
+   
+   this.aabb = new AABB();
+   
+   this.modelMatrix = null; //filed to store draw-modelmatrix for intersection tests.  
+   this.vertexLength; //number of entries in the vertexbufferdata array per vertex, this depends on vertex mode (e.g. "PNT" 3(P)+3(N)+T(2) -> vertexLenght = 8; or if mode = "PT" vertexLength=5)
+   
+   this.bbm1x = 0; //bounding box bottom-left-front corner  -> data from json file?
+   this.bbm1y = 0;
+   this.bbm1z = 0;
+   this.bbm2x = 0; //bounding box top-right-back corner  
+   this.bbm2y = 0;
+   this.bbm2z = 0;
 }
 
 
@@ -117,6 +130,7 @@ Mesh.prototype.SetBufferP = function(p)
    {
       this.vertexbufferdata = new Float32Array(p);
       this.mode = "p";
+      this.vertexLength = 3;
    }
 }
 
@@ -131,6 +145,7 @@ Mesh.prototype.SetBufferPNT = function(pnt)
    {
       this.vertexbufferdata = new Float32Array(pnt);
       this.mode = "pnt";
+      this.vertexLength = 8;
    }
 }
 
@@ -145,6 +160,7 @@ Mesh.prototype.SetBufferPC = function(pc)
    {
       this.vertexbufferdata = new Float32Array(pc);
       this.mode = "pc";
+      this.vertexLength = 7;
    }
 }
 
@@ -159,6 +175,7 @@ Mesh.prototype.SetBufferPT = function(pt)
    {
       this.vertexbufferdata = new Float32Array(pt);
       this.mode = "pt";
+      this.vertexLength = 5;
    }
 }
 
@@ -173,6 +190,7 @@ Mesh.prototype.SetBufferPNCT = function(pnct)
    {
       this.vertexbufferdata = new Float32Array(pnct);
       this.mode = "pnct";
+      this.vertexLength = 12;
    }
 }
 
@@ -187,6 +205,7 @@ Mesh.prototype.SetBufferFont= function(fontdata)
    {
       this.vertexbufferdata = new Float32Array(fontdata);
       this.mode = "font";
+      this.vertexLength = 5;
    }
 }
 //------------------------------------------------------------------------------
@@ -516,40 +535,22 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
    var hit = false;
    var vertexlength = 0;
    var hitresult = null;
-   var t=null;
-   
-   //check for every triangle
-  switch(this.mode)
-  {
-     case "pt": 
-                  vertexlength = 5;
-                  break;
-                  
-     case "pc":
-                  vertexlength = 7;
-                  break;
-     
-     default:    
-                  console.log("mesh: intersection test with "+this.mode+" mode not implemented.")
-                  return null;
-                  break;
-  }  
-            
+   var t=null;      
             
             
    for(var i=0; i < this.numindex/3; i++)
    {
-      v1x = this.vertexbufferdata[this.indexbufferdata[i]*vertexlength];
-      v1y = this.vertexbufferdata[this.indexbufferdata[i]*vertexlength+1];
-      v1z = this.vertexbufferdata[this.indexbufferdata[i]*vertexlength+2];
+      v1x = this.vertexbufferdata[this.indexbufferdata[i]*this.vertexLength];
+      v1y = this.vertexbufferdata[this.indexbufferdata[i]*this.vertexLength+1];
+      v1z = this.vertexbufferdata[this.indexbufferdata[i]*this.vertexLength+2];
               
-      v2x = this.vertexbufferdata[this.indexbufferdata[i+1]*vertexlength];
-      v2y = this.vertexbufferdata[this.indexbufferdata[i+1]*vertexlength+1];
-      v2z = this.vertexbufferdata[this.indexbufferdata[i+1]*vertexlength+2];
+      v2x = this.vertexbufferdata[this.indexbufferdata[i+1]*this.vertexLength];
+      v2y = this.vertexbufferdata[this.indexbufferdata[i+1]*this.vertexLength+1];
+      v2z = this.vertexbufferdata[this.indexbufferdata[i+1]*this.vertexLength+2];
               
-      v3x = this.vertexbufferdata[this.indexbufferdata[i+2]*vertexlength];
-      v3y = this.vertexbufferdata[this.indexbufferdata[i+2]*vertexlength+1];
-      v3z = this.vertexbufferdata[this.indexbufferdata[i+2]*vertexlength+2];
+      v3x = this.vertexbufferdata[this.indexbufferdata[i+2]*this.vertexLength];
+      v3y = this.vertexbufferdata[this.indexbufferdata[i+2]*this.vertexLength+1];
+      v3z = this.vertexbufferdata[this.indexbufferdata[i+2]*this.vertexLength+2];
               
       //not tested...yet !!!!        
       if(this.modelMatrix)
@@ -610,4 +611,40 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
    return hitresult;
 }
 
+
+Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
+{
+  
+   //not tested...yet !!!!        
+   if(this.modelMatrix)
+   {
+               
+      var invModelMatrix = new mat4();
+      invModelMatrix.Inverse(this.modelMatrix); 
+              
+      var v1 = new vec3();
+      v1.Set(this.bbm1x,this.bbm1y,this.bbm1z);
+              
+      var v2 = new vec3();
+      v2.Set(this.bbm2x,this.bbm2y,this.bbm2z);
+             
+      var vec = invModelMatrix.MultiplyVec3(v1);
+      var v1x = vec.Get()[0];
+      var v1y = vec.Get()[1];
+      var v1z = vec.Get()[2];
+              
+      var vec = invModelMatrix.MultiplyVec3(v2);
+      var v2x = vec.Get()[0];
+      var v2y = vec.Get()[1];
+      var v2z = vec.Get()[2];
+      
+      result = this.aabb.HitBox(x,y,z,dirx,diry,dirz,v1x,v1y,v1z,v2x,v2y,v2z); 
+   } 
+   else
+   {
+      result = this.aabb.HitBox(x,y,z,dirx,diry,dirz,this.bbm1x,this.bbm1y,this.bbm1z,this.bbm2x,this.bbm2y,this.bbm2z);   
+   }      
+
+   return result;  //if result = null -> no hit!
+}
 

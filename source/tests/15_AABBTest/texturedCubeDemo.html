@@ -38,7 +38,7 @@
          <script type="text/javascript" src="../../core/layer/imagelayer_i3d.js"></script>
          <script type="text/javascript" src="../../core/layer/imagelayer_osm.js"></script>
          <script type="text/javascript" src="../../core/triangleintersector.js"></script>
-         <script type="text/javascript" src="../../core/aabb.js"></script>
+          <script type="text/javascript" src="../../core/aabb.js"></script>
       <script type="text/javascript">
          
          //---------------------------------------------------------------------
@@ -93,28 +93,23 @@
          function OnMouseDown(button,x,y)
          {
 
-            pointDir = engine.GetDirectionMousePos(x, y, cubeMvp);           
-            r = cube.TestRayIntersection(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz);
+            pointDir = engine.GetDirectionMousePos(x, y, cubeMvp);       
+            
+            //Bounding Box Coordinates set manually, just for test. I think this function should be called in mesh class in future.
+              
+           // r = aabb.HitBox(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz,-1,-1,-1,1,1,1);
+            r = cube.TestBoundingBoxIntersection(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz);
 
             if(r)
             {
-             console.log("cube hit!");  
-             console.log("u: "+r.u+" t: "+r.t+" v: "+r.v);
-             dragCube = true;
-             xStartDrag = x;
-             yStartDrag = y;           
+             console.log("Bounding Box Test: cube hit!");  
+             console.log("r.tmin: "+r.tmin+" r.tmax: "+r.tmax);           
             }
-            
-            
-            pointDir = engine.GetDirectionMousePos(x, y, cube2Mvp);
-            r = cube2.TestRayIntersection(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz);
-
-            if(r)
+            else
             {
-             console.log("cube hit!");  
-             console.log("u: "+r.u+" t: "+r.t+" v: "+r.v);
-             alert("color cube hit");
+               console.log("Bounding Box Test: no hit!");  
             }
+            
  
          }
          
@@ -206,8 +201,21 @@
          {
                tex = engine.LoadTexture("texture.png");         
                cube = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePT.json");
+               
+               //set bounding box coordinates
+               cube.bbm1x = -1;
+               cube.bbm1y = -1;
+               cube.bbm1z = -1;
+               cube.bbm2x = 1;
+               cube.bbm2y = 1;
+               cube.bbm2z = 1;
+               
+               
+               
                cube.SetTexture(tex);
                cube2 = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePC.json");      
+               
+               aabb = new AABB();
          }                        
          
          //---------------------------------------------------------------------
