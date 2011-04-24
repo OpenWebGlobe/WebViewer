@@ -105,7 +105,7 @@ function Mesh(engine)
    this.curtainindex = null;
    
    
-   this.aabb = new AABB();
+   //this.aabb = new AABB();
    
    this.modelMatrix = null; //filed to store draw-modelmatrix for intersection tests.  
    this.vertexLength; //number of entries in the vertexbufferdata array per vertex, this depends on vertex mode (e.g. "PNT" 3(P)+3(N)+T(2) -> vertexLenght = 8; or if mode = "PT" vertexLength=5)

@@ -55,6 +55,12 @@ function ImageLayer()
     * @description Returns the max level of detail supported by this dataset
     */
    this.GetMaxLod = function(){return 0;}
+   
+   /**
+   * @description Test if specified quadcode exists in this layer. 
+   * Only call this if this layer is Ready().
+   */
+   this.Contains = function(quadcode){return false;}
 }
 //------------------------------------------------------------------------------
 
