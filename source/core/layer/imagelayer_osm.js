@@ -40,7 +40,7 @@ function ImageLayeri3d()
       return false;
    }
    //---------------------------------------------------------------------------
-   this.RequestTile = function(engine, quadcode, cbfReady, cbfFailed)
+   this.RequestTile = function(engine, quadcode, layer, cbfReady, cbfFailed)
    {
       
    };

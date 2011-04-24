@@ -1,6 +1,6 @@
 <!--
-      This is a minimal application using the cwc WebGL Engine
-      Tutorial 2: Using internal shaders to simplify the application
+      This test shows how to merge data from two image layers.
+      Two images (with transparency) are blended together using a render buffer
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -18,6 +18,8 @@
       <script type="text/javascript" src="../../core/font.js"></script>
       <script type="text/javascript" src="../../core/rendertarget.js"></script>
       <script type="text/javascript" src="../../core/mathutils.js"></script>
+      <script type="text/javascript" src="../../core/triangleintersector.js"></script>
+      <script type="text/javascript" src="../../core/aabb.js"></script>
       <script type="text/javascript">
          
          //---------------------------------------------------------------------
@@ -40,9 +42,9 @@
          var my = 0; // current mouse pos
          
          var textureObject = null;
-         var renderTarget = null;
-         var rttFramebuffer = null;
-         var rttTexture =  null;
+         var tex0 = null;
+         var tex1 = null;
+         var bDone = false;
  
          
          //---------------------------------------------------------------------
@@ -69,7 +71,7 @@
          }
          //---------------------------------------------------------------------
          
-         var zpos = 10;
+         var zpos = 5;
          var xpos = 0;
         
          function OnKey(key)
@@ -96,26 +98,28 @@
          
          function OnRender()
          {
-          // create look-at matrix 
-          view.LookAt(xpos,0,zpos, 0,0,0, 0,1,0);
+            if (tex0.ready && tex1.ready && !bDone)
+            {
+                textureObject.EnableRenderToTexture(); // All following draw function will be drawn into the texture buffer.
+               
+               tex0.Blit(0,0,0,0,1,1,true);
+               tex1.Blit(0,0,0,0,1,1,true); //x,y,z,angle,scalex,scaley,blend for test just blit something 
+               
+               textureObject.DisableRenderToTexture(); // disable the framebuffe - draw into the mainscreeen 
+               bDone = true;
+            }
+             // create look-at matrix 
+            view.LookAt(xpos,0,zpos, 0,0,0, 0,1,0);
+                
+            engine.SetViewMatrix(view);
+            
+               //model.Translation(4,0,0);
+               //engine.SetModelMatrix(model); 
              
-          engine.SetViewMatrix(view);
-         
-          model.Translation(4,0,0);
-          engine.SetModelMatrix(model); 
-          
-    
-          engine.PushMatrices();
-              
-          textureObject.EnableRenderToTexture(); // All following draw function will be drawn into the texture buffer.
-            
-            blitTex.Blit(256,256,0,45,0.5,0.5,false); //x,y,z,angle,scalex,scaley,blend for test just blit something 
-            
-          textureObject.DisableRenderToTexture(); // disable the framebuffe - draw into the mainscreeen  
-   
-          engine.PopMatrices(); 
+               
 
-          cube.Draw();         
+            cube.Draw();         
+           
          }
          
          
@@ -128,12 +132,12 @@
                    
                cube = engine.LoadMesh("../00_JSONDemoFiles/cubePT.json");
                            
-               blitTex = new Texture(engine);
-               blitTex.LoadFontTexture();
+               tex0 = engine.LoadTexture("w02.png");
+               tex1 = engine.LoadTexture("l02.png");
                
-               engine.SetClearColor(1,1,0,1);
+               engine.SetClearColor(1,1,1,1);
                
-               textureObject = new Texture(engine,true,512,512);  //true : use as render target    new Texture(engine,useAsRenderTarget,renderTargetWidth,renderTargetHeight)
+               textureObject = new Texture(engine,true,256,256);  //true : use as render target    new Texture(engine,useAsRenderTarget,renderTargetWidth,renderTargetHeight)
                 
                cube.SetTexture(textureObject);           //set as cube texture.
                

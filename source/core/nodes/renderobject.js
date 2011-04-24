@@ -75,7 +75,7 @@ function RenderObjectNode()
             };
             
             this.globerenderer.AddImageLayer(imglayer1);
-            //this.globerenderer.AddImageLayer(imglayer2);
+            this.globerenderer.AddImageLayer(imglayer2);
         
       }
       

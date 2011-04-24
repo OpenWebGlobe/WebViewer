@@ -43,7 +43,62 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.vTilePoints[2] = new vec3();
    this.vTilePoints[3] = new vec3();
    this.vTilePoints[4] = new vec3();
+   
+   this.layers = 0;
+   this.images = null;
+   this.bPostCreation = false;
 }
+
+TerrainBlock.prototype.MergeImages = function()
+{   
+   if (this.layers == 0)
+   {
+      // all layers are downloaded -> create "merged image"
+      var cntdata = 0;
+      var thelayer = 0;
+      for (var i=0;i<this.images.length;i++)
+      {
+         if (this.images[i] != null)
+         {
+            cntdata++;
+            thelayer = i;
+         }
+      }
+      
+      if (cntdata == 0)
+      {
+         // no image layer and no elevation layer available!! Create "empty" tile
+         this.texture = this.engine.nodata; // use empty texture
+         this._CreateElevationMesh(); // create empty elevation
+         this.available = true;
+         this.images = null;
+         return;
+      }
+      else if (cntdata == 1)
+      {
+         // only one image layer is available for this Terrainblock. just take that one. 
+         this.texture = this.images[thelayer];
+         this._CreateElevationMesh();
+         this.available = true;
+         this.images = null;
+         return;
+      }
+      else
+      {
+         this.bPostCreation = true; // create merge during rendering
+         this._CreateElevationMesh();
+         this.available = true;
+          
+         /*this.texture = this.images[1];
+         this._CreateElevationMesh();
+         this.available = true;
+         this.images = null;
+         return;*/
+          
+      }
+   }
+}
+
 //------------------------------------------------------------------------------
 /**
  * @description Request Data
@@ -54,13 +109,20 @@ TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist)
    var caller = this;
    if (imagelayerlist.length>0)
    {
-      if (imagelayerlist[0].Contains(this.quadcode))
-      { 
-         imagelayerlist[0].RequestTile(this.engine, this.quadcode, _cbfOnImageTileReady, _cbfOnImageTileFailed, caller);
-      }
-      else
+      this.layers = imagelayerlist.length;
+      this.images = new Array(this.layers);
+      
+      for (var i=0;i<imagelayerlist.length;i++)
       {
-         _cbfOnImageTileFailed(this.quadcode, this);
+         this.images[i] = null;
+         if (imagelayerlist[i].Contains(this.quadcode))
+         { 
+            imagelayerlist[i].RequestTile(this.engine, this.quadcode, i, _cbfOnImageTileReady, _cbfOnImageTileFailed, caller);
+         }
+         else
+         {
+            _cbfOnImageTileFailed(this.quadcode, this, i);
+         }
       }
    }
 }
@@ -69,23 +131,23 @@ TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist)
  * @description Callback when data is ready
  * @intern
  */
-function _cbfOnImageTileReady(quadcode, ImageObject)
+function _cbfOnImageTileReady(quadcode, ImageObject, layer)
 {
    var terrainblock = ImageObject.caller;
-   terrainblock.texture = ImageObject;
-   terrainblock._CreateElevationMesh();
-   terrainblock.available = true;
+   terrainblock.images[layer] = ImageObject;
+   terrainblock.layers = terrainblock.layers - 1;
+   terrainblock.MergeImages();
 }
 //------------------------------------------------------------------------------       
 /**
  * @description Callback when data failed
  * @intern
  */
-function _cbfOnImageTileFailed(quadcode, terrainblock)
-{
-   terrainblock.texture = terrainblock.engine.nodata; // use empty texture
-   terrainblock._CreateElevationMesh(); // create empty elevation
-   terrainblock.available = true;
+function _cbfOnImageTileFailed(quadcode, terrainblock, layer)
+{  
+   terrainblock.images[layer] = null;
+   terrainblock.layers = terrainblock.layers - 1;
+   terrainblock.MergeImages();
 }
 //------------------------------------------------------------------------------
 /**
@@ -355,6 +417,41 @@ TerrainBlock.prototype._CreateElevationMesh = function()
  */
 TerrainBlock.prototype.Render = function(/*cache*/)
 {
+   if (this.bPostCreation)
+   {
+      // render to target only works during "Render Loop". Therefore it has to be put here
+      // #Todo: This must be cleaned up and moved to a blitter functionality
+      // within the engine
+      
+         this.bPostCreation = false;
+         this.texture = new Texture(this.engine, true, 256, 256);
+     
+         this.texture.EnableRenderToTexture();     
+
+         for (var i=0;i<this.images.length;i++)
+         {
+            if (this.images[i] != null)
+            {
+                  this.images[i].Blit(0,0,0, 0,1,1,true, true); 
+            } 
+         }
+         
+         this.texture.DisableRenderToTexture();
+        
+         for (var i=0;i<this.images.length;i++)
+         {
+            if (this.images[i] != null)
+            {
+               this.images[i].Destroy();
+            }
+         }
+         
+         this.images = null;
+         this.mesh.SetTexture(this.texture);
+   }
+   
+   
+   
    var model = new mat4();
    model.CopyFrom(this.engine.matModel);
    
