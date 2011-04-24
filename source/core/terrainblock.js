@@ -54,7 +54,14 @@ TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist)
    var caller = this;
    if (imagelayerlist.length>0)
    {
-      imagelayerlist[0].RequestTile(this.engine, this.quadcode, _cbfOnImageTileReady, _cbfOnImageTileFailed, caller);
+      if (imagelayerlist[0].Contains(this.quadcode))
+      { 
+         imagelayerlist[0].RequestTile(this.engine, this.quadcode, _cbfOnImageTileReady, _cbfOnImageTileFailed, caller);
+      }
+      else
+      {
+         _cbfOnImageTileFailed(this.quadcode, this);
+      }
    }
 }
 //------------------------------------------------------------------------------

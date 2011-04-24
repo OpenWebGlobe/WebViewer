@@ -55,6 +55,13 @@ function ImageLayeri3d()
    {
       return 0;
    }
+   
+   //---------------------------------------------------------------------------
+   this.Contains = function(quadcode)
+   {
+      return false;
+   }
+   //---------------------------------------------------------------------------
 }
 
 ImageLayeri3d.prototype = new ImageLayer();

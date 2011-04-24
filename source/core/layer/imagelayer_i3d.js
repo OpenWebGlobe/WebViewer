@@ -32,6 +32,8 @@ function i3dImageLayer()
    this.dsi = new DatasetInfo();  // dataset info
    this.server = null;
    this.layer = null;
+   this.quadtree = new MercatorQuadtree();
+   this.coords = new Array(4);
    
    //---------------------------------------------------------------------------
    this.Ready = function()
@@ -91,6 +93,36 @@ function i3dImageLayer()
          return 0;
       }
    }
+   //---------------------------------------------------------------------------
+   
+   this.Contains = function(quadcode)
+   {
+      if (quadcode.length > this.dsi.nLevelofDetail)
+      {
+         return false;
+      }
+      
+      this.quadtree.QuadKeyToMercatorCoord(quadcode, this.coords);
+      
+      var ulx = this.coords[0];
+      var uly = this.coords[1];
+      var lrx = this.coords[2];
+      var lry = this.coords[3];
+      
+      var xmin = this.dsi.vBoundingBox[0];
+      var ymax = this.dsi.vBoundingBox[1];
+      var xmax = this.dsi.vBoundingBox[2];
+      var ymin = this.dsi.vBoundingBox[3];  
+            
+      if (   lry > ymax || lry > ymax || uly < ymin || uly < ymin || 
+             ulx > xmax || ulx > xmax || lrx < xmin || lrx < xmin)
+      {
+            return false;
+      }
+      
+      return true;
+   }
+   
    //---------------------------------------------------------------------------
    
    this.Setup = function(server, layer)
