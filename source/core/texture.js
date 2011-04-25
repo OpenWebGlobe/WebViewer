@@ -83,11 +83,13 @@ function Texture(engine, useAsRenderTarget, framebufferWidth, framebufferHeight)
  * @param{string} url The url to download the image
  * @param callbackready An optional callback called when texture is ready. Has the texture class as param.
  * @param callbackfailed An optional callback called when texture failed. Has the texture class as param.
+ * @param {bool} flip Flip texture image on load
  */
-Texture.prototype.loadTexture = function(url, callbackready, callbackfailed)
+Texture.prototype.loadTexture = function(url, callbackready, callbackfailed, flip)
 {
    // preparations
    this.texture = this.gl.createTexture();
+   this.flip = flip;
    var texture=this.texture;
    var curgl = this.gl;
    var thismat = this;
@@ -120,7 +122,10 @@ function _cbHandleLoadedTexture(gl, textureobject, cb, TextureClass)
 {
    // Create texture:
    gl.bindTexture(gl.TEXTURE_2D, textureobject);
-   // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+   if (TextureClass.flip)
+   {
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+   }
    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureobject.image);
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);

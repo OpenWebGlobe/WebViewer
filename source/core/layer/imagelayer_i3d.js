@@ -71,7 +71,7 @@ function i3dImageLayer()
       ImageTexture.cbfReady = cbfReady;   // store the ready callback in texture object
       ImageTexture.cbfFailed = cbfFailed; // store the failure callback in texture object
       ImageTexture.caller = caller;
-      ImageTexture.loadTexture(sFilename, _cbTileReady, _cbTileFailed); 
+      ImageTexture.loadTexture(sFilename, _cbTileReady, _cbTileFailed, true); 
       
    };
   

@@ -435,8 +435,8 @@ Mesh.prototype.loadFromJSON = function(url, callbackready, callbackfailed)
    this.http=new window.XMLHttpRequest();
    this.http.open("GET",this.jsonUrl,true);
    
-   this.http.cbr = callbackready;
-   this.http.cbf = callbackfailed;
+   this.cbr = callbackready;
+   this.cbf = callbackfailed;
    
    var me=this;
    this.http.onreadystatechange = function(){_cbfjsondownload(me);};
@@ -454,9 +454,9 @@ _cbfjsondownload = function(mesh)
    {
       if(mesh.http.status==404)
       {
-         if (mesh.http.cbf)
+         if (mesh.cbf)
          {
-            mesh.http.cbf(mesh);
+            mesh.cbf(mesh);
          }
       }
       else
@@ -523,9 +523,9 @@ _cbfjsondownload = function(mesh)
             mesh.cbfJSONLoad(mesh);
          }
          
-         if (mesh.http.cbr)
+         if (mesh.cbr)
          {
-            mesh.http.cbr(mesh);
+            mesh.cbr(mesh);
          }
       }     
    }    

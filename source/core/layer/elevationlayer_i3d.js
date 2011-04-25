@@ -60,7 +60,9 @@ function i3dElevationLayer()
          return;
       }
       
-      var sQCH = GlobeUtils.MakeHierarchicalFilename(quadcode+this.dsi.sFileExtension);
+      //#fixme: MakeHierarchicalFilename must support ".json" ending!
+      //var sQCH = GlobeUtils.MakeHierarchicalFilename(quadcode+this.dsi.sFileExtension);
+      var sQCH = GlobeUtils.MakeHierarchicalFilename(quadcode+".jso") + "n"; 
       var sFilename = this.server + "/" + 
                       this.layer + "_JSON/" + 
                       sQCH;
@@ -72,7 +74,7 @@ function i3dElevationLayer()
       ElevationMesh.cbfReady = cbfReady;   // store the ready callback in mesh object
       ElevationMesh.cbfFailed = cbfFailed; // store the failure callback in mesh object
       ElevationMesh.caller = caller;  
-      ElevationMesh.loadFromJSON(sFilename, _cbElevationTileReady, _cbElevationTileFailed);                
+      ElevationMesh.loadFromJSON(sFilename, _cbElevationTileReady_intern, _cbElevationTileFailed_intern);                
    };
   
    //---------------------------------------------------------------------------
@@ -151,7 +153,7 @@ i3dElevationLayer.prototype = new ElevationLayer();
 * @description internal callback function for tiles
 * @ignore
 */
-function _cbElevationTileReady(mesh)
+function _cbElevationTileReady_intern(mesh)
 {
    mesh.cbfReady(mesh.quadcode, mesh, mesh.layer);
    mesh.cbfReady = null;
@@ -165,7 +167,7 @@ function _cbElevationTileReady(mesh)
  * @description internal callback function for tiles
  * @ignore
  */
-function _cbElevationTileFailed(mesh)
+function _cbElevationTileFailed_intern(mesh)
 {
    mesh.cbfFailed(mesh.quadcode, mesh.caller, mesh.layer);
    mesh.cbfReady = null;

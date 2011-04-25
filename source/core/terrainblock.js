@@ -34,26 +34,30 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.quadtree = quadtree;
    this.texture = null;
    this.available = false;
-   this.mesh = new Mesh(this.engine);
+   this.mesh = null;
    
    this.vOffset = null; // virtual camera offset
    this.vTilePoints = new Array(5); // corner points and mid point of tile (in cartesian coordinates)
-   this.vTilePoints[0] = new vec3();
+   this.vTilePoints[0] = new vec3(); // (if a tile is loaded, this is the lower part of the bounding box!)
    this.vTilePoints[1] = new vec3();
    this.vTilePoints[2] = new vec3();
    this.vTilePoints[3] = new vec3();
    this.vTilePoints[4] = new vec3();
    
-   this.layers = 0;
+   this.imagelayers = 0;
    this.images = null;
    this.bPostCreation = false;
+   
+   this.elevationlayers = 0;
 }
 
+// #fixme: this function name must be renamed, 
+//         as it also handles elevation.
 TerrainBlock.prototype.MergeImages = function()
 {   
-   if (this.layers == 0)
+   if (this.imagelayers == 0 && this.elevationlayers == 0)
    {
-      // all layers are downloaded -> create "merged image"
+      // All layers are downloaded -> now create a "merged image" if there are several layers!
       var cntdata = 0;
       var thelayer = 0;
       for (var i=0;i<this.images.length;i++)
@@ -67,34 +71,43 @@ TerrainBlock.prototype.MergeImages = function()
       
       if (cntdata == 0)
       {
-         // no image layer and no elevation layer available!! Create "empty" tile
+         // Case 1: No image layer and no elevation layer available!! Create "empty" tile.
+         // This case shoudln't ever happen, but maybe a tile is corrupted on the server
+         // or a dataset is being moved, or whatever! 
          this.texture = this.engine.nodata; // use empty texture
-         this._CreateElevationMesh(); // create empty elevation
+         if (this.mesh == null)
+         {  
+            this._CreateElevationMesh(); // create empty elevation
+         }
+         this.mesh.SetTexture(this.texture);
          this.available = true;
          this.images = null;
          return;
       }
       else if (cntdata == 1)
       {
-         // only one image layer is available for this Terrainblock. just take that one. 
+         // Case 2: Only one image layer is available for this Terrainblock. just take that one. 
          this.texture = this.images[thelayer];
-         this._CreateElevationMesh();
+         if (this.mesh == null)
+         {  
+            this._CreateElevationMesh(); // create empty elevation
+         }
+         this.mesh.SetTexture(this.texture);
          this.available = true;
          this.images = null;
          return;
       }
       else
       {
-         this.bPostCreation = true; // create merge during rendering
-         this._CreateElevationMesh();
-         this.available = true;
-          
-         /*this.texture = this.images[1];
-         this._CreateElevationMesh();
-         this.available = true;
-         this.images = null;
-         return;*/
-          
+         // Case 3: Merge Images
+         // It is not possible to merge images, this must be done during render loop
+         // so the "PostCreation" flag is set for the render loop. 
+         this.bPostCreation = true;
+         if (this.mesh == null)
+         {  
+            this._CreateElevationMesh();  // create empty elevation
+         }
+         this.available = true; 
       }
    }
 }
@@ -104,14 +117,19 @@ TerrainBlock.prototype.MergeImages = function()
  * @description Request Data
  * @intern
  */
-TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist)
+TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlayerlist)
 {
    var caller = this;
+   
+   // Part 1: Image Layer Tile Request
    if (imagelayerlist.length>0)
    {
-      this.layers = imagelayerlist.length;
-      this.images = new Array(this.layers);
+      this.imagelayers = imagelayerlist.length;
+      this.images = new Array(this.imagelayers);
       
+      // Go through all image layers and request tiles.
+      // #fixme This needs further optimization (no alpha-channel existance test)
+      // maybe implementing a border strategy or using "preprocessed octoblocks"
       for (var i=0;i<imagelayerlist.length;i++)
       {
          this.images[i] = null;
@@ -125,17 +143,67 @@ TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist)
          }
       }
    }
+   
+   // Part 2: Elevation Layer tile request
+   if (elevationlayerlist && elevationlayerlist.length>0)
+   {  
+      // It only makes sense to load elevation from a higher lod. 
+      // Lower LOD elevation data is usually not visible and not worth downloading.
+      if (this.quadcode.length>8)
+      {
+         // make sure this tile exists in dataset!
+         if (elevationlayerlist[0].Contains(this.quadcode))
+         { 
+            // in this first version, only one elevation layer is supported!
+            // this will be implemented at a later stage. #fixme
+            this.elevationlayers = 1;
+            elevationlayerlist[0].RequestTile(this.engine, this.quadcode, 0, _cbfOnElevationTileReady, _cbfOnElevationTileFailed, caller);
+
+         }
+      
+      }
+   }
 }
 //------------------------------------------------------------------------------
 /**
- * @description Callback when data is ready
+ * @description Callback when image data is ready
  * @intern
  */
 function _cbfOnImageTileReady(quadcode, ImageObject, layer)
 {
    var terrainblock = ImageObject.caller;
    terrainblock.images[layer] = ImageObject;
-   terrainblock.layers = terrainblock.layers - 1;
+   terrainblock.imagelayers = terrainblock.imagelayers - 1;
+   terrainblock.MergeImages();
+}
+//------------------------------------------------------------------------------       
+/**
+ * @description Callback when image data failed
+ * @intern
+ */
+function _cbfOnImageTileFailed(quadcode, terrainblock, layer)
+{  
+   terrainblock.images[layer] = null;
+   terrainblock.imagelayers = terrainblock.imagelayers - 1;
+   terrainblock.MergeImages();
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Callback when elevation data is ready
+ * @intern
+ */
+function _cbfOnElevationTileReady(quadcode, mesh, layer)
+{
+   var terrainblock = mesh.caller;
+   terrainblock.mesh = mesh;
+   terrainblock.vOffset = mesh.offset;
+   
+   terrainblock.vTilePoints[0].Set(mesh.bbmin[0], mesh.bbmin[1], mesh.bbmin[2]);
+   terrainblock.vTilePoints[1].Set(mesh.bbmax[0], mesh.bbmin[1], mesh.bbmin[2]);
+   terrainblock.vTilePoints[2].Set(mesh.bbmax[0], mesh.bbmax[1], mesh.bbmin[2]);
+   terrainblock.vTilePoints[3].Set(mesh.bbmin[0], mesh.bbmax[1], mesh.bbmin[2]); 
+   
+   terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
    terrainblock.MergeImages();
 }
 //------------------------------------------------------------------------------       
@@ -143,10 +211,10 @@ function _cbfOnImageTileReady(quadcode, ImageObject, layer)
  * @description Callback when data failed
  * @intern
  */
-function _cbfOnImageTileFailed(quadcode, terrainblock, layer)
+function _cbfOnElevationTileFailed(quadcode, terrainblock, layer)
 {  
-   terrainblock.images[layer] = null;
-   terrainblock.layers = terrainblock.layers - 1;
+   terrainblock.mesh = null;
+   terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
    terrainblock.MergeImages();
 }
 //------------------------------------------------------------------------------
@@ -257,6 +325,8 @@ TerrainBlock.prototype.CalcDistanceTo = function(vWhere)
 */
 TerrainBlock.prototype._CreateElevationMesh = function()
 {
+   this.mesh = new Mesh(this.engine);
+   
    var blocksize = 9;
    var elevationdata = new Array(blocksize*blocksize);
    for (var i=0;i<blocksize*blocksize;i++) 
@@ -282,7 +352,7 @@ TerrainBlock.prototype._CreateElevationMesh = function()
       for (var nU = 0; nU<blocksize; nU++)
       {
          texcoordbuffer[2*(nV*blocksize+nU)+0] =  nU*fdX;
-         texcoordbuffer[2*(nV*blocksize+nU)+1] =  /*1.0f-*/nV*fdX;
+         texcoordbuffer[2*(nV*blocksize+nU)+1] =  1.0-nV*fdX;
       }
    }  
    
@@ -367,9 +437,7 @@ TerrainBlock.prototype._CreateElevationMesh = function()
    }
    
    // Create index buffer
-   //var indexbuffer = new Array([0,1,3,0,3,2]);
-   
-  
+
    var indexbuffer = new Array();
 
    var v3;
@@ -419,37 +487,38 @@ TerrainBlock.prototype.Render = function(/*cache*/)
 {
    if (this.bPostCreation)
    {
+      //---------------------------------------------------------------------------
       // render to target only works during "Render Loop". Therefore it has to be put here
       // #Todo: This must be cleaned up and moved to a blitter functionality
       // within the engine
       
-         this.bPostCreation = false;
-         this.texture = new Texture(this.engine, true, 256, 256);
+      this.bPostCreation = false;
+      this.texture = new Texture(this.engine, true, 256, 256);
      
-         this.texture.EnableRenderToTexture();     
+      this.texture.EnableRenderToTexture();     
 
-         for (var i=0;i<this.images.length;i++)
+      for (var i=0;i<this.images.length;i++)
+      {
+         if (this.images[i] != null)
          {
-            if (this.images[i] != null)
-            {
-                  this.images[i].Blit(0,0,0, 0,1,1,true, true); 
-            } 
-         }
+            this.images[i].Blit(0,0,0, 0,1,1,true, true); 
+         } 
+      }
          
-         this.texture.DisableRenderToTexture();
+      this.texture.DisableRenderToTexture();
         
-         for (var i=0;i<this.images.length;i++)
+      for (var i=0;i<this.images.length;i++)
+      {
+         if (this.images[i] != null)
          {
-            if (this.images[i] != null)
-            {
-               this.images[i].Destroy();
-            }
+            this.images[i].Destroy();
          }
+      }
          
-         this.images = null;
-         this.mesh.SetTexture(this.texture);
+      this.images = null;
+      this.mesh.SetTexture(this.texture);
    }
-   
+   //---------------------------------------------------------------------------
    
    
    var model = new mat4();
