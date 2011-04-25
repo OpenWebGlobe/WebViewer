@@ -75,6 +75,7 @@ var MathUtils = {};
 //------------------------------------------------------------------------------
 /**
  * @description convert degree to rad
+ * Please avoid using this function in time critical operations.
  */
 MathUtils.Deg2Rad = function(deg)
 { 
@@ -84,6 +85,7 @@ MathUtils.Deg2Rad = function(deg)
 //------------------------------------------------------------------------------
 /**
  * @description convert rad to degree
+ * Please avoid using this function in time critical operations.
  */
 MathUtils.Rad2Deg = function(rad)
 { 
@@ -91,11 +93,5 @@ MathUtils.Rad2Deg = function(rad)
 }
 
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
 
-/**
- * @description temporary will be removed soon. workaround for chrom issue...
- * @ignore
- */
-try { Float64Array; } catch (x) { Float64Array = Float32Array; }
 

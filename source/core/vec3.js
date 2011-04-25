@@ -24,8 +24,8 @@
 //------------------------------------------------------------------------------
 /** 
  * @class vec3
- * @description Vector class which handles float32 and float64 vectors
- * 
+ * @description Vector class (3 components)
+ * float32 and 
  * {@link http://www.openwebglobe.org} 
  *
  * @author Martin Christen martin.christen@fhnw.ch  
@@ -45,7 +45,7 @@ function vec3(typeparam)
 {
    if (typeparam == "double")
    {
-      this._values = new Float64Array([0.0, 0.0, 0.0]);  
+      this._values = new Array([0.0, 0.0, 0.0]);  
    }
    else //(typeparam == "float")
    {
@@ -71,7 +71,7 @@ vec3.prototype.Set = function(x,y,z)
 
 //------------------------------------------------------------------------------
 /**
- * Returns the values as array (Float32Array or Float64Array)
+ * Returns the values as array
  * @extends vec3
  *
  */
@@ -93,7 +93,7 @@ vec3.prototype.Copy = function()
    {
       cpy = new vec3("float");
    }
-   if (this._values instanceof Float64Array)
+   if (this._values instanceof Array)
    {
       cpy = new vec3("double");
    }

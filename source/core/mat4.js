@@ -48,7 +48,7 @@
 /**
  * Create a new Matrix Object
  * @class This is the basic mat4.class 
- * @param {string} typeparam "float": matrix values will be stored as float32. "double": matrix values will be stored as float64. 
+ * @param {string} typeparam "float": matrix values will be stored as float32. "double": matrix is a javascript array. 
  * @constructor
  * @return A new 4 x 4 Identity-Matrix
  */
@@ -56,9 +56,9 @@ function mat4(typeparam)
 {
    if (typeparam == "double")
    {
-      this._values = new Float64Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
+      this._values = new Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
    }
-   else//(typeparam == "float")
+   else //(typeparam == "float")
    {
       this._values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
    }
@@ -69,27 +69,17 @@ function mat4(typeparam)
 //------------------------------------------------------------------------------
 /**
  * Set Values
- * @extends mat4
- *
- * @param {Float32Array} oMatrix Float32Array or Float64Array with the 16 element values. 
+ * @param oMatrix an array of any type containing 16 values 
  */
 mat4.prototype.Set = function(oMatrix)
 {
-   if (oMatrix instanceof Float32Array || 
-      oMatrix instanceof Float64Array)
+   if (oMatrix.length == 16)
    {
-      // 4x4 Matrix (16 values)
-      if (oMatrix.length == 16)
+      for (var i = 0; i < 16; i++)
       {
-         for (var i = 0; i < 16; i++)
-         {
-            this._values[i] = oMatrix[i];
-         }
-         return true;
+         this._values[i] = oMatrix[i];
       }
    }
-
-  return false;
 }
 
 //------------------------------------------------------------------------------
@@ -97,7 +87,7 @@ mat4.prototype.Set = function(oMatrix)
  * Get Values
  * @extends mat4
  * 
- * @return Float32Array or Float64Array with the 16 element values.
+ * @return An array with the 16 element values.
  */
 mat4.prototype.Get = function()
 {
@@ -106,8 +96,7 @@ mat4.prototype.Get = function()
 
 //------------------------------------------------------------------------------
 /**
- * Copy
- * @extends mat4
+ * Copy matrix (creates new array)
  * 
  * @return a copy of this mat4 object.
  */
@@ -117,15 +106,11 @@ mat4.prototype.Copy = function()
 
    if (this._values instanceof Array)
    {
-      cpy = new mat4("native");
+      cpy = new mat4("double");
    }
    else if (this._values instanceof Float32Array)
    {
       cpy = new mat4("float");
-   }
-   else if (this._values instanceof Float64Array)
-   {
-      cpy = new mat4("double");
    }
 
    for (var i = 0; i < 16; i++)
@@ -138,7 +123,7 @@ mat4.prototype.Copy = function()
 
 //------------------------------------------------------------------------------
 /**
- * CopyFrom
+ * CopyFrom: Copy matrix to an existing matrix
  * @param{mat4} cpy The matrix to copy from
  * 
  * @return a copy of this mat4 object.

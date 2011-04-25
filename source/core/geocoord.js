@@ -31,7 +31,7 @@
  */
  function GeoCoord(longitude, latitude, elevation)
  {  
-    this._wgscoords = new Float64Array([longitude, latitude, elevation]);      //Array elements = [latitude,longitude,elevation]
+    this._wgscoords = new Float32Array([longitude, latitude, elevation]);      //Array elements = [latitude,longitude,elevation]
  }
  //------------------------------------------------------------------------------
  /**
@@ -74,15 +74,10 @@ GeoCoord.prototype.GetElevation = function()
 //------------------------------------------------------------------------------
 /**
  * @description transforms the wgs84 coordinates to cartesian coordinates.
- * @param{Float64Array} result float 64 array to store the results. 
+ * @param{Array} result array to store the results. 
  */
  GeoCoord.prototype.ToCartesian = function(result)
  {
-    if (!(result instanceof Float64Array) && result.length!=3)
-    {
-       return;
-    }
-    
     var sinlat = Math.sin(MathUtils.Deg2Rad(this._wgscoords[1]));    // sin of latitude
     var coslat = Math.cos(MathUtils.Deg2Rad(this._wgscoords[1]));    // cos of latitude
     var sinlong = Math.sin(MathUtils.Deg2Rad(this._wgscoords[0]));    // sin of latitude

@@ -35,13 +35,20 @@ function NavigationNode()
       this._vEye = new vec3();
       this._vEye.Set(1,0,0);
       
-      this._yaw = 0;
+      /*this._yaw = 0;
       this._pitch = -1.570796326794896619231; // -pi/2;
       this._roll = 0;
       
       this._longitude = 7.7744205094639103;
       this._latitude = 47.472720418012834;
-      this._ellipsoidHeight = 3000000;
+      this._ellipsoidHeight = 3000000;*/
+      
+      this._yaw = 0;
+      this._pitch = -0.3;
+      this._roll = 0;
+      this._longitude = 7.616;
+      this._latitude = 45.9088;
+      this._ellipsoidHeight = 17228.45;
       
       this._fYawSpeed = 0;
       this._fSurfacePitchSpeed = 0;
@@ -76,7 +83,7 @@ function NavigationNode()
       this._ptDragOriginY = 0;
       this._bDragging = false;
       
-      this.geocoord = new Float64Array(3);
+      this.geocoord = new Array(3);
       this.pos = new GeoCoord(0,0,0);
       
       this.matBody = new mat4();

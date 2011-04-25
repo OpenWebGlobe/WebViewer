@@ -108,7 +108,7 @@ function Mesh(engine)
    //this.aabb = new AABB();
    
    this.modelMatrix = null; //filed to store draw-modelmatrix for intersection tests.  
-   this.vertexLength; //number of entries in the vertexbufferdata array per vertex, this depends on vertex mode (e.g. "PNT" 3(P)+3(N)+T(2) -> vertexLenght = 8; or if mode = "PT" vertexLength=5)
+   this.vertexLength = 0; //number of entries in the vertexbufferdata array per vertex
    
    this.bbm1x = 0; //bounding box bottom-left-front corner  -> data from json file?
    this.bbm1y = 0;

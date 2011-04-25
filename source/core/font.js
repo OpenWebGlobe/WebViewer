@@ -79,8 +79,8 @@ Font.prototype.DrawText = function(text,x,y,scale,fontcolor)
          ccode = text.charCodeAt(i);
          a += (fontwidth[ccode]/2)*scale;
          model.Scale(scale,scale,1);
-         model.OverwriteTranslation(model,x+a,y,0)
-         this.engine.SetModelMatrix(model)
+         model.OverwriteTranslation(model,x+a,y,0);
+         this.engine.SetModelMatrix(model);
          this.fontmesh.Draw(true,6,ccode*12,fontcolor);
          a += (fontwidth[ccode]/2)*scale;   
       }
@@ -114,7 +114,6 @@ Font.prototype.GetStringWidth = function()
 Font.prototype.GetStringHeight = function()
 {
    return 32;
-   
 }
 
 
@@ -130,13 +129,13 @@ Font.prototype.GenerateFontMesh = function()
    {
       for(var col=0; col < 16; col++)
       {
-        texcoor_row = row * 1/16;
-        texcoor_col = col * 1/16;
+        texcoor_row = row * 0.0625;
+        texcoor_col = col * 0.0625;
                 
-        pt.push(0, 31,  0, texcoor_col, texcoor_row+(1/512));
-        pt.push(0,  0,  0, texcoor_col, (texcoor_row+1/16)); 
-        pt.push(31,  0,  0, (texcoor_col+1/16), (texcoor_row+1/16));
-        pt.push( 31, 31,  0, (texcoor_col+1/16), texcoor_row+(1/512));
+        pt.push(0, 31,  0, texcoor_col, texcoor_row+(0.001953125)); // 1/512
+        pt.push(0,  0,  0, texcoor_col, (texcoor_row+0.0625));
+        pt.push(31,  0,  0, (texcoor_col+0.0625), (texcoor_row+0.0625));
+        pt.push( 31, 31,  0, (texcoor_col+0.0625), texcoor_row+(0.001953125));
    
         b = a * 4;
         

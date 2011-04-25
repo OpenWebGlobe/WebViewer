@@ -38,7 +38,7 @@
  * 
  * @param longitude the wgs84 longitude
  * @param latitude the wgs84 latitude
- * @param result Float64Array for result values.
+ * @param result Array for result values (length 2).
  */
 Mercator.WGS84ToMercatorE = function(longitude, latitude, result)
 {
@@ -57,7 +57,7 @@ Mercator.WGS84ToMercatorE = function(longitude, latitude, result)
  * 
  * @param x x values of Mercator ELLIPSOID Coordinates
  * @param y y values of Mercator ELLIPSOID Coordinates
- * @param result Float64Array for result values.
+ * @param result Array for result values. (length 2)
  */
 Mercator.MercatorEToWGS84 = function(x, y, result)
 {
@@ -106,7 +106,7 @@ Mercator.MercatorEToWGS84 = function(x, y, result)
  * 
  * @param longitude the wgs84 longitude
  * @param latitude the wgs84 latitude
- * @param result Float64Array for result values.
+ * @param result Array for result values (length 2)
  */
 Mercator.WGS84ToMercator = function(longitude, latitude, result)
 {
@@ -129,7 +129,7 @@ Mercator.WGS84ToMercator = function(longitude, latitude, result)
  * 
  * @param x x values of Mercator SPHERE Coordinates
  * @param y y values of Mercator SPHERE Coordinates
- * @param result Float64Array for result values.
+ * @param result Array for result values (length 2)
  */
 Mercator.MercatorToWGS84 = function(x, y, result)
 {

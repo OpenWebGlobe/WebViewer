@@ -42,7 +42,7 @@ function GlobeRenderer(engine)
    this.cameraposition = null;
    this.maxlod = 0;
    
-   this.quality = 1.0; // quality parameter, reduce for lower quality
+   this.quality = 0.75; // quality parameter, reduce for lower quality
 }
 
 //------------------------------------------------------------------------------
@@ -88,10 +88,10 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
              }
           }
        }
-       else if (options.service == "osm")
+       /*else if (options.service == "osm")
        {
           // #todo: support OSM Service
-       }
+       }*/
     }
 }
 
