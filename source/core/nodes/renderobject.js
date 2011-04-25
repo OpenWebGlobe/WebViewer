@@ -58,7 +58,9 @@ function RenderObjectNode()
       {
             this.globerenderer = new GlobeRenderer(this.engine);
             
-            // #fixme temporary, in future, this is done via SDK
+            //------------------------------------------------------------------
+            // #fixme This is temporary, in future, adding layers is done via SDK
+            // ADD IMAGE LAYERS 
             
             var imglayer1 = 
             {
@@ -76,6 +78,17 @@ function RenderObjectNode()
             
             this.globerenderer.AddImageLayer(imglayer1);
             this.globerenderer.AddImageLayer(imglayer2);
+        
+            //------------------------------------------------------------------
+            // ADD ELEVATION LAYER 
+            var elevationlayer = 
+            {
+               url     : ["http://www.openwebglobe.org/data/elv"],
+               layer   : "SRTM",
+               service : "i3d"
+            };
+            
+            this.globerenderer.AddElevationLayer(elevationlayer);
         
       }
       

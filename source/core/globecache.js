@@ -57,6 +57,7 @@ GlobeCache.prototype.Destroy = function()
  */
 GlobeCache.prototype.IsReady = function()
 {
+   // atleast one image layer is required
    if (!this.imagelayerlist) { return false; }
    
    if (this.imagelayerlist.length == 0) {return false;}
@@ -68,8 +69,21 @@ GlobeCache.prototype.IsReady = function()
          return false;
       }
    }
+   
+   // elevation layers are optional, but if an elevation layer was added
+   // it must be checked if available
+   if (this.elevationlayerlist)
+   {
+      for (var i=0;i<this.elevationlayerlist.length;i++)
+      {
+         if (!this.elevationlayerlist[i].Ready())
+         {
+            return false;
+         }
+      }
+   }
   
-   return true; // all image layers are ready!
+   return true; // all image layers/elevation layers are ready!
 }
 //------------------------------------------------------------------------------
 /**

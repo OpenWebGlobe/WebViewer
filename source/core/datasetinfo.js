@@ -105,10 +105,13 @@ _cbfdsidownload = function(dsi)
             dsi.sFileExtension = ".json"; 
          }
          
+         console.log("Datasetinfo: " + dsi.sLayerName + "(" + dsi.sTileFormat + ")" + dsi.sLayerCopyright);
+         
          dsi.bReady = true;     
       }
       else
       {
+         console.log("DATASET DOWNLOAD FAILED");
          dsi.bFailed = true;
       }
    }

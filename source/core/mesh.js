@@ -420,8 +420,10 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
 /**
  * @description Load mesh-data from a JSON file.
  * @param {sting} url the url to the JSON file.
+ * @param {function} callbackready optional function called when mesh finished download
+ * @param {function} callbackfailed optional function called when mesh failed download
  */
-Mesh.prototype.loadFromJSON = function(url)
+Mesh.prototype.loadFromJSON = function(url, callbackready, callbackfailed)
 {
    if(url == null) 
    {
@@ -429,9 +431,13 @@ Mesh.prototype.loadFromJSON = function(url)
       return;
    }  
    this.jsonUrl=url;
-   
+      
    this.http=new window.XMLHttpRequest();
    this.http.open("GET",this.jsonUrl,true);
+   
+   this.http.cbr = callbackready;
+   this.http.cbf = callbackfailed;
+   
    var me=this;
    this.http.onreadystatechange = function(){_cbfjsondownload(me);};
    this.http.send();  
@@ -448,7 +454,10 @@ _cbfjsondownload = function(mesh)
    {
       if(mesh.http.status==404)
       {
-         console.log('Mesh, JSON Download. File not found.');
+         if (mesh.http.cbf)
+         {
+            mesh.http.cbf(mesh);
+         }
       }
       else
       {
@@ -512,6 +521,11 @@ _cbfjsondownload = function(mesh)
          if(mesh.cbfJSONLoad)
          {
             mesh.cbfJSONLoad(mesh);
+         }
+         
+         if (mesh.http.cbr)
+         {
+            mesh.http.cbr(mesh);
          }
       }     
    }    

@@ -31,6 +31,7 @@ function GlobeRenderer(engine)
 {
    this.engine = engine;
    this.imagelayerlist = new Array();
+   this.elevationlayerlist = new Array();
    this.quadtree = new MercatorQuadtree();
    this.cachesize = 1000;
    this.globecache = null;
@@ -48,20 +49,21 @@ function GlobeRenderer(engine)
 /**
  * @description Add an image layer
  * Option is a Javascript Object with the following keys:
+ * 
  *    url: ARRAY of urls (it it always an array, even if there is only 1 url)
  *    layer: name of layer
  *    service: i3d for i3d tile layout (default)
  *             osm for OpenStreetMap tile layout
  *    
  *  Example:
- *    var o = 
+ *    var imglayer = 
  *    {
  *        url     : ["http://www.openwebglobe.org/data/img"],
  *        layer   : "World500",
  *        service : "i3d"
  *    }; 
  * 
- *    globerenderer.AddImageLayer(o);
+ *    globerenderer.AddImageLayer(imglayer);
  *  
  */
 GlobeRenderer.prototype.AddImageLayer = function(options)
@@ -95,6 +97,51 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
 
 //------------------------------------------------------------------------------
 /**
+ * @description Add an elevation layer
+ * Option is a Javascript Object with the following keys:
+ * 
+ *    url: ARRAY of urls (it it always an array, even if there is only 1 url)
+ *    layer: name of layer
+ *    service: i3d for i3d tile layout
+ *    
+ *  Example:
+ *    var o = 
+ *    {
+ *        url     : ["http://www.openwebglobe.org/data/elv"],
+ *        layer   : "SRTM",
+ *        service : "i3d"
+ *    }; 
+ * 
+ *    globerenderer.AddElevationLayer(o);
+ *  
+ */
+GlobeRenderer.prototype.AddElevationLayer = function(options)
+{
+   if (options.service)
+    {
+       if (options.service == "i3d")
+       {
+          // i3d elevation tile service
+          if (options.url && options.layer)
+          {
+             if (options.url.length>0)
+             {
+                var url = options.url[0];
+                var layer = options.layer;
+                
+                // Create i3d layer:
+                var elvLayer = new i3dElevationLayer();
+                elvLayer.Setup(url, layer);
+                this.elevationlayerlist.push(elvLayer);
+                this._UpdateLayers();
+             }
+          }
+       }
+    }
+}
+
+//------------------------------------------------------------------------------
+/**
  * @description update layers, this is called when layers change.
  * @ignore
  */
@@ -109,7 +156,7 @@ GlobeRenderer.prototype._UpdateLayers = function()
       this.globecache.Destroy();  // free memory of old cache, especally GPU memory!
       this.globecache = null;
    }
-   this.globecache = new GlobeCache(this.engine, this.imagelayerlist, null, this.quadtree, this.cachesize);
+   this.globecache = new GlobeCache(this.engine, this.imagelayerlist, this.elevationlayerlist, this.quadtree, this.cachesize);
 }
 
 //------------------------------------------------------------------------------
