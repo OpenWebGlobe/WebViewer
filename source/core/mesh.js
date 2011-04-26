@@ -105,17 +105,24 @@ function Mesh(engine)
    this.curtainindex = null;
    
    
-   //this.aabb = new AABB();
+   this.aabb = new AABB();
    
    this.modelMatrix = null; //filed to store draw-modelmatrix for intersection tests.  
    this.vertexLength = 0; //number of entries in the vertexbufferdata array per vertex
+     
    
-   this.bbm1x = 0; //bounding box bottom-left-front corner  -> data from json file?
-   this.bbm1y = 0;
-   this.bbm1z = 0;
-   this.bbm2x = 0; //bounding box top-right-back corner  
-   this.bbm2y = 0;
-   this.bbm2z = 0;
+   this.numOfTriangles = 0;     //number of triangles depends on indexsemantic "TRIANGLES or TRIANGLESTRIP"
+   this.currentTriangle = {}; //current triangle used for intersection tests.
+   this.currentTriangle.v1x = 0.0;
+   this.currentTriangle.v1y = 0.0;
+   this.currentTriangle.v1z = 0.0;
+   this.currentTriangle.v2x = 0.0;
+   this.currentTriangle.v2y = 0.0;
+   this.currentTriangle.v2z = 0.0;
+   this.currentTriangle.v3x = 0.0;
+   this.currentTriangle.v3y = 0.0;
+   this.currentTriangle.v3z = 0.0;
+   
 }
 
 
@@ -220,6 +227,18 @@ Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
    this.indexsemantic = idxsem;
    this.numindex = idx.length;
    this.Ready = true;
+   
+   //calculate the number of triangles
+   switch(idxsem)
+   {
+      case "TRIANGLES"     :  this.numOfTriangles = idx.length/3;
+                              break;
+                           
+      case "TRIANGLESTRIP" :  this.numOfTriangles = (idx.length-3)+1
+       
+      case "default"       :  break;
+      
+   }
    
 }
 
@@ -552,24 +571,30 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
    var t=null;      
             
             
-   for(var i=0; i < this.numindex/3; i++)
+   for(var i=0; i < this.numOfTriangles; i++)
    {
-      v1x = this.vertexbufferdata[this.indexbufferdata[i]*this.vertexLength];
-      v1y = this.vertexbufferdata[this.indexbufferdata[i]*this.vertexLength+1];
-      v1z = this.vertexbufferdata[this.indexbufferdata[i]*this.vertexLength+2];
-              
-      v2x = this.vertexbufferdata[this.indexbufferdata[i+1]*this.vertexLength];
-      v2y = this.vertexbufferdata[this.indexbufferdata[i+1]*this.vertexLength+1];
-      v2z = this.vertexbufferdata[this.indexbufferdata[i+1]*this.vertexLength+2];
-              
-      v3x = this.vertexbufferdata[this.indexbufferdata[i+2]*this.vertexLength];
-      v3y = this.vertexbufferdata[this.indexbufferdata[i+2]*this.vertexLength+1];
-      v3z = this.vertexbufferdata[this.indexbufferdata[i+2]*this.vertexLength+2];
-              
+      this.SetCurrentTriangle(i);
+      
+      if(this.currentTriangle.v1x == this.currentTriangle.v2x && this.currentTriangle.v1y == this.currentTriangle.v2y && this.currentTriangle.v1z == this.currentTriangle.v2z)
+      {
+            continue;                        
+      } 
+      if(this.currentTriangle.v1x == this.currentTriangle.v3x && this.currentTriangle.v1y == this.currentTriangle.v3y && this.currentTriangle.v1z == this.currentTriangle.v3z)
+      {
+            continue;                 
+      } 
+      if(this.currentTriangle.v2x == this.currentTriangle.v3x && this.currentTriangle.v2y == this.currentTriangle.v3y && this.currentTriangle.v2z == this.currentTriangle.v3z)
+      {
+            continue;               
+      }   
+      
+      
+        /* 
       //not tested...yet !!!!        
       if(this.modelMatrix)
       {
                
+       
          var invModelMatrix = new mat4();
          invModelMatrix.Inverse(this.modelMatrix); 
               
@@ -597,11 +622,11 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
          v3x = vec.Get()[0];
          v3y = vec.Get()[1];
          v3z = vec.Get()[2];
+         
        }  
-
+         */
         
-      result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,v1x,v1y,v1z,v2x,v2y,v2z,v3x,v3y,v3z);
-     // result.t //minimal t        
+      result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,this.currentTriangle.v1x,this.currentTriangle.v1y,this.currentTriangle.v1z,this.currentTriangle.v2x,this.currentTriangle.v2y,this.currentTriangle.v2z,this.currentTriangle.v3x,this.currentTriangle.v3y,this.currentTriangle.v3z);      
              
       if(result)
       {
@@ -620,11 +645,72 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
          }
                  
       }
-   }
-   
+   } 
    return hitresult;
 }
 
+/*
+ * Reads a Triangle from the current vertexBuffer using the correct mode and sets the value to this.currentTriangle.v...values
+ */
+Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
+{
+   switch(this.indexsemantic)
+   {
+      case "TRIANGLES":
+                        this.currentTriangle.v1x = this.vertexbufferdata[this.indexbufferdata[triangleNumber*3]*this.vertexLength];
+                        this.currentTriangle.v1y = this.vertexbufferdata[this.indexbufferdata[triangleNumber*3]*this.vertexLength+1];
+                        this.currentTriangle.v1z = this.vertexbufferdata[this.indexbufferdata[triangleNumber*3]*this.vertexLength+2];
+              
+                        this.currentTriangle.v2x = this.vertexbufferdata[this.indexbufferdata[triangleNumber*3+1]*this.vertexLength];
+                        this.currentTriangle.v2y = this.vertexbufferdata[this.indexbufferdata[triangleNumber*3+1]*this.vertexLength+1];
+                        this.currentTriangle.v2z = this.vertexbufferdata[this.indexbufferdata[triangleNumber*3+1]*this.vertexLength+2];
+              
+                        this.currentTriangle.v3x = this.vertexbufferdata[this.indexbufferdata[triangleNumber*3+2]*this.vertexLength];
+                        this.currentTriangle.v3y = this.vertexbufferdata[this.indexbufferdata[triangleNumber*3+2]*this.vertexLength+1];
+                        this.currentTriangle.v3z = this.vertexbufferdata[this.indexbufferdata[triangleNumber*3+2]*this.vertexLength+2];     
+                        break;
+                        
+      case "TRIANGLESTRIP":
+      
+                        if(triangleNumber%2 == 0) //even
+                        {
+                          this.currentTriangle.v1x = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength];
+                          this.currentTriangle.v1y = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength+1];
+                          this.currentTriangle.v1z = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength+2];
+              
+                          this.currentTriangle.v2x = this.vertexbufferdata[this.indexbufferdata[triangleNumber+1]*this.vertexLength];
+                          this.currentTriangle.v2y = this.vertexbufferdata[this.indexbufferdata[triangleNumber+1]*this.vertexLength+1];
+                          this.currentTriangle.v2z = this.vertexbufferdata[this.indexbufferdata[triangleNumber+1]*this.vertexLength+2];
+              
+                          this.currentTriangle.v3x = this.vertexbufferdata[this.indexbufferdata[triangleNumber+2]*this.vertexLength];
+                          this.currentTriangle.v3y = this.vertexbufferdata[this.indexbufferdata[triangleNumber+2]*this.vertexLength+1];
+                          this.currentTriangle.v3z = this.vertexbufferdata[this.indexbufferdata[triangleNumber+2]*this.vertexLength+2]; 
+                        }
+                        else
+                        {
+                          this.currentTriangle.v1x = this.vertexbufferdata[this.indexbufferdata[triangleNumber+1]*this.vertexLength];
+                          this.currentTriangle.v1y = this.vertexbufferdata[this.indexbufferdata[triangleNumber+1]*this.vertexLength+1];
+                          this.currentTriangle.v1z = this.vertexbufferdata[this.indexbufferdata[triangleNumber+1]*this.vertexLength+2];
+              
+                          this.currentTriangle.v2x = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength];
+                          this.currentTriangle.v2y = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength+1];
+                          this.currentTriangle.v2z = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength+2];
+              
+                          this.currentTriangle.v3x = this.vertexbufferdata[this.indexbufferdata[triangleNumber+2]*this.vertexLength];
+                          this.currentTriangle.v3y = this.vertexbufferdata[this.indexbufferdata[triangleNumber+2]*this.vertexLength+1];
+                          this.currentTriangle.v3z = this.vertexbufferdata[this.indexbufferdata[triangleNumber+2]*this.vertexLength+2];          
+                        }
+                           
+                        break;
+                        
+      default: 
+                        console.log("This indexsemantic is not supported for function: Mesh.ReadTriangleFromBuffer() ");
+                        break;
+      
+   }
+   
+   
+}
 
 Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
 {
@@ -637,10 +723,10 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
       invModelMatrix.Inverse(this.modelMatrix); 
               
       var v1 = new vec3();
-      v1.Set(this.bbm1x,this.bbm1y,this.bbm1z);
+      v1.Set(this.bbmin[0],this.bbmin[1],this.bbmin[2]);
               
       var v2 = new vec3();
-      v2.Set(this.bbm2x,this.bbm2y,this.bbm2z);
+      v2.Set(this.bbmax[0],this.bbmax[1],this.bbmax[2]);
              
       var vec = invModelMatrix.MultiplyVec3(v1);
       var v1x = vec.Get()[0];
@@ -656,7 +742,7 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
    } 
    else
    {
-      result = this.aabb.HitBox(x,y,z,dirx,diry,dirz,this.bbm1x,this.bbm1y,this.bbm1z,this.bbm2x,this.bbm2y,this.bbm2z);   
+      result = this.aabb.HitBox(x,y,z,dirx,diry,dirz,this.bbmin[0],this.bbmin[1],this.bbmin[2],this.bbmax[0],this.bbmax[1],this.bbmax[2]);   
    }      
 
    return result;  //if result = null -> no hit!

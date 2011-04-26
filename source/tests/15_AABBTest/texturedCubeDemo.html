@@ -203,12 +203,14 @@
                cube = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePT.json");
                
                //set bounding box coordinates
-               cube.bbm1x = -1;
-               cube.bbm1y = -1;
-               cube.bbm1z = -1;
-               cube.bbm2x = 1;
-               cube.bbm2y = 1;
-               cube.bbm2z = 1;
+               cube.bbmin = new Array(3);
+               cube.bbmax = new Array(3);
+               cube.bbmin[0] = -1;
+               cube.bbmin[1] = -1;
+               cube.bbmin[2] = -1;
+               cube.bbmax[0] = 1;
+               cube.bbmax[1] = 1;
+               cube.bbmax[2] = 1;
                
                
                
