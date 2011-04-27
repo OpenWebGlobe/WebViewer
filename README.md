@@ -43,6 +43,13 @@ it in `external\closure`.
 2. Change directory to `scripts` and run `compile.bat`.
 
 
+Linux
+-----
+
+1. Change directory to `scripts` and run `make`.  This will download the Closure
+Compiler (if required) and compile WebViewer.
+
+
 
 License
 =======
