@@ -438,38 +438,11 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
 }
 
 //------------------------------------------------------------------------------
-/**
- * @description Load mesh-data from a JSON file.
- * @param {sting} url the url to the JSON file.
- * @param {function()} callbackready optional function called when mesh finished download
- * @param {function()} callbackfailed optional function called when mesh failed download
- */
-Mesh.prototype.loadFromJSON = function(url, callbackready, callbackfailed)
-{
-   if(url == null) 
-   {
-      alert("invalid json-url");
-      return;
-   }  
-   this.jsonUrl=url;
-      
-   this.http=new window.XMLHttpRequest();
-   this.http.open("GET",this.jsonUrl,true);
-   
-   this.cbr = callbackready;
-   this.cbf = callbackfailed;
-   
-   var me=this;
-   this.http.onreadystatechange = function(){_cbfjsondownload(me);};
-   this.http.send();  
-}
-
-//------------------------------------------------------------------------------
 /** 
  * @description download callback
  * @ignore
  */
-_cbfjsondownload = function(mesh)
+function _cbfjsondownload(mesh)
 {
    if (mesh.http.readyState==4)
    {
@@ -550,6 +523,33 @@ _cbfjsondownload = function(mesh)
          }
       }     
    }    
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Load mesh-data from a JSON file.
+ * @param {sting} url the url to the JSON file.
+ * @param {function()} callbackready optional function called when mesh finished download
+ * @param {function()} callbackfailed optional function called when mesh failed download
+ */
+Mesh.prototype.loadFromJSON = function(url, callbackready, callbackfailed)
+{
+   if(url == null) 
+   {
+      alert("invalid json-url");
+      return;
+   }  
+   this.jsonUrl=url;
+      
+   this.http=new window.XMLHttpRequest();
+   this.http.open("GET",this.jsonUrl,true);
+   
+   this.cbr = callbackready;
+   this.cbf = callbackfailed;
+   
+   var me=this;
+   this.http.onreadystatechange = function(){_cbfjsondownload(me);};
+   this.http.send();  
 }
 
 //------------------------------------------------------------------------------

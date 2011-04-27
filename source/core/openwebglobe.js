@@ -52,6 +52,178 @@ var _gcbfKeyUp       = null;           // global key up event
 
 //------------------------------------------------------------------------------
 /**
+ * @description internal key up
+ * @ignore
+ */
+function _fncKeyDown(evt)
+{
+   for (var i=0;i<_g_vInstances.length;i++)
+   {
+      var engine = _g_vInstances[i];
+      engine.eventhandler.KeyDown(evt.keyCode);
+   }
+   
+   if (_gcbfKeyDown)
+   {
+      _gcbfKeyDown(evt.keyCode); 
+   }
+   return;
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description internal key up
+ * @ignore
+ */
+function _fncKeyUp(evt)
+{
+   for (var i=0;i<_g_vInstances.length;i++)
+   {
+      var engine = _g_vInstances[i];
+      engine.eventhandler.KeyUp(evt.keyCode);
+   }
+   
+   if (_gcbfKeyUp)
+   {
+      _gcbfKeyUp(evt.keyCode);
+   }
+   return;
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description internal mouse up
+ * @ignore
+ */
+function _fncMouseUp(evt)
+{
+   for (var i=0;i<_g_vInstances.length;i++)
+   {
+      var engine = _g_vInstances[i];
+      if (evt.currentTarget == engine.context)
+      {
+         var x = evt.clientX-engine.xoffset/2;
+         var y = evt.clientY-engine.yoffset/2;
+         engine.eventhandler.MouseUp(evt.button,x,y);
+         if (engine.cbfMouseUp)
+         {
+            engine.cbfMouseUp(evt.button, x, y); // call mouse up callback function
+         }
+         return;
+      }
+   }
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description internal mousedown
+ * @ignore
+ */
+function _fncMouseDown(evt)
+{
+   for (var i=0;i<_g_vInstances.length;i++)
+   {
+      var engine = _g_vInstances[i];
+      if (evt.currentTarget == engine.context)
+      {
+         var x = evt.clientX-engine.xoffset/2;
+         var y = evt.clientY-engine.yoffset/2;
+         engine.eventhandler.MouseDown(evt.button,x,y);
+         
+         if (_g_vInstances[i].cbfMouseDown)
+         {
+            _g_vInstances[i].cbfMouseDown(evt.button,x,y); // call mouse down callback function
+         }
+         return;
+      }
+   }
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description internal mousemove
+ * @ignore
+ */
+function _fncMouseMove(evt)
+{
+   for (var i=0;i<_g_vInstances.length;i++)
+   {
+      var engine = _g_vInstances[i];
+      if (evt.currentTarget == engine.context)
+      {
+         var x = evt.clientX-engine.xoffset/2;
+         var y = evt.clientY-engine.yoffset/2;
+         engine.eventhandler.MouseMove(x,y);
+         
+         if (engine.cbfMouseMove)
+         {
+            engine.cbfMouseMove(x,y); // call mouse up callback function
+         }
+         return;
+      }
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @description internal mousewheel
+ * @ignore
+ */
+function _fncMouseWheel(evt)
+{
+   if(evt.preventDefault) 
+   { 
+      evt.preventDefault();  // seems to work for: Chrome, Safari, Firefox
+   } 
+   
+   for (var i=0;i<_g_vInstances.length;i++)
+   {
+      var engine = _g_vInstances[i];
+      var delta = 0; 
+      
+      if ( evt.wheelDelta ) 
+      { 
+         delta= -evt.wheelDelta;
+         if (window.opera) 
+         {
+            delta= -delta;
+         }
+      }
+      else if (evt.detail)  // Firefox
+      { 
+         delta = evt.detail/3;;
+      }
+      
+      engine.eventhandler.MouseWheel(delta);
+         
+      if (engine.cbfMouseWheel)
+      {
+        engine.cbfMouseWheel(delta);
+      }
+   }
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @description internal resize
+ */
+function _fncResize(evt)
+{
+   for (var i=0;i<_g_vInstances.length;i++)
+   {
+      var engine = _g_vInstances[i];
+      if (engine.bFullscreen)
+      {
+         engine.context.width = window.innerWidth-20;
+         engine.context.height = window.innerHeight-20;
+      }
+      
+      engine._resize(engine.context.width, engine.context.height);
+   }
+}
+  
+//------------------------------------------------------------------------------
+/**
  * @description Create a new engine3d object
  * @class 
  * @constructor
@@ -643,177 +815,3 @@ engine3d.prototype.SetKeyDownCallback = function(f)
 }
 
 //------------------------------------------------------------------------------
-/**
- * @description internal key up
- * @ignore
- */
-_fncKeyDown = function(evt)
-{
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      engine.eventhandler.KeyDown(evt.keyCode);
-   }
-   
-   if (_gcbfKeyDown)
-   {
-      _gcbfKeyDown(evt.keyCode); 
-   }
-   return;
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description internal key up
- * @ignore
- */
-_fncKeyUp = function(evt)
-{
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      engine.eventhandler.KeyUp(evt.keyCode);
-   }
-   
-   if (_gcbfKeyUp)
-   {
-      _gcbfKeyUp(evt.keyCode);
-   }
-   return;
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description internal mouse up
- * @ignore
- */
-_fncMouseUp = function(evt)
-{
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      if (evt.currentTarget == engine.context)
-      {
-         var x = evt.clientX-engine.xoffset/2;
-         var y = evt.clientY-engine.yoffset/2;
-         engine.eventhandler.MouseUp(evt.button,x,y);
-         if (engine.cbfMouseUp)
-         {
-            engine.cbfMouseUp(evt.button, x, y); // call mouse up callback function
-         }
-         return;
-      }
-   }
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description internal mousedown
- * @ignore
- */
-_fncMouseDown = function(evt)
-{
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      if (evt.currentTarget == engine.context)
-      {
-         var x = evt.clientX-engine.xoffset/2;
-         var y = evt.clientY-engine.yoffset/2;
-         engine.eventhandler.MouseDown(evt.button,x,y);
-         
-         if (_g_vInstances[i].cbfMouseDown)
-         {
-            _g_vInstances[i].cbfMouseDown(evt.button,x,y); // call mouse down callback function
-         }
-         return;
-      }
-   }
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description internal mousemove
- * @ignore
- */
-_fncMouseMove = function(evt)
-{
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      if (evt.currentTarget == engine.context)
-      {
-         var x = evt.clientX-engine.xoffset/2;
-         var y = evt.clientY-engine.yoffset/2;
-         engine.eventhandler.MouseMove(x,y);
-         
-         if (engine.cbfMouseMove)
-         {
-            engine.cbfMouseMove(x,y); // call mouse up callback function
-         }
-         return;
-      }
-   }
-}
-//------------------------------------------------------------------------------
-/**
- * @description internal mousewheel
- * @ignore
- */
-_fncMouseWheel = function(evt)
-{
-   if(evt.preventDefault) 
-   { 
-      evt.preventDefault();  // seems to work for: Chrome, Safari, Firefox
-   } 
-   
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      var delta = 0; 
-      
-      if ( evt.wheelDelta ) 
-      { 
-         delta= -evt.wheelDelta;
-         if (window.opera) 
-         {
-            delta= -delta;
-         }
-      }
-      else if (evt.detail)  // Firefox
-      { 
-         delta = evt.detail/3;;
-      }
-      
-      engine.eventhandler.MouseWheel(delta);
-         
-      if (engine.cbfMouseWheel)
-      {
-        engine.cbfMouseWheel(delta);
-      }
-   }
-}
-
-//------------------------------------------------------------------------------
-/**
- * @ignore
- * @description internal resize
- */
-_fncResize = function(evt)
-{
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      if (engine.bFullscreen)
-      {
-         engine.context.width = window.innerWidth-20;
-         engine.context.height = window.innerHeight-20;
-      }
-      
-      engine._resize(engine.context.width, engine.context.height);
-   }
-}
-  
-
-//------------------------------------------------------------------------------
-

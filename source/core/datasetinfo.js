@@ -49,28 +49,8 @@ function DatasetInfo()
 }
 
 //------------------------------------------------------------------------------
-/**
- * @description Holds information about a dataset (image, elevation, poi, ...)
- * @param url The URL where of the dataset info (JSON)
- */
-DatasetInfo.prototype.Download = function(url)
-{
-   if(url == null) 
-   {
-      alert("invalid url");
-      return;
-   }  
-  
-   this.http=new XMLHttpRequest();
-   this.http.open("GET",url,true);
-   var me=this;
-   this.http.onreadystatechange = function(){_cbfdsidownload(me);};
-   this.http.send(); 
-}
 
-//------------------------------------------------------------------------------
-
-_cbfdsidownload = function(dsi)
+function _cbfdsidownload(dsi)
 {
    if (dsi.http.readyState==4)
    {
@@ -115,4 +95,24 @@ _cbfdsidownload = function(dsi)
          dsi.bFailed = true;
       }
    }
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Holds information about a dataset (image, elevation, poi, ...)
+ * @param url The URL where of the dataset info (JSON)
+ */
+DatasetInfo.prototype.Download = function(url)
+{
+   if(url == null) 
+   {
+      alert("invalid url");
+      return;
+   }  
+  
+   this.http=new XMLHttpRequest();
+   this.http.open("GET",url,true);
+   var me=this;
+   this.http.onreadystatechange = function(){_cbfdsidownload(me);};
+   this.http.send(); 
 }
