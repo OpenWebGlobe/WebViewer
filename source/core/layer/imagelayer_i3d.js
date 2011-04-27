@@ -167,12 +167,12 @@ function _cbTileReady(imgTex)
  */
 function _cbTileFailed(imgTex)
 {
-   imgTex.cbfFailed(imgTex.quadcode, imgTex.caller, ImgTex.layer);
+   imgTex.cbfFailed(imgTex.quadcode, imgTex.caller, imgTex.layer);
    imgTex.cbfReady = null;
    imgTex.cbfFailed = null;
    imgTex.quadcode = null; 
    imgTex.caller = null;
-   ImgTex.layer = null;
+   imgTex.layer = null;
 }
 //------------------------------------------------------------------------------
 
