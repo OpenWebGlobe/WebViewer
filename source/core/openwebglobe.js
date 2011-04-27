@@ -254,7 +254,7 @@ engine3d.prototype.GetClearColor = function(color)
  */
 engine3d.prototype.Clear = function()
 {
-   this.gl.clearColor(this.bg_r, engine.bg_g, this.bg_b, this.bg_a);
+   this.gl.clearColor(this.bg_r, this.bg_g, this.bg_b, this.bg_a);
    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 }
 

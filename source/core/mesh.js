@@ -334,7 +334,7 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                       this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 8*4, 0*4); // position
                       this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 8*4, 3*4); // normal
                       this.gl.vertexAttribPointer(2, 2, this.gl.FLOAT, false, 8*4, 6*4); // texcoord
-                      this.engine.shadermanager.UseShader_PNT(engine.matModelViewProjection);
+                      this.engine.shadermanager.UseShader_PNT(this.engine.matModelViewProjection);
                       break;
                         
         case "pc": 
@@ -342,7 +342,7 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                       this.gl.enableVertexAttribArray(1);
                       this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
                       this.gl.vertexAttribPointer(1, 4, this.gl.FLOAT, false, 7*4, 3*4); // color
-                      this.engine.shadermanager.UseShader_PC(engine.matModelViewProjection);
+                      this.engine.shadermanager.UseShader_PC(this.engine.matModelViewProjection);
                       break;
                         
         case "pt": 
@@ -350,7 +350,7 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                       this.gl.enableVertexAttribArray(1);
                       this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
                       this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
-                      this.engine.shadermanager.UseShader_PT(engine.matModelViewProjection);
+                      this.engine.shadermanager.UseShader_PT(this.engine.matModelViewProjection);
                       break;
                         
         case "pnct": 
@@ -362,7 +362,7 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                       this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 12*4, 3*4); // normal
                       this.gl.vertexAttribPointer(2, 4, this.gl.FLOAT, false, 12*4, 6*4); // color
                       this.gl.vertexAttribPointer(3, 2, this.gl.FLOAT, false, 12*4, 10*4); // texture
-                      this.engine.shadermanager.UseShader_PNCT(engine.matModelViewProjection);
+                      this.engine.shadermanager.UseShader_PNCT(this.engine.matModelViewProjection);
                       break;
                       
         case "font": 
@@ -374,7 +374,7 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                       {
                          fontcolor = this.defaultfontcolor;
                       }
-                      this.engine.shadermanager.UseShader_Font(engine.matModelViewProjection,fontcolor);
+                      this.engine.shadermanager.UseShader_Font(this.engine.matModelViewProjection,fontcolor);
                       break;
                              
              
@@ -777,7 +777,7 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
  */
 Mesh.prototype.SetAsBillboard= function()
 {
-   var view = engine.matView.Get();
+   var view = this.engine.matView.Get();
    var bbmat = new mat4();
    var pos = [];
    pos[0] = 0;

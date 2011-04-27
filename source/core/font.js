@@ -86,7 +86,7 @@ Font.prototype.DrawText = function(text,x,y,scale,fontcolor)
          a += (fontwidth[ccode]/2)*scale;   
       }
       
-      engine.PopMatrices();
+      this.engine.PopMatrices();
 
       this.engine.gl.disable(this.engine.gl.BLEND);
       //this.engine.gl.disable(this.engine.gl.ALPHA_TEST);
@@ -122,7 +122,7 @@ Font.prototype.GenerateFontMesh = function()
 {
    var b = 0;
    var a = 0;
-   this.fontmesh = new Mesh(engine);     
+   this.fontmesh = new Mesh(this.engine);     
    var pt = new Array();
    var index = new Array();
 

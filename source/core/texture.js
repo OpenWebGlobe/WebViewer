@@ -106,7 +106,7 @@ Texture.prototype.loadTexture = function(url, callbackready, callbackfailed, fli
    this.texture.image.onerror = function()
    {
       console.log("***FAILED DOWNLOADING: " + url);
-      failed = true;
+      this.failed = true;
       if (cbf)
       {
          cbf(thismat);
@@ -311,7 +311,7 @@ Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend, invtexcoord)
 Texture.prototype.Destroy = function()
 {
    this.texture.image = null;
-   engine.gl.deleteTexture(this.texture);
+   this.engine.gl.deleteTexture(this.texture);
    this.texture = null;
 
    this.ready = false;
