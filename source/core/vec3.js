@@ -178,7 +178,7 @@ vec3.prototype.Cross = function(vec)
  * @param {vec3} v2 second vector to calculate cross product
  * @ignore
  */
-Cross = function(result, v1, v2)
+function Cross(result, v1, v2)
 {
    var x1=v1._values[0];
    var y1=v1._values[1];
