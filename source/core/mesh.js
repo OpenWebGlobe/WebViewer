@@ -441,8 +441,8 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
 /**
  * @description Load mesh-data from a JSON file.
  * @param {sting} url the url to the JSON file.
- * @param {function} callbackready optional function called when mesh finished download
- * @param {function} callbackfailed optional function called when mesh failed download
+ * @param {function()} callbackready optional function called when mesh finished download
+ * @param {function()} callbackfailed optional function called when mesh failed download
  */
 Mesh.prototype.loadFromJSON = function(url, callbackready, callbackfailed)
 {
@@ -555,7 +555,7 @@ _cbfjsondownload = function(mesh)
 //------------------------------------------------------------------------------
 /**
  * @description Specify the function called as soon as the JSON File is fully loaded. This is optional.
- * @param {function} f Callback Function which has "mesh" as param.
+ * @param {function()} f Callback Function which has "mesh" as param.
  * */
 Mesh.prototype.SetJSONLoadCallback = function(f)
 {
@@ -652,7 +652,7 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
 
 /**
  * @ignore
- * @descritption Reads a Triangle from the current vertexBuffer using the correct mode and sets the value to this.currentTriangle.v...values
+ * @description Reads a Triangle from the current vertexBuffer using the correct mode and sets the value to this.currentTriangle.v...values
  */
 Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
 {

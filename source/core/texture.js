@@ -24,6 +24,7 @@
 //------------------------------------------------------------------------------
 /**
  * @class texture
+ * @constructor
  * {@link http://www.openwebglobe.org}
  * @author Martin Christen martin.christen@fhnw.ch
  */
@@ -326,7 +327,7 @@ Texture.prototype.Destroy = function()
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 /**
- * @desciption Load Default Font Texture
+ * @description Load Default Font Texture
  * @ignore
  */
 Texture.prototype.LoadFontTexture = function()
@@ -335,7 +336,7 @@ Texture.prototype.LoadFontTexture = function()
 }
 //------------------------------------------------------------------------------
 /**
- * @desciption Load Default "empty" (nodata) texture
+ * @description Load Default "empty" (nodata) texture
  * @ignore
  */
 Texture.prototype.LoadNoDataTexture = function()

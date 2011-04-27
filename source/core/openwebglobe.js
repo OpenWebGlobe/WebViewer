@@ -540,7 +540,7 @@ engine3d.prototype._resize = function(w,h)
 //------------------------------------------------------------------------------
 /**
  * @description sets the init callback function
- * @param {function} f init callback handler.
+ * @param {function()} f init callback handler.
  */
 engine3d.prototype.SetInitCallback = function(f)
 {
@@ -550,7 +550,7 @@ engine3d.prototype.SetInitCallback = function(f)
 //------------------------------------------------------------------------------
 /**
  * @description sets the timer callback function
- * @param {function} f timer callback handler.
+ * @param {function()} f timer callback handler.
  */
 engine3d.prototype.SetTimerCallback = function(f)
 {
@@ -561,7 +561,7 @@ engine3d.prototype.SetTimerCallback = function(f)
 /**
  * @description sets the render callback function
  *
- * @param {function} f render callback handler.
+ * @param {function()} f render callback handler.
  */
 engine3d.prototype.SetRenderCallback = function(f)
 {
@@ -572,7 +572,7 @@ engine3d.prototype.SetRenderCallback = function(f)
 /**
  * @description sets the mousedown callback function
  *
- * @param {function} f mousedown callback handler.
+ * @param {function()} f mousedown callback handler.
  */
 engine3d.prototype.SetMouseDownCallback = function(f)
 {
@@ -583,7 +583,7 @@ engine3d.prototype.SetMouseDownCallback = function(f)
 /**
  * @description sets the mouseup callback function
  *
- * @param {function} f mouseup callback handler.
+ * @param {function()} f mouseup callback handler.
  */
 engine3d.prototype.SetMouseUpCallback = function(f)
 {
@@ -594,7 +594,7 @@ engine3d.prototype.SetMouseUpCallback = function(f)
 /**
  * @description sets the mousemoveup callback function
  *
- * @param {function} f mousemove callback handler.
+ * @param {function()} f mousemove callback handler.
  */
 engine3d.prototype.SetMouseMoveCallback = function(f)
 {
@@ -604,7 +604,7 @@ engine3d.prototype.SetMouseMoveCallback = function(f)
 /**
  * @description sets the mousewheel callback function
  *
- * @param {function} f mousewhell callback handler.
+ * @param {function()} f mousewhell callback handler.
  */
 engine3d.prototype.SetMouseWheelCallback = function(f)
 {
@@ -614,7 +614,7 @@ engine3d.prototype.SetMouseWheelCallback = function(f)
 /**
  * @description sets the resize callback function
  *
- * @param {function} f resize callback handler.
+ * @param {function()} f resize callback handler.
  */
 engine3d.prototype.SetResizeCallback = function(f)
 {
@@ -625,7 +625,7 @@ engine3d.prototype.SetResizeCallback = function(f)
 /**
  * @description sets the keydown callback function
  *
- * @param {function} f keydown callback handler.
+ * @param {function()} f keydown callback handler.
  */
 engine3d.prototype.SetKeyDownCallback = function(f)
 {
@@ -635,7 +635,7 @@ engine3d.prototype.SetKeyDownCallback = function(f)
 /**
  * @description sets the keyup callback function
  *
- * @param {function} f keyup callback handler.
+ * @param {function()} f keyup callback handler.
  */
  engine3d.prototype.SetKeyUpCallback = function(f)
 {

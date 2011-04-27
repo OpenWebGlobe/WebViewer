@@ -30,6 +30,7 @@ var fontwidth = new Array(14,28,14,14,14,14,14,14,14,96,0,14,14,0,14,14,14,14,14
 //------------------------------------------------------------------------------
 /** 
  * @class font
+ * @constructor
  * {@link http://www.openwebglobe.org} 
  * @author Martin Christen martin.christen@fhnw.ch
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch
@@ -47,8 +48,8 @@ function Font(engine)
 //------------------------------------------------------------------------------
 /**
  * @description Shows the text at position x,y,
- * @param {x} x x position of text
- * @param {y} y y position of text
+ * @param {number} x x position of text
+ * @param {number} y y position of text
  */
 Font.prototype.DrawText = function(text,x,y,scale,fontcolor)
 {
@@ -97,8 +98,8 @@ Font.prototype.DrawText = function(text,x,y,scale,fontcolor)
 //------------------------------------------------------------------------------
 /**
  * @description gets the length of text in pixel
- * @param {x} x x position of text
- * @param {y} y y position of text
+ * @param {number} x x position of text
+ * @param {number} y y position of text
  * @return length in pixel
  */
 Font.prototype.GetStringWidth = function()
@@ -109,7 +110,7 @@ Font.prototype.GetStringWidth = function()
 //------------------------------------------------------------------------------
 /**
  * @description gets the height of text in pixel
- * @return height in pixel (32)
+ * @return {number} height in pixel (32)
  */
 Font.prototype.GetStringHeight = function()
 {

@@ -24,6 +24,7 @@
 //------------------------------------------------------------------------------
 /** 
  * @class triangleintersector Methods to calc ray and triangle intersection.
+ * @constructor
  * @description 
  * 
  * {@link http://www.openwebglobe.org} 

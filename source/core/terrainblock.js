@@ -115,7 +115,7 @@ TerrainBlock.prototype.MergeImages = function()
 //------------------------------------------------------------------------------
 /**
  * @description Request Data
- * @intern
+ * @private
  */
 TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlayerlist)
 {
@@ -167,7 +167,7 @@ TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlay
 //------------------------------------------------------------------------------
 /**
  * @description Callback when image data is ready
- * @intern
+ * @private
  */
 function _cbfOnImageTileReady(quadcode, ImageObject, layer)
 {
@@ -179,7 +179,7 @@ function _cbfOnImageTileReady(quadcode, ImageObject, layer)
 //------------------------------------------------------------------------------       
 /**
  * @description Callback when image data failed
- * @intern
+ * @private
  */
 function _cbfOnImageTileFailed(quadcode, terrainblock, layer)
 {  
@@ -190,7 +190,7 @@ function _cbfOnImageTileFailed(quadcode, terrainblock, layer)
 //------------------------------------------------------------------------------
 /**
  * @description Callback when elevation data is ready
- * @intern
+ * @private
  */
 function _cbfOnElevationTileReady(quadcode, mesh, layer)
 {
@@ -209,7 +209,7 @@ function _cbfOnElevationTileReady(quadcode, mesh, layer)
 //------------------------------------------------------------------------------       
 /**
  * @description Callback when data failed
- * @intern
+ * @private
  */
 function _cbfOnElevationTileFailed(quadcode, terrainblock, layer)
 {  

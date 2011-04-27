@@ -195,7 +195,7 @@ Cross = function(result, v1, v2)
 /**
  * Calculates the dot product.
  * @extends vec3
- * @param {vec3} 
+ * @param {vec3} vec
  */
 vec3.prototype.Dot = function(vec)
 {
