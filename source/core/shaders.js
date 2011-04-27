@@ -171,8 +171,8 @@ ShaderManager.prototype.UseShader_Font = function(modelviewprojection, fontcolor
  */
 ShaderManager.prototype.InitShader_P = function()
 {
-   src_vertexshader_P= "uniform mat4 matMVP;\nattribute vec3 aPosition;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n}\n";
-   src_fragmentshader_P= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nuniform vec4 uColor;\n\nvoid main()\n{\n   gl_FragColor = uColor;\n}";
+   var src_vertexshader_P= "uniform mat4 matMVP;\nattribute vec3 aPosition;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n}\n";
+   var src_fragmentshader_P= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nuniform vec4 uColor;\n\nvoid main()\n{\n   gl_FragColor = uColor;\n}";
    
    this.vs_p = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_P);
    this.fs_p = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_P);
@@ -285,8 +285,8 @@ ShaderManager.prototype.InitShader_PC = function()
  */
 ShaderManager.prototype.InitShader_PT = function()
 {
-   src_vertexshader_PT= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n}\n";
-   src_fragmentshader_PT= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\nvoid main()\n{\n   gl_FragColor = texture2D(uTexture, vTexCoord);\n}\n\n";
+   var src_vertexshader_PT= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n}\n";
+   var src_fragmentshader_PT= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\nvoid main()\n{\n   gl_FragColor = texture2D(uTexture, vTexCoord);\n}\n\n";
   
    this.vs_pt = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PT);
    this.fs_pt = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_PT);
@@ -322,8 +322,8 @@ ShaderManager.prototype.InitShader_PT = function()
  */
 ShaderManager.prototype.InitShader_PNCT = function()
 {
-   src_vertexshader_PNCT= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute vec2 aTexCoord;\nattribute vec4 aColor;\nvarying vec3 vNormal;\nvarying vec2 vTexCoord;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n   vNormal = aNormal;\n   vColor = aColor;\n}\n";
-   src_fragmentshader_PNCT= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec3 vNormal;\nvarying vec2 vTexCoord;\nvarying vec4 vColor;\nuniform sampler2D uTexture;\n\nvoid main()\n{\n   gl_FragColor = vColor * texture2D(uTexture, vTexCoord);\n}\n\n";
+   var src_vertexshader_PNCT= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute vec2 aTexCoord;\nattribute vec4 aColor;\nvarying vec3 vNormal;\nvarying vec2 vTexCoord;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n   vNormal = aNormal;\n   vColor = aColor;\n}\n";
+   var src_fragmentshader_PNCT= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec3 vNormal;\nvarying vec2 vTexCoord;\nvarying vec4 vColor;\nuniform sampler2D uTexture;\n\nvoid main()\n{\n   gl_FragColor = vColor * texture2D(uTexture, vTexCoord);\n}\n\n";
   
    this.vs_pnct = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PNCT);
    this.fs_pnct = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_PNCT);
@@ -361,8 +361,8 @@ ShaderManager.prototype.InitShader_PNCT = function()
  */
 ShaderManager.prototype.InitShader_Font = function()
 {
-   src_vertexshader_Font= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n}\n";
-   src_fragmentshader_Font= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\n\nuniform vec4 uColor;\nvoid main()\n{\n   gl_FragColor = uColor*texture2D(uTexture, vTexCoord);\n}\n\n";
+   var src_vertexshader_Font= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n}\n";
+   var src_fragmentshader_Font= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\n\nuniform vec4 uColor;\nvoid main()\n{\n   gl_FragColor = uColor*texture2D(uTexture, vTexCoord);\n}\n\n";
  
    this.vs_font = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_Font);
    this.fs_font = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_Font);

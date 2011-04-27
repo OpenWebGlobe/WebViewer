@@ -52,7 +52,7 @@ function TraversalState()
  */
 TraversalState.prototype.PushView = function(matrix)
 {
-   newmat = new mat4(matrix.type);
+   var newmat = new mat4(matrix.type);
    newmat.CopyFrom(matrix);
    this.MatrixStackView.push(newmat);
 }
@@ -71,7 +71,7 @@ TraversalState.prototype.PopView = function()
  */
 TraversalState.prototype.PushModel = function(matrix)
 {
-   newmat = new mat4(matrix.type);
+   var newmat = new mat4(matrix.type);
    newmat.CopyFrom(matrix);
    this.MatrixStackModel.push(newmat);
 }
@@ -90,7 +90,7 @@ TraversalState.prototype.PopModel = function()
  */
 TraversalState.prototype.PushProjection = function(matrix)
 {
-   newmat = new mat4(matrix.type);
+   var newmat = new mat4(matrix.type);
    newmat.CopyFrom(matrix);
    this.MatrixStackProjection.push(newmat);
 }

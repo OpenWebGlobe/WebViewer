@@ -137,7 +137,7 @@ function i3dElevationLayer()
         server="http://www.openwebglobe.org/data/elv/"
         layer="SRTM"
       */
-      datasetfile = server + "/" + layer + ".json";
+      var datasetfile = server + "/" + layer + ".json";
       this.dsi.Download(datasetfile);
    }
 }

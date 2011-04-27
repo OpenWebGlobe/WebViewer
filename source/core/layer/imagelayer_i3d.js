@@ -135,7 +135,7 @@ function i3dImageLayer()
         server="http://www.openwebglobe.org/data/img/"
         layer="World500"
       */
-      datasetfile = server + "/" + layer + ".json";
+      var datasetfile = server + "/" + layer + ".json";
       this.dsi.Download(datasetfile);
    }
 }

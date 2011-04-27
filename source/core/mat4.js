@@ -500,6 +500,7 @@ mat4.prototype.MultiplyVec3 = function(vec)
 {
    if(vec instanceof vec3)
    {
+      var resVec;
       if(this._values instanceof Float32Array)
       {
          resVec = new vec3("float"); 
@@ -665,12 +666,12 @@ mat4.prototype.CalcNavigationFrame = function(lng_deg, lat_deg)
  */
 mat4.prototype.CalcBodyFrame = function(yaw, pitch, roll)
 {
-   cosPitch = Math.cos(pitch);
-   cosRoll = Math.cos(roll);
-   cosYaw = Math.cos(yaw);
-   sinPitch = Math.sin(pitch);
-   sinRoll = Math.sin(roll);
-   sinYaw = Math.sin(yaw);
+   var cosPitch = Math.cos(pitch);
+   var cosRoll = Math.cos(roll);
+   var cosYaw = Math.cos(yaw);
+   var sinPitch = Math.sin(pitch);
+   var sinRoll = Math.sin(roll);
+   var sinYaw = Math.sin(yaw);
    
    this._values[0] = cosPitch*cosYaw;  this._values[4] = -cosRoll*sinYaw+sinRoll*sinPitch*cosYaw;  this._values[8]  = sinRoll*sinYaw+cosRoll*sinPitch*cosYaw;  this._values[12] = 0;
    this._values[1] = cosPitch*sinYaw;  this._values[5] = cosRoll*cosYaw+sinRoll*sinPitch*sinYaw;   this._values[9]  = -sinRoll*cosYaw+cosRoll*sinPitch*sinYaw; this._values[13] = 0;

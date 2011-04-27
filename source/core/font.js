@@ -130,8 +130,8 @@ Font.prototype.GenerateFontMesh = function()
    {
       for(var col=0; col < 16; col++)
       {
-        texcoor_row = row * 0.0625;
-        texcoor_col = col * 0.0625;
+        var texcoor_row = row * 0.0625;
+        var texcoor_col = col * 0.0625;
                 
         pt.push(0, 31,  0, texcoor_col, texcoor_row+(0.001953125)); // 1/512
         pt.push(0,  0,  0, texcoor_col, (texcoor_row+0.0625));

@@ -193,8 +193,8 @@ Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend, invtexcoord)
        var w = this.width;
       var h = this.height;
       
-      xr = this.width/2;
-      yr = this.height/2;
+      var xr = this.width/2;
+      var yr = this.height/2;
       this.engine.PushMatrices();
       this.engine.SetOrtho2D();
 

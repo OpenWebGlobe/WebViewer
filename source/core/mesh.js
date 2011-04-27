@@ -584,7 +584,7 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
             
    for(var i=0; i < this.numOfTriangles; i++)
    {
-      setTriangle = this.SetCurrentTriangle(i);
+      var setTriangle = this.SetCurrentTriangle(i);
       if(!setTriangle)
       {
          continue; 
@@ -627,7 +627,7 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
        }  
          */
         
-      result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,this.currentTriangle.v1x,this.currentTriangle.v1y,this.currentTriangle.v1z,this.currentTriangle.v2x,this.currentTriangle.v2y,this.currentTriangle.v2z,this.currentTriangle.v3x,this.currentTriangle.v3y,this.currentTriangle.v3z);      
+      var result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,this.currentTriangle.v1x,this.currentTriangle.v1y,this.currentTriangle.v1z,this.currentTriangle.v2x,this.currentTriangle.v2y,this.currentTriangle.v2z,this.currentTriangle.v3x,this.currentTriangle.v3y,this.currentTriangle.v3z);      
              
       if(result)
       {
@@ -736,6 +736,7 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
  */
 Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
 {
+   var result;
   
    //not tested...yet !!!!        
    if(this.modelMatrix)
