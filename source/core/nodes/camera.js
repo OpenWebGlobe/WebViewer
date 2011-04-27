@@ -68,7 +68,7 @@ function CameraNode()
       }
 }
 
-CameraNode.prototype = new Node();
+CameraNode.prototype = new ScenegraphNode();
 
 //------------------------------------------------------------------------------
 

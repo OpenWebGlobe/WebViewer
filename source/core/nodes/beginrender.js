@@ -66,4 +66,4 @@ function BeginRenderNode()
       //------------------------------------------------------------------------
 }
 
-BeginRenderNode.prototype = new Node();
+BeginRenderNode.prototype = new ScenegraphNode();
