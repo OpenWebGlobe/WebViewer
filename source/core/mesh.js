@@ -107,21 +107,13 @@ function Mesh(engine)
    
    this.aabb = new AABB();
    
-   this.modelMatrix = null; //filed to store draw-modelmatrix for intersection tests.  
+   this.modelMatrix = null; 
    this.vertexLength = 0; //number of entries in the vertexbufferdata array per vertex
      
    
    this.numOfTriangles = 0;     //number of triangles depends on indexsemantic "TRIANGLES or TRIANGLESTRIP"
    this.currentTriangle = {}; //current triangle used for intersection tests.
-   this.currentTriangle.v1x = 0.0;
-   this.currentTriangle.v1y = 0.0;
-   this.currentTriangle.v1z = 0.0;
-   this.currentTriangle.v2x = 0.0;
-   this.currentTriangle.v2y = 0.0;
-   this.currentTriangle.v2z = 0.0;
-   this.currentTriangle.v3x = 0.0;
-   this.currentTriangle.v3y = 0.0;
-   this.currentTriangle.v3z = 0.0;
+
    
 }
 
@@ -299,7 +291,7 @@ Mesh.prototype.Destroy = function()
    this.indexbufferdata = null;
    this.indexsemantic = null;
 }
-
+var j=0;
 //------------------------------------------------------------------------------
 /**
  * @description Draws the mesh element. Ensure that "toGPU" is called before calling this method.
@@ -323,6 +315,12 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);
            
+   if(this.modelMatrix)
+   {     
+      this.engine.PushMatrices();
+      this.engine.SetModelMatrix(this.modelMatrix);   
+   }  
+         
    switch (this.mode) 
    {
        case "p":      this.gl.enableVertexAttribArray(0);
@@ -424,6 +422,10 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                            alert("unknown indexsemantic");
       }
       
+      if(this.modelMatrix)
+      {     
+         this.engine.PopMatrices();   
+      }  
       if (this.texture)
       {
          this.texture.Disable();
@@ -562,6 +564,15 @@ Mesh.prototype.SetJSONLoadCallback = function(f)
 
 
 
+/**
+ * @description   Test for ray mesh intersection iterates through all triangles.
+ * @param x x ray startpoint x coordinate
+ * @param y y ray startpoint y coordinate
+ * @param z z ray startpoint z coordinate
+ * @param dirx normalized direction x coordinate
+ * @param diry normalized direction y coordinate
+ * @param dirz normalized direction z coordinate
+ */
 Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
 {
    
@@ -573,22 +584,12 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
             
    for(var i=0; i < this.numOfTriangles; i++)
    {
-      this.SetCurrentTriangle(i);
-      
-      if(this.currentTriangle.v1x == this.currentTriangle.v2x && this.currentTriangle.v1y == this.currentTriangle.v2y && this.currentTriangle.v1z == this.currentTriangle.v2z)
+      setTriangle = this.SetCurrentTriangle(i);
+      if(!setTriangle)
       {
-            continue;                        
-      } 
-      if(this.currentTriangle.v1x == this.currentTriangle.v3x && this.currentTriangle.v1y == this.currentTriangle.v3y && this.currentTriangle.v1z == this.currentTriangle.v3z)
-      {
-            continue;                 
-      } 
-      if(this.currentTriangle.v2x == this.currentTriangle.v3x && this.currentTriangle.v2y == this.currentTriangle.v3y && this.currentTriangle.v2z == this.currentTriangle.v3z)
-      {
-            continue;               
-      }   
-      
-      
+         continue; 
+      }
+  
         /* 
       //not tested...yet !!!!        
       if(this.modelMatrix)
@@ -642,15 +643,16 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
          else
          {
             hitresult = result;    
-         }
-                 
+         }            
       }
    } 
    return hitresult;
 }
 
-/*
- * Reads a Triangle from the current vertexBuffer using the correct mode and sets the value to this.currentTriangle.v...values
+
+/**
+ * @ignore
+ * @descritption Reads a Triangle from the current vertexBuffer using the correct mode and sets the value to this.currentTriangle.v...values
  */
 Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
 {
@@ -673,7 +675,9 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
       case "TRIANGLESTRIP":
       
                         if(triangleNumber%2 == 0) //even
-                        {
+                        {  
+                           
+                                    
                           this.currentTriangle.v1x = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength];
                           this.currentTriangle.v1y = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength+1];
                           this.currentTriangle.v1z = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength+2];
@@ -699,8 +703,8 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
                           this.currentTriangle.v3x = this.vertexbufferdata[this.indexbufferdata[triangleNumber+2]*this.vertexLength];
                           this.currentTriangle.v3y = this.vertexbufferdata[this.indexbufferdata[triangleNumber+2]*this.vertexLength+1];
                           this.currentTriangle.v3z = this.vertexbufferdata[this.indexbufferdata[triangleNumber+2]*this.vertexLength+2];          
-                        }
-                           
+                        }                     
+                          
                         break;
                         
       default: 
@@ -709,9 +713,27 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
       
    }
    
+   if(this.indexbufferdata[triangleNumber] == this.indexbufferdata[triangleNumber+1]
+                              || this.indexbufferdata[triangleNumber] == this.indexbufferdata[triangleNumber+2]
+                                 || this.indexbufferdata[triangleNumber+1] == this.indexbufferdata[triangleNumber+2])
+   {
+       return false;
+   }
+   return true;
+   
    
 }
 
+
+/**
+ * @description   Test for ray bounding box intersection
+ * @param x x ray startpoint x coordinate
+ * @param y y ray startpoint y coordinate
+ * @param z z ray startpoint z coordinate
+ * @param dirx normalized direction x coordinate
+ * @param diry normalized direction y coordinate
+ * @param dirz normalized direction z coordinate
+ */
 Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
 {
   
@@ -748,3 +770,80 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
    return result;  //if result = null -> no hit!
 }
 
+
+/**
+ * @description fills the modelmatrix to use this mesh as billboard.
+ */
+Mesh.prototype.SetAsBillboard= function()
+{
+   var view = engine.matView.Get();
+   var bbmat = new mat4();
+   var pos = [];
+   pos[0] = 0;
+   pos[1] = 0;
+   pos[2] = 0;
+   bbmat.Set([view[0],view[4],view[8],0,view[1],view[5],view[9],0,view[2],view[6],view[10],0,pos[0],pos[1],pos[2],1]);
+   this.modelMatrix = bbmat;
+}
+
+
+Mesh.prototype.UpdateBillboardMatrix = function()
+{
+   this.SetAsBillboard();
+}
+
+
+/**
+ * @description fills the modelmatrix to use this mesh as billboard.
+ */
+ /*
+  * Alternative implementation  
+  */
+  /*
+Mesh.prototype.SetAsBillboard = function(camX,camY,camZ,objX,objY,objZ)
+{
+   
+   var camPos = new vec3();
+   camPos.Set(camX,camY,camZ);
+   
+   var objPos = new vec3();
+   objPos.Set(objX,objY,objZ);
+   
+   // objToCamProj is the vector in world coordinates from the 
+   // local origin to the camera projected in the XZ plane
+   var objToCamProj = new vec3();
+   objToCamProj.Set(camX - objX,0,camZ - objZ);
+   objToCamProj.Normalize();
+   
+   // This is the original lookAt vector for the object 
+   // in world coordinates
+   var lookAt = new vec3();
+   lookAt.Set(0,0,1);
+   
+   
+    var angleCos = lookAt.Dot(objToCamProj);
+    console.log(angleCos);
+    
+    lookAt.Cross(objToCamProj);
+      console.log(lookAt.ToString());
+
+   if ((angleCos < 0.99990) && (angleCos > -0.9999))
+   {
+      this.modelMatrix = new mat4();
+      if(lookAt.Get()[1]>0)
+      {
+         this.modelMatrix.RotationY(Math.acos(angleCos));
+         console.log("angle: "+Math.acos(angleCos)*180/Math.PI);
+         console.log(this.modelMatrix.ToString());
+      }
+      else
+      {
+         this.modelMatrix.RotationY(2*Math.PI-Math.acos(angleCos));
+         console.log("angle: "+(2*Math.PI-Math.acos(angleCos))*180/Math.PI);
+      }
+      
+      
+   }
+   
+}
+*/
