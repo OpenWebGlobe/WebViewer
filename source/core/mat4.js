@@ -88,7 +88,6 @@ mat4.prototype.Set = function(oMatrix)
 //------------------------------------------------------------------------------
 /**
  * Get Values
- * @extends mat4
  * 
  * @return An array with the 16 element values.
  */
@@ -142,7 +141,6 @@ mat4.prototype.CopyFrom = function(cpy)
 /**
  * Identity
  * sets the matrix elements to identity. 
- * @extends mat4
  *
  */
 //------------------------------------------------------------------------------ 
@@ -158,7 +156,6 @@ mat4.prototype.Identity = function()
 /**
  * Zero
  * sets all matrix element to zero.
- * @extends mat4
  *
  */
 mat4.prototype.Zero = function()
@@ -172,7 +169,6 @@ mat4.prototype.Zero = function()
 /**
  * Translation
  * sets the matrix values to a translation matrix.
- * @extends mat4
  * 
  * 
  * @param {float} x sets the translation in x direction.
@@ -209,7 +205,6 @@ mat4.prototype.OverwriteTranslation = function(mat,x,y,z)
 /**
  * Scale
  * sets the matrix values to a translation matrix. 
- * @extends mat4
  * 
  * @param {float} x Sets the x scale factor.
  * @param {float} y Sets the y scale factor.
@@ -229,7 +224,6 @@ mat4.prototype.Scale = function(x,y,z)
 /**
  * RotationX
  * sets the matrix to a x-rotation matrix.
- * @extends mat4
  *
  * 
  * @param {float} angle the rotation angle in degrees.
@@ -248,7 +242,6 @@ mat4.prototype.RotationX = function(angle)
 /**
  * RotationY
  * sets the matrix to a y-rotation matrix.
- * @extends mat4
  *
  * 
  * @param {float} angle the rotation angle in degrees.
@@ -267,7 +260,6 @@ mat4.prototype.RotationY = function(angle)
 /**
  * RotationZ
  * sets the matrix to a z-rotation matrix.
- * @extends mat4
  * 
  * @param {float} angle the rotation angle in degrees.
  */ 
@@ -428,7 +420,6 @@ mat4.prototype.LookAt = function(eyex, eyey, eyez, centerx, centery, centerz, up
  * Multiply
  * overwrites the element values to the resulting elements of matA times matB.
  * Ensure that wheter matA nor matB is an instance of this mat4 object.
- * @extends mat4
  * 
  * @param {mat4} a 
  * @param {mat4} b 
@@ -473,7 +464,6 @@ mat4.prototype.Multiply = function(a,b)
 /**
  * Transpose
  * Transpose the matrix.
- * @extends mat4
  *
  * 
  */ 
@@ -495,7 +485,6 @@ mat4.prototype.Transpose = function()
  * MultiplyVec3
  * Multiply the matrix by a 3-element vector.
  * The vector is changed internally to a homogenous coordinate vector.
- * @extends mat4
  * 
  * @param{vec3} vec3 
  */ 
@@ -529,7 +518,6 @@ mat4.prototype.MultiplyVec3 = function(vec)
 /**
  * Frustum
  * Sets the matrix to a frustum matrix.
- * @extends mat4
  * 
  * @param{float} left
  * @param{float} right
@@ -556,7 +544,6 @@ mat4.prototype.Frustum = function(left, right, bottom, top, znear, zfar)
 /**
  * Perspective
  * sets the matrix to be a perspective matrix.
- * @extends mat4
  * 
  * @param{float} fovy
  * @param{float} aspect
@@ -590,7 +577,6 @@ mat4.prototype.Perspective = function(fovy, aspect, znear, zfar)
 /**
  * Ortho
  * sets the matrix to be a perspective matrix.
- * @extends mat4
  * 
  * @param{float} left
  * @param{float} right
@@ -629,7 +615,6 @@ mat4.prototype.Ortho = function(left, right, bottom, top, znear, zfar)
 /**
  * Ortho2D
  * sets the matrix to be a orthogonal 2D matrix.
- * @extends mat4
  * 
  * @param{float} left
  * @param{float} right
@@ -747,7 +732,6 @@ mat4.prototype.Inverse = function(M)
 //------------------------------------------------------------------------------
 /**
  * ToString
- * @extends mat4
  *
  * @return A string with all matrix elements.
  *

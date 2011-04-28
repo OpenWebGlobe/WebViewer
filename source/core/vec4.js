@@ -57,7 +57,6 @@ function vec4(typeparam)
 
 /**
  * Set Values
- * @extends vec3
  *
  * @param {float} r - red
  * @param {float} g - green
@@ -74,7 +73,6 @@ vec4.prototype.Set = function(r,g,b,a)
 
 /**
  * Get Values 
- * @extends vec3
  *
  * @return returns an array with all values [r,g,b,a]
  */
@@ -85,7 +83,6 @@ vec4.prototype.Get = function()
 
 /**
  * ToString
- * @extends vec3
  *
  * @return returns a string like: [1,0,1,1]
  */

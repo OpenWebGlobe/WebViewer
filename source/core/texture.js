@@ -87,7 +87,6 @@ function Texture(engine, useAsRenderTarget, framebufferWidth, framebufferHeight)
 //------------------------------------------------------------------------------
 /**
  * Loads the Texture image.
- * @extends texture
  * @param{string} url The url to download the image
  * @param callbackready An optional callback called when texture is ready. Has the texture class as param.
  * @param callbackfailed An optional callback called when texture failed. Has the texture class as param.
@@ -155,7 +154,6 @@ function _cbHandleLoadedTexture(gl, textureobject, cb, TextureClass)
 //------------------------------------------------------------------------------
 /**
  * Texture Binding, must be called before mesh.draw() called.
- * @extends texture
  *
  */
 Texture.prototype.Enable = function()
@@ -169,7 +167,6 @@ Texture.prototype.Enable = function()
 //------------------------------------------------------------------------------
 /**
  * Unbinds the texture
- * @extends texture
  *
  */
 Texture.prototype.Disable = function()
@@ -182,7 +179,6 @@ Texture.prototype.Disable = function()
 //------------------------------------------------------------------------------
 /**
  * Blit Texture: Draw texture on screen
- * @extends texture
  */
 Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend, invtexcoord)
 {   

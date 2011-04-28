@@ -58,7 +58,6 @@ function vec3(typeparam)
 //------------------------------------------------------------------------------
 /**
  * Set Values
- * @extends vec3
  *
  * @param {float} x 
  * @param {float} y 
@@ -74,7 +73,6 @@ vec3.prototype.Set = function(x,y,z)
 //------------------------------------------------------------------------------
 /**
  * Returns the values as array
- * @extends vec3
  *
  */
 vec3.prototype.Get = function()
@@ -85,7 +83,6 @@ vec3.prototype.Get = function()
 //------------------------------------------------------------------------------
 /**
  * @description Returns a copy of the vec3 object. (Allocates memory)
- * @extends vec3
  *
  */
 vec3.prototype.Copy = function()
@@ -108,7 +105,6 @@ vec3.prototype.Copy = function()
 //------------------------------------------------------------------------------
 /**
  * Adds the vector vec to this instance
- * @extends vec3
  * @param{vec3} vec
  */
 vec3.prototype.Add = function(vec)
@@ -125,7 +121,6 @@ vec3.prototype.Add = function(vec)
 //------------------------------------------------------------------------------
 /**
  * Subtracts the vector vec from this instance
- * @extends vec3
  * @param{vec3} vec
  */
 vec3.prototype.Sub = function(vec)
@@ -150,7 +145,6 @@ vec3.prototype.Subtract = function(vec1, vec2)
 //------------------------------------------------------------------------------
 /**
  * Calculates the cross product of this instance and the vector vec.
- * @extends vec3
  * @param{vec3} vec
  */
 vec3.prototype.Cross = function(vec)
@@ -196,7 +190,6 @@ function Cross(result, v1, v2)
 //------------------------------------------------------------------------------
 /**
  * Calculates the dot product.
- * @extends vec3
  * @param {vec3} vec
  */
 vec3.prototype.Dot = function(vec)
@@ -210,7 +203,6 @@ vec3.prototype.Dot = function(vec)
 //------------------------------------------------------------------------------
 /**
  * Calculates the length of the vector.
- * @extends vec3
  * @return length of the current vector instance. length=sqrt(x^2+y^2+z^2)
  */
 vec3.prototype.Length = function()
@@ -225,7 +217,6 @@ vec3.prototype.Length = function()
 //------------------------------------------------------------------------------
 /**
  * Calculates the squared length of the vector.
- * @extends vec3
  * @return squared length of the current vector instance. len=x^2+y^2+z^2
  */
 vec3.prototype.SquaredLength = function()
@@ -239,7 +230,6 @@ vec3.prototype.SquaredLength = function()
 //------------------------------------------------------------------------------
 /**
  * Normalizes this vector instance. Afterward the vector length will be 1.
- * @extends vec3
  * @return length of the current vector instance. length=sqrt(x^2+y^2+z^2)
  */
 vec3.prototype.Normalize = function()
@@ -257,7 +247,6 @@ vec3.prototype.Normalize = function()
 //------------------------------------------------------------------------------
 /**
  * Negates all elements.
- * @extends vec3
  */
 vec3.prototype.Neg = function()
 {
@@ -271,7 +260,6 @@ vec3.prototype.Neg = function()
 //------------------------------------------------------------------------------
 /**
  * 
- * @extends vec3
  * @return a string like: "[1,2,3]";
  */
 vec3.prototype.ToString = function()
