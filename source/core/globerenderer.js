@@ -54,6 +54,7 @@ function GlobeRenderer(engine)
    
    // current view frustum (for view frustum culling)
    this.frustum = new ViewFrustum();
+   this.vDir = new Array(3);
 }
 
 //------------------------------------------------------------------------------
@@ -281,8 +282,22 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
    // frustum culling
    bVisible = this.frustum.TestBox(tb.mesh.bbmin[0],tb.mesh.bbmin[1],tb.mesh.bbmin[2],
                                    tb.mesh.bbmax[0],tb.mesh.bbmax[1],tb.mesh.bbmax[2]);                         
-   // Test if tile is really visible (this is somewhat an "ellipsoidal backfaceculling")                             
+   // Test if tile is visible (this is somewhat an "ellipsoidal backfaceculling")                             
    //bVisible = bVisible && this._SurfaceNormalTest(tb);
+   
+   var center = tb.vTilePoints[4].Get();
+   var normal = tb._vNormal.Get();
+   var campos = this.cameraposition.Get();
+   this.vDir[0] = campos[0] - center[0];
+   this.vDir[1] = campos[1] - center[1];
+   this.vDir[2] = campos[2] - center[2];
+   var mag = Math.sqrt(this.vDir[0]*this.vDir[0]+this.vDir[1]*this.vDir[1]+this.vDir[2]*this.vDir[2]);
+   var d = (this.vDir[0] * normal[0] + this.vDir[1] * normal[1] + this.vDir[2] * normal[2])/mag;  
+
+   if (d<0)
+   {
+      vVisible = false;
+   }
    
    if (!bVisible)
    {
@@ -302,7 +317,29 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
 
 GlobeRenderer.prototype._Optimize = function()
 {
+   var i=0;
+   while (i<this.lstFrustum.length)
+   {
+      var tb = this.lstFrustum[i];
    
+      var center = tb.vTilePoints[4].Get();
+      var normal = tb._vNormal.Get();
+      var campos = this.cameraposition.Get();
+      this.vDir[0] = campos[0] - center[0];
+      this.vDir[1] = campos[1] - center[1];
+      this.vDir[2] = campos[2] - center[2];
+      var mag = Math.sqrt(this.vDir[0]*this.vDir[0]+this.vDir[1]*this.vDir[1]+this.vDir[2]*this.vDir[2]);
+      var d = (this.vDir[0] * normal[0] + this.vDir[1] * normal[1] + this.vDir[2] * normal[2])/mag;  
+   
+      if (d<-0.9)
+      {
+         this.lstFrustum.splice(i, 1);  
+      }
+      else
+      {
+         i++;
+      }
+   }
 }
 //------------------------------------------------------------------------------
 /**
