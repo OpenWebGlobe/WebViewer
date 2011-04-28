@@ -58,10 +58,10 @@ function vec4(typeparam)
 /**
  * Set Values
  *
- * @param {float} r - red
- * @param {float} g - green
- * @param {float} b - blue
- * @param {float} a - alpha
+ * @param {number} r - red
+ * @param {number} g - green
+ * @param {number} b - blue
+ * @param {number} a - alpha
  */
 vec4.prototype.Set = function(r,g,b,a)
 {

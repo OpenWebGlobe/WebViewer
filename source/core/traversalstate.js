@@ -171,7 +171,7 @@ TraversalState.prototype.OverwriteViewMatrix = function(matrix)
 //------------------------------------------------------------------------------
 /**
  * @description Set direction for the compass
- * @param {double} compdir the direction of the compass (RAD)
+ * @param {number} compdir the direction of the compass (RAD)
  */
 TraversalState.prototype.SetCompassDirection = function(compdir)
 {
@@ -180,9 +180,9 @@ TraversalState.prototype.SetCompassDirection = function(compdir)
 //------------------------------------------------------------------------------
 /**
  * @description Set current position
- * @param {double} x x-component of current camera position
- * @param {double} y y-component of current camera position
- * @param {double} z z-component of current camera position
+ * @param {number} x x-component of current camera position
+ * @param {number} y y-component of current camera position
+ * @param {number} z z-component of current camera position
  */
 TraversalState.prototype.SetPosition = function(x,y,z)
 {

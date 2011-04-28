@@ -408,10 +408,10 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
 //------------------------------------------------------------------------------
 /**
  * @description Sets the clear color
- * @param{float} r red component, range [0,1]
- * @param{float} g green component, range [0,1]
- * @param{float} b blue component, range [0,1]
- * @param{float} a alpha component, range [0,1]
+ * @param {number} r red component, range [0,1]
+ * @param {number} g green component, range [0,1]
+ * @param {number} b blue component, range [0,1]
+ * @param {number} a alpha component, range [0,1]
  */
 engine3d.prototype.SetClearColor = function(r,g,b,a)
 {

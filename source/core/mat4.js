@@ -171,9 +171,9 @@ mat4.prototype.Zero = function()
  * sets the matrix values to a translation matrix.
  * 
  * 
- * @param {float} x sets the translation in x direction.
- * @param {float} y sets the translation in y direction.
- * @param {float} z sets the translation in z direction.
+ * @param {number} x sets the translation in x direction.
+ * @param {number} y sets the translation in y direction.
+ * @param {number} z sets the translation in z direction.
  */
 mat4.prototype.Translation = function(x,y,z)
 {     
@@ -206,9 +206,9 @@ mat4.prototype.OverwriteTranslation = function(mat,x,y,z)
  * Scale
  * sets the matrix values to a translation matrix. 
  * 
- * @param {float} x Sets the x scale factor.
- * @param {float} y Sets the y scale factor.
- * @param {float} z Sets the z scale factor.
+ * @param {number} x Sets the x scale factor.
+ * @param {number} y Sets the y scale factor.
+ * @param {number} z Sets the z scale factor.
  */
 mat4.prototype.Scale = function(x,y,z)
 {
@@ -226,7 +226,7 @@ mat4.prototype.Scale = function(x,y,z)
  * sets the matrix to a x-rotation matrix.
  *
  * 
- * @param {float} angle the rotation angle in degrees.
+ * @param {number} angle the rotation angle in degrees.
  */
 mat4.prototype.RotationX = function(angle)
 {
@@ -244,7 +244,7 @@ mat4.prototype.RotationX = function(angle)
  * sets the matrix to a y-rotation matrix.
  *
  * 
- * @param {float} angle the rotation angle in degrees.
+ * @param {number} angle the rotation angle in degrees.
  */ 
 mat4.prototype.RotationY = function(angle)
 {
@@ -261,7 +261,7 @@ mat4.prototype.RotationY = function(angle)
  * RotationZ
  * sets the matrix to a z-rotation matrix.
  * 
- * @param {float} angle the rotation angle in degrees.
+ * @param {number} angle the rotation angle in degrees.
  */ 
 mat4.prototype.RotationZ = function(angle)
 {   
@@ -278,15 +278,15 @@ mat4.prototype.RotationZ = function(angle)
 /**
  * Creates a LookAt matrix
  * 
- * @param{float} eyex x-coordinate of eye
- * @param{float} eyey y-coordinate of eye
- * @param{float} eyez z-coordinate of eye
- * @param{float} centerx x-coordinate of position to look at
- * @param{float} centery y-coordinate of position to look at
- * @param{float} centerz z-coordinate of position to look at
- * @param{float} upx x-coordinate of up-vector
- * @param{float} upy y-coordinate of up-vector
- * @param{float} upz z-coordinate of up-vector
+ * @param {number} eyex x-coordinate of eye
+ * @param {number} eyey y-coordinate of eye
+ * @param {number} eyez z-coordinate of eye
+ * @param {number} centerx x-coordinate of position to look at
+ * @param {number} centery y-coordinate of position to look at
+ * @param {number} centerz z-coordinate of position to look at
+ * @param {number} upx x-coordinate of up-vector
+ * @param {number} upy y-coordinate of up-vector
+ * @param {number} upz z-coordinate of up-vector
  */ 
 mat4.prototype.LookAt = function(eyex, eyey, eyez, centerx, centery, centerz, upx, upy, upz)
 {
@@ -519,12 +519,12 @@ mat4.prototype.MultiplyVec3 = function(vec)
  * Frustum
  * Sets the matrix to a frustum matrix.
  * 
- * @param{float} left
- * @param{float} right
- * @param{float} bottom
- * @param{float} top
- * @param{float} znear
- * @param{float} zfar
+ * @param {number} left
+ * @param {number} right
+ * @param {number} bottom
+ * @param {number} top
+ * @param {number} znear
+ * @param {number} zfar
  * 
  */
 mat4.prototype.Frustum = function(left, right, bottom, top, znear, zfar)
@@ -545,10 +545,10 @@ mat4.prototype.Frustum = function(left, right, bottom, top, znear, zfar)
  * Perspective
  * sets the matrix to be a perspective matrix.
  * 
- * @param{float} fovy
- * @param{float} aspect
- * @param{float} znear
- * @param{float} zfar
+ * @param {number} fovy
+ * @param {number} aspect
+ * @param {number} znear
+ * @param {number} zfar
  * 
  */
 mat4.prototype.Perspective = function(fovy, aspect, znear, zfar)
@@ -578,12 +578,12 @@ mat4.prototype.Perspective = function(fovy, aspect, znear, zfar)
  * Ortho
  * sets the matrix to be a perspective matrix.
  * 
- * @param{float} left
- * @param{float} right
- * @param{float} bottom
- * @param{float} top
- * @param{float} znear
- * @param{float} zfar
+ * @param {number} left
+ * @param {number} right
+ * @param {number} bottom
+ * @param {number} top
+ * @param {number} znear
+ * @param {number} zfar
  */
 mat4.prototype.Ortho = function(left, right, bottom, top, znear, zfar)
 {   
@@ -616,10 +616,10 @@ mat4.prototype.Ortho = function(left, right, bottom, top, znear, zfar)
  * Ortho2D
  * sets the matrix to be a orthogonal 2D matrix.
  * 
- * @param{float} left
- * @param{float} right
- * @param{float} bottom
- * @param{float} top
+ * @param {number} left
+ * @param {number} right
+ * @param {number} bottom
+ * @param {number} top
  */
 mat4.prototype.Ortho2D = function(left, right, bottom, top) 
 {

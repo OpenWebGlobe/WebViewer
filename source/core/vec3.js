@@ -59,9 +59,9 @@ function vec3(typeparam)
 /**
  * Set Values
  *
- * @param {float} x 
- * @param {float} y 
- * @param {float} z
+ * @param {number} x 
+ * @param {number} y 
+ * @param {number} z
  */
 vec3.prototype.Set = function(x,y,z)
 {

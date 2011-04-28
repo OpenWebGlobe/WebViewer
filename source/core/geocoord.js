@@ -101,9 +101,9 @@ GeoCoord.prototype.GetElevation = function()
 //------------------------------------------------------------------------------
 /**
  * @description transforms the cartesian x,y,z coordinates to wgs84 coordinates and stores them internally.
- * @param{float} x the cartesian x coordinate.
- * @param{float} y the cartesian y coordinate.
- * @param{float} z the cartesian z coordinate.
+ * @param {number} x the cartesian x coordinate.
+ * @param {number} y the cartesian y coordinate.
+ * @param {number} z the cartesian z coordinate.
  */
  GeoCoord.prototype.FromCartesian = function(x,y,z)
  {
