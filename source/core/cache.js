@@ -294,7 +294,7 @@ Cache.prototype.addItem_ = function(item)
 //------------------------------------------------------------------------------
 /**
  * Remove an item from the cache, call the callback function (if it exists).
- * @param {String} key The key of the item to remove
+ * @param {string} key The key of the item to remove
  * @private
  */
 Cache.prototype.removeItem_ = function(key) 

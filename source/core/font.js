@@ -103,8 +103,7 @@ Font.prototype.DrawText = function(text,x,y,scale,fontcolor)
 //------------------------------------------------------------------------------
 /**
  * @description gets the length of text in pixel
- * @param {number} x x position of text
- * @param {number} y y position of text
+ * @param {string} text
  * @return length in pixel
  */
 Font.prototype.GetStringWidth = function(text)

@@ -320,8 +320,8 @@ function engine3d()
 //------------------------------------------------------------------------------
 /**
  * @description Initialize Engine 
- * @param{String} canvasid The id of the webgl canvas
- * @param{Bool} bFullscreen True if the canvas should autofit the browser window
+ * @param {string} canvasid The id of the webgl canvas
+ * @param {boolean} bFullscreen True if the canvas should autofit the browser window
  */
 engine3d.prototype.InitEngine = function(canvasid, bFullscreen) 
 { 
@@ -513,8 +513,8 @@ engine3d.prototype._UpdateMatrices = function()
 //------------------------------------------------------------------------------
 /**
  * @description Load Texture from url (async)
- * @param{string} url The URL to the texture
- * @return{texture} the texture
+ * @param {string} url The URL to the texture
+ * @return {Texture} the texture
  */
 engine3d.prototype.LoadTexture = function(url)
 {

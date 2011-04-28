@@ -221,8 +221,8 @@ Mesh.prototype.SetBufferFont= function(fontdata)
 //------------------------------------------------------------------------------
 /**
  * @description Specify a an index buffer with the specified index semantic
- * @param{float32Array} idx indices array.
- * @param{string} idxsem supports "TRIANGLES","POINTS" or "LINES".
+ * @param {Array} idx indices array.
+ * @param {string} idxsem supports "TRIANGLES","POINTS" or "LINES".
  */
 Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
 {
@@ -248,7 +248,7 @@ Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
 //------------------------------------------------------------------------------
 /**
  * @description Set Texture for this mesh
- * @param{texture} tex This is the texture to set.
+ * @param {Texture} tex This is the texture to set.
  */
 Mesh.prototype.SetTexture = function(tex)
 {

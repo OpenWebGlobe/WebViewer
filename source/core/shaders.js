@@ -39,7 +39,7 @@ goog.provide('owg.ShaderManager');
 /**
  * Create a new ShaderManager
  * @class ShaderManager
- * @param {gl_context}  the webGL context.
+ * @param {WebGLRenderingContext} gl the webGL context.
  * 
  * @author Martin Christen martin.christen@fhnw.ch 
  * @constructor
@@ -83,7 +83,7 @@ function ShaderManager(gl)
 
 /**
  *  
- * @param {mat4} mvp-matrix 
+ * @param {mat4} modelviewprojection
  * @param {vec4} color
  */
 ShaderManager.prototype.UseShader_P = function(modelviewprojection,color)
@@ -98,7 +98,7 @@ ShaderManager.prototype.UseShader_P = function(modelviewprojection,color)
 
 /**
  *  
- * @param {mat4} mvp-matrix 
+ * @param {mat4} modelviewprojection
  */
 ShaderManager.prototype.UseShader_PNT = function(modelviewprojection)
 {
@@ -112,7 +112,7 @@ ShaderManager.prototype.UseShader_PNT = function(modelviewprojection)
 
 /**
  *  
- * @param {mat4} mvp-matrix 
+ * @param {mat4} modelviewprojection
  */
 ShaderManager.prototype.UseShader_PC = function(modelviewprojection)
 {
@@ -125,7 +125,7 @@ ShaderManager.prototype.UseShader_PC = function(modelviewprojection)
 
 /**
  *  
- * @param {mat4} mvp-matrix 
+ * @param {mat4} modelviewprojection
  */
 ShaderManager.prototype.UseShader_PT = function(modelviewprojection)
 {
@@ -139,7 +139,7 @@ ShaderManager.prototype.UseShader_PT = function(modelviewprojection)
 
 /**
  *  
- * @param {mat4} mvp-matrix 
+ * @param {mat4} modelviewprojection
  */
 ShaderManager.prototype.UseShader_PNCT = function(modelviewprojection)
 {
@@ -152,7 +152,7 @@ ShaderManager.prototype.UseShader_PNCT = function(modelviewprojection)
 
 /**
  *  
- * @param {mat4} mvp-matrix 
+ * @param {mat4} modelviewprojection
  */
 ShaderManager.prototype.UseShader_Font = function(modelviewprojection, fontcolor)
 {

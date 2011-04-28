@@ -486,7 +486,7 @@ mat4.prototype.Transpose = function()
  * Multiply the matrix by a 3-element vector.
  * The vector is changed internally to a homogenous coordinate vector.
  * 
- * @param{vec3} vec3 
+ * @param {vec3} vec
  */ 
 mat4.prototype.MultiplyVec3 = function(vec)
 {
