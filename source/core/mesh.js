@@ -23,6 +23,7 @@
 
 goog.provide('owg.Mesh');
 
+goog.require('goog.json');
 goog.require('owg.AABB');
 goog.require('owg.TriangleIntersector');
 goog.require('owg.mat4');
@@ -465,7 +466,7 @@ function _cbfjsondownload(mesh)
       else
       {
          var data=mesh.http.responseText;      
-         var jsonobject=JSON.parse(data);
+         var jsonobject=goog.json.parse(data);
          
          if (jsonobject.BoundingBox)
          {
