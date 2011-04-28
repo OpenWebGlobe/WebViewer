@@ -280,33 +280,6 @@ vec3.prototype.ToString = function()
 }
 
 //------------------------------------------------------------------------------
-/**
- * Internal test function. Tests for all functions.
- * Plots the results using console.log.
- * @extends vec3
- * @param vec the vector for testing adding or subtracting methods.
- */
-vec3.prototype.Test=function(vec)
-{
-   if(vec instanceof vec3 && vec._values.length == 3)
-   {
-      console.log(this.ToString()+".Copy() = "+this.Copy().ToString()); 
-      console.log(this.ToString()+".Add("+vec.ToString()+") = "+this.Add(vec).ToString());
-      console.log(this.ToString()+".Sub("+vec.ToString()+") = "+this.Sub(vec).ToString());
-      console.log(this.ToString()+".Dot("+vec.ToString()+") = "+this.Dot(vec));
-      console.log(this.ToString()+".Cross("+vec.ToString()+") = "+this.Cross(vec).ToString());
-      console.log(this.ToString()+".Length("+vec.ToString()+") = "+this.Length(vec));
-      console.log(this.ToString()+".Neg"+vec.ToString()+") = "+this.Neg(vec).ToString());
-      console.log(this.ToString()+".Normalize = "+this.Normalize().ToString());
-    }
-    else
-    {
-       console.log("error: wrong datatype");
-    }
-}
-
-//------------------------------------------------------------------------------
 
 goog.exportSymbol('vec3', vec3);
 goog.exportSymbol('vec3.Set', vec3.Set);
-goog.exportSymbol('vec3.Test', vec3.Test);
