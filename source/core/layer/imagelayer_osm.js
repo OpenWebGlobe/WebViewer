@@ -27,7 +27,7 @@
  * @description Image Layer for OpenStretMap Tile Service
  * @author Martin Christen, martin.christen@fhnw.ch
  */
-function ImageLayeri3d()
+function ImageLayerOSM()
 {
    //---------------------------------------------------------------------------
    this.Ready = function()
@@ -64,5 +64,5 @@ function ImageLayeri3d()
    //---------------------------------------------------------------------------
 }
 
-ImageLayeri3d.prototype = new ImageLayer();
+ImageLayerOSM.prototype = new ImageLayer();
 
