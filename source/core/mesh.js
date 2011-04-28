@@ -724,7 +724,67 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
    
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Updates the bounding box of the mesh
+ * (Warning: currently ignoring mesh model matrix)
+ */
+Mesh.prototype.UpdateAABB = function()
+{
+   var minx = 1e20;
+   var miny = 1e20;
+   var minz = 1e20;
+   var maxx = -1e20;
+   var maxy = -1e20;
+   var maxz = -1e20;
+   var vx,vy,vz;
+   
+   // 
+   for (var i=0;i<this.vertexbufferdata.length;i++)
+   {
+      vx = this.vertexbufferdata[i*this.vertexLength];
+      vy = this.vertexbufferdata[i*this.vertexLength+1];
+      vz = this.vertexbufferdata[i*this.vertexLength+2];
+   
+      if (vx>maxx) { maxx = vx;}
+      if (vy>maxy) { maxx = vy;}
+      if (vz>maxz) { maxx = vz;}
+      if (vx<minx) { minx = vx;}
+      if (vy<miny) { miny = vy;}
+      if (vz<minz) { minz = vz;}
+   }
+   
+   // if this node has a high precision virtual camera offset, add it to the vertices.
+   if (this.offset)
+   {
+      minx += this.offset[0];
+      miny += this.offset[1];
+      minz += this.offset[2];
+      maxx += this.offset[0];
+      maxy += this.offset[1];
+      maxz += this.offset[2];
+   } 
+   
+   if (this.bbmin == null) // no bounding box yet ?
+   {
+      this.bbmin = new Array(3);
+   }
+   if (this.bbmax == null)
+   {
+      this.bbmax = new Array(3);
+   }
+   
+   this.bbmin[0] = minx;
+   this.bbmin[1] = miny;
+   this.bbmin[2] = minz;
+   this.bbmax[0] = minx;
+   this.bbmax[1] = miny;
+   this.bbmax[2] = minz;
+   
+}
 
+
+//------------------------------------------------------------------------------
 /**
  * @description   Test for ray bounding box intersection
  * @param x x ray startpoint x coordinate
@@ -740,8 +800,7 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
   
    //not tested...yet !!!!        
    if(this.modelMatrix)
-   {
-               
+   {       
       var invModelMatrix = new mat4();
       invModelMatrix.Inverse(this.modelMatrix); 
               

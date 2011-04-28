@@ -476,6 +476,7 @@ TerrainBlock.prototype._CreateElevationMesh = function()
    this.mesh.SetBufferPT(interleavedbuffer);
    this.mesh.SetIndexBuffer(indexbuffer, "TRIANGLESTRIP");
    this.mesh.SetTexture(this.texture);
+   this.mesh.UpdateAABB();
 }
 
 //------------------------------------------------------------------------------
