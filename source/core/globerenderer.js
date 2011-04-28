@@ -274,9 +274,8 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
    // frustum culling
    bVisible = this.frustum.TestBox(tb.mesh.bbmin[0],tb.mesh.bbmin[1],tb.mesh.bbmin[2],
                                    tb.mesh.bbmax[0],tb.mesh.bbmax[1],tb.mesh.bbmax[2]);                         
-   // Test if tile is visible (this is somewhat an "ellipsoidal backfaceculling")                             
-   //bVisible = bVisible && this._SurfaceNormalTest(tb);
-   
+   // Test if tile is visible (this is somewhat an "ellipsoidal backfaceculling")     
+                              
    var center = tb.vTilePoints[4].Get();
    var normal = tb._vNormal.Get();
    var campos = this.cameraposition.Get();
@@ -286,9 +285,9 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
    var mag = Math.sqrt(this.vDir[0]*this.vDir[0]+this.vDir[1]*this.vDir[1]+this.vDir[2]*this.vDir[2]);
    var d = (this.vDir[0] * normal[0] + this.vDir[1] * normal[1] + this.vDir[2] * normal[2])/mag;  
 
-   if (d<0)
+   if (d<-0.9)
    {
-      vVisible = false;
+      bVisible = false;
    }
    
    if (!bVisible)
