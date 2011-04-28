@@ -87,7 +87,7 @@ TerrainBlock.prototype.MergeImages = function()
          // This case shoudln't ever happen, but maybe a tile is corrupted on the server
          // or a dataset is being moved, or whatever! 
          this.texture = this.engine.nodata; // use empty texture
-         if (this.mesh == null)
+         if (goog.isNull(this.mesh))
          {  
             this._CreateElevationMesh(); // create empty elevation
          }
@@ -100,7 +100,7 @@ TerrainBlock.prototype.MergeImages = function()
       {
          // Case 2: Only one image layer is available for this Terrainblock. just take that one. 
          this.texture = this.images[thelayer];
-         if (this.mesh == null)
+         if (goog.isNull(this.mesh))
          {  
             this._CreateElevationMesh(); // create empty elevation
          }
@@ -115,7 +115,7 @@ TerrainBlock.prototype.MergeImages = function()
          // It is not possible to merge images, this must be done during render loop
          // so the "PostCreation" flag is set for the render loop. 
          this.bPostCreation = true;
-         if (this.mesh == null)
+         if (goog.isNull(this.mesh))
          {  
             this._CreateElevationMesh();  // create empty elevation
          }

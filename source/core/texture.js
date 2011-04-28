@@ -223,7 +223,7 @@ Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend, invtexcoord)
       this.engine.SetModelMatrix(model);
       
 
-      if (this.blitMesh == null)
+      if (goog.isNull(this.blitMesh))
       {
          this.blitMesh = new Mesh(this.engine);
 

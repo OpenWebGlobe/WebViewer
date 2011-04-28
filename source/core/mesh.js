@@ -780,11 +780,11 @@ Mesh.prototype.UpdateAABB = function()
       maxz += this.offset[2];
    } 
    
-   if (this.bbmin == null) // no bounding box yet ?
+   if (goog.isNull(this.bbmin)) // no bounding box yet ?
    {
       this.bbmin = new Array(3);
    }
-   if (this.bbmax == null)
+   if (goog.isNull(this.bbmax))
    {
       this.bbmax = new Array(3);
    }
