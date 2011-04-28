@@ -120,12 +120,22 @@ Cache.prototype.getItem = function(key)
   return returnVal;
 };
 
+/**
+ * @typedef {{
+ *     expirationAbsolute: Date,
+ *     expirationSliding: number,
+ *     priority: CachePriority,
+ *     callback: function(string, Object)
+ * }}
+ */
+var CacheSetItemOptions;
+
 //------------------------------------------------------------------------------
 /**
  * Sets an item in the cache.
  * @param {string} key The key to refer to the item.
  * @param {Object} value The item to cache.
- * @param {Object=} opt_options an optional object which controls various caching
+ * @param {CacheSetItemOptions=} opt_options an optional object which controls various caching
  *    options:
  *      expirationAbsolute: the datetime when the item should expire
  *      expirationSliding: an integer representing the seconds since
