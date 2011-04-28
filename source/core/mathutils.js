@@ -67,7 +67,6 @@ var CARTESIAN_SCALE = 8388607.0;
 var LNG_RAD0 = 0;   
 //------------------------------------------------------------------------------
 /**
- * @constructor
  * @namespace This namespace contains math utility functions.
  * @author Martin Christen, martin.christen@fhnw.ch
  * @author Benjamin Loesch, benjamin.loesch@fhnw.ch

@@ -26,6 +26,7 @@ goog.provide('owg.MercatorQuadtree');
 //------------------------------------------------------------------------------
 /** 
  * @class MercatorQuadtree
+ * @constructor
  * @author Martin Christen martin.christen@fhnw.ch
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch 
  */

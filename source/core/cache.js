@@ -144,6 +144,7 @@ Cache.prototype.getItem = function(key)
 Cache.prototype.setItem = function(key, value, options) 
 {
 
+  /** @constructor */
   function CacheItem(k, v, o) 
   {
     if ((k == null) || (k == '')) 
