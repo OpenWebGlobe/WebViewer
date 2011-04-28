@@ -41,8 +41,7 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.OnRender = function()
       {
-         //this.cube.Draw();
-         this.globerenderer.Render(this.camera);
+         this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
       }
       
       //------------------------------------------------------------------------
@@ -50,7 +49,6 @@ function RenderObjectNode()
       {
           var pos = ts.GetPosition();
           this.camera.Set(pos.x, pos.y, pos.z);
-          
       }
       
       //------------------------------------------------------------------------

@@ -301,7 +301,7 @@ function engine3d()
    
    // an empty texture for "failed" downloads
    this.nodata = null;
-   
+      
 }
 
 //------------------------------------------------------------------------------

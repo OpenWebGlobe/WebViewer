@@ -23,6 +23,19 @@
 
 //------------------------------------------------------------------------------
 /** 
+ * @constructor
+ * @description Struct to save corner coordinates
+ * @ignore
+ */
+function corner()
+{
+   this.x = 0;
+   this.y = 0;
+   this.z = 0;
+}
+
+//------------------------------------------------------------------------------
+/** 
  * @description ViewFrustum: Class for test if a Box is inside or outside the view frustum. 
  * @constructor
  * @param mvpMatrix the model-view-projection matrix
@@ -35,9 +48,17 @@ function ViewFrustum(mvpMatrix)
    this.frustumPlanes[2] = new plane3();
    this.frustumPlanes[3] = new plane3();
    this.frustumPlanes[4] = new plane3();
-   this.frustumPlanes[5] = new plane3();
-
-   this.Update(mvpMatrix);  
+   this.frustumPlanes[5] = new plane3();  
+   
+   this.corners = new Array(8);
+   this.corners[0] = new corner();
+   this.corners[1] = new corner();
+   this.corners[2] = new corner();
+   this.corners[3] = new corner();
+   this.corners[4] = new corner();
+   this.corners[5] = new corner();
+   this.corners[6] = new corner();
+   this.corners[7] = new corner();
 }
 
 /** 
@@ -45,24 +66,41 @@ function ViewFrustum(mvpMatrix)
  * @description Struct to save plane data.
  * @ignore
  */
-function plane3(){
+function plane3()
+{
    this.D = 0;
    this.nx = 0;
    this.ny = 0;
    this.nz = 0;
 }
 
+
+//------------------------------------------------------------------------------
 /** 
- * @constructor
- * @description Struct to save corner coordinates
+ * @description Normalize plane
  * @ignore
  */
-function corner(){
-   this.x = 0;
-   this.y = 0;
-   this.z = 0;
+plane3.prototype.Normalize = function() 
+{
+      var mag = Math.sqrt(this.nx*this.nx+this.ny*this.ny+this.nz*this.nz);
+      this.nx /= mag;
+      this.ny /= mag;
+      this.nz /= mag;
+      this.D /= mag;
 }
 
+/** 
+ * @description determine side of point (px,py,pz) (half space)
+ * @ignore
+ */
+function SideOfPlane(plane, px, py, pz)
+{
+   var res = plane.nx * px + 
+             plane.ny * py + 
+             plane.nz * pz + plane.D;
+   
+   return res;          
+}
 
 //------------------------------------------------------------------------------
 /** 
@@ -76,36 +114,24 @@ function corner(){
  */
 ViewFrustum.prototype.TestBox = function(min_x, min_y, min_z, max_x, max_y, max_z)
 {
-  
   var nTotalIn = 0;
   
-  var corners = new Array(8);
+  this.corners[0].x = min_x; this.corners[0].y = min_y; this.corners[0].z = min_z;
+  this.corners[1].x = max_x; this.corners[1].y = min_y; this.corners[1].z = min_z;
+  this.corners[2].x = max_x; this.corners[2].y = max_y; this.corners[2].z = min_z;
+  this.corners[3].x = min_x; this.corners[3].y = max_y; this.corners[3].z = min_z;
+  this.corners[4].x = min_x; this.corners[4].y = min_y; this.corners[4].z = max_z;
+  this.corners[5].x = min_x; this.corners[5].y = max_y; this.corners[5].z = max_z;
+  this.corners[6].x = max_x; this.corners[6].y = max_y; this.corners[6].z = max_z;
+  this.corners[7].x = max_x; this.corners[7].y = min_y; this.corners[7].z = max_z;
   
-  corners[0] = new corner();
-  corners[0].x = min_x; corners[0].y = min_y; corners[0].z = min_z;
-  corners[1] = new corner();
-  corners[1].x = max_x; corners[1].y = min_y; corners[1].z = min_z;
-  corners[2] = new corner();
-  corners[2].x = max_x; corners[2].y = max_y; corners[2].z = min_z;
-  corners[3] = new corner();
-  corners[3].x = min_x; corners[3].y = max_y; corners[3].z = min_z;
-  corners[4] = new corner();
-  corners[4].x = min_x; corners[4].y = min_y; corners[4].z = max_z;
-  corners[5] = new corner();
-  corners[5].x = min_x; corners[5].y = max_y; corners[5].z = max_z;
-  corners[6] = new corner();
-  corners[6].x = max_x; corners[6].y = max_y; corners[6].z = max_z;
-  corners[7] = new corner();
-  corners[7].x = max_x; corners[7].y = min_y; corners[7].z = max_z;
-  
-  for(var i=0; i<6; i++)
+  for(var p=0; p<6; p++)
   {    
      var inCount = 8;
-     for(var j=0; j<8; j++)
+     for(var i=0; i<8; i++)
      {  
         //test for every point and plane combination
-        //dot(corner,plane_normal)+plane.d
-        var sign = ((this.frustumPlanes[i].nx * corners[j].x + this.frustumPlanes[i].ny * corners[j].y + this.frustumPlanes[i].nz * corners[j].z) + this.frustumPlanes[i].D);
+        var sign = SideOfPlane(this.frustumPlanes[p], this.corners[i].x, this.corners[i].y, this.corners[i].z);
         if( sign < 0)
         {
            --inCount;
@@ -130,22 +156,10 @@ ViewFrustum.prototype.TestBox = function(min_x, min_y, min_z, max_x, max_y, max_
    this.mvp = mvpMatrix;
    this.mvpVals = mvpMatrix.Get();
    
-   this.mvpval_11 = this.mvpVals[0]; 
-   this.mvpval_12 = this.mvpVals[1];
-   this.mvpval_13 = this.mvpVals[2];
-   this.mvpval_14 = this.mvpVals[3];
-   this.mvpval_21 = this.mvpVals[4];
-   this.mvpval_22 = this.mvpVals[5];
-   this.mvpval_23 = this.mvpVals[6];
-   this.mvpval_24 = this.mvpVals[7];
-   this.mvpval_31 = this.mvpVals[8];
-   this.mvpval_32 = this.mvpVals[9];
-   this.mvpval_33 = this.mvpVals[10];
-   this.mvpval_34 = this.mvpVals[11];
-   this.mvpval_41 = this.mvpVals[12];
-   this.mvpval_42 = this.mvpVals[13];
-   this.mvpval_43 = this.mvpVals[14];
-   this.mvpval_44 = this.mvpVals[15];
+   this.mvpval_11 = this.mvpVals[0]; this.mvpval_21 = this.mvpVals[1]; this.mvpval_31 = this.mvpVals[2];  this.mvpval_41 = this.mvpVals[3];
+   this.mvpval_12 = this.mvpVals[4]; this.mvpval_22 = this.mvpVals[5]; this.mvpval_32 = this.mvpVals[6];  this.mvpval_42 = this.mvpVals[7];
+   this.mvpval_13 = this.mvpVals[8]; this.mvpval_23 = this.mvpVals[9]; this.mvpval_33 = this.mvpVals[10]; this.mvpval_43 = this.mvpVals[11];
+   this.mvpval_14 = this.mvpVals[12]; this.mvpval_24 = this.mvpVals[13]; this.mvpval_34 = this.mvpVals[14]; this.mvpval_44 = this.mvpVals[15];
    
    this.UpdateFrustumPlanes();
  }
@@ -163,12 +177,14 @@ ViewFrustum.prototype.UpdateFrustumPlanes = function()
    this.frustumPlanes[0].ny = this.mvpval_42 + this.mvpval_12;
    this.frustumPlanes[0].nz = this.mvpval_43 + this.mvpval_13;
    this.frustumPlanes[0].D  = this.mvpval_44 + this.mvpval_14;
+   this.frustumPlanes[0].Normalize();
    
    //Right clipping plane
    this.frustumPlanes[1].nx = this.mvpval_41 - this.mvpval_11; 
    this.frustumPlanes[1].ny = this.mvpval_42 - this.mvpval_12;
    this.frustumPlanes[1].nz = this.mvpval_43 - this.mvpval_13;
    this.frustumPlanes[1].D  = this.mvpval_44 - this.mvpval_14;
+   this.frustumPlanes[1].Normalize();
    
    
    //Top clipping Plane
@@ -176,25 +192,28 @@ ViewFrustum.prototype.UpdateFrustumPlanes = function()
    this.frustumPlanes[2].ny = this.mvpval_42 - this.mvpval_22;
    this.frustumPlanes[2].nz = this.mvpval_43 - this.mvpval_23;
    this.frustumPlanes[2].D  = this.mvpval_44 - this.mvpval_24;
+   this.frustumPlanes[2].Normalize();
    
    //Bottom
    this.frustumPlanes[3].nx = this.mvpval_41 + this.mvpval_21; 
    this.frustumPlanes[3].ny = this.mvpval_42 + this.mvpval_22;
    this.frustumPlanes[3].nz = this.mvpval_43 + this.mvpval_23;
    this.frustumPlanes[3].D  = this.mvpval_44 + this.mvpval_24;
+   this.frustumPlanes[3].Normalize();
    
    //near
    this.frustumPlanes[4].nx = this.mvpval_41 + this.mvpval_31; 
    this.frustumPlanes[4].ny = this.mvpval_42 + this.mvpval_32;
    this.frustumPlanes[4].nz = this.mvpval_43 + this.mvpval_33;
    this.frustumPlanes[4].D  = this.mvpval_44 + this.mvpval_34;
+   this.frustumPlanes[4].Normalize();
    
    //far
    this.frustumPlanes[5].nx = this.mvpval_41 - this.mvpval_31; 
    this.frustumPlanes[5].ny = this.mvpval_42 - this.mvpval_32;
    this.frustumPlanes[5].nz = this.mvpval_43 - this.mvpval_33;
    this.frustumPlanes[5].D  = this.mvpval_44 - this.mvpval_34;
-   
-   
+   this.frustumPlanes[5].Normalize();
+  
 }
 

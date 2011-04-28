@@ -747,8 +747,8 @@ Mesh.prototype.UpdateAABB = function()
       vz = this.vertexbufferdata[i*this.vertexLength+2];
    
       if (vx>maxx) { maxx = vx;}
-      if (vy>maxy) { maxx = vy;}
-      if (vz>maxz) { maxx = vz;}
+      if (vy>maxy) { maxy = vy;}
+      if (vz>maxz) { maxz = vz;}
       if (vx<minx) { minx = vx;}
       if (vy<miny) { miny = vy;}
       if (vz<minz) { minz = vz;}
@@ -777,9 +777,9 @@ Mesh.prototype.UpdateAABB = function()
    this.bbmin[0] = minx;
    this.bbmin[1] = miny;
    this.bbmin[2] = minz;
-   this.bbmax[0] = minx;
-   this.bbmax[1] = miny;
-   this.bbmax[2] = minz;
+   this.bbmax[0] = maxx;
+   this.bbmax[1] = maxy;
+   this.bbmax[2] = maxz;
    
 }
 
