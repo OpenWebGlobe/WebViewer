@@ -26,6 +26,24 @@ goog.provide('owg.DatasetInfo');
 goog.require('goog.debug.Logger');
 goog.require('goog.json');
 
+/**
+ * @typedef {{
+ *     boundingbox: Array.<number>,
+ *     bounds: Array.<number>,
+ *     center: Array.<number>,
+ *     copyright: string,
+ *     imageheight:number,
+ *     imagewidth: number,
+ *     layer: string,
+ *     levelofdetail: number,
+ *     srs: number,
+ *     tileformat: string,
+ *     tilelayout: Array.<number>,
+ *     tilesize: number
+ * }}
+ */
+var DatasetInfoJSON;
+
 //------------------------------------------------------------------------------
 /**
  * @constructor
@@ -62,7 +80,7 @@ function _cbfdsidownload(dsi)
       if (dsi.http.status==200)
       {
          var data=dsi.http.responseText;      
-         var obj=goog.json.parse(data);
+         var obj=/** @type {DatasetInfoJSON} */ goog.json.parse(data);
       
          dsi.sLayerName = obj.layer;         
          dsi.sLayerCopyright = obj.copyright;    
