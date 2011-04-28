@@ -296,7 +296,7 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
 
    if (d<0)
    {
-      vVisible = false;
+      bVisible = false;
    }
    
    if (!bVisible)

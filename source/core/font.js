@@ -112,7 +112,7 @@ Font.prototype.GetStringWidth = function(text)
      var a = 0;
      for (var i=0; i < text.length; i++)
       {        
-         ccode = text.charCodeAt(i);
+         var ccode = text.charCodeAt(i);
          a += (fontwidth[ccode]); 
       }
       
