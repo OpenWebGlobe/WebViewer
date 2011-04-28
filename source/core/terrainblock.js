@@ -49,6 +49,9 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.bPostCreation = false;
    
    this.elevationlayers = 0;
+   this._vNormal = new vec3();
+   
+   this._CalcLocation();
 }
 
 // #fixme: this function name must be renamed, 
@@ -201,7 +204,8 @@ function _cbfOnElevationTileReady(quadcode, mesh, layer)
    terrainblock.vTilePoints[0].Set(mesh.bbmin[0], mesh.bbmin[1], mesh.bbmin[2]);
    terrainblock.vTilePoints[1].Set(mesh.bbmax[0], mesh.bbmin[1], mesh.bbmin[2]);
    terrainblock.vTilePoints[2].Set(mesh.bbmax[0], mesh.bbmax[1], mesh.bbmin[2]);
-   terrainblock.vTilePoints[3].Set(mesh.bbmin[0], mesh.bbmax[1], mesh.bbmin[2]); 
+   terrainblock.vTilePoints[3].Set(mesh.bbmin[0], mesh.bbmax[1], mesh.bbmin[2]);
+   terrainblock.vTilePoints[4].Set(0.5*(mesh.bbmax[0]-mesh.bbmin[0]), 0.5*(mesh.bbmax[1]-mesh.bbmin[1]),0.5*(mesh.bbmax[2]-mesh.bbmin[2]));
    
    terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
    terrainblock.MergeImages();
@@ -540,6 +544,51 @@ TerrainBlock.prototype.Render = function(/*cache*/)
    this.engine.PopMatrices();
    
 }
-
 //------------------------------------------------------------------------------
-
+/**
+ * @description Calc normal at current position
+ */
+TerrainBlock.prototype._CalcLocation = function()
+{
+   var crd = new Array(4);
+   var wgs = new Array(2);
+   this.quadtree.QuadKeyToMercatorCoord(this.quadcode, crd);
+   
+   var point0 = new Array(3);
+   var point1 = new Array(3);
+   var point2 = new Array(3);
+   
+   var xg, yg;
+   var gc = new GeoCoord();
+   
+   //---- Calc First Point -----
+   xg = crd[0]; yg= crd[1];
+   Mercator.MercatorToWGS84(xg, yg, wgs);
+   var lng = wgs[0];
+   var lat = wgs[1];
+   gc.Set(lng, lat, 0);
+   gc.ToCartesian(point0);
+   //---- Calc Second Point -----
+   xg = crd[2]; yg= crd[0];
+   Mercator.MercatorToWGS84(xg, yg, wgs);
+   var lng = wgs[0];
+   var lat = wgs[1];
+   gc.Set(lng, lat, 0);
+   gc.ToCartesian(point1);
+   //---- Calc Third Point -----
+   xg = crd[2]; yg= crd[3];
+   Mercator.MercatorToWGS84(xg, yg, wgs);
+   var lng = wgs[0];
+   var lat = wgs[1];
+   gc.Set(lng, lat, 0);
+   gc.ToCartesian(point2);
+   
+   var u = new vec3();
+   var v = new vec3();
+   
+   u.Set(point1[0]-point0[0], point1[1]-point0[1], point1[2]-point0[2]);
+   v.Set(point2[0]-point0[0], point2[1]-point0[1], point2[2]-point0[2]);
+   
+   Cross(this._vNormal, u,v);
+   this._vNormal.Normalize();  
+}
