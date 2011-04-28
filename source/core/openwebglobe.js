@@ -597,6 +597,10 @@ engine3d.prototype.DrawText = function(txt,x,y,scale,fontcolor)
  */
 engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
 {
+   if (mvp == null)
+   {
+      mvp = this.matModelViewProjection;
+   }
    
    var mvpInv = new mat4();
    mvpInv.Inverse(mvp);

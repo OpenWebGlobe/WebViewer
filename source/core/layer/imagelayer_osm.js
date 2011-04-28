@@ -62,6 +62,20 @@ function ImageLayeri3d()
       return false;
    }
    //---------------------------------------------------------------------------
+   
+   this.Setup = function(serverlist, minlod, maxlod, copyrightstring)
+   {
+      // Please respect: http://wiki.openstreetmap.org/wiki/Tile_Usage_Policy
+      
+      // serverlist:
+      //   ["http://a.tile.openstreetmap.org", "http://b.tile.openstreetmap.org", "http://c.tile.openstreetmap.org" ]
+      //   or your own tileserver(s).
+      // 
+      // minlod: 
+      //   minimal level of detail to load, usually 0
+      // maxlod: 
+      //   maximal level of detail to load, usually 16 (do not use 17-19 if not absolutely necessary!)
+   }
 }
 
 ImageLayeri3d.prototype = new ImageLayer();

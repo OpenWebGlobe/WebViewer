@@ -271,10 +271,16 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
        return true;
    }     
    
-   // frustum culling
+   // (1) Frustum Culling
    bVisible = this.frustum.TestBox(tb.mesh.bbmin[0],tb.mesh.bbmin[1],tb.mesh.bbmin[2],
-                                   tb.mesh.bbmax[0],tb.mesh.bbmax[1],tb.mesh.bbmax[2]);                         
-   // Test if tile is visible (this is somewhat an "ellipsoidal backfaceculling")     
+                                   tb.mesh.bbmax[0],tb.mesh.bbmax[1],tb.mesh.bbmax[2]);  
+   
+   if (!bVisible)
+   {
+      return false; // early rejection, no further calculations/tests required
+   }                                
+                                                                                                           
+   // (2) Visibility Test ("ellipsoidal backface-culling")     
                               
    var center = tb.vTilePoints[4].Get();
    var normal = tb._vNormal.Get();
@@ -287,7 +293,7 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
 
    if (d<-0.9)
    {
-      bVisible = false;
+      bVisible = false;  // reject
    }
    
    if (!bVisible)
@@ -295,12 +301,11 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
       return false; // early rejection, no further calculations required
    }
    
-   // virtual globe error metric
+   // (3) Calculate Error Metric
    var dist = tb.CalcDistanceTo(this.cameraposition);
-   //var dDelta = tb.GetPixelSize(this.engine.matModelViewProjection, this.engine.width, this.engine.height);
    var dCell = tb.GetBlockSize();
-   
    var error = this.quality * dCell / dist;
+   
    return (error>1.0);
 }
 
@@ -343,10 +348,20 @@ GlobeRenderer.prototype.OnKey = function(key)
    {
       console.log("-------------------------");
       console.log("Frustum size: " + this.lstFrustum.length);
-      /*for (var i=0;i<this.lstFrustum.length;i++)
-      {
-         console.log(this.lstFrustum[i].quadcode);
-      }*/
       console.log("-------------------------");
    }
+}
+
+//------------------------------------------------------------------------------
+
+GlobeRenderer.prototype.OnPick(mx, my, pickresult)
+{
+   pointDir = this.engine.GetDirectionMousePos(x, y);           
+   
+   for (var i=0;i<i<this.lstFrustum.length;i++)
+   {
+      
+   }
+   
+   //r = tb.mesh.TestRayIntersection(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz);
 }
