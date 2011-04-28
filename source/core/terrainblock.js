@@ -45,7 +45,7 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.available = false;
    this.mesh = null;
    
-   this.vOffset = null; // virtual camera offset
+   this.vOffset = []; // virtual camera offset
    this.vTilePoints = new Array(5); // corner points and mid point of tile (in cartesian coordinates)
    this.vTilePoints[0] = new vec3(); // (if a tile is loaded, this is the lower part of the bounding box!)
    this.vTilePoints[1] = new vec3();
