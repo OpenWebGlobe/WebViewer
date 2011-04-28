@@ -60,7 +60,7 @@ Font.prototype.DrawText = function(text,x,y,scale,fontcolor)
 {
       if(scale == null)
       {
-         var scale = 1.0;
+         scale = 1.0;
       }
 
       this.engine.PushMatrices();

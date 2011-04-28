@@ -830,7 +830,7 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
       var v1y = vec.Get()[1];
       var v1z = vec.Get()[2];
               
-      var vec = invModelMatrix.MultiplyVec3(v2);
+          vec = invModelMatrix.MultiplyVec3(v2);
       var v2x = vec.Get()[0];
       var v2y = vec.Get()[1];
       var v2z = vec.Get()[2];
