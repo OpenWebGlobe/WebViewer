@@ -9,7 +9,7 @@
       function calc()
       {
             mqtree = new MercatorQuadtree();
-            result = new Float64Array(4);
+            result = new Array(4);
             mqtree.QuadKeyToNormalizedCoord("0123", result);
             console.log("result[0]: "+result[0]+" result[1]: "+result[1]+" result[2]: "+result[2]+" result[3]: "+result[3]);
             

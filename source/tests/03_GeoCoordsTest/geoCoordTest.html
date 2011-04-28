@@ -11,7 +11,7 @@
        var geoCoord = new GeoCoord(47.56123456789,7.6123456789,250);
        console.log(geoCoord._wgscoords[0]);
 
-       var result = new Float64Array(3);
+       var result = new Array(3);
        console.log(geoCoord.ToString());
 
        geoCoord.ToCartesian(result);
