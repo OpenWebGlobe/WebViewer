@@ -40,16 +40,16 @@ goog.provide('owg.vec3');
  * Create a new Vector Object
  * Initialised the vector as [0,0,0]
  * This is the basic vec3.class 
- * @param {string} typeparam "float": vector values will be stored as float32. "double": vector values will be stored as float64. 
+ * @param {string=} opt_typeparam "float": vector values will be stored as float32. "double": vector values will be stored as float64. 
  * @constructor
  */
-function vec3(typeparam)
+function vec3(opt_typeparam)
 {
-   if (typeparam == "double")
+   if (opt_typeparam == "double")
    {
       this._values = new Array([0.0, 0.0, 0.0]);  
    }
-   else //(typeparam == "float")
+   else //(opt_typeparam == "float")
    {
       this._values = new Float32Array([0.0, 0.0, 0.0]);
    }

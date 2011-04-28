@@ -40,9 +40,9 @@ function corner()
 /** 
  * @description ViewFrustum: Class for test if a Box is inside or outside the view frustum. 
  * @constructor
- * @param mvpMatrix the model-view-projection matrix
+ * @param {Object=} opt_mvpMatrix the model-view-projection matrix
  */
-function ViewFrustum(mvpMatrix)
+function ViewFrustum(opt_mvpMatrix)
 {
    this.frustumPlanes = new Array(6);
    this.frustumPlanes[0] = new plane3();

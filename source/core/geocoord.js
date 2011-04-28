@@ -32,10 +32,13 @@ goog.require('owg.MathUtils');
  * @description This class is used to calculate wgs84 <-> cartesian conversions.
  * @author Martin Christen, martin.christen@fhnw.ch
  * @author Benjamin Loesch, benjamin.loesch@fhnw.ch
+ * @param {number=} opt_longitude
+ * @param {number=} opt_latitude
+ * @param {number=} opt_elevation
  */
- function GeoCoord(longitude, latitude, elevation)
+ function GeoCoord(opt_longitude, opt_latitude, opt_elevation)
  {  
-    this._wgscoords = new Float32Array([longitude, latitude, elevation]);      //Array elements = [latitude,longitude,elevation]
+    this._wgscoords = new Float32Array([opt_longitude, opt_latitude, opt_elevation]);      //Array elements = [opt_latitude,opt_longitude,opt_elevation]
  }
  //------------------------------------------------------------------------------
  /**

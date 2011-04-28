@@ -125,7 +125,7 @@ Cache.prototype.getItem = function(key)
  * Sets an item in the cache.
  * @param {string} key The key to refer to the item.
  * @param {Object} value The item to cache.
- * @param {Object} options an optional object which controls various caching
+ * @param {Object=} opt_options an optional object which controls various caching
  *    options:
  *      expirationAbsolute: the datetime when the item should expire
  *      expirationSliding: an integer representing the seconds since
@@ -141,7 +141,7 @@ Cache.prototype.getItem = function(key)
  *                from cache.  The key and value of the removed item
  *                are passed as parameters to the callback function.
  */
-Cache.prototype.setItem = function(key, value, options) 
+Cache.prototype.setItem = function(key, value, opt_options) 
 {
 
   /** @constructor */
@@ -174,7 +174,7 @@ Cache.prototype.setItem = function(key, value, options)
   {
     this.removeItem_(key);
   }
-  this.addItem_(new CacheItem(key, value, options));
+  this.addItem_(new CacheItem(key, value, opt_options));
   this.log_("Setting key " + key);
 
   // if the cache is full, purge it

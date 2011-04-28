@@ -34,8 +34,12 @@ goog.require('owg.mat4');
  * @constructor
  * {@link http://www.openwebglobe.org}
  * @author Martin Christen martin.christen@fhnw.ch
+ * @param {engine3d} engine
+ * @param {boolean=} opt_useAsRenderTarget
+ * @param {number=} opt_framebufferWidth
+ * @param {number=} opt_framebufferHeight
  */
-function Texture(engine, useAsRenderTarget, framebufferWidth, framebufferHeight)
+function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_framebufferHeight)
 {
    this.engine = engine;   // pointer to the engine
    this.gl = engine.gl;    // pointer to the gl
@@ -49,12 +53,12 @@ function Texture(engine, useAsRenderTarget, framebufferWidth, framebufferHeight)
    this.rttFrameBuffer = null; //used if this texture is used as a render target
    this.usedAsRenderTarget = false;
      
-   if(useAsRenderTarget)   // texture is used as render target.
+   if(opt_useAsRenderTarget)   // texture is used as render target.
    {       
         this.rttFramebuffer = this.gl.createFramebuffer();
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.rttFramebuffer);
-        this.rttFramebuffer.width = framebufferWidth;
-        this.rttFramebuffer.height = framebufferHeight;
+        this.rttFramebuffer.width = opt_framebufferWidth;
+        this.rttFramebuffer.height = opt_framebufferHeight;
 
         this.texture = this.gl.createTexture();
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
@@ -79,29 +83,29 @@ function Texture(engine, useAsRenderTarget, framebufferWidth, framebufferHeight)
         
         this.ready = true;
         this.usedAsRenderTarget = true;
-        this.width = framebufferWidth;
-        this.height = framebufferHeight;        
+        this.width = opt_framebufferWidth;
+        this.height = opt_framebufferHeight;        
    }
 }
 
 //------------------------------------------------------------------------------
 /**
  * Loads the Texture image.
- * @param{string} url The url to download the image
- * @param callbackready An optional callback called when texture is ready. Has the texture class as param.
- * @param callbackfailed An optional callback called when texture failed. Has the texture class as param.
- * @param {bool} flip Flip texture image on load
+ * @param {string} url The url to download the image
+ * @param {function()=} opt_callbackready An optional callback called when texture is ready. Has the texture class as param.
+ * @param {function(Texture)=} opt_callbackfailed An optional callback called when texture failed. Has the texture class as param.
+ * @param {boolean=} opt_flip Flip texture image on load
  */
-Texture.prototype.loadTexture = function(url, callbackready, callbackfailed, flip)
+Texture.prototype.loadTexture = function(url, opt_callbackready, opt_callbackfailed, opt_flip)
 {
    // preparations
    this.texture = this.gl.createTexture();
-   this.flip = flip;
+   this.flip = opt_flip;
    var texture=this.texture;
    var curgl = this.gl;
    var thismat = this;
-   var cbr = callbackready;
-   var cbf = callbackfailed;
+   var cbr = opt_callbackready;
+   var cbf = opt_callbackfailed;
    this.texture.image = new Image();
    this.texture.image.onload = function()
    {

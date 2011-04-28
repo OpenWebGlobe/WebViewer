@@ -42,14 +42,15 @@ goog.provide('owg.vec4');
  * @author Martin Christen martin.christen@fhnw.ch 
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch  
  * @version 0.1  
+ * @param {string=} opt_typeparam
  */
-function vec4(typeparam)
+function vec4(opt_typeparam)
 {
-   if (typeparam == "double")
+   if (opt_typeparam == "double")
    {
       this._values = new Array([0.0, 0.0, 0.0, 0.0]);  
    }
-   else //(typeparam == "float")
+   else //(opt_typeparam == "float")
    {
       this._values = new Float32Array([0.0, 0.0, 0.0, 0.0]);
    }

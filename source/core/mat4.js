@@ -51,22 +51,22 @@ goog.require('owg.vec3');
 /**
  * Create a new Matrix Object
  * @class This is the basic mat4.class 
- * @param {string} typeparam "float": matrix values will be stored as float32. "double": matrix is a javascript array. 
+ * @param {string=} opt_typeparam "float": matrix values will be stored as float32. "double": matrix is a javascript array. 
  * @constructor
  * @return A new 4 x 4 Identity-Matrix
  */
-function mat4(typeparam)
+function mat4(opt_typeparam)
 {
-   if (typeparam == "double")
+   if (opt_typeparam == "double")
    {
       this._values = new Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
    }
-   else //(typeparam == "float")
+   else //(opt_typeparam == "float")
    {
       this._values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
    }
  
-   this.type = typeparam;
+   this.type = opt_typeparam;
 }
 
 //------------------------------------------------------------------------------

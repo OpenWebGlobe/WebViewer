@@ -308,8 +308,12 @@ var j=0;
  * @description Draws the mesh element. Ensure that "toGPU" is called before calling this method.
  * note: this method still needs some optimization
  * note: ranged draw must be supported soon
+ * @param {boolean=} opt_ranged
+ * @param {number=} opt_count
+ * @param {number=} opt_offset
+ * @param {vec4=} opt_fontcolor
  */
-Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
+Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor)
 {
    if (!this.Ready)
    {
@@ -381,11 +385,11 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                       this.gl.enableVertexAttribArray(1);
                       this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
                       this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
-                      if (fontcolor == null)
+                      if (opt_fontcolor == null)
                       {
-                         fontcolor = this.defaultfontcolor;
+                         opt_fontcolor = this.defaultfontcolor;
                       }
-                      this.engine.shadermanager.UseShader_Font(this.engine.matModelViewProjection,fontcolor);
+                      this.engine.shadermanager.UseShader_Font(this.engine.matModelViewProjection,opt_fontcolor);
                       break;
                              
              
@@ -402,9 +406,9 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
       switch(this.indexsemantic)
       {
          case "TRIANGLES":
-                           if(ranged)
+                           if(opt_ranged)
                            {
-                              this.gl.drawElements(this.gl.TRIANGLES, count, this.gl.UNSIGNED_SHORT, offset);
+                              this.gl.drawElements(this.gl.TRIANGLES, opt_count, this.gl.UNSIGNED_SHORT, opt_offset);
                            }
                            else
                            {
@@ -412,9 +416,9 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                            }                          
                            break;
          case "TRIANGLESTRIP":
-                           if(ranged)
+                           if(opt_ranged)
                            {
-                              this.gl.drawElements(this.gl.TRIANGLE_STRIP, count, this.gl.UNSIGNED_SHORT, offset);
+                              this.gl.drawElements(this.gl.TRIANGLE_STRIP, opt_count, this.gl.UNSIGNED_SHORT, opt_offset);
                            }
                            else
                            {
@@ -539,11 +543,11 @@ function _cbfjsondownload(mesh)
 //------------------------------------------------------------------------------
 /**
  * @description Load mesh-data from a JSON file.
- * @param {sting} url the url to the JSON file.
- * @param {function()} callbackready optional function called when mesh finished download
- * @param {function()} callbackfailed optional function called when mesh failed download
+ * @param {string} url the url to the JSON file.
+ * @param {function()=} opt_callbackready optional function called when mesh finished download
+ * @param {function()=} opt_callbackfailed optional function called when mesh failed download
  */
-Mesh.prototype.loadFromJSON = function(url, callbackready, callbackfailed)
+Mesh.prototype.loadFromJSON = function(url, opt_callbackready, opt_callbackfailed)
 {
    if(url == null) 
    {
@@ -555,8 +559,8 @@ Mesh.prototype.loadFromJSON = function(url, callbackready, callbackfailed)
    this.http=new window.XMLHttpRequest();
    this.http.open("GET",this.jsonUrl,true);
    
-   this.cbr = callbackready;
-   this.cbf = callbackfailed;
+   this.cbr = opt_callbackready;
+   this.cbf = opt_callbackfailed;
    
    var me=this;
    this.http.onreadystatechange = function(){_cbfjsondownload(me);};
