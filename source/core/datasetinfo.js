@@ -23,6 +23,7 @@
 
 goog.provide('owg.DatasetInfo');
 
+goog.require('goog.debug.Logger');
 goog.require('goog.json');
 
 //------------------------------------------------------------------------------
@@ -89,13 +90,13 @@ function _cbfdsidownload(dsi)
             dsi.sFileExtension = ".json"; 
          }
          
-         console.log("Datasetinfo: " + dsi.sLayerName + "(" + dsi.sTileFormat + ")" + dsi.sLayerCopyright);
+         goog.debug.Logger.getLogger('owg.Datasetinfo').info("Datasetinfo: " + dsi.sLayerName + "(" + dsi.sTileFormat + ")" + dsi.sLayerCopyright);
          
          dsi.bReady = true;     
       }
       else
       {
-         console.log("DATASET DOWNLOAD FAILED");
+         goog.debug.Logger.getLogger('owg.Datasetinfo').warning("DATASET DOWNLOAD FAILED");
          dsi.bFailed = true;
       }
    }

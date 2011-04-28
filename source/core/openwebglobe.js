@@ -23,6 +23,7 @@
 
 goog.provide('owg.engine3d');
 
+goog.require('goog.debug.Logger');
 goog.require('owg.EventHandler');
 goog.require('owg.Font');
 goog.require('owg.Mesh');
@@ -628,12 +629,12 @@ engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
    var CoorOnNearPlane = new vec3();   
        CoorOnNearPlane.Set(mx,my,mz);      
    var CoorOnNearPlaneWorld = mvpInv.MultiplyVec3(CoorOnNearPlane);
-       // console.log("engine CoorOnNearPlaneWorld: "+CoorOnNearPlaneWorld.ToString());
+       // goog.debug.Logger.getLogger('owg.engine3d').info("engine CoorOnNearPlaneWorld: "+CoorOnNearPlaneWorld.ToString());
 
    var CoorOnFarPlane = new vec3();   
        CoorOnFarPlane.Set(fx,fy,fz);              
    var CoorOnFarPlaneWorld = mvpInv.MultiplyVec3(CoorOnFarPlane);
-       // console.log("engine CoorOnFarPlaneWorld: "+CoorOnFarPlaneWorld.ToString());
+       // goog.debug.Logger.getLogger('owg.engine3d').info("engine CoorOnFarPlaneWorld: "+CoorOnFarPlaneWorld.ToString());
                     
    //direction
    var dirx = CoorOnFarPlaneWorld.Get()[0] - CoorOnNearPlaneWorld.Get()[0];

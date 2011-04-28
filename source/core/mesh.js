@@ -23,6 +23,7 @@
 
 goog.provide('owg.Mesh');
 
+goog.require('goog.debug.Logger');
 goog.require('goog.json');
 goog.require('owg.AABB');
 goog.require('owg.TriangleIntersector');
@@ -718,7 +719,7 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
                         break;
                         
       default: 
-                        console.log("This indexsemantic is not supported for function: Mesh.ReadTriangleFromBuffer() ");
+                        goog.debug.Logger.getLogger('owg.Mesh').warning("This indexsemantic is not supported for function: Mesh.ReadTriangleFromBuffer() ");
                         break;
       
    }
@@ -891,10 +892,10 @@ Mesh.prototype.SetAsBillboard = function(camX,camY,camZ,objX,objY,objZ)
    
    
     var angleCos = lookAt.Dot(objToCamProj);
-    console.log(angleCos);
+    goog.debug.Logger.getLogger('owg.Mesh').info(angleCos);
     
     lookAt.Cross(objToCamProj);
-      console.log(lookAt.ToString());
+      goog.debug.Logger.getLogger('owg.Mesh').info(lookAt.ToString());
 
    if ((angleCos < 0.99990) && (angleCos > -0.9999))
    {
@@ -902,13 +903,13 @@ Mesh.prototype.SetAsBillboard = function(camX,camY,camZ,objX,objY,objZ)
       if(lookAt.Get()[1]>0)
       {
          this.modelMatrix.RotationY(Math.acos(angleCos));
-         console.log("angle: "+Math.acos(angleCos)*180/Math.PI);
-         console.log(this.modelMatrix.ToString());
+         goog.debug.Logger.getLogger('owg.Mesh').info("angle: "+Math.acos(angleCos)*180/Math.PI);
+         goog.debug.Logger.getLogger('owg.Mesh').info(this.modelMatrix.ToString());
       }
       else
       {
          this.modelMatrix.RotationY(2*Math.PI-Math.acos(angleCos));
-         console.log("angle: "+(2*Math.PI-Math.acos(angleCos))*180/Math.PI);
+         goog.debug.Logger.getLogger('owg.Mesh').info("angle: "+(2*Math.PI-Math.acos(angleCos))*180/Math.PI);
       }
       
       

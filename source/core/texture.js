@@ -23,6 +23,7 @@
 
 goog.provide('owg.Texture');
 
+goog.require('goog.debug.Logger');
 goog.require('owg.MathUtils');
 goog.require('owg.Mesh');
 goog.require('owg.mat4');
@@ -111,7 +112,7 @@ Texture.prototype.loadTexture = function(url, callbackready, callbackfailed, fli
    this.texture.image.src = url;
    this.texture.image.onerror = function()
    {
-      console.log("***FAILED DOWNLOADING: " + url);
+      goog.debug.Logger.getLogger('owg.Texture').warning("***FAILED DOWNLOADING: " + url);
       this.failed = true;
       if (cbf)
       {

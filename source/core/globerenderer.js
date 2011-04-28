@@ -23,6 +23,7 @@
 
 goog.provide('owg.GlobeRenderer');
 
+goog.require('goog.debug.Logger');
 goog.require('owg.GlobeCache');
 goog.require('owg.MercatorQuadtree');
 goog.require('owg.ViewFrustum');
@@ -159,7 +160,7 @@ GlobeRenderer.prototype.AddElevationLayer = function(options)
  */
 GlobeRenderer.prototype._UpdateLayers = function()
 {
-   console.log("Updating Layers");
+   goog.debug.Logger.getLogger('owg.GlobeRenderer').info("Updating Layers");
    
    // update layers by creating a new globe cache: The old cache will be deleted
    var cachesize = 1000;
@@ -350,12 +351,12 @@ GlobeRenderer.prototype.OnKey = function(key)
 {
    if (key == 66)
    {
-      console.log("-------------------------");
-      console.log("Frustum size: " + this.lstFrustum.length);
+      goog.debug.Logger.getLogger('owg.GlobeRenderer').info("-------------------------");
+      goog.debug.Logger.getLogger('owg.GlobeRenderer').info("Frustum size: " + this.lstFrustum.length);
       /*for (var i=0;i<this.lstFrustum.length;i++)
       {
-         console.log(this.lstFrustum[i].quadcode);
+         goog.debug.Logger.getLogger('owg.GlobeRenderer').info(this.lstFrustum[i].quadcode);
       }*/
-      console.log("-------------------------");
+      goog.debug.Logger.getLogger('owg.GlobeRenderer').info("-------------------------");
    }
 }

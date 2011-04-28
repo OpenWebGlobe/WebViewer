@@ -23,6 +23,7 @@
 
 goog.provide('owg.Poi');
 
+goog.require('goog.debug.Logger');
 goog.require('owg.Font');
 goog.require('owg.GeoCoord');
 goog.require('owg.Mesh');
@@ -53,7 +54,7 @@ goog.require('owg.Texture');
     
     this.poiLength = this.font.GetStringWidth(this.text);
     this.poiHeight = 31;
-    console.log(this.poiLength);
+    goog.debug.Logger.getLogger('owg.Poi').info(this.poiLength);
     
 
     var vert = new Array();

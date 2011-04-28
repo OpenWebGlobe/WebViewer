@@ -23,6 +23,8 @@
 
 goog.provide('owg.Cache');
 
+goog.require('goog.debug.Logger');
+
 /*
 This code is based on jscache, available at https://github.com/monsur/jscache/
 and is also released under MIT license 
@@ -57,7 +59,7 @@ var CachePriority =
 /**
  * Creates a new Cache object.
  * @param {number} maxSize The maximum size of the cache (or -1 for no max).
- * @param {boolean} debug Whether to log events to the console.log.
+ * @param {boolean} debug Whether to log events
  * @constructor
  */
 function Cache(maxSize, debug) 
@@ -345,7 +347,7 @@ Cache.prototype.isExpired_ = function(item)
 
 //------------------------------------------------------------------------------
 /**
- * Logs a message to the console.log if debug is set to true.
+ * Logs a message if debug is set to true.
  * @param {string} msg The message to log.
  * @private
  */
@@ -353,7 +355,7 @@ Cache.prototype.log_ = function(msg)
 {
   if (this.debug_) 
   {
-    console.log(msg);
+    goog.debug.Logger.getLogger('owg.Cache').info(msg);
   }
 };
 
