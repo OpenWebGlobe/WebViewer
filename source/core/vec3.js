@@ -282,4 +282,4 @@ vec3.prototype.ToString = function()
 //------------------------------------------------------------------------------
 
 goog.exportSymbol('vec3', vec3);
-goog.exportSymbol('vec3.Set', vec3.Set);
+goog.exportProperty(vec3.prototype, 'Set', vec3.prototype.Set);

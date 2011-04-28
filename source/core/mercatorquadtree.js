@@ -128,6 +128,6 @@ MercatorQuadtree.prototype.QuadKeyToTileCoord = function(quadKey, coords)
 //------------------------------------------------------------------------------
 
 goog.exportSymbol('MercatorQuadtree', MercatorQuadtree);
-goog.exportSymbol('MercatorQuadtree.QuadKeyToMercatorCoord', MercatorQuadtree.QuadKeyToMercatorCoord);
-goog.exportSymbol('MercatorQuadtree.QuadKeyToNormalizedCoord', MercatorQuadtree.QuadKeyToNormalizedCoord);
-goog.exportSymbol('MercatorQuadtree.QuadKeyToTileCoord', MercatorQuadtree.QuadKeyToTileCoord);
+goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToMercatorCoord', MercatorQuadtree.prototype.QuadKeyToMercatorCoord);
+goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToNormalizedCoord', MercatorQuadtree.prototype.QuadKeyToNormalizedCoord);
+goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToTileCoord', MercatorQuadtree.prototype.QuadKeyToTileCoord);

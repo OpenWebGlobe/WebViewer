@@ -761,12 +761,12 @@ mat4.prototype.ToString = function()
 }
 
 goog.exportSymbol('mat4', mat4);
-goog.exportSymbol('mat4.CopyFrom', mat4.CopyFrom);
-goog.exportSymbol('mat4.Identity', mat4.Identity);
-goog.exportSymbol('mat4.LookAt', mat4.LookAt);
-goog.exportSymbol('mat4.Multiply', mat4.Multiply);
-goog.exportSymbol('mat4.Ortho2D', mat4.Ortho2D);
-goog.exportSymbol('mat4.Perspective', mat4.Perspective);
-goog.exportSymbol('mat4.Scale', mat4.Scale);
-goog.exportSymbol('mat4.ToString', mat4.ToString);
-goog.exportSymbol('mat4.Translation', mat4.Translation);
+goog.exportProperty(mat4.prototype, 'CopyFrom', mat4.prototype.CopyFrom);
+goog.exportProperty(mat4.prototype, 'Identity', mat4.prototype.Identity);
+goog.exportProperty(mat4.prototype, 'LookAt', mat4.prototype.LookAt);
+goog.exportProperty(mat4.prototype, 'Multiply', mat4.prototype.Multiply);
+goog.exportProperty(mat4.prototype, 'Ortho2D', mat4.prototype.Ortho2D);
+goog.exportProperty(mat4.prototype, 'Perspective', mat4.prototype.Perspective);
+goog.exportProperty(mat4.prototype, 'Scale', mat4.prototype.Scale);
+goog.exportProperty(mat4.prototype, 'ToString', mat4.prototype.ToString);
+goog.exportProperty(mat4.prototype, 'Translation', mat4.prototype.Translation);

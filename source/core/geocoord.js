@@ -140,6 +140,6 @@ GeoCoord.prototype.GetElevation = function()
  }
  
 goog.exportSymbol('GeoCoord', GeoCoord); 
-goog.exportSymbol('GeoCoord.FromCartesian', GeoCoord.FromCartesian); 
-goog.exportSymbol('GeoCoord.ToCartesian', GeoCoord.ToCartesian); 
-goog.exportSymbol('GeoCoord.ToString', GeoCoord.ToString); 
+goog.exportProperty(GeoCoord.prototype, 'FromCartesian', GeoCoord.prototype.FromCartesian); 
+goog.exportProperty(GeoCoord.prototype, 'ToCartesian', GeoCoord.prototype.ToCartesian); 
+goog.exportProperty(GeoCoord.prototype, 'ToString', GeoCoord.prototype.ToString); 

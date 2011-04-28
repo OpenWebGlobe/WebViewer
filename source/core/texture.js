@@ -363,6 +363,6 @@ Texture.prototype.DisableRenderToTexture = function()
 }
 
 goog.exportSymbol('Texture', Texture);
-goog.exportSymbol('Texture.Blit', Texture.Blit);
-goog.exportSymbol('Texture.EnableRenderToTexture', Texture.EnableRenderToTexture);
-goog.exportSymbol('Texture.DisableRenderToTexture', Texture.DisableRenderToTexture);
+goog.exportProperty(Texture.prototype, 'Blit', Texture.prototype.Blit);
+goog.exportProperty(Texture.prototype, 'EnableRenderToTexture', Texture.prototype.EnableRenderToTexture);
+goog.exportProperty(Texture.prototype, 'DisableRenderToTexture', Texture.prototype.DisableRenderToTexture);

@@ -163,4 +163,4 @@ goog.provide('owg.TriangleIntersector');
  }
 
 goog.exportSymbol('TriangleIntersector', TriangleIntersector);
-goog.exportSymbol('TriangleIntersector.IntersectTriangle', TriangleIntersector.IntersectTriangle);
+goog.exportProperty(TriangleIntersector.prototype, 'IntersectTriangle', TriangleIntersector.prototype.IntersectTriangle);

@@ -123,4 +123,4 @@ DatasetInfo.prototype.Download = function(url)
 }
 
 goog.exportSymbol('DatasetInfo', DatasetInfo);
-goog.exportSymbol('DatasetInfo.Download', DatasetInfo.Download);
+goog.exportProperty(DatasetInfo.prototype, 'Download', DatasetInfo.prototype.Download);

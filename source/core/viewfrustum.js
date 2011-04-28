@@ -220,5 +220,5 @@ ViewFrustum.prototype.UpdateFrustumPlanes = function()
 }
 
 goog.exportSymbol('ViewFrustum', ViewFrustum);
-goog.exportSymbol('ViewFrustum.TestBox', ViewFrustum.TestBox);
-goog.exportSymbol('ViewFrustum.Update', ViewFrustum.Update);
+goog.exportProperty(ViewFrustum.prototype, 'TestBox', ViewFrustum.prototype.TestBox);
+goog.exportProperty(ViewFrustum.prototype, 'Update', ViewFrustum.prototype.Update);

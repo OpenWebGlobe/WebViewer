@@ -167,6 +167,6 @@ Font.prototype.GenerateFontMesh = function()
 }
 
 goog.exportSymbol('Font', Font);
-goog.exportSymbol('Font.DrawText', Font.DrawText);
-goog.exportSymbol('Font.GetStringHeight', Font.GetStringHeight);
-goog.exportSymbol('Font.GetStringWidth', Font.GetStringWidth);
+goog.exportProperty(Font.prototype, 'DrawText', Font.prototype.DrawText);
+goog.exportProperty(Font.prototype, 'GetStringHeight', Font.prototype.GetStringHeight);
+goog.exportProperty(Font.prototype, 'GetStringWidth', Font.prototype.GetStringWidth);
