@@ -54,6 +54,7 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.vTilePoints[4] = new vec3();
    
    this.imagelayers = 0;
+   /** @type {Array.<Texture>} */
    this.images = null;
    this.bPostCreation = false;
    
@@ -72,13 +73,16 @@ TerrainBlock.prototype.MergeImages = function()
       // All layers are downloaded -> now create a "merged image" if there are several layers!
       var cntdata = 0;
       var thelayer = 0;
-      for (var i=0;i<this.images.length;i++)
+      if (!goog.isNull(this.images))
       {
-         if (this.images[i] != null)
-         {
-            cntdata++;
-            thelayer = i;
-         }
+          for (var i=0;i<this.images.length;i++)
+          {
+             if (this.images[i] != null)
+             {
+                cntdata++;
+                thelayer = i;
+             }
+          }
       }
       
       if (cntdata == 0)
