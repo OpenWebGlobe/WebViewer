@@ -72,7 +72,7 @@ function mat4(opt_typeparam)
 //------------------------------------------------------------------------------
 /**
  * Set Values
- * @param oMatrix an array of any type containing 16 values 
+ * @param {Array|Float32Array} oMatrix an array of any type containing 16 values 
  */
 mat4.prototype.Set = function(oMatrix)
 {

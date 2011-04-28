@@ -132,7 +132,7 @@ function Mesh(engine)
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "p"
- * @param{float32Array} p the points.
+ * @param {Array|Float32Array} p the points.
  */
 Mesh.prototype.SetBufferP = function(p)
 {
@@ -147,7 +147,7 @@ Mesh.prototype.SetBufferP = function(p)
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "pnt"
- * @param{float32Array} pnt the point,normal,texture-coordinates array.
+ * @param {Array|Float32Array} pnt the point,normal,texture-coordinates array.
  */
 Mesh.prototype.SetBufferPNT = function(pnt)
 {
@@ -162,7 +162,7 @@ Mesh.prototype.SetBufferPNT = function(pnt)
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "pc"
- * @param{float32Array} pc the point,color array.
+ * @param {Array|Float32Array} pc the point,color array.
  */
 Mesh.prototype.SetBufferPC = function(pc)
 {
@@ -177,7 +177,7 @@ Mesh.prototype.SetBufferPC = function(pc)
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "pt"
- * @param{float32Array} pt the point,texture-coordinates array.
+ * @param {Array|Float32Array} pt the point,texture-coordinates array.
  */
 Mesh.prototype.SetBufferPT = function(pt)
 {
@@ -192,7 +192,7 @@ Mesh.prototype.SetBufferPT = function(pt)
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "pnct"
- * @param{float32Array} pnct the point,normal,color texture-coordinates array.
+ * @param {Array|Float32Array} pnct the point,normal,color texture-coordinates array.
  */
 Mesh.prototype.SetBufferPNCT = function(pnct)
 {
@@ -207,7 +207,7 @@ Mesh.prototype.SetBufferPNCT = function(pnct)
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "pt"
- * @param{float32Array} pt the point,texture-coordinates array.
+ * @param {Array|Float32Array} fontdata the point,texture-coordinates array.
  */
 Mesh.prototype.SetBufferFont= function(fontdata)
 {
