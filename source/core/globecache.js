@@ -137,3 +137,6 @@ GlobeCache.prototype.GetMaxLod = function()
 }
 //------------------------------------------------------------------------------
 
+goog.exportSymbol('GlobeCache', GlobeCache);
+goog.exportSymbol('GlobeCache.IsReady', GlobeCache.IsReady);
+goog.exportSymbol('GlobeCache.RequestBlock', GlobeCache.RequestBlock);

@@ -184,6 +184,8 @@ function _cbTileFailed(imgTex)
 }
 //------------------------------------------------------------------------------
 
-
-
-
+goog.exportSymbol('i3dImageLayer', i3dImageLayer);
+goog.exportSymbol('i3dImageLayer.Failed', i3dImageLayer.Failed);
+goog.exportSymbol('i3dImageLayer.Ready', i3dImageLayer.Ready);
+goog.exportSymbol('i3dImageLayer.RequestTile', i3dImageLayer.RequestTile);
+goog.exportSymbol('i3dImageLayer.Setup', i3dImageLayer.Setup);

@@ -49,7 +49,6 @@ var GlobeUtils = {};
          
    return newstring;  
 } 
-     
 
-
-
+goog.exportSymbol('GlobeUtils', GlobeUtils);
+goog.exportSymbol('GlobeUtils.MakeHierarchicalFilename', GlobeUtils.MakeHierarchicalFilename);

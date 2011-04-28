@@ -918,3 +918,7 @@ Mesh.prototype.SetAsBillboard = function(camX,camY,camZ,objX,objY,objZ)
 
 goog.exportSymbol('Mesh', Mesh);
 goog.exportSymbol('Mesh.Draw', Mesh.Draw);
+goog.exportSymbol('Mesh.SetAsBillboard', Mesh.SetAsBillboard);
+goog.exportSymbol('Mesh.SetTexture', Mesh.SetTexture);
+goog.exportSymbol('Mesh.TestBoundingBoxIntersection', Mesh.TestBoundingBoxIntersection);
+goog.exportSymbol('Mesh.TestRayIntersection', Mesh.TestRayIntersection);

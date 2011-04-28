@@ -161,3 +161,6 @@ goog.provide('owg.TriangleIntersector');
     
     return this.result;
  }
+
+goog.exportSymbol('TriangleIntersector', TriangleIntersector);
+goog.exportSymbol('TriangleIntersector.IntersectTriangle', TriangleIntersector.IntersectTriangle);

@@ -139,4 +139,7 @@ GeoCoord.prototype.GetElevation = function()
     return " Longitude: "+this.GetLongitude().toPrecision(17)+" Latitude: "+this.GetLatitude().toPrecision(17)+" Elevation: "+this.GetElevation().toPrecision(17);
  }
  
- 
+goog.exportSymbol('GeoCoord', GeoCoord); 
+goog.exportSymbol('GeoCoord.FromCartesian', GeoCoord.FromCartesian); 
+goog.exportSymbol('GeoCoord.ToCartesian', GeoCoord.ToCartesian); 
+goog.exportSymbol('GeoCoord.ToString', GeoCoord.ToString); 

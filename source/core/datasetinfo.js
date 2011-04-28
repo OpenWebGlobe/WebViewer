@@ -120,3 +120,6 @@ DatasetInfo.prototype.Download = function(url)
    this.http.onreadystatechange = function(){_cbfdsidownload(me);};
    this.http.send(); 
 }
+
+goog.exportSymbol('DatasetInfo', DatasetInfo);
+goog.exportSymbol('DatasetInfo.Download', DatasetInfo.Download);

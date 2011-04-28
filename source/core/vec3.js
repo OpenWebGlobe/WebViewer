@@ -307,5 +307,6 @@ vec3.prototype.Test=function(vec)
 
 //------------------------------------------------------------------------------
 
-
-
+goog.exportSymbol('vec3', vec3);
+goog.exportSymbol('vec3.Set', vec3.Set);
+goog.exportSymbol('vec3.Test', vec3.Test);

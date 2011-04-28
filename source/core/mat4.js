@@ -761,6 +761,12 @@ mat4.prototype.ToString = function()
 }
 
 goog.exportSymbol('mat4', mat4);
+goog.exportSymbol('mat4.CopyFrom', mat4.CopyFrom);
 goog.exportSymbol('mat4.Identity', mat4.Identity);
 goog.exportSymbol('mat4.LookAt', mat4.LookAt);
+goog.exportSymbol('mat4.Multiply', mat4.Multiply);
+goog.exportSymbol('mat4.Ortho2D', mat4.Ortho2D);
 goog.exportSymbol('mat4.Perspective', mat4.Perspective);
+goog.exportSymbol('mat4.Scale', mat4.Scale);
+goog.exportSymbol('mat4.ToString', mat4.ToString);
+goog.exportSymbol('mat4.Translation', mat4.Translation);

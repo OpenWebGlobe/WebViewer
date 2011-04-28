@@ -25,7 +25,7 @@ goog.provide('owg.GlobeRenderer');
 
 goog.require('owg.GlobeCache');
 goog.require('owg.MercatorQuadtree');
-goog.require('owg.ViewFrustrum');
+goog.require('owg.ViewFrustum');
 goog.require('owg.i3dImageLayer');
 goog.require('owg.i3dElevationLayer');
 

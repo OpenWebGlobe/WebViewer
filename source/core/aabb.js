@@ -125,4 +125,5 @@ AABB.prototype.HitBox = function(x,y,z,dirx,diry,dirz,m1x,m1y,m1z,m2x,m2y,m2z)
    }
 }
 
-
+goog.exportSymbol('AABB', AABB);
+goog.exportSymbol('AABB.HitBox', AABB.HitBox);

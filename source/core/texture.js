@@ -361,3 +361,7 @@ Texture.prototype.DisableRenderToTexture = function()
     this.gl.viewport(0, 0, this.engine.width, this.engine.height);
 }
 
+goog.exportSymbol('Texture', Texture);
+goog.exportSymbol('Texture.Blit', Texture.Blit);
+goog.exportSymbol('Texture.EnableRenderToTexture', Texture.EnableRenderToTexture);
+goog.exportSymbol('Texture.DisableRenderToTexture', Texture.DisableRenderToTexture);

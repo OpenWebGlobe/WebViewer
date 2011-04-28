@@ -21,7 +21,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-goog.provide('owg.ViewFrustrum');
+goog.provide('owg.ViewFrustum');
 
 //------------------------------------------------------------------------------
 /** 
@@ -219,3 +219,6 @@ ViewFrustum.prototype.UpdateFrustumPlanes = function()
   
 }
 
+goog.exportSymbol('ViewFrustum', ViewFrustum);
+goog.exportSymbol('ViewFrustum.TestBox', ViewFrustum.TestBox);
+goog.exportSymbol('ViewFrustum.Update', ViewFrustum.Update);
