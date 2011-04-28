@@ -146,7 +146,7 @@ ShaderManager.prototype.UseShader_PNCT = function(modelviewprojection)
    if (this.program_pnct)
    {
       this.gl.useProgram(this.program_pnct);
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pcnt, "matMVP"), false, modelviewprojection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnct, "matMVP"), false, modelviewprojection.Get());
    }    
 }
 
