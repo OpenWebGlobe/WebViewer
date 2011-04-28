@@ -42,6 +42,7 @@
          <script type="text/javascript" src="../../core/layer/elevationlayer_i3d.js"></script>
          <script type="text/javascript" src="../../core/triangleintersector.js"></script>
          <script type="text/javascript" src="../../core/aabb.js"></script>
+          <script type="text/javascript" src="../../core/poi.js"></script>
          <script type="text/javascript">
          
          //---------------------------------------------------------------------
@@ -69,10 +70,7 @@
          //---------------------------------------------------------------------
          
          function OnRender()
-         {  
-            var fontcolor = new vec4();
-            fontcolor.Set(1,1,0,1);
-            engine.DrawText("OpenWebGlobe for WebGL", 0, height-32,1,fontcolor);
+         {          
             poi.Draw();
          }
          
@@ -80,10 +78,8 @@
          
          function OnInit()
          { 
-            //create POI
-            poi = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePC.json");  
-                
-            poi.SetAsBillboard(lat,lng,pos);
+           
+            poi = new Poi("BernDiesIstEinTest",46.9510827861504654,7.4386324175389165,700,engine);
          }
         
          //---------------------------------------------------------------------

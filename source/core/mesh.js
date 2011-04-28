@@ -121,6 +121,7 @@ function Mesh(engine)
    
    this.numOfTriangles = 0;     //number of triangles depends on indexsemantic "TRIANGLES or TRIANGLESTRIP"
    this.currentTriangle = {}; //current triangle used for intersection tests.
+   this.billboardPos = new Array(3);
 
    
 }
@@ -732,7 +733,67 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
    
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Updates the bounding box of the mesh
+ * (Warning: currently ignoring mesh model matrix)
+ */
+Mesh.prototype.UpdateAABB = function()
+{
+   var minx = 1e20;
+   var miny = 1e20;
+   var minz = 1e20;
+   var maxx = -1e20;
+   var maxy = -1e20;
+   var maxz = -1e20;
+   var vx,vy,vz;
+   
+   // 
+   for (var i=0;i<this.vertexbufferdata.length;i++)
+   {
+      vx = this.vertexbufferdata[i*this.vertexLength];
+      vy = this.vertexbufferdata[i*this.vertexLength+1];
+      vz = this.vertexbufferdata[i*this.vertexLength+2];
+   
+      if (vx>maxx) { maxx = vx;}
+      if (vy>maxy) { maxy = vy;}
+      if (vz>maxz) { maxz = vz;}
+      if (vx<minx) { minx = vx;}
+      if (vy<miny) { miny = vy;}
+      if (vz<minz) { minz = vz;}
+   }
+   
+   // if this node has a high precision virtual camera offset, add it to the vertices.
+   if (this.offset)
+   {
+      minx += this.offset[0];
+      miny += this.offset[1];
+      minz += this.offset[2];
+      maxx += this.offset[0];
+      maxy += this.offset[1];
+      maxz += this.offset[2];
+   } 
+   
+   if (this.bbmin == null) // no bounding box yet ?
+   {
+      this.bbmin = new Array(3);
+   }
+   if (this.bbmax == null)
+   {
+      this.bbmax = new Array(3);
+   }
+   
+   this.bbmin[0] = minx;
+   this.bbmin[1] = miny;
+   this.bbmin[2] = minz;
+   this.bbmax[0] = maxx;
+   this.bbmax[1] = maxy;
+   this.bbmax[2] = maxz;
+   
+}
 
+
+//------------------------------------------------------------------------------
 /**
  * @description   Test for ray bounding box intersection
  * @param x x ray startpoint x coordinate
@@ -748,8 +809,7 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
   
    //not tested...yet !!!!        
    if(this.modelMatrix)
-   {
-               
+   {       
       var invModelMatrix = new mat4();
       invModelMatrix.Inverse(this.modelMatrix); 
               
@@ -783,22 +843,21 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
 /**
  * @description fills the modelmatrix to use this mesh as billboard.
  */
-Mesh.prototype.SetAsBillboard= function()
+Mesh.prototype.SetAsBillboard= function(x,y,z)
 {
    var view = this.engine.matView.Get();
    var bbmat = new mat4();
-   var pos = [];
-   pos[0] = 0;
-   pos[1] = 0;
-   pos[2] = 0;
-   bbmat.Set([view[0],view[4],view[8],0,view[1],view[5],view[9],0,view[2],view[6],view[10],0,pos[0],pos[1],pos[2],1]);
+   this.billboardPos[0] = x;
+   this.billboardPos[1] = y;
+   this.billboardPos[2] = z;
+   bbmat.Set([view[0],view[4],view[8],0,view[1],view[5],view[9],0,view[2],view[6],view[10],0,this.billboardPos[0],this.billboardPos[1],this.billboardPos[2],1]);
    this.modelMatrix = bbmat;
 }
 
 
 Mesh.prototype.UpdateBillboardMatrix = function()
 {
-   this.SetAsBillboard();
+   this.SetAsBillboard(this.billboardPos[0],this.billboardPos[1],this.billboardPos[2]);
 }
 
 

@@ -25,6 +25,7 @@ goog.provide('owg.GlobeRenderer');
 
 goog.require('owg.GlobeCache');
 goog.require('owg.MercatorQuadtree');
+goog.require('owg.ViewFrustrum');
 goog.require('owg.i3dImageLayer');
 goog.require('owg.i3dElevationLayer');
 
@@ -50,6 +51,9 @@ function GlobeRenderer(engine)
    this.maxlod = 0;
    
    this.quality = 0.75; // quality parameter, reduce for lower quality
+   
+   // current view frustum (for view frustum culling)
+   this.frustum = new ViewFrustum();
 }
 
 //------------------------------------------------------------------------------
@@ -170,8 +174,9 @@ GlobeRenderer.prototype._UpdateLayers = function()
 /**
  * @description Render function
  */
-GlobeRenderer.prototype.Render = function(vCameraPosition)
+GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
 {
+   this.frustum.Update(matModelViewProjection);
    this.cameraposition = vCameraPosition;
    
    // before rendering make sure all layers are available
@@ -273,8 +278,10 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
        return true;
    }     
    
-   // todo: frustum culling and Normal Test
-   //bVisible = this._FrustumTest(tb.GetBoundingBox());
+   // frustum culling
+   bVisible = this.frustum.TestBox(tb.mesh.bbmin[0],tb.mesh.bbmin[1],tb.mesh.bbmin[2],
+                                   tb.mesh.bbmax[0],tb.mesh.bbmax[1],tb.mesh.bbmax[2]);                         
+   // Test if tile is really visible (this is somewhat an "ellipsoidal backfaceculling")                             
    //bVisible = bVisible && this._SurfaceNormalTest(tb);
    
    if (!bVisible)
@@ -308,10 +315,10 @@ GlobeRenderer.prototype.OnKey = function(key)
    {
       console.log("-------------------------");
       console.log("Frustum size: " + this.lstFrustum.length);
-      for (var i=0;i<this.lstFrustum.length;i++)
+      /*for (var i=0;i<this.lstFrustum.length;i++)
       {
          console.log(this.lstFrustum[i].quadcode);
-      }
+      }*/
       console.log("-------------------------");
    }
 }

@@ -107,9 +107,16 @@ Font.prototype.DrawText = function(text,x,y,scale,fontcolor)
  * @param {number} y y position of text
  * @return length in pixel
  */
-Font.prototype.GetStringWidth = function()
+Font.prototype.GetStringWidth = function(text)
 {
-   return this.strLengthInPixel;
+     var a = 0;
+     for (var i=0; i < text.length; i++)
+      {        
+         ccode = text.charCodeAt(i);
+         a += (fontwidth[ccode]); 
+      }
+      
+     return a;
    
 }
 //------------------------------------------------------------------------------
