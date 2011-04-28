@@ -92,5 +92,5 @@ vec4.prototype.ToString = function()
    return "["+this._values[0]+","+this._values[1]+","+this._values[2]+","+this._values[3]+"]";
 }
 
-
-
+goog.exportSymbol('vec4', vec4);
+goog.exportProperty(vec4.prototype, 'Set', vec4.prototype.Set);
