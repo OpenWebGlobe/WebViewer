@@ -29,7 +29,8 @@ Building WebViewer
 ==================
 
 WebViewer is compiled with [Google's Closure
-Compiler](http://code.google.com/closure/compiler/).  This produces an
+Compiler](http://code.google.com/closure/compiler/) and uses [Google's Closure
+Library](http://code.google.com/p/closure-library/).  The compiler produces an
 optimized, minified Javascript file containing all the WebViewer code.
 
 
@@ -40,6 +41,10 @@ Windows
 <http://closure-compiler.googlecode.com/files/compiler-latest.zip> and unzip
 it in `external\closure`.
 
+2. Change directory to `external` and check out the latest version of the
+Closure Library with the command
+    svn checkout http://closure-library.googlecode.com/svn/trunk/ closure-library
+
 2. Change directory to `scripts` and run `compile.bat`.
 
 
@@ -47,7 +52,7 @@ Linux
 -----
 
 1. Change directory to `scripts` and run `make`.  This will download the Closure
-Compiler (if required) and compile WebViewer.
+Compiler and Library (if required) and compile WebViewer.
 
 
 
