@@ -15,12 +15,16 @@ all: $(TARGETS)
 ../compiled/owg.js: $(SOURCES) Makefile $(COMPILER_JAR)
 	java -jar $(COMPILER_JAR) --js_output_file=$@ $(foreach s,$(SOURCES),--js=$(s))
 
-../compiled/owg-optimized.js: $(SOURCES) Makefile $(COMPILER_JAR)
-	java -jar $(COMPILER_JAR) \
-		--js_output_file=$@ \
-		--compilation_level=ADVANCED_OPTIMIZATIONS \
-		--warning_level=VERBOSE \
-		$(foreach s,$(SOURCES),--js=$(s))
+../compiled/owg-optimized.js: $(SOURCES) Makefile $(CLOSURE_LIBRARY) $(COMPILER_JAR)
+	$(CLOSURE_LIBRARY)/closure/bin/build/closurebuilder.py \
+		--compiler_flags=--compilation_level=ADVANCED_OPTIMIZATIONS \
+		--compiler_flags=--warning_level=VERBOSE \
+		--compiler_jar=$(COMPILER_JAR) \
+		--namespace=owg.engine3d \
+		--output_file=$@ \
+		--output_mode=compiled \
+		--root=../external/closure-library/ \
+		--root=../source/
 
 .PHONY: clean
 clean:
