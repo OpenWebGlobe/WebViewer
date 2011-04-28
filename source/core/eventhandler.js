@@ -56,7 +56,6 @@ function EventInfo(sender, func)
 //------------------------------------------------------------------------------
 /** 
  * @description Handle Key Down Event
- * @constructor
  */
 EventHandler.prototype.KeyDown = function(key)
 {
@@ -69,7 +68,6 @@ EventHandler.prototype.KeyDown = function(key)
 //------------------------------------------------------------------------------
 /** 
  * @description Handle Key Up Event
- * @constructor
  */
 EventHandler.prototype.KeyUp = function(key)
 {
@@ -82,7 +80,6 @@ EventHandler.prototype.KeyUp = function(key)
 //------------------------------------------------------------------------------
 /** 
  * @description Handle Mouse Down Event
- * @constructor
  */
 EventHandler.prototype.MouseDown = function(button, x, y)
 {
@@ -95,7 +92,6 @@ EventHandler.prototype.MouseDown = function(button, x, y)
 //------------------------------------------------------------------------------
 /** 
  * @description Handle Mouse Up Event
- * @constructor
  */
 EventHandler.prototype.MouseUp = function(button, x, y)
 {
@@ -108,7 +104,6 @@ EventHandler.prototype.MouseUp = function(button, x, y)
 //------------------------------------------------------------------------------
 /** 
  * @description Handle Mouse wheel Event
- * @constructor
  */
 EventHandler.prototype.MouseWheel = function(delta)
 {
@@ -121,7 +116,6 @@ EventHandler.prototype.MouseWheel = function(delta)
 //------------------------------------------------------------------------------
 /** 
  * @description Handle Mouse Move Event
- * @constructor
  */
 EventHandler.prototype.MouseMove = function(x, y)
 {
@@ -134,7 +128,6 @@ EventHandler.prototype.MouseMove = function(x, y)
 //------------------------------------------------------------------------------
 /** 
  * @description Handle Render Event
- * @constructor
  */
 EventHandler.prototype.Render = function()
 {
@@ -147,7 +140,6 @@ EventHandler.prototype.Render = function()
 //------------------------------------------------------------------------------
 /** 
  * @description Handle Resize Event
- * @constructor
  */
 EventHandler.prototype.Resize = function(w,h)
 {
@@ -160,7 +152,6 @@ EventHandler.prototype.Resize = function(w,h)
 //------------------------------------------------------------------------------
 /** 
  * @description Handle Timer Event
- * @constructor
  */
 EventHandler.prototype.Timer = function(dt)
 {
@@ -173,7 +164,6 @@ EventHandler.prototype.Timer = function(dt)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Key Down Event
- * @constructor
  */
 EventHandler.prototype.AddKeyDownCallback = function(sender, cbf)
 {
@@ -183,7 +173,6 @@ EventHandler.prototype.AddKeyDownCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Key Up Event
- * @constructor
  */
 EventHandler.prototype.AddKeyUpCallback = function(sender, cbf)
 {
@@ -193,7 +182,6 @@ EventHandler.prototype.AddKeyUpCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Mouse Down Event
- * @constructor
  */
 EventHandler.prototype.AddMouseDownCallback = function(sender, cbf)
 {
@@ -203,7 +191,6 @@ EventHandler.prototype.AddMouseDownCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Mouse Up Event
- * @constructor
  */
 EventHandler.prototype.AddMouseUpCallback = function(sender, cbf)
 {
@@ -213,7 +200,6 @@ EventHandler.prototype.AddMouseUpCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Mouse Wheel Event
- * @constructor
  */
 EventHandler.prototype.AddMouseWheelCallback = function(sender, cbf)
 {
@@ -223,7 +209,6 @@ EventHandler.prototype.AddMouseWheelCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Mouse Move Event
- * @constructor
  */
 EventHandler.prototype.AddMouseMoveCallback = function(sender, cbf)
 {
@@ -233,7 +218,6 @@ EventHandler.prototype.AddMouseMoveCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Render Event
- * @constructor
  */
 EventHandler.prototype.AddRenderCallback = function(sender, cbf)
 {
@@ -243,7 +227,6 @@ EventHandler.prototype.AddRenderCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Resize Event
- * @constructor
  */
 EventHandler.prototype.AddResizeCallback = function(sender, cbf)
 {
@@ -253,7 +236,6 @@ EventHandler.prototype.AddResizeCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Timer Event
- * @constructor
  */
 EventHandler.prototype.AddTimerCallback = function(sender, cbf)
 {
