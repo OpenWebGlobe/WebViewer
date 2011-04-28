@@ -21,6 +21,12 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.NavigationNode');
+goog.require('owg.ScenegraphNode');
+goog.require('owg.GeoCoord');
+goog.require('owg.mat4');
+goog.require('owg.vec3');
+
 /**
  * Navigation Node. Setup view matrix using a navigation
  * @author Martin Christen martin.christen@fhnw.ch 

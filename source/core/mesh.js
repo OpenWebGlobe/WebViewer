@@ -21,6 +21,14 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.Mesh');
+
+goog.require('owg.AABB');
+goog.require('owg.TriangleIntersector');
+goog.require('owg.mat4');
+goog.require('owg.vec3');
+goog.require('owg.vec4');
+
 //------------------------------------------------------------------------------
 /** 
  * @class mesh 
@@ -848,3 +856,6 @@ Mesh.prototype.SetAsBillboard = function(camX,camY,camZ,objX,objY,objZ)
    
 }
 */
+
+goog.exportSymbol('Mesh', Mesh);
+goog.exportSymbol('Mesh.Draw', Mesh.Draw);

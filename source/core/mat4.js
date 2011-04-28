@@ -21,6 +21,9 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.mat4');
+
+goog.require('owg.vec3');
 
 /** 
  * mat4(string type)     with type "double", "float" or "native". Matrix is initialized with identity.
@@ -756,3 +759,8 @@ mat4.prototype.ToString = function()
          "\n  "+this._values[2]+" "+this._values[6]+" "+this._values[10]+" "+this._values[14]+
          "\n  "+this._values[3]+" "+this._values[7]+" "+this._values[11]+" "+this._values[15]+" ]";      
 }
+
+goog.exportSymbol('mat4', mat4);
+goog.exportSymbol('mat4.Identity', mat4.Identity);
+goog.exportSymbol('mat4.LookAt', mat4.LookAt);
+goog.exportSymbol('mat4.Perspective', mat4.Perspective);

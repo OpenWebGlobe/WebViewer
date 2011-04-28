@@ -21,6 +21,11 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.CameraNode');
+
+goog.require('owg.ScenegraphNode');
+goog.require('owg.mat4');
+
 /**
  * Camera Node. Setup projection matrix
  * @author Martin Christen martin.christen@fhnw.ch 

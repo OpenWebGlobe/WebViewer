@@ -21,6 +21,18 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.engine3d');
+
+goog.require('owg.EventHandler');
+goog.require('owg.Font');
+goog.require('owg.Mesh');
+goog.require('owg.SceneGraph');
+goog.require('owg.ShaderManager');
+goog.require('owg.Texture');
+goog.require('owg.TraversalState');
+goog.require('owg.mat4');
+goog.require('owg.vec3');
+
 /** 
  * 
  * @class engine3d
@@ -815,3 +827,18 @@ engine3d.prototype.SetKeyDownCallback = function(f)
 }
 
 //------------------------------------------------------------------------------
+
+goog.exportSymbol('engine3d', engine3d);
+goog.exportSymbol('engine3d.CreateScene', engine3d.CreateScene);
+goog.exportSymbol('engine3d.DrawText', engine3d.DrawText);
+goog.exportSymbol('engine3d.InitEngine', engine3d.InitEngine);
+goog.exportSymbol('engine3d.LoadMesh', engine3d.LoadMesh);
+goog.exportSymbol('engine3d.SetClearColor', engine3d.SetClearColor);
+goog.exportSymbol('engine3d.SetInitCallback', engine3d.SetInitCallback);
+goog.exportSymbol('engine3d.SetKeyDownCallback', engine3d.SetKeyDownCallback);
+goog.exportSymbol('engine3d.SetModelMatrix', engine3d.SetModelMatrix);
+goog.exportSymbol('engine3d.SetProjectionMatrix', engine3d.SetProjectionMatrix);
+goog.exportSymbol('engine3d.SetRenderCallback', engine3d.SetRenderCallback);
+goog.exportSymbol('engine3d.SetResizeCallback', engine3d.SetResizeCallback);
+goog.exportSymbol('engine3d.SetTimerCallback', engine3d.SetTimerCallback);
+goog.exportSymbol('engine3d.SetViewMatrix', engine3d.SetViewMatrix);

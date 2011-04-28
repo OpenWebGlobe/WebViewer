@@ -21,6 +21,10 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.DatasetInfo');
+
+goog.require('goog.json');
+
 //------------------------------------------------------------------------------
 /**
  * @constructor
@@ -57,7 +61,7 @@ function _cbfdsidownload(dsi)
       if (dsi.http.status==200)
       {
          var data=dsi.http.responseText;      
-         var obj=JSON.parse(data);
+         var obj=goog.json.parse(data);
       
          dsi.sLayerName = obj.layer;         
          dsi.sLayerCopyright = obj.copyright;    

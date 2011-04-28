@@ -21,6 +21,13 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.GlobeRenderer');
+
+goog.require('owg.GlobeCache');
+goog.require('owg.MercatorQuadtree');
+goog.require('owg.i3dImageLayer');
+goog.require('owg.i3dElevationLayer');
+
 //------------------------------------------------------------------------------
 /**
  * @constructor

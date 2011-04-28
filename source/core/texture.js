@@ -21,6 +21,12 @@
  *     Licensed under MIT License. Read the file LICENSE for more information   *
  *******************************************************************************/
 
+goog.provide('owg.Texture');
+
+goog.require('owg.MathUtils');
+goog.require('owg.Mesh');
+goog.require('owg.mat4');
+
 //------------------------------------------------------------------------------
 /**
  * @class texture

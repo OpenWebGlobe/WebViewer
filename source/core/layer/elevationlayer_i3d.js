@@ -21,6 +21,14 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.i3dElevationLayer');
+
+goog.require('owg.DatasetInfo');
+goog.require('owg.ElevationLayer');
+goog.require('owg.GlobeUtils');
+goog.require('owg.MercatorQuadtree');
+goog.require('owg.Mesh');
+
 //------------------------------------------------------------------------------
 /**
  * @constructor

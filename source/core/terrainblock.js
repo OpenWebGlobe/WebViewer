@@ -21,6 +21,15 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.TerrainBlock');
+
+goog.require('owg.GeoCoord');
+goog.require('owg.Mercator');
+goog.require('owg.Mesh');
+goog.require('owg.Texture');
+goog.require('owg.mat4');
+goog.require('owg.vec3');
+
 //------------------------------------------------------------------------------
 /**
  * @constructor

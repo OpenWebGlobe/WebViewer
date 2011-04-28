@@ -21,6 +21,8 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.ViewFrustrum');
+
 //------------------------------------------------------------------------------
 /** 
  * @description ViewFrustum: Class for test if a Box is inside or outside the view frustum. 

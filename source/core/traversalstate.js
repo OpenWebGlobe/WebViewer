@@ -21,6 +21,9 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.TraversalState');
+
+goog.require('owg.mat4');
 
 //------------------------------------------------------------------------------
 /**

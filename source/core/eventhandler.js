@@ -21,6 +21,8 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.EventHandler');
+
 //------------------------------------------------------------------------------
 /** 
  * @description EventHandler: Class to manage callback functions called on a certain event.

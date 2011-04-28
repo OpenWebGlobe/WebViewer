@@ -21,6 +21,14 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.i3dImageLayer');
+
+goog.require('owg.DatasetInfo');
+goog.require('owg.GlobeUtils');
+goog.require('owg.ImageLayer');
+goog.require('owg.MercatorQuadtree');
+goog.require('owg.Texture');
+
 //------------------------------------------------------------------------------
 /**
  * @constructor

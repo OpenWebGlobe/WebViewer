@@ -21,6 +21,11 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.RenderObjectNode');
+
+goog.require('owg.GlobeRenderer');
+goog.require('owg.ScenegraphNode');
+
 /**
  * Render Object Node. Renders OpenWebGlobe objects, including virtual globe 
  * @author Martin Christen martin.christen@fhnw.ch 

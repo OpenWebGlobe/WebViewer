@@ -21,6 +21,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.ShaderManager');
 
 //------------------------------------------------------------------------------
 // Initialize the shader manager with gl context

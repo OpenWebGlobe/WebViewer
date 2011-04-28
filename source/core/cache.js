@@ -21,6 +21,8 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.Cache');
+
 /*
 This code is based on jscache, available at https://github.com/monsur/jscache/
 and is also released under MIT license 

@@ -21,6 +21,11 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.Font');
+
+goog.require('owg.Mesh');
+goog.require('owg.Texture');
+goog.require('owg.mat4');
 
 /*
  * @description array with fontwidth value example: width of char 'A' = fontwidth[65];

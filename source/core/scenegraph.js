@@ -21,6 +21,18 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.SceneGraph');
+
+goog.require('owg.BeginRenderNode');
+goog.require('owg.CameraNode');
+goog.require('owg.EndRenderNode');
+goog.require('owg.LogosNode');
+goog.require('owg.NavigationNode');
+goog.require('owg.RenderObjectNode');
+goog.require('owg.RenderNode');
+goog.require('owg.TraversalState');
+goog.require('owg.mat4');
+
 //------------------------------------------------------------------------------
 /**
  * Scenegraph Class.

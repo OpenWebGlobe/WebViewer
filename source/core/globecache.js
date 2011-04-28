@@ -21,6 +21,11 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.GlobeCache');
+
+goog.require('owg.Cache');
+goog.require('owg.TerrainBlock');
+
 //------------------------------------------------------------------------------
 /**
  * @constructor

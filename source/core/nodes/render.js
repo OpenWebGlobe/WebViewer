@@ -21,6 +21,10 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.RenderNode');
+
+goog.require('owg.ScenegraphNode');
+
 /**
  * Custom Rendering Node. Render User Data
  * @author Martin Christen martin.christen@fhnw.ch 

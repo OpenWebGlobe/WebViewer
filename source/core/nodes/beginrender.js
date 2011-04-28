@@ -21,6 +21,10 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.BeginRenderNode');
+
+goog.require('owg.ScenegraphNode');
+
 /**
  * Begin Render Node. This node is used to support multiple passes
  * @author Martin Christen martin.christen@fhnw.ch 

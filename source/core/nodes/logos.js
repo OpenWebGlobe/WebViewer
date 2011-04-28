@@ -21,6 +21,11 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.LogosNode');
+
+goog.require('owg.ScenegraphNode');
+goog.require('owg.Texture');
+
 //------------------------------------------------------------------------
 /**
  * Logos Node. Draw logos

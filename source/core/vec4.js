@@ -21,6 +21,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.vec4');
 
 //Constructor
 //vec4(string type)     with "double" or "float"(default) Vector is initialized with [0.0,0.0,0.0,0.0]
