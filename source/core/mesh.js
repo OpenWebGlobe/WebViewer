@@ -31,6 +31,19 @@ goog.require('owg.mat4');
 goog.require('owg.vec3');
 goog.require('owg.vec4');
 
+/**
+ * @typedef {{
+ *     BoundingBox: Array.<number>,
+ *     CurtainIndex: number,
+ *     IndexSemantic: string,
+ *     Indices: Array.<number>,
+ *     Offset: number,
+ *     VertexSemantic: string,
+ *     Vertices: Array.<number>
+ * }}
+ */
+var ObjectJSON;
+
 //------------------------------------------------------------------------------
 /** 
  * @class mesh 
@@ -471,7 +484,7 @@ function _cbfjsondownload(mesh)
       else
       {
          var data=mesh.http.responseText;      
-         var jsonobject=goog.json.parse(data);
+         var jsonobject=/** @type {ObjectJSON} */ goog.json.parse(data);
          
          if (jsonobject.BoundingBox)
          {
