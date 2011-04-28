@@ -1,0 +1,265 @@
+<!--
+      This is a minimal application using the cwc WebGL Engine
+      Tutorial 2: Using internal shaders to simplify the application
+-->
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+   <script type="text/javascript" src="../../core/openwebglobe.js"></script>
+         <script type="text/javascript" src="../../core/shaders.js"></script>
+         <script type="text/javascript" src="../../core/vec4.js"></script>
+         <script type="text/javascript" src="../../core/mat4.js"></script>
+         <script type="text/javascript" src="../../core/vec3.js"></script>
+         <script type="text/javascript" src="../../core/mesh.js"></script>
+         <script type="text/javascript" src="../../core/texture.js"></script>
+         <script type="text/javascript" src="../../core/traversalstate.js"></script>
+         <script type="text/javascript" src="../../core/eventhandler.js"></script>
+         <script type="text/javascript" src="../../core/scenegraph.js"></script>
+         <script type="text/javascript" src="../../core/node.js"></script>
+         <script type="text/javascript" src="../../core/nodes/beginrender.js"></script>
+         <script type="text/javascript" src="../../core/nodes/camera.js"></script>
+         <script type="text/javascript" src="../../core/nodes/endrender.js"></script>
+         <script type="text/javascript" src="../../core/nodes/logos.js"></script>
+         <script type="text/javascript" src="../../core/nodes/navigation.js"></script>
+         <script type="text/javascript" src="../../core/nodes/render.js"></script>
+         <script type="text/javascript" src="../../core/nodes/renderobject.js"></script>
+         <script type="text/javascript" src="../../core/font.js"></script>
+         <script type="text/javascript" src="../../core/mathutils.js"></script>
+         <script type="text/javascript" src="../../core/geocoord.js"></script>
+         <script type="text/javascript" src="../../core/globeutils.js"></script>
+         <script type="text/javascript" src="../../core/mercatorquadtree.js"></script>
+         <script type="text/javascript" src="../../core/datasetinfo.js"></script>
+         <script type="text/javascript" src="../../core/terrainblock.js"></script>
+         <script type="text/javascript" src="../../core/globerenderer.js"></script>
+         <script type="text/javascript" src="../../core/mercator.js"></script>
+         <script type="text/javascript" src="../../core/cache.js"></script>
+         <script type="text/javascript" src="../../core/globecache.js"></script>
+         <script type="text/javascript" src="../../core/layer/imagelayer.js"></script>
+         <script type="text/javascript" src="../../core/layer/imagelayer_i3d.js"></script>
+         <script type="text/javascript" src="../../core/layer/imagelayer_osm.js"></script>
+         <script type="text/javascript" src="../../core/triangleintersector.js"></script>
+          <script type="text/javascript" src="../../core/aabb.js"></script>
+      <script type="text/javascript">
+         
+         //---------------------------------------------------------------------
+         
+         var totaltime = 0;
+         var engine = null;
+         var cube = null;
+         var cube2 = null;
+         var width = 0;
+         var height = 0;
+         var tex = 0;
+         
+         var projection = new mat4(); // projection matrix
+         var view = new mat4();       // view matrix
+         var model = new mat4();
+         
+         var mvp1 =  new mat4();
+         var mvp2 =  new mat4();
+         
+         var mvpinv = new mat4();
+         
+         var mx = 0;
+         var my = 0; // current mouse pos
+         
+         var triIntersect = null;
+         var m = new mat4();
+         
+         var modelMatInverse = new mat4();
+         var cubeMvp = new mat4();
+         var cube2Mvp = new mat4();
+         
+         //---------------------------------------------------------------------
+         function OnTimer(delta)
+         {
+
+         }
+         //---------------------------------------------------------------------
+         function OnMouseMove(x,y)
+         {
+            mx = x;
+            my = height-y-1;
+            
+            if(dragCube)
+            {
+               cubex = (x-xStartDrag)*0.01;
+               cubey = -(y-yStartDrag)*0.01;
+            }
+            
+         }
+         
+         //---------------------------------------------------------------------
+         function OnMouseDown(button,x,y)
+         {
+
+            dragCube = true;
+            
+ 
+         }
+         
+         function OnMouseUp(button,x,y)
+         {
+            dragCube = false;
+            
+         }
+         
+         
+         //---------------------------------------------------------------------
+         function OnResize(w,h)
+         {
+            width = w;
+            height = h;  
+            
+            // update projection matrix on resize
+            var aspect = width / height;
+            projection.Perspective(45, aspect, 0.1, 100);
+            engine.SetProjectionMatrix(projection);
+         }
+         //---------------------------------------------------------------------
+         
+         var zpos = 10;
+         var xpos = 0;
+        
+         function OnKey(key)
+         {
+            if (key == 87) // 'W'
+            {
+               zpos = zpos - 0.1;
+            }
+            else if (key == 83) //'S'
+            {
+               zpos = zpos + 0.1;
+            }
+            else if (key == 65) //'A'
+            {
+               xpos = xpos - 0.1;
+            }
+            else if (key ==  68) // 'D'
+            {
+               xpos = xpos + 0.1;
+            }
+         }
+        
+         //---------------------------------------------------------------------
+         cubeModelMat = new mat4();
+         var dragCube = false;
+         var cubex = 0;
+         var cubey = 0;
+         var xStartDrag;
+         var yStartDrag;
+         var view = new mat4();
+         
+         
+         function OnRender()
+         {
+           
+           
+           view.LookAt(0,0,15,0,0,0,0,1,0);
+           engine.SetViewMatrix(view);
+           cube.Draw();    
+            
+         }
+       
+       
+       
+         // showcase live rendering by writing the current time
+              var date = new Date();
+              function two(number) {
+              if (number < 10)
+               return '0' + number;
+              else
+              return number;
+              }  
+         //---------------------------------------------------------------------
+         
+         function OnInit()
+         {     
+               
+               //create canvas
+               var canvas = document.getElementById('textureCanvas')
+               var ctx = canvas.getContext('2d');        
+               
+             
+             var text = two(date.getHours()) + ':' +
+                  two(date.getMinutes()) + ':' +
+                  two(date.getSeconds());
+
+             // let the color of the box rotate every minute
+             var secs = date.getSeconds() + date.getMilliseconds() / 1000;
+             ctx.fillStyle = 'hsl(' + 360 * (secs / 60) + ',100%,50%)';
+              ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+             // write white text with black border
+             ctx.fillStyle = 'white';
+             ctx.lineWidth = 2.5;
+             ctx.strokeStyle = 'black';
+             ctx.save();
+             ctx.font = 'bold 80px Verdana';
+             ctx.textAlign = 'center';
+             ctx.textBaseline = 'middle';
+             var leftOffset = ctx.canvas.width / 2;
+             var topOffset = ctx.canvas.height / 2;
+             ctx.strokeText(text, leftOffset, topOffset);
+             ctx.fillText(text, leftOffset, topOffset);
+             ctx.restore();
+             
+             
+             /*
+             // bind our canvas to a 2D texture
+             gl.bindTexture(gl.TEXTURE_2D, texture);
+             gl.texImage2D(gl.TEXTURE_2D, 0, textureCanvas);
+             gl.bindTexture(gl.TEXTURE_2D, null);
+             */
+               
+               tex = new Texture(engine);       
+               cube = engine.LoadMesh("../../tests/00_JSONDemoFiles/cubePT.json");
+               
+    
+               tex.texture = engine.gl.createTexture();
+               engine.gl.bindTexture(this.gl.TEXTURE_2D, tex.texture);            
+               tex.width = 512;
+               tex.height = 512; 
+               engine.gl.texImage2D(engine.gl.TEXTURE_2D, 0, engine.gl.RGBA,engine.gl.RGBA,engine.gl.UNSIGNED_BYTE, canvas);
+              //engine.gl.texImage2D(engine.gl.TEXTURE_2D, 0,canvas);
+               engine.gl.bindTexture(this.gl.TEXTURE_2D, null);
+               cube.SetTexture(tex);
+               tex.ready = true;
+         }                        
+         
+         //---------------------------------------------------------------------
+         
+         function main()
+         {
+         	engine = new engine3d();
+           
+            // Set Callbacks:
+            engine.SetInitCallback(OnInit);
+            engine.SetTimerCallback(OnTimer);
+            engine.SetRenderCallback(OnRender);
+            engine.SetResizeCallback(OnResize);
+            engine.SetKeyDownCallback(OnKey);
+            engine.SetMouseMoveCallback(OnMouseMove);
+            engine.SetMouseUpCallback(OnMouseUp);
+            engine.SetMouseDownCallback(OnMouseDown);
+            
+            // Start engine...
+            engine.InitEngine("canvas", false);  // (canvasid, fullscreen)
+         }
+         
+         //---------------------------------------------------------------------
+         
+      </script>
+    </head>
+    <body onload="main()">
+        <div style="text-align: center">
+            <canvas id="canvas" width="640" height="480"></canvas>
+            
+            <canvas id="textureCanvas"  width="512" height="512"></canvas>
+        </div>
+    </body>
+</html>
+
+
+
+

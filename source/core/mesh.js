@@ -113,6 +113,7 @@ function Mesh(engine)
    
    this.numOfTriangles = 0;     //number of triangles depends on indexsemantic "TRIANGLES or TRIANGLESTRIP"
    this.currentTriangle = {}; //current triangle used for intersection tests.
+   this.billboardPos = new Array(3);
 
    
 }
@@ -834,22 +835,21 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
 /**
  * @description fills the modelmatrix to use this mesh as billboard.
  */
-Mesh.prototype.SetAsBillboard= function()
+Mesh.prototype.SetAsBillboard= function(x,y,z)
 {
    var view = this.engine.matView.Get();
    var bbmat = new mat4();
-   var pos = [];
-   pos[0] = 0;
-   pos[1] = 0;
-   pos[2] = 0;
-   bbmat.Set([view[0],view[4],view[8],0,view[1],view[5],view[9],0,view[2],view[6],view[10],0,pos[0],pos[1],pos[2],1]);
+   this.billboardPos[0] = x;
+   this.billboardPos[1] = y;
+   this.billboardPos[2] = z;
+   bbmat.Set([view[0],view[4],view[8],0,view[1],view[5],view[9],0,view[2],view[6],view[10],0,this.billboardPos[0],this.billboardPos[1],this.billboardPos[2],1]);
    this.modelMatrix = bbmat;
 }
 
 
 Mesh.prototype.UpdateBillboardMatrix = function()
 {
-   this.SetAsBillboard();
+   this.SetAsBillboard(this.billboardPos[0],this.billboardPos[1],this.billboardPos[2]);
 }
 
 
