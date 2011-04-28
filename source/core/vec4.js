@@ -33,6 +33,7 @@
 /** 
  * 
  * @class vec4
+ * @constructor
  * vec4 object for colors. (R,G,B,A)
  * 
  * {@link http://www.openwebglobe.org} 

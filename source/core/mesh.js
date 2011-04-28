@@ -335,7 +335,7 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                       this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 8*4, 0*4); // position
                       this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 8*4, 3*4); // normal
                       this.gl.vertexAttribPointer(2, 2, this.gl.FLOAT, false, 8*4, 6*4); // texcoord
-                      this.engine.shadermanager.UseShader_PNT(engine.matModelViewProjection);
+                      this.engine.shadermanager.UseShader_PNT(this.engine.matModelViewProjection);
                       break;
                         
         case "pc": 
@@ -343,7 +343,7 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                       this.gl.enableVertexAttribArray(1);
                       this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
                       this.gl.vertexAttribPointer(1, 4, this.gl.FLOAT, false, 7*4, 3*4); // color
-                      this.engine.shadermanager.UseShader_PC(engine.matModelViewProjection);
+                      this.engine.shadermanager.UseShader_PC(this.engine.matModelViewProjection);
                       break;
                         
         case "pt": 
@@ -351,7 +351,7 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                       this.gl.enableVertexAttribArray(1);
                       this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
                       this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
-                      this.engine.shadermanager.UseShader_PT(engine.matModelViewProjection);
+                      this.engine.shadermanager.UseShader_PT(this.engine.matModelViewProjection);
                       break;
                         
         case "pnct": 
@@ -363,7 +363,7 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                       this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 12*4, 3*4); // normal
                       this.gl.vertexAttribPointer(2, 4, this.gl.FLOAT, false, 12*4, 6*4); // color
                       this.gl.vertexAttribPointer(3, 2, this.gl.FLOAT, false, 12*4, 10*4); // texture
-                      this.engine.shadermanager.UseShader_PNCT(engine.matModelViewProjection);
+                      this.engine.shadermanager.UseShader_PNCT(this.engine.matModelViewProjection);
                       break;
                       
         case "font": 
@@ -375,7 +375,7 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
                       {
                          fontcolor = this.defaultfontcolor;
                       }
-                      this.engine.shadermanager.UseShader_Font(engine.matModelViewProjection,fontcolor);
+                      this.engine.shadermanager.UseShader_Font(this.engine.matModelViewProjection,fontcolor);
                       break;
                              
              
@@ -439,38 +439,11 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
 }
 
 //------------------------------------------------------------------------------
-/**
- * @description Load mesh-data from a JSON file.
- * @param {sting} url the url to the JSON file.
- * @param {function} callbackready optional function called when mesh finished download
- * @param {function} callbackfailed optional function called when mesh failed download
- */
-Mesh.prototype.loadFromJSON = function(url, callbackready, callbackfailed)
-{
-   if(url == null) 
-   {
-      alert("invalid json-url");
-      return;
-   }  
-   this.jsonUrl=url;
-      
-   this.http=new window.XMLHttpRequest();
-   this.http.open("GET",this.jsonUrl,true);
-   
-   this.cbr = callbackready;
-   this.cbf = callbackfailed;
-   
-   var me=this;
-   this.http.onreadystatechange = function(){_cbfjsondownload(me);};
-   this.http.send();  
-}
-
-//------------------------------------------------------------------------------
 /** 
  * @description download callback
  * @ignore
  */
-_cbfjsondownload = function(mesh)
+function _cbfjsondownload(mesh)
 {
    if (mesh.http.readyState==4)
    {
@@ -555,8 +528,35 @@ _cbfjsondownload = function(mesh)
 
 //------------------------------------------------------------------------------
 /**
+ * @description Load mesh-data from a JSON file.
+ * @param {sting} url the url to the JSON file.
+ * @param {function()} callbackready optional function called when mesh finished download
+ * @param {function()} callbackfailed optional function called when mesh failed download
+ */
+Mesh.prototype.loadFromJSON = function(url, callbackready, callbackfailed)
+{
+   if(url == null) 
+   {
+      alert("invalid json-url");
+      return;
+   }  
+   this.jsonUrl=url;
+      
+   this.http=new window.XMLHttpRequest();
+   this.http.open("GET",this.jsonUrl,true);
+   
+   this.cbr = callbackready;
+   this.cbf = callbackfailed;
+   
+   var me=this;
+   this.http.onreadystatechange = function(){_cbfjsondownload(me);};
+   this.http.send();  
+}
+
+//------------------------------------------------------------------------------
+/**
  * @description Specify the function called as soon as the JSON File is fully loaded. This is optional.
- * @param {function} f Callback Function which has "mesh" as param.
+ * @param {function()} f Callback Function which has "mesh" as param.
  * */
 Mesh.prototype.SetJSONLoadCallback = function(f)
 {
@@ -585,7 +585,7 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
             
    for(var i=0; i < this.numOfTriangles; i++)
    {
-      setTriangle = this.SetCurrentTriangle(i);
+      var setTriangle = this.SetCurrentTriangle(i);
       if(!setTriangle)
       {
          continue; 
@@ -628,7 +628,7 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
        }  
          */
         
-      result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,this.currentTriangle.v1x,this.currentTriangle.v1y,this.currentTriangle.v1z,this.currentTriangle.v2x,this.currentTriangle.v2y,this.currentTriangle.v2z,this.currentTriangle.v3x,this.currentTriangle.v3y,this.currentTriangle.v3z);      
+      var result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,this.currentTriangle.v1x,this.currentTriangle.v1y,this.currentTriangle.v1z,this.currentTriangle.v2x,this.currentTriangle.v2y,this.currentTriangle.v2z,this.currentTriangle.v3x,this.currentTriangle.v3y,this.currentTriangle.v3z);      
              
       if(result)
       {
@@ -653,7 +653,7 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
 
 /**
  * @ignore
- * @descritption Reads a Triangle from the current vertexBuffer using the correct mode and sets the value to this.currentTriangle.v...values
+ * @description Reads a Triangle from the current vertexBuffer using the correct mode and sets the value to this.currentTriangle.v...values
  */
 Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
 {
@@ -737,6 +737,7 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
  */
 Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
 {
+   var result;
   
    //not tested...yet !!!!        
    if(this.modelMatrix)
@@ -777,7 +778,7 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
  */
 Mesh.prototype.SetAsBillboard= function(x,y,z)
 {
-   var view = engine.matView.Get();
+   var view = this.engine.matView.Get();
    var bbmat = new mat4();
    this.billboardPos[0] = x;
    this.billboardPos[1] = y;

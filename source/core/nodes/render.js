@@ -31,5 +31,5 @@ function RenderNode()
 
 }
 
-RenderNode.prototype = new Node();
+RenderNode.prototype = new ScenegraphNode();
 

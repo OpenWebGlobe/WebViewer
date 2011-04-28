@@ -119,7 +119,7 @@ function LogosNode()
       }
 }
 
-LogosNode.prototype = new Node();
+LogosNode.prototype = new ScenegraphNode();
 
 //------------------------------------------------------------------------------
 

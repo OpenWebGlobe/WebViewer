@@ -25,6 +25,7 @@
 /** 
  * @class aabb 
  * @description 
+ * @constructor
  * 
  * {@link http://www.openwebglobe.org} 
  *

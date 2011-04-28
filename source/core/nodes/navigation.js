@@ -422,7 +422,7 @@ function NavigationNode()
       //------------------------------------------------------------------------
 }
 
-NavigationNode.prototype = new Node();
+NavigationNode.prototype = new ScenegraphNode();
 
 //------------------------------------------------------------------------------
 

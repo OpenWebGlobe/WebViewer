@@ -24,6 +24,7 @@
 //------------------------------------------------------------------------------
 /**
  * @class texture
+ * @constructor
  * {@link http://www.openwebglobe.org}
  * @author Martin Christen martin.christen@fhnw.ch
  */
@@ -105,7 +106,7 @@ Texture.prototype.loadTexture = function(url, callbackready, callbackfailed, fli
    this.texture.image.onerror = function()
    {
       console.log("***FAILED DOWNLOADING: " + url);
-      failed = true;
+      this.failed = true;
       if (cbf)
       {
          cbf(thismat);
@@ -192,8 +193,8 @@ Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend, invtexcoord)
        var w = this.width;
       var h = this.height;
       
-      xr = this.width/2;
-      yr = this.height/2;
+      var xr = this.width/2;
+      var yr = this.height/2;
       this.engine.PushMatrices();
       this.engine.SetOrtho2D();
 
@@ -271,7 +272,7 @@ Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend, invtexcoord)
 Texture.prototype.Destroy = function()
 {
    this.texture.image = null;
-   engine.gl.deleteTexture(this.texture);
+   this.engine.gl.deleteTexture(this.texture);
    this.texture = null;
 
    this.ready = false;
@@ -287,7 +288,7 @@ Texture.prototype.Destroy = function()
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 /**
- * @desciption Load Default Font Texture
+ * @description Load Default Font Texture
  * @ignore
  */
 Texture.prototype.LoadFontTexture = function()
@@ -296,7 +297,7 @@ Texture.prototype.LoadFontTexture = function()
 }
 //------------------------------------------------------------------------------
 /**
- * @desciption Load Default "empty" (nodata) texture
+ * @description Load Default "empty" (nodata) texture
  * @ignore
  */
 Texture.prototype.LoadNoDataTexture = function()

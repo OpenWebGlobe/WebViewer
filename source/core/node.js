@@ -25,7 +25,7 @@
  * Unique ID for nodes.
  * @ignore
  */
-_g_id = 0;
+var _g_id = 0;
 
 //------------------------------------------------------------------------------
 /**
@@ -33,7 +33,7 @@ _g_id = 0;
  * @author Martin Christen martin.christen@fhnw.ch 
  * @constructor
  */
-function Node()
+function ScenegraphNode()
 {
    this.Id = _g_id; //_generateId();
    _g_id++;
@@ -54,13 +54,13 @@ function Node()
 }
 
 //------------------------------------------------------------------------------
-Node.prototype.SetEngine = function(e)
+ScenegraphNode.prototype.SetEngine = function(e)
 {
    this.engine = e;
 }
 
 //------------------------------------------------------------------------------
-Node.prototype.InitNode = function()
+ScenegraphNode.prototype.InitNode = function()
 {
    this.OnRegisterEvents();
    this.OnInit();

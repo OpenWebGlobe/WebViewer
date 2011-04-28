@@ -41,6 +41,7 @@ function ViewFrustum(mvpMatrix)
 }
 
 /** 
+ * @constructor
  * @description Struct to save plane data.
  * @ignore
  */
@@ -52,6 +53,7 @@ function plane3(){
 }
 
 /** 
+ * @constructor
  * @description Struct to save corner coordinates
  * @ignore
  */

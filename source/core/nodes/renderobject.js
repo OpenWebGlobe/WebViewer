@@ -111,4 +111,4 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
 }
 
-RenderObjectNode.prototype = new Node();
+RenderObjectNode.prototype = new ScenegraphNode();
