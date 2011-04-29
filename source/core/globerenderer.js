@@ -401,8 +401,8 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
       }                                    
    }
    
-   console.log("Frustum size: " + this.lstFrustum.length);
-   console.log("There are " + candidates.length + " candidates");
+   goog.debug.Logger.getLogger('owg.GlobeRenderer').info("Frustum size: " + this.lstFrustum.length);
+   goog.debug.Logger.getLogger('owg.GlobeRenderer').info("There are " + candidates.length + " candidates");
    
    var tmin = 1e20;
    pickresult.hit = false;
