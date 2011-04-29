@@ -307,7 +307,7 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
    }
    
    // (3) Calculate Error Metric
-   var dist = tb.CalcDistanceTo(this.cameraposition);
+   var dist = tb.CalcDistanceTo(/*this.cameraposition*/campos);
    var dCell = tb.GetBlockSize();
    var error = this.quality * dCell / dist;
    

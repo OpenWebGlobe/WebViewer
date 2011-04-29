@@ -544,6 +544,7 @@ Mesh.prototype.loadFromJSON = function(url, callbackready, callbackfailed)
       
    this.http=new window.XMLHttpRequest();
    this.http.open("GET",this.jsonUrl,true);
+   //this.http.setRequestHeader("Cache-Control", "public");
    
    this.cbr = callbackready;
    this.cbf = callbackfailed;

@@ -296,30 +296,26 @@ TerrainBlock.prototype.CalcDistanceTo = function(vWhere)
    // this is not the closest distance to the surface, but it is much faster 
    // to calculate and sufficient for applications like error metric calculation. 
    
-   var vPos = new vec3();
-   var lenv = new vec3();
-   var curdist;
-   var len = 1e20; 
-   
-   var numpoints = this.mesh.vertexbufferdata.length / 5; // interleaved POSITION, TEXCOORD
-   for (var i=0;i<numpoints;i++)
+   var vPos = [0,0,0];
+   var curdist = 0;
+   var len = 1e20;
+   var numpts = this.mesh.vertexbufferdata.length / this.mesh.vertexLength;
+   for (var i=0;i<numpts;i++)
    {
-      vPos.Set(
-         this.mesh.vertexbufferdata[5*i] + this.vOffset[0], 
-         this.mesh.vertexbufferdata[5*i+1] + this.vOffset[1], 
-         this.mesh.vertexbufferdata[5*i+2] + this.vOffset[2]);
-         
-         lenv.Subtract(vWhere,vPos);
-         curdist = lenv.SquaredLength(); // use squared len, not useful to calculate square root for every point...
+   	 	vPos[0] = vWhere[0] - (this.mesh.vertexbufferdata[5*i] + this.vOffset[0]);
+   	 	vPos[1] = vWhere[1] - (this.mesh.vertexbufferdata[5*i+1] + this.vOffset[1]);
+   	 	vPos[2] = vWhere[2] - (this.mesh.vertexbufferdata[5*i+2] + this.vOffset[2]);
+   	 	
+   	 	curdist = vPos[0]*vPos[0] + vPos[1]*vPos[1] + vPos[2]*vPos[2];
          
          if (curdist < len)
          {
             len = curdist;
          }
    }
-    
    
    return Math.sqrt(len);
+   
 }
 
 //------------------------------------------------------------------------------
