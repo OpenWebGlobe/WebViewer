@@ -391,7 +391,7 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
       var bbmin = this.lstFrustum[i].mesh.bbmin;
       var bbmax = this.lstFrustum[i].mesh.bbmax;
       
-      res = this.lstFrustum[i].mesh.aabb.HitBox(pointDir.x,pointDir.y,pointDir.z,
+      var res = this.lstFrustum[i].mesh.aabb.HitBox(pointDir.x,pointDir.y,pointDir.z,
                                           pointDir.dirx,pointDir.diry,pointDir.dirz,
                                           bbmin[0],bbmin[1],bbmin[2],bbmax[0],bbmax[1],bbmax[2]);
                                           
@@ -408,7 +408,7 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
    pickresult.hit = false;
    for (var i=0;i<candidates.length;i++)
    {
-      r = candidates[i].mesh.TestRayIntersection(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz);
+      var r = candidates[i].mesh.TestRayIntersection(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz);
       if (r)
       {
          pickresult.hit = true;
@@ -425,7 +425,7 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
       pickresult.y = pointDir.y + tmin*pointDir.diry;
       pickresult.z = pointDir.z + tmin*pointDir.dirz;
       
-      gc = new GeoCoord(0,0,0);
+      var gc = new GeoCoord(0,0,0);
       gc.FromCartesian(pickresult.x,pickresult.y,pickresult.z);
       pickresult.lng = gc._wgscoords[0];
       pickresult.lat = gc._wgscoords[1];
