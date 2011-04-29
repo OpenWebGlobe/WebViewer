@@ -1,0 +1,91 @@
+<!--
+      Virtual Globe Demo
+-->
+<!DOCTYPE html>
+<html lang="en">
+         <!-- >
+            <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
+         -->
+         <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
+         <script type="text/javascript">
+         
+         //---------------------------------------------------------------------
+         var engine = null;
+       
+         
+         //---------------------------------------------------------------------
+         function OnTimer(delta)
+         {
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnResize(w,h)
+         {
+            width = w;
+            height = h;       
+         }
+         
+         //---------------------------------------------------------------------
+         function OnKey(key)
+         {
+         }
+         
+         //---------------------------------------------------------------------
+         function OnMouse(button,x,y)
+         {
+            var pickresult = new Object();
+            engine.PickGlobe(x, y, pickresult);
+            
+            if (pickresult.hit)
+            {
+               console.log("PICK: lng: " + pickresult.lng + ", lat: " + pickresult.lat + ", elv:" + pickresult.elv);
+               console.log("PICK: x: " + pickresult.x + ", y: " + pickresult.y + ", z:" + pickresult.z);
+            }
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnRender()
+         {  
+            var fontcolor = new vec4();
+            fontcolor.Set(1,1,0,1);
+            engine.DrawText("OpenWebGlobe for WebGL", 0, height-32,1,fontcolor);
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnInit()
+         { 
+         }
+        
+         //---------------------------------------------------------------------
+        
+         function main()
+         {
+         	engine = new engine3d();
+           
+            // Set Callbacks:
+            engine.SetInitCallback(OnInit);
+            engine.SetTimerCallback(OnTimer);
+            engine.SetRenderCallback(OnRender);
+            engine.SetResizeCallback(OnResize);
+            engine.SetKeyDownCallback(OnKey)
+            engine.SetMouseDownCallback(OnMouse);
+            
+            // Start engine...
+            engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
+            engine.CreateScene();               // Create Globe Scene
+            engine.SetClearColor(0.5,0.5,1,1);
+         }
+         
+         //---------------------------------------------------------------------
+         
+      </script>
+    </head>
+    <body onload="main()">
+        <div style="text-align: center">
+            <canvas id="canvas" width="640" height="480"></canvas>
+        </div>
+    </body>
+</html>
