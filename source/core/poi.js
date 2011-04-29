@@ -24,6 +24,7 @@
 goog.provide('owg.Poi');
 
 goog.require('goog.debug.Logger');
+goog.require('owg.CanvasTexture');
 goog.require('owg.Font');
 goog.require('owg.GeoCoord');
 goog.require('owg.Mesh');
@@ -81,6 +82,6 @@ goog.require('owg.Texture');
     this.engine.gl.disable(this.engine.gl.BLEND);
  }
  
- 
- 
- 
+goog.exportSymbol('Poi', Poi); 
+goog.exportProperty(Poi.prototype, 'Draw', Poi.prototype.Draw);
+goog.exportProperty(Poi.prototype, 'SetPosition', Poi.prototype.SetPosition);

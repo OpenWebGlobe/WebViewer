@@ -434,3 +434,83 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
 
    
  }
+ 
+ //-----------------------------------------------------------------------------
+ /**
+ * @description Returns the altitude above ground [m]
+ */
+GlobeRenderer.prototype.AltitudeAboveGround = function()
+{
+   // There are basically two cases:
+   //    CASE 1: the user is above the terrain: shoot a ray from the camerea position to (0,0,0)
+   //            in this case the distance is cameraposition <-> hitpoint
+   //    CASE 2: the user is somehow under the terrain: shoot a ray from the camera position to (0,0,0)
+   //            in this case there is no hit point! 
+   //            So shoot a ray from (0,0,0) in direction of the camera position
+   //            the hitpoint <-> cameraposition is now the distance UNDER the terrain (negative).
+   //    DIFFERENCE CASE 1/2: This leads to an opposite sign in t because the direction is either 
+   //                         (-eye, -eye, -eye) or (+eye, +eye, +eye.)
+   //
+   
+   var candidates = new Array();
+   var campos = this.cameraposition.Get();
+   var vDirection = new vec3();
+   
+   vDirection.Set(-campos[0], -campos[1], -campos[2]);
+   vDirection.Normalize(); // for precision reasons it should be normalized... to speed up this could also be
+                           // multiplied with 1/((2^24)-1) but that is too much voodoo for the first version
+   var dir = vDirection.Get();                        
+    
+ 
+   for (var i=0;i<this.lstFrustum.length;i++)
+   {
+      var bbmin = this.lstFrustum[i].mesh.bbmin;
+      var bbmax = this.lstFrustum[i].mesh.bbmax;
+      
+      var res = this.lstFrustum[i].mesh.aabb.HitBox(campos[0],campos[1],campos[2],
+                                          dir[0], dir[1], dir[2],
+                                          bbmin[0],bbmin[1],bbmin[2],bbmax[0],bbmax[1],bbmax[2]);
+                                          
+      if (res)
+      {
+         candidates.push(this.lstFrustum[i]);
+      }                                    
+   }
+   
+
+   var tmin = 1e20;
+   var hit = false;
+   for (var i=0;i<candidates.length;i++)
+   {
+      var r = candidates[i].mesh.TestRayIntersection(campos[0],campos[1],campos[2],dir[0], dir[1], dir[2]);
+      if (r)
+      {
+         hit = true;
+         if (r.t < tmin)
+         {
+            tmin = r.t;
+         }
+      }
+   }
+   
+   if (hit) 
+   {
+      var x = tmin*dir[0];
+      var y = tmin*dir[1];
+      var z = tmin*dir[2]; 
+      var dist = Math.sqrt(x*x+y*y+z*z)*CARTESIAN_SCALE;
+      
+      if (tmin < 0) // we are in hell
+      {
+         dist = -dist;
+      }
+      
+      return dist;
+   }
+
+   
+   
+}
+ //-----------------------------------------------------------------------------
+ 
+ 

@@ -54,6 +54,9 @@
             var fontcolor = new vec4();
             fontcolor.Set(1,1,0,1);
             engine.DrawText("OpenWebGlobe for WebGL", 0, height-32,1,fontcolor);
+      
+            var altitude = engine.AltitudeAboveGround();
+            engine.DrawText("Altitude: "+ altitude, 0, height-64,1); 
          }
          
          //---------------------------------------------------------------------

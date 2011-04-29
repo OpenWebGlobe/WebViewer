@@ -821,7 +821,7 @@ engine3d.prototype.SetKeyDownCallback = function(f)
  *
  * @param {function()} f keyup callback handler.
  */
- engine3d.prototype.SetKeyUpCallback = function(f)
+engine3d.prototype.SetKeyUpCallback = function(f)
 {
    _gcbfKeyUp = f;
 }
@@ -839,15 +839,30 @@ engine3d.prototype.SetKeyDownCallback = function(f)
  *    pickresult.y: geocentric cartesian y-coordinate at mouse position
  *    pickresult.z: geocentric cartesian z-coordinate at mouse position
  */
- engine3d.prototype.PickGlobe = function(mx, my, pickresult)
- {
-    if (this.scene)
-    {
-       this.scene.nodeRenderObject.globerenderer.PickGlobe(mx,my,pickresult);
-    }
- }
+engine3d.prototype.PickGlobe = function(mx, my, pickresult)
+{
+   if (this.scene)
+   {
+      this.scene.nodeRenderObject.globerenderer.PickGlobe(mx,my,pickresult);
+   }
+}
+ //-----------------------------------------------------------------------------
+ /**
+ * @description Returns the altitude above ground [m]
+ */
+engine3d.prototype.AltitudeAboveGround = function()
+{
+   if (this.scene)
+   {
+      return this.scene.nodeRenderObject.globerenderer.AltitudeAboveGround();
+   }   
+   
+   return 0;
+   
+}
 
 goog.exportSymbol('engine3d', engine3d);
+goog.exportProperty(engine3d.prototype, 'AltitudeAboveGround', engine3d.prototype.AltitudeAboveGround);
 goog.exportProperty(engine3d.prototype, 'CreateScene', engine3d.prototype.CreateScene);
 goog.exportProperty(engine3d.prototype, 'DrawText', engine3d.prototype.DrawText);
 goog.exportProperty(engine3d.prototype, 'GetDirectionMousePos', engine3d.prototype.GetDirectionMousePos);
