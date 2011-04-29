@@ -203,7 +203,7 @@ function _fncMouseWheel(evt)
       }
       else if (evt.detail)  // Firefox
       { 
-         delta = evt.detail/3;;
+         delta = evt.detail/3;
       }
       
       engine.eventhandler.MouseWheel(delta);
@@ -366,8 +366,8 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    this.gl.enable(this.gl.DEPTH_TEST);
    
    this.gl.frontFace(this.gl.CCW);
-   this.gl.cullFace(this.gl.FRONT_AND_BACK);
-   //this.gl.cullFace(this.gl.BACK);
+   //this.gl.cullFace(this.gl.FRONT_AND_BACK);
+   this.gl.cullFace(this.gl.BACK);
    
    // Create Default Shaders
    //this.CreateDefaultShaders();
@@ -610,7 +610,6 @@ engine3d.prototype.DrawText = function(txt,x,y,scale,fontcolor)
  */
 engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
 {
-   
    var mvpInv = new mat4();
    mvpInv.Inverse(mvp);
    
@@ -829,6 +828,25 @@ engine3d.prototype.SetKeyDownCallback = function(f)
 
 //------------------------------------------------------------------------------
 
+/*
+ * @description PickGlobe: Retrieve clicked position on globe (high precision result)
+ * The result contains the following:
+ *    pickresult.hit: true if there was a hit with terrain
+ *    pickresult.lng: longitude at mouse position
+ *    pickresult.lat: latitude at mouse position
+ *    pickresult.elv: elevation at mouse position
+ *    pickresult.x: geocentric cartesian x-coordinate at mouse position
+ *    pickresult.y: geocentric cartesian y-coordinate at mouse position
+ *    pickresult.z: geocentric cartesian z-coordinate at mouse position
+ */
+ engine3d.prototype.PickGlobe = function(mx, my, pickresult)
+ {
+    if (this.scene)
+    {
+       this.scene.nodeRenderObject.globerenderer.PickGlobe(mx,my,pickresult);
+    }
+ }
+
 goog.exportSymbol('engine3d', engine3d);
 goog.exportProperty(engine3d.prototype, 'CreateScene', engine3d.prototype.CreateScene);
 goog.exportProperty(engine3d.prototype, 'DrawText', engine3d.prototype.DrawText);
@@ -836,6 +854,7 @@ goog.exportProperty(engine3d.prototype, 'GetDirectionMousePos', engine3d.prototy
 goog.exportProperty(engine3d.prototype, 'InitEngine', engine3d.prototype.InitEngine);
 goog.exportProperty(engine3d.prototype, 'LoadMesh', engine3d.prototype.LoadMesh);
 goog.exportProperty(engine3d.prototype, 'LoadTexture', engine3d.prototype.LoadTexture);
+goog.exportProperty(engine3d.prototype, 'PickGlobe', engine3d.prototype.PickGlobe);
 goog.exportProperty(engine3d.prototype, 'PopMatrices', engine3d.prototype.PopMatrices);
 goog.exportProperty(engine3d.prototype, 'PushMatrices', engine3d.prototype.PushMatrices);
 goog.exportProperty(engine3d.prototype, 'SetClearColor', engine3d.prototype.SetClearColor);

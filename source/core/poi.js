@@ -36,57 +36,49 @@ goog.require('owg.Texture');
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch
  */
  
- function Poi(text,lat,lng,elv,engine)
+ function Poi(engine)
  {
-    this.engine = engine;
-    this.gl = engine.gl;
-    this.lat = lat;
-    this.lng = lng;
-    this.elv = elv;
-    this.text = text;
-    this.font = new Font(this.engine);
-    
-    
-    this.texture = new Texture(this.engine,true,128,128);
-    
-    this.mesh = new Mesh(engine);
-    this.mesh.SetTexture(this.texture);
-    
-    this.poiLength = this.font.GetStringWidth(this.text);
-    this.poiHeight = 31;
-    goog.debug.Logger.getLogger('owg.Poi').info(this.poiLength);
-    
+   this.engine = engine;
+   this.gl = engine.gl;
+   this.lat = 0.0;
+   this.lng = 0.0;
+   this.elv = 0.0;
 
-    var vert = new Array();
-    vert.push(0,CARTESIAN_SCALE_INV*100*this.poiLength,0,0,1);
-    vert.push(0,0,0,0,0);
-    vert.push(CARTESIAN_SCALE_INV*100*this.poiLength,0,0,1,0);
-    vert.push(CARTESIAN_SCALE_INV*100*this.poiLength,CARTESIAN_SCALE_INV*100*this.poiLength,0,1,1);
-            
-            
-    this.mesh.SetBufferPT(vert);
-    this.mesh.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");         
-            
-    this.geoCoord = new GeoCoord(lng,lat,elv);
-    var cart = new Array(3);
-    this.geoCoord.ToCartesian(cart);           
-    this.mesh.SetAsBillboard(cart[0],cart[1],cart[2]);
-    
-    this.fontcolor = new vec4();
-    this.fontcolor.Set(1,0,0,1);
-
-
+   canvasText = new CanvasTexture(this.engine);
+   this.mesh = canvasText.GenerateText("Bern","def")              
  }
  
+
+ 
+ 
+ Poi.prototype.SetPosition = function(lat,lng,elv)
+ {
+    
+     this.geoCoord = new GeoCoord(lng,lat,elv);
+     var cart = new Array(3);
+     this.geoCoord.ToCartesian(cart);       
+     
+         
+     this.mesh.SetAsBillboard(cart[0],cart[1],cart[2]);  
+ }
+ 
+
  
  Poi.prototype.Draw = function()
  {
+    this.engine.gl.enable(this.engine.gl.BLEND);
+    this.engine.gl.depthFunc(this.engine.gl.LEQUAL);
+    this.engine.gl.blendFunc(this.engine.gl.SRC_ALPHA,this.engine.gl.ONE_MINUS_SRC_ALPHA);
+      
     this.mesh.UpdateBillboardMatrix();
-    this.texture.EnableRenderToTexture();
-    this.font.DrawText(this.text,0,0,1,this.fontcolor);
-    this.texture.DisableRenderToTexture();
-
+    
+    engine.PushMatrices();
+    var mmat = new mat4();
+    mmat.Scale(CARTESIAN_SCALE_INV,CARTESIAN_SCALE_INV,1)
+    this.engine.SetModelMatrix(mmat);
     this.mesh.Draw();
+    engine.PopMatrices();
+    this.engine.gl.disable(this.engine.gl.BLEND);
  }
  
  

@@ -137,6 +137,7 @@ function Mesh(engine)
    this.numOfTriangles = 0;     //number of triangles depends on indexsemantic "TRIANGLES or TRIANGLESTRIP"
    this.currentTriangle = {}; //current triangle used for intersection tests.
    this.billboardPos = new Array(3);
+   this.newModelMatrix = new mat4();
 
    
 }
@@ -346,7 +347,8 @@ Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor)
    if(this.modelMatrix)
    {     
       this.engine.PushMatrices();
-      this.engine.SetModelMatrix(this.modelMatrix);   
+      this.newModelMatrix.Multiply(this.modelMatrix,this.engine.matModel);
+      this.engine.SetModelMatrix(this.newModelMatrix);   
    }  
          
    switch (this.mode) 
@@ -571,6 +573,7 @@ Mesh.prototype.loadFromJSON = function(url, opt_callbackready, opt_callbackfaile
       
    this.http=new window.XMLHttpRequest();
    this.http.open("GET",this.jsonUrl,true);
+   //this.http.setRequestHeader("Cache-Control", "public");
    
    this.cbr = opt_callbackready;
    this.cbf = opt_callbackfailed;
@@ -664,7 +667,7 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
          {
             if(result.t < hitresult.t)
             {
-            hitresult = result;      
+               hitresult = result;      
             }  
             
          }
@@ -739,6 +742,14 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
                         goog.debug.Logger.getLogger('owg.Mesh').warning("This indexsemantic is not supported for function: Mesh.ReadTriangleFromBuffer() ");
                         break;
       
+   }
+   
+   // is there a virtual camera offset?
+   if (this.offset)
+   {
+      this.currentTriangle.v1x += this.offset[0]; this.currentTriangle.v1y += this.offset[1]; this.currentTriangle.v1z += this.offset[2];
+      this.currentTriangle.v2x += this.offset[0]; this.currentTriangle.v2y += this.offset[1]; this.currentTriangle.v2z += this.offset[2];
+      this.currentTriangle.v3x += this.offset[0]; this.currentTriangle.v3y += this.offset[1]; this.currentTriangle.v3z += this.offset[2];
    }
    
    if(this.indexbufferdata[triangleNumber] == this.indexbufferdata[triangleNumber+1]
