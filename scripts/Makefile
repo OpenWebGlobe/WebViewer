@@ -1,7 +1,7 @@
 CLOSURE_LIBRARY=../external/closure-library
 COMPILER_JAR=../external/closure/compiler.jar
 SOURCES=$(shell find ../source/core ../source/core/layer ../source/core/nodes -maxdepth 1 -name \*.js)
-TARGETS=../compiled/deps.js ../compiled/owg.js ../compiled/owg-optimized.js
+TARGETS=../compiled/deps.js ../compiled/owg.js ../compiled/owg-optimized.js ../compiled/owg-optimized.map
 
 .PHONY: all
 all: $(TARGETS)
@@ -15,9 +15,10 @@ all: $(TARGETS)
 ../compiled/owg.js: $(SOURCES) Makefile $(COMPILER_JAR)
 	java -jar $(COMPILER_JAR) --js_output_file=$@ $(foreach s,$(SOURCES),--js=$(s))
 
-../compiled/owg-optimized.js: $(SOURCES) Makefile $(CLOSURE_LIBRARY) $(COMPILER_JAR)
+../compiled/owg-optimized.js ../compiled/owg-optimized.map: $(SOURCES) Makefile $(CLOSURE_LIBRARY) $(COMPILER_JAR)
 	$(CLOSURE_LIBRARY)/closure/bin/build/closurebuilder.py \
 		--compiler_flags=--compilation_level=ADVANCED_OPTIMIZATIONS \
+		--compiler_flags=--create_source_map=../compiled/owg-optimized.map \
 		--compiler_flags=--warning_level=VERBOSE \
 		--compiler_jar=$(COMPILER_JAR) \
 		--namespace=owg.engine3d \
