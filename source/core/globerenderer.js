@@ -403,7 +403,7 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
       if (r)
       {
          pickresult.hit = true;
-         if (-r.t < tmin)
+         if (r.t < tmin)
          {
             tmin = r.t;
          }
@@ -413,8 +413,8 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
    if (pickresult.hit)
    {
       pickresult.x = pointDir.x + tmin*pointDir.dirx;
-      pickresult.y = pointDir.x + tmin*pointDir.dirx;
-      pickresult.z = pointDir.x + tmin*pointDir.dirx;
+      pickresult.y = pointDir.y + tmin*pointDir.diry;
+      pickresult.z = pointDir.z + tmin*pointDir.dirz;
       
       gc = new GeoCoord(0,0,0);
       gc.FromCartesian(pickresult.x,pickresult.y,pickresult.z);

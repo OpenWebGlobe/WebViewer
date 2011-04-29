@@ -637,7 +637,7 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
          {
             if(result.t < hitresult.t)
             {
-            hitresult = result;      
+               hitresult = result;      
             }  
             
          }

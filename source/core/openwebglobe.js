@@ -190,7 +190,7 @@ function _fncMouseWheel(evt)
       }
       else if (evt.detail)  // Firefox
       { 
-         delta = evt.detail/3;;
+         delta = evt.detail/3;
       }
       
       engine.eventhandler.MouseWheel(delta);
@@ -353,8 +353,8 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    this.gl.enable(this.gl.DEPTH_TEST);
    
    this.gl.frontFace(this.gl.CCW);
-   this.gl.cullFace(this.gl.FRONT_AND_BACK);
-   //this.gl.cullFace(this.gl.BACK);
+   //this.gl.cullFace(this.gl.FRONT_AND_BACK);
+   this.gl.cullFace(this.gl.BACK);
    
    // Create Default Shaders
    //this.CreateDefaultShaders();

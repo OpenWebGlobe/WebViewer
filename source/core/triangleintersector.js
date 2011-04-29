@@ -69,7 +69,7 @@
     this.det = 0.0;
     this.invdet = 0.0;
     
-    this.EPSILON = 0.000001;
+    this.EPSILON = 2.2204460492503131e-016;
  }
  
  
@@ -118,9 +118,11 @@
     //if determinant is near zero, ray lies in plane of triangle
     //dot(edge1,pvec)
     this.det = this.edge1.x*this.pvec.x + this.edge1.y*this.pvec.y + this.edge1.z*this.pvec.z;
+    
+ //---
+ /*   
     this.invdet= 1.0 / this.det;
-    
-    
+   
     if(this.det > -this.EPSILON && this.det < this.EPSILON)
     {
        return null;
@@ -139,13 +141,10 @@
        return null;
     }
     
-    
-    
     //cross(tvec,edge1); 
     this.qvec.x = this.tvec.y*this.edge1.z - this.tvec.z*this.edge1.y;
     this.qvec.y = this.tvec.z*this.edge1.x - this.tvec.x*this.edge1.z;
     this.qvec.z = this.tvec.x*this.edge1.y - this.tvec.y*this.edge1.x;
-    
     
     //calculate v and test bounds
       this.result.v = (dirx*this.qvec.x + diry*this.qvec.y + dirz*this.qvec.z)*this.invdet;
@@ -156,6 +155,49 @@
     }
     
     this.result.t = (this.edge2.x*this.qvec.x + this.edge2.y*this.qvec.y + this.edge2.z*this.qvec.z)*this.invdet;
+*/  
+    
+    if (this.det < this.EPSILON)
+    {
+       return null;
+    }
+    
+    //calculate the distance from vert0 to ray origin
+    this.tvec.x = origx - vert0x;
+    this.tvec.y = origy - vert0y;
+    this.tvec.z = origz - vert0z;
+    
+    //calculate u parameter and test bounds
+    this.result.u = (this.tvec.x*this.pvec.x + this.tvec.y*this.pvec.y + this.tvec.z*this.pvec.z);
+    
+    if(this.result.u<0.0 || this.result.u>this.det)
+    {
+       return null;
+    }
+    
+    //cross(tvec,edge1); 
+    this.qvec.x = this.tvec.y*this.edge1.z - this.tvec.z*this.edge1.y;
+    this.qvec.y = this.tvec.z*this.edge1.x - this.tvec.x*this.edge1.z;
+    this.qvec.z = this.tvec.x*this.edge1.y - this.tvec.y*this.edge1.x;
+    
+    //calculate v and test bounds
+    this.result.v = (dirx*this.qvec.x + diry*this.qvec.y + dirz*this.qvec.z);
+    
+    if(this.result.v <0.0 || this.result.u + this.result.v > this.det)
+    {
+       return null;
+    }
+    
+    if (this.det < this.EPSILON)
+    {
+       return null;
+    }
+    
+    this.result.t = (this.edge2.x*this.qvec.x + this.edge2.y*this.qvec.y + this.edge2.z*this.qvec.z);
+    this.invdet= 1.0 / this.det;
+    this.result.u *= this.invdet;
+    this.result.v *= this.invdet;
+    this.result.t *= this.invdet;
     
     return this.result;
  }
