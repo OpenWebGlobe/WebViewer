@@ -3,9 +3,9 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
-         <!-- >
+         
             <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
-         -->
+         
          <script type="text/javascript" src="../../core/openwebglobe.js"></script>
          <script type="text/javascript" src="../../core/shaders.js"></script>
          <script type="text/javascript" src="../../core/vec4.js"></script>
@@ -50,6 +50,10 @@
          //---------------------------------------------------------------------
          var engine = null;
          var poi = null;
+         var poi2 = null;
+         var poi3 = null;
+         var poi4 = null;
+         var poi5 = null;
          
          //---------------------------------------------------------------------
          function OnTimer(delta)
@@ -74,6 +78,8 @@
          function OnRender()
          {          
             poi.Draw();
+            poi2.Draw();
+            poi3.Draw();
          }
          
          //---------------------------------------------------------------------
@@ -82,7 +88,16 @@
          { 
            
             poi = new Poi(engine);
-            poi.SetPosition(46.9510827861504654,7.4386324175389165,700);
+            poi.SetContent("Bern","BB");
+            poi.SetPosition(46.9510827861504654,7.4386324175389165,800); 
+            
+            poi2 = new Poi(engine);
+            poi2.SetContent("BernLausanneGenfBellinzona","RB");
+            poi2.SetPosition(46.9510827861504654,7.5489334175389165,1800,600);
+            
+            poi3 = new Poi(engine);
+            poi3.SetContent("Basel","WB");
+            poi3.SetPosition(46.9510827861504654,7.2489334175389165,17000,600);
          }
         
          //---------------------------------------------------------------------
