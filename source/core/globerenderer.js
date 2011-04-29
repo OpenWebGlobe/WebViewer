@@ -47,6 +47,8 @@ function GlobeRenderer(engine)
    // current view frustum (for view frustum culling)
    this.frustum = new ViewFrustum();
    this.vDir = new Array(3);
+   
+   this.matPick = new mat4(); // stored mvp matrix for picking
 }
 
 //------------------------------------------------------------------------------
@@ -169,6 +171,8 @@ GlobeRenderer.prototype._UpdateLayers = function()
  */
 GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
 {
+   this.matPick.CopyFrom(matModelViewProjection);  // copy last mvp for pick-event
+   
    this.frustum.Update(matModelViewProjection);
    this.cameraposition = vCameraPosition;
    
@@ -250,6 +254,7 @@ GlobeRenderer.prototype._SubDivide = function()
    this.iterator.cnt++;
 }
 
+var SURFACE_NORMAL_THRESHOLD = -0.9;
 //------------------------------------------------------------------------------
 GlobeRenderer.prototype._CalcErrorMetric = function(i)
 {
@@ -291,7 +296,7 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
    var mag = Math.sqrt(this.vDir[0]*this.vDir[0]+this.vDir[1]*this.vDir[1]+this.vDir[2]*this.vDir[2]);
    var d = (this.vDir[0] * normal[0] + this.vDir[1] * normal[1] + this.vDir[2] * normal[2])/mag;  
 
-   if (d<-0.9)
+   if (d<SURFACE_NORMAL_THRESHOLD)
    {
       bVisible = false;  // reject
    }
@@ -327,7 +332,7 @@ GlobeRenderer.prototype._Optimize = function()
       var mag = Math.sqrt(this.vDir[0]*this.vDir[0]+this.vDir[1]*this.vDir[1]+this.vDir[2]*this.vDir[2]);
       var d = (this.vDir[0] * normal[0] + this.vDir[1] * normal[1] + this.vDir[2] * normal[2])/mag;  
    
-      if (d<-0.9)
+      if (d<SURFACE_NORMAL_THRESHOLD)
       {
          this.lstFrustum.splice(i, 1);  
       }
@@ -353,15 +358,70 @@ GlobeRenderer.prototype.OnKey = function(key)
 }
 
 //------------------------------------------------------------------------------
-
-GlobeRenderer.prototype.OnPick(mx, my, pickresult)
+/**
+ * @description PickGlobe: Retrieve clicked position (high precision result)
+ * The result contains the following:
+ *    pickresult.hit: true if there was a hit with terrain
+ *    pickresult.lng: longitude at mouse position
+ *    pickresult.lat: latitude at mouse position
+ *    pickresult.elv: elevation at mouse position
+ *    pickresult.x: geocentric cartesian x-coordinate at mouse position
+ *    pickresult.y: geocentric cartesian y-coordinate at mouse position
+ *    pickresult.z: geocentric cartesian z-coordinate at mouse position
+ */
+GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
 {
-   pointDir = this.engine.GetDirectionMousePos(x, y);           
+   var pointDir = this.engine.GetDirectionMousePos(mx, my, this.matPick);           
+   var candidates = new Array();
    
-   for (var i=0;i<i<this.lstFrustum.length;i++)
+   
+   // pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz
+   
+   for (var i=0;i<this.lstFrustum.length;i++)
    {
+      var bbmin = this.lstFrustum[i].mesh.bbmin;
+      var bbmax = this.lstFrustum[i].mesh.bbmax;
       
+      res = this.lstFrustum[i].mesh.aabb.HitBox(pointDir.x,pointDir.y,pointDir.z,
+                                          pointDir.dirx,pointDir.diry,pointDir.dirz,
+                                          bbmin[0],bbmin[1],bbmin[2],bbmax[0],bbmax[1],bbmax[2]);
+                                          
+      if (res)
+      {
+         candidates.push(this.lstFrustum[i]);
+      }                                    
    }
    
-   //r = tb.mesh.TestRayIntersection(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz);
-}
+   console.log("Frustum size: " + this.lstFrustum.length);
+   console.log("There are " + candidates.length + " candidates");
+   
+   var tmin = 1e20;
+   pickresult.hit = false;
+   for (var i=0;i<candidates.length;i++)
+   {
+      r = candidates[i].mesh.TestRayIntersection(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz);
+      if (r)
+      {
+         pickresult.hit = true;
+         if (-r.t < tmin)
+         {
+            tmin = r.t;
+         }
+      }
+   }
+   
+   if (pickresult.hit)
+   {
+      pickresult.x = pointDir.x + tmin*pointDir.dirx;
+      pickresult.y = pointDir.x + tmin*pointDir.dirx;
+      pickresult.z = pointDir.x + tmin*pointDir.dirx;
+      
+      gc = new GeoCoord(0,0,0);
+      gc.FromCartesian(pickresult.x,pickresult.y,pickresult.z);
+      pickresult.lng = gc._wgscoords[0];
+      pickresult.lat = gc._wgscoords[1];
+      pickresult.elv = gc._wgscoords[2];
+   }
+
+   
+ }

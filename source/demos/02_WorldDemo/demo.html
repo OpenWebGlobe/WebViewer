@@ -68,6 +68,18 @@
          }
          
          //---------------------------------------------------------------------
+         function OnMouse(button,x,y)
+         {
+            var pickresult = new Object();
+            engine.PickGlobe(x, y, pickresult);
+            
+            if (pickresult.hit)
+            {
+               console.log("PICK: x: " + pickresult.x + ", y: " + pickresult.y + ", z:" + pickresult.z);
+            }
+         }
+         
+         //---------------------------------------------------------------------
          
          function OnRender()
          {  
@@ -94,6 +106,7 @@
             engine.SetRenderCallback(OnRender);
             engine.SetResizeCallback(OnResize);
             engine.SetKeyDownCallback(OnKey)
+            engine.SetMouseDownCallback(OnMouse);
             
             // Start engine...
             engine.InitEngine("canvas", true);  // (canvasid, fullscreen)

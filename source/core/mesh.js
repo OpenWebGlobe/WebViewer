@@ -714,6 +714,14 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
       
    }
    
+   // is there a virtual camera offset?
+   if (this.offset)
+   {
+      this.currentTriangle.v1x += this.offset[0]; this.currentTriangle.v1y += this.offset[1]; this.currentTriangle.v1z += this.offset[2];
+      this.currentTriangle.v2x += this.offset[0]; this.currentTriangle.v2y += this.offset[1]; this.currentTriangle.v2z += this.offset[2];
+      this.currentTriangle.v3x += this.offset[0]; this.currentTriangle.v3y += this.offset[1]; this.currentTriangle.v3z += this.offset[2];
+   }
+   
    if(this.indexbufferdata[triangleNumber] == this.indexbufferdata[triangleNumber+1]
                               || this.indexbufferdata[triangleNumber] == this.indexbufferdata[triangleNumber+2]
                                  || this.indexbufferdata[triangleNumber+1] == this.indexbufferdata[triangleNumber+2])
