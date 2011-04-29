@@ -114,6 +114,7 @@ function Mesh(engine)
    this.numOfTriangles = 0;     //number of triangles depends on indexsemantic "TRIANGLES or TRIANGLESTRIP"
    this.currentTriangle = {}; //current triangle used for intersection tests.
    this.billboardPos = new Array(3);
+   this.newModelMatrix = new mat4();
 
    
 }
@@ -319,7 +320,8 @@ Mesh.prototype.Draw = function(ranged, count, offset, fontcolor)
    if(this.modelMatrix)
    {     
       this.engine.PushMatrices();
-      this.engine.SetModelMatrix(this.modelMatrix);   
+      this.newModelMatrix.Multiply(this.modelMatrix,this.engine.matModel);
+      this.engine.SetModelMatrix(this.newModelMatrix);   
    }  
          
    switch (this.mode) 
