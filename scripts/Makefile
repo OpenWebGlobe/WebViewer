@@ -12,9 +12,6 @@ all: $(TARGETS)
 		--root_with_prefix="../source/ ../../../../source/" \
 		--output_file=$@
 
-../compiled/owg.js: $(SOURCES) Makefile $(COMPILER_JAR)
-	java -jar $(COMPILER_JAR) --js_output_file=$@ $(foreach s,$(SOURCES),--js=$(s))
-
 ../compiled/owg-optimized.js ../compiled/owg-optimized.map: $(SOURCES) Makefile $(CLOSURE_LIBRARY) $(COMPILER_JAR)
 	$(CLOSURE_LIBRARY)/closure/bin/build/closurebuilder.py \
 		--compiler_flags=--compilation_level=ADVANCED_OPTIMIZATIONS \
