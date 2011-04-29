@@ -1,4 +1,5 @@
 CLOSURE_LIBRARY=../external/closure-library
+COMPILATION_LEVEL=SIMPLE_OPTIMIZATIONS
 COMPILER_JAR=../external/closure/compiler.jar
 SOURCES=$(shell find ../source/core ../source/core/layer ../source/core/nodes -maxdepth 1 -name \*.js)
 TARGETS=../compiled/deps.js ../compiled/owg.js ../compiled/owg-optimized.js ../compiled/owg-optimized.map
@@ -14,7 +15,7 @@ all: $(TARGETS)
 
 ../compiled/owg-optimized.js ../compiled/owg-optimized.map: $(SOURCES) Makefile $(CLOSURE_LIBRARY) $(COMPILER_JAR)
 	$(CLOSURE_LIBRARY)/closure/bin/build/closurebuilder.py \
-		--compiler_flags=--compilation_level=ADVANCED_OPTIMIZATIONS \
+		--compiler_flags=--compilation_level=$(COMPILATION_LEVEL) \
 		--compiler_flags=--create_source_map=../compiled/owg-optimized.map \
 		--compiler_flags=--warning_level=VERBOSE \
 		--compiler_jar=$(COMPILER_JAR) \
