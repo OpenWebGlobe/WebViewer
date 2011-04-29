@@ -93,5 +93,18 @@ MathUtils.Rad2Deg = function(rad)
 }
 
 //------------------------------------------------------------------------------
-
+//------------------------------------------------------------------------------
+/**
+ * @description gets the next higher power of 2 value
+ */
+MathUtils.GetNextPowerOfTwo = function(value)
+{ 
+   var powerOfTwo = 1;
+   while(value > powerOfTwo)
+   {
+      powerOfTwo*=2;
+      
+   }
+   return powerOfTwo;
+}
 
