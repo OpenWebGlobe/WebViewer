@@ -35,29 +35,47 @@
    this.lat = 0.0;
    this.lng = 0.0;
    this.elv = 0.0;
-
-   canvasText = new CanvasTexture(this.engine);
-   this.mesh = canvasText.GenerateText("Bern","def")              
+   this.pole = false;
+   this.poleMesh = null;
+           
  }
  
+ 
+ Poi.prototype.SetContent = function(text,style)
+ {
+   canvasText = new CanvasTexture(this.engine);
+   this.mesh = canvasText.GenerateText(text,style); 
+ }
 
  
  
- Poi.prototype.SetPosition = function(lat,lng,elv)
+ Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
  {
-    
      this.geoCoord = new GeoCoord(lng,lat,elv);
      var cart = new Array(3);
-     this.geoCoord.ToCartesian(cart);       
-     
-         
+     this.geoCoord.ToCartesian(cart);            
      this.mesh.SetAsBillboard(cart[0],cart[1],cart[2]);  
+     
+     if(signElv!=null)
+     {
+       this.geoCoord2 = new GeoCoord(lng,lat,signElv);
+       var cart2 = new Array(3);
+       this.geoCoord2.ToCartesian(cart2);            
+         
+       this.pole = true;
+       this.poleMesh = canvasText.GetPoleMesh(cart[0],cart[1],cart[2],cart2[0],cart2[1],cart2[2]);    
+     }
  }
  
 
  
  Poi.prototype.Draw = function()
  {
+
+    if(this.pole)
+    {
+       this.poleMesh.Draw();
+    }
     this.engine.gl.enable(this.engine.gl.BLEND);
     this.engine.gl.depthFunc(this.engine.gl.LEQUAL);
     this.engine.gl.blendFunc(this.engine.gl.SRC_ALPHA,this.engine.gl.ONE_MINUS_SRC_ALPHA);
@@ -66,9 +84,13 @@
     
     engine.PushMatrices();
     var mmat = new mat4();
-    mmat.Scale(CARTESIAN_SCALE_INV,CARTESIAN_SCALE_INV,1)
+    mmat.Scale(CARTESIAN_SCALE_INV*20,CARTESIAN_SCALE_INV*20,1)
     this.engine.SetModelMatrix(mmat);
     this.mesh.Draw();
+
+    
+    
+    
     engine.PopMatrices();
     this.engine.gl.disable(this.engine.gl.BLEND);
  }
