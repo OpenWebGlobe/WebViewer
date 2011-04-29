@@ -373,10 +373,7 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
 {
    var pointDir = this.engine.GetDirectionMousePos(mx, my, this.matPick);           
    var candidates = new Array();
-   
-   
-   // pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz
-   
+  
    for (var i=0;i<this.lstFrustum.length;i++)
    {
       var bbmin = this.lstFrustum[i].mesh.bbmin;
@@ -429,14 +426,15 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
  //-----------------------------------------------------------------------------
  /**
  * @description Returns the altitude above ground [m]
+ * (If under world the returned value is negative)
+ * This function can be used for collision detection when implementing a navigation controller.
  */
 GlobeRenderer.prototype.AltitudeAboveGround = function()
 {
    // There are basically two cases:
    //    CASE 1: the user is above the terrain: shoot a ray from the camerea position to (0,0,0)
    //            in this case the distance is cameraposition <-> hitpoint
-   //    CASE 2: the user is somehow under the terrain: shoot a ray from the camera position to (0,0,0)
-   //            in this case there is no hit point! 
+   //    CASE 2: the user is somehow under the terrain: shoot a ray from the camera position to (0,0,0).
    //            So shoot a ray from (0,0,0) in direction of the camera position
    //            the hitpoint <-> cameraposition is now the distance UNDER the terrain (negative).
    //    DIFFERENCE CASE 1/2: This leads to an opposite sign in t because the direction is either 

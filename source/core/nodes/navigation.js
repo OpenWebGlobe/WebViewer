@@ -94,6 +94,9 @@ function NavigationNode()
       this.matR1 = new mat4();
       this.matR2 = new mat4();
       this.matCami3d.Cami3d();
+      
+      // min altitude is currently 100 m, this can be customized in future.
+      this.minAltitude = 225; 
      
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -302,6 +305,7 @@ function NavigationNode()
          var deltaRoll = sender._fRollSpeed*dTick/500.0;
          var deltaYaw = sender._fYawSpeed*dTick/500;
          var deltaH = sender._fVelocityY*dTick;
+         var currentAltitude = 0;
          
          var p = (sender._ellipsoidHeight / 500000.0 ) * (sender._ellipsoidHeight / 500000.0 );
          if (p>10) 
@@ -369,16 +373,18 @@ function NavigationNode()
          }
          
          // Change Elevation
+         
+         if (deltaH || deltaSurface)
+         {
+            currentAltitude = sender.engine.AltitudeAboveGround();
+         }
+         
          if (deltaH)
          {
-            sender._ellipsoidHeight += 1000*deltaH*p;
-
-            //limit ellipsoid height (TEMPORARY, because we have no collision atm)
-            if (sender._ellipsoidHeight<=1000)
-            {
-                sender._ellipsoidHeight = 10;
-            }
-            
+            var diff = 1000*deltaH*p;
+            sender._ellipsoidHeight += diff;
+                        
+            // limit maximum elevation
             if (sender._ellipsoidHeight>7000000)
             { 
                sender._ellipsoidHeight = 7000000;
@@ -416,6 +422,20 @@ function NavigationNode()
             while (sender._latitude<-90) { sender._latitude+=180;}
 
             bChanged = true;
+         }
+         
+         if (deltaH || deltaSurface)
+         {
+            // somehow we managed to get underground, fix it!
+            if (currentAltitude < sender.minAltitude)
+            {
+               if (currentAltitude < 0)
+               {
+                  currentAltitude = -currentAltitude;
+               }
+               
+               sender._ellipsoidHeight = currentAltitude + sender.minAltitude;
+            }
          }
          
       }
