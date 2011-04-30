@@ -28,7 +28,7 @@
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch
  */
  
- function Poi(engine)
+ function VideoPoi(engine)
  {
    this.engine = engine;
    this.gl = engine.gl;
@@ -38,19 +38,20 @@
    this.pole = false;
    this.poleMesh = null;
    this.scale = 20;
+   this.drawMVP = null;
            
  }
  
- 
- Poi.prototype.SetContent = function(text,style)
- {
-   canvasText = new CanvasTexture(this.engine);
-   this.mesh = canvasText.GenerateText(text,style); 
- }
 
+ VideoPoi.prototype.SetVideoContent = function(url)
+ {
+   this.videoTextureGenerator = new CanvasTexture(this.engine);
+   this.mesh = this.videoTextureGenerator.GenerateVideoPoi(url);
+   
+ }
  
  
- Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
+ VideoPoi.prototype.SetPosition = function(lat,lng,elv,signElv)
  {
      this.geoCoord = new GeoCoord(lng,lat,elv);
      var cart = new Array(3);
@@ -70,8 +71,15 @@
  
 
  
- Poi.prototype.Draw = function()
+ VideoPoi.prototype.Draw = function()
  {
+   if(this.videoTextureGenerator)
+   {
+      if(this.videoTextureGenerator.tex.ready)
+      {
+         _cbHandleLoadedVideo(this.gl,this.videoTextureGenerator);
+      }    
+   }
    
     if(this.pole)
     {
@@ -89,15 +97,40 @@
     this.engine.SetModelMatrix(mmat);
     this.mesh.Draw();
     
+   
+    
     engine.PopMatrices();
     this.engine.gl.disable(this.engine.gl.BLEND);
  }
  
  
- Poi.prototype.SetSize = function(size)
+ VideoPoi.prototype.SetSize = function(size)
  {
-    this.scale = size;
-    
+    this.scale = size;    
+ }
+ 
+ 
+ VideoPoi.prototype.Play = function()
+ {
+    this.videoTextureGenerator.videoElement.play();
+ }
+ 
+ VideoPoi.prototype.Pause = function()
+ {
+    this.videoTextureGenerator.videoElement.pause();
+ }
+ 
+  VideoPoi.prototype.TogglePlayPause = function()
+ {
+    if(this.videoTextureGenerator.videoElement.paused)
+    {
+     this.videoTextureGenerator.videoElement.play(); 
+    }
+    else
+    {
+     this.videoTextureGenerator.videoElement.pause();  
+    }
+
  }
  
  

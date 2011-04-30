@@ -579,7 +579,6 @@ Mesh.prototype.SetJSONLoadCallback = function(f)
  */
 Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
 {
-   
    var hit = false;
    var vertexlength = 0;
    var hitresult = null;

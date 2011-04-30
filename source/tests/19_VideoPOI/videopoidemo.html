@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
          
-            <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
+          <!--  <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  -->
          
          <script type="text/javascript" src="../../core/openwebglobe.js"></script>
          <script type="text/javascript" src="../../core/shaders.js"></script>
@@ -45,15 +45,15 @@
           <script type="text/javascript" src="../../core/poi.js"></script>
           <script type="text/javascript" src="../../core/viewfrustum.js"></script>
           <script type="text/javascript" src="../../core/canvastexture.js"></script>
+          <script type="text/javascript" src="../../core/videopoi.js"></script>
          <script type="text/javascript">
          
          //---------------------------------------------------------------------
          var engine = null;
          var poi = null;
          var poi2 = null;
-         var poi3 = null;
-         var poi4 = null;
-         var poi5 = null;
+         var videoPoi = null;
+
          
          //---------------------------------------------------------------------
          function OnTimer(delta)
@@ -71,6 +71,15 @@
          //---------------------------------------------------------------------
          function OnKey(key)
          {
+            switch(key)
+            {
+               case (80): //'p' pressed.
+                           videoPoi.TogglePlayPause();
+                           break;
+                                               
+               default:    //console.log("Key with kexcode: "+key+" pressed.");
+               
+            }
          }
          
          //---------------------------------------------------------------------
@@ -78,8 +87,12 @@
          function OnRender()
          {          
             poi.Draw();
-            poi2.Draw();
-            poi3.Draw();
+            videoPoi.Draw();
+         }
+         
+         function OnMouseUp(button, x, y)
+         {
+            //videoPoi.Play();  Todo...
          }
          
          //---------------------------------------------------------------------
@@ -88,17 +101,13 @@
          { 
            
             poi = new Poi(engine);
-            poi.SetContent("Bern","BB");
-            poi.SetPosition(46.9510827861504654,7.4386324175389165,800); 
-            
-            poi2 = new Poi(engine);
-            poi2.SetContent("BernLausanneGenfBellinzona","RB");
-            poi2.SetPosition(46.9510827861504654,7.5489334175389165,1800,600);
-            
-            poi3 = new Poi(engine);
-            poi3.SetContent("Basel","WB");
-            poi3.SetPosition(46.9510827861504654,7.2489334175389165,17000,600);
-            poi3.SetSize(50);
+            poi.SetContent("Press 'p' to play / pause video","WB");
+            poi.SetPosition(46.9510827861504654,7.4386324175389165,1200); 
+                       
+            videoPoi = new VideoPoi(engine);
+            videoPoi.SetVideoContent("http://www.w3schools.com/html5/movie.ogg");
+            videoPoi.SetPosition(46.9510827861504654,7.2489334175389165,4000);
+            videoPoi.SetSize(10);
             
          }
         
@@ -113,7 +122,8 @@
             engine.SetTimerCallback(OnTimer);
             engine.SetRenderCallback(OnRender);
             engine.SetResizeCallback(OnResize);
-            engine.SetKeyDownCallback(OnKey)
+            engine.SetKeyDownCallback(OnKey);
+            engine.SetMouseUpCallback(OnMouseUp);
             
             // Start engine...
             engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
@@ -127,7 +137,7 @@
     </head>
     <body onload="main()">
         <div style="text-align: center">
-            <canvas id="canvas" width="640" height="480"></canvas>
+            <canvas id="canvas" width="640" height="480"></canvas>          
         </div>
     </body>
 </html>
