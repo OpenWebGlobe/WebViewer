@@ -42,17 +42,23 @@
          <script type="text/javascript" src="../../core/layer/elevationlayer_i3d.js"></script>
          <script type="text/javascript" src="../../core/triangleintersector.js"></script>
          <script type="text/javascript" src="../../core/aabb.js"></script>
-          <script type="text/javascript" src="../../core/poi.js"></script>
-          <script type="text/javascript" src="../../core/viewfrustum.js"></script>
-          <script type="text/javascript" src="../../core/canvastexture.js"></script>
-          <script type="text/javascript" src="../../core/videopoi.js"></script>
+         <script type="text/javascript" src="../../core/poi.js"></script>
+         <script type="text/javascript" src="../../core/viewfrustum.js"></script>
+         <script type="text/javascript" src="../../core/canvastexture.js"></script>
+         <script type="text/javascript" src="../../core/videopoi.js"></script>
+         <script type="text/javascript" src="../../core/og/ogCamera.js"></script>
+         <script type="text/javascript" src="../../core/og/ogContext.js"></script>
+         <script type="text/javascript" src="../../core/og/ogImage.js"></script>
+         <script type="text/javascript" src="../../core/og/ogImageLayer.js"></script>
+         <script type="text/javascript" src="../../core/og/ogNavigationController.js"></script>
+         <script type="text/javascript" src="../../core/og/ogObject.js"></script>
+         <script type="text/javascript" src="../../core/og/ogScene.js"></script>
+         <script type="text/javascript" src="../../core/og/ogTexture.js"></script>
+         <script type="text/javascript" src="../../core/og/ogWorld.js"></script>
          <script type="text/javascript">
          
          //---------------------------------------------------------------------
          var engine = null;
-         var poi = null;
-         var poi2 = null;
-         var videoPoi = null;
 
          
          //---------------------------------------------------------------------
@@ -78,13 +84,10 @@
          
          function OnRender()
          {          
-            poi.Draw();
-            videoPoi.Draw();
          }
          
          function OnMouseUp(button, x, y)
          {
-            //videoPoi.Play();  Todo...
          }
          
          //---------------------------------------------------------------------
