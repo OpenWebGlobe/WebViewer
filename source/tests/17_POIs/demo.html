@@ -3,9 +3,10 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
          
-            <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
-         
+         <!--<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
+         -->
          <script type="text/javascript" src="../../core/openwebglobe.js"></script>
          <script type="text/javascript" src="../../core/shaders.js"></script>
          <script type="text/javascript" src="../../core/vec4.js"></script>
@@ -88,17 +89,21 @@
          { 
            
             poi = new Poi(engine);
-            poi.SetContent("Bern","BB");
-            poi.SetPosition(46.9510827861504654,7.4386324175389165,800); 
+            poi.SetContent("Bern 伯尔尼","BB");
+            poi.SetPosition(46.9540119257936, 7.441864013671875,5500,500); 
+            poi.SetSize(30);
             
             poi2 = new Poi(engine);
-            poi2.SetContent("BernLausanneGenfBellinzona","RB");
-            poi2.SetPosition(46.9510827861504654,7.5489334175389165,1800,600);
+            poi2.SetContent("Zürich 苏黎世","RB");
+            poi2.SetPosition(47.38812286319825, 8.52813720703125,5500,500);
+            poi2.SetSize(50);
             
             poi3 = new Poi(engine);
-            poi3.SetContent("Basel","WB");
-            poi3.SetPosition(46.9510827861504654,7.2489334175389165,17000,600);
+            poi3.SetContent("Basel 巴塞尔","WB");
+            poi3.SetPosition(47.56170075451973, 7.581939697265625 ,5500,500);
             poi3.SetSize(50);
+            
+            
             
          }
         
