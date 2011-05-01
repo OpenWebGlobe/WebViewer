@@ -497,7 +497,7 @@ GlobeRenderer.prototype.AltitudeAboveGround = function()
       return dist;
    }
 
-   
+   return 0;
    
 }
  //-----------------------------------------------------------------------------
