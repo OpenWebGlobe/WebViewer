@@ -34,6 +34,7 @@ function CanvasTexture(engine)
    this.pole = false;
    this.mesh = null;
    this.poleMesh = null;
+   this.videoMesh = null;
 
 }
 
@@ -46,6 +47,7 @@ CanvasTexture.prototype.GenerateText =  function(text,style,pole)
       this.pole = true;
    }
    this.texCanvas = document.createElement('canvas'); 
+   this.texCanvas.style.display = 'none';
    document.body.appendChild(this.texCanvas);
    this.ctx = this.texCanvas.getContext('2d');  
    this.ctx.canvas.height = 512; //maximal width and height.
@@ -215,7 +217,73 @@ CanvasTexture.prototype.GetPoleMesh = function(x,y,z,x2,y2,z2)
 
 }
 
+      
+function _cbHandleLoadedVideo(gl,canvasTex)
+{
+   gl.enable(gl.TEXTURE_2D);
+   gl.bindTexture(gl.TEXTURE_2D, canvasTex.tex.texture); 
+   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB,gl.RGB,gl.UNSIGNED_BYTE, canvasTex.videoElement);
+   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);         
+   gl.bindTexture(gl.TEXTURE_2D, null);
+   canvasTex.tex.ready = true;
+  
+   canvasTex.mesh.SetTexture(canvasTex.tex);
+}
 
+CanvasTexture.prototype.GenerateVideoPoi = function(url)
+{   
+   this.videoElement = document.createElement('video'); 
+   this.videoElement.style.display = 'none';
+   document.body.appendChild(this.videoElement);
+   
+   //set canvas as texture
+   this.tex = new Texture(this.engine);
+   this.tex.texture = this.gl.createTexture();
+   
+   var curgl = this.gl;
+   var canvasTex = this;
+   
+   this.videoElement.addEventListener("loadeddata", function()
+   {
+      console.log("Video loaded...");
+      _cbHandleLoadedVideo(curgl,canvasTex);
+   },true);
+   
+   
+  // this.videoElement.addEventListener("canplaythrough", this.videoElement.play(), true);
+   
+   this.videoElement.src=url;
+   
+    this.videoElement.onerror = function()
+   {
+      console.log("***FAILED VIDEO DOWNLOADING: " + url);
+   }
+
+   this.tex.width = 640;
+   this.tex.height = 480; 
+
+   this.mesh = new Mesh(engine);
+   this.mesh.SetTexture(this.tex);
+
+   var vert = new Array();
+     
+   vert.push(-this.tex.width/2,this.tex.height/2,0,0,1);
+   vert.push(-this.tex.width/2,-this.tex.height/2,0,0,0);
+   vert.push(this.tex.width/2,-this.tex.height/2,0,1,0);
+   vert.push(this.tex.width/2,this.tex.height/2,0,1,1);
+                 
+   this.mesh.SetBufferFont(vert);
+   this.mesh.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");  
+   
+  return this.mesh;
+
+   
+}
 
 
 
