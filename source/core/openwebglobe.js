@@ -843,7 +843,21 @@ engine3d.prototype.AltitudeAboveGround = function()
       return this.scene.nodeRenderObject.globerenderer.AltitudeAboveGround();
    }   
    
-   return 0;
-   
+   return 0;  
 }
 
+ //-----------------------------------------------------------------------------
+ /**
+ * @description Returns the altitude above ellipsoid [m]
+ */
+engine3d.prototype.AltitudeAboveEllipsoid = function()
+{
+   if (this.scene)
+   {
+      return this.scene.nodeNavigation.GetPosition().elevation;
+   }   
+   
+   return 0;
+}
+
+ //-----------------------------------------------------------------------------
