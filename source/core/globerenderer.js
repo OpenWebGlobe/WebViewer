@@ -428,6 +428,7 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
  * @description Returns the altitude above ground [m]
  * (If under world the returned value is negative)
  * This function can be used for collision detection when implementing a navigation controller.
+ * Returns NaN, if query is not possible.
  */
 GlobeRenderer.prototype.AltitudeAboveGround = function()
 {
@@ -440,6 +441,10 @@ GlobeRenderer.prototype.AltitudeAboveGround = function()
    //    DIFFERENCE CASE 1/2: This leads to an opposite sign in t because the direction is either 
    //                         (-eye, -eye, -eye) or (+eye, +eye, +eye.)
    //
+   if (!this.cameraposition)
+   {
+      return NaN;
+   }
    
    var candidates = new Array();
    var campos = this.cameraposition.Get();

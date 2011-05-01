@@ -305,7 +305,9 @@ function NavigationNode()
          var deltaRoll = sender._fRollSpeed*dTick/500.0;
          var deltaYaw = sender._fYawSpeed*dTick/500;
          var deltaH = sender._fVelocityY*dTick;
-         var currentAltitude = 0;
+         var currentAltitudeG = 0;   // altitude over ground
+         var currentAltitudeE = sender._ellipsoidHeight;   // altitude over ellipsoid
+         var newAltitudeG = 0;   // new altitude over ground
          
          var p = (sender._ellipsoidHeight / 500000.0 ) * (sender._ellipsoidHeight / 500000.0 );
          if (p>10) 
@@ -374,15 +376,22 @@ function NavigationNode()
          
          // Change Elevation
          
-         if (deltaH || deltaSurface)
-         {
-            currentAltitude = sender.engine.AltitudeAboveGround();
-         }
+         //if (deltaH || deltaSurface)
+         //{
+            currentAltitudeG = sender.engine.AltitudeAboveGround();
+            if (isNaN(currentAltitudeG))
+            {
+               currentAltitudeG = sender.minAltitude;
+            }
+            
+            newAltitudeG = currentAltitudeG;
+         //}
          
          if (deltaH)
          {
             var diff = 1000*deltaH*p;
             sender._ellipsoidHeight += diff;
+            newAltitudeG += diff;
                         
             // limit maximum elevation
             if (sender._ellipsoidHeight>7000000)
@@ -424,19 +433,18 @@ function NavigationNode()
             bChanged = true;
          }
          
-         if (deltaH || deltaSurface)
-         {
-            // somehow we managed to get underground, fix it!
-            if (currentAltitude < sender.minAltitude)
+
+         // new altitude over ground is lower than min value
+         // this means we managed to get underground and have to fix it
+         //if (deltaH || deltaSurface)
+         //{
+            if (newAltitudeG < sender.minAltitude) 
             {
-               if (currentAltitude < 0)
-               {
-                  currentAltitude = -currentAltitude;
-               }
-               
-               sender._ellipsoidHeight = currentAltitude + sender.minAltitude;
+               var cor = sender.minAltitude - newAltitudeG;
+               sender._ellipsoidHeight += cor;
             }
-         }
+         //}
+         
          
       }
       //------------------------------------------------------------------------
