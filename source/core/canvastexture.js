@@ -22,8 +22,8 @@
 *******************************************************************************/
 
 /** 
- * @class poi
- * {@link http://www.openwebglobe.org} 
+ * @constructor
+ * @description This class is used to create meshes with Canvas(2d) as textures. E.g. for POIs.
  * 
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch
  */
@@ -38,7 +38,13 @@ function CanvasTexture(engine)
 }
 
 
-//returns a mesh with canvas2d as font
+/**
+ * Generates a mesh with a canvas2d as texture. The mesh size depends on the text length and style.
+ * @extends CanvasTexture
+ * @param{string}  text the poi text.
+ * @param {string} string to set predefined style e.g. "RB","WB" or "Symbol".
+ * @param {url} imgurl url for poi icon.
+ */
 CanvasTexture.prototype.GenerateTexture =  function(text,style,imgurl)
 {
   
@@ -60,13 +66,6 @@ CanvasTexture.prototype.GenerateTexture =  function(text,style,imgurl)
    this.mesh.SetTexture(this.tex);
 
    var vert = new Array();
-   
-  /*   
-   vert.push(-this.meshWidth/2,this.meshHeight/2,0,0,1);
-   vert.push(-this.meshWidth/2,-this.meshHeight/2,0,0,(1/this.textureHeight*this.meshHeight));
-   vert.push(this.meshWidth/2,-this.meshHeight/2,0,(1/this.textureWidth*this.meshWidth),(1/this.textureHeight*this.meshHeight));
-   vert.push(this.meshWidth/2,this.meshHeight/2,0,(1/this.textureWidth*this.meshWidth),1);
-  */
   
    vert.push(-this.meshWidth/2,this.meshHeight/2,0,0,0);
    vert.push(-this.meshWidth/2,-this.meshHeight/2,0,0,(1/this.textureHeight*this.meshHeight));
@@ -81,15 +80,12 @@ CanvasTexture.prototype.GenerateTexture =  function(text,style,imgurl)
 }
 
 
-
-  var imglayer1 = 
-            {
-               url     : ["http://www.openwebglobe.org/data/img"],
-               layer   : "World500",
-               service : "i3d"
-            };
-/*
- * style: "RB" -> Red Font with black border. 
+/**
+ * Sets the canvas content (poi text and icon) in predefined styles.
+ * @extends CanvasTexture
+ * @param{string}  text the poi text.
+ * @param {string} string to set predefined style e.g. "RB","WB" or "Symbol".
+ * @param {url} imgurl url for poi icon.
  */
 CanvasTexture.prototype.SetCanvasContent = function(text,style,imgurl)
 {
@@ -164,7 +160,13 @@ CanvasTexture.prototype.SetCanvasContent = function(text,style,imgurl)
  
 
 
- 
+/**
+ * Draws the canvas 2d.
+ * @extends CanvasTexture
+ * @param{string}  text the poi text.
+ * @param {style} styleObject style definition.
+ * @param {url} imgurl url for poi icon.
+ */
 CanvasTexture.prototype.DrawToCanvas = function(text,styleObject,imgurl)
 {           
            //Determine canvas Size 
@@ -255,6 +257,12 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject,imgurl)
            
 } 
 
+
+/**
+ * callback function for async image load.
+ * @extends CanvasTexture
+ * @ignore 
+ */
 function _cbfDrawImage(context,image,styleObject,canvasTextureClass)
 {
      context.drawImage(image, styleObject.border, styleObject.border, styleObject.iconSize, styleObject.iconSize);
@@ -264,7 +272,11 @@ function _cbfDrawImage(context,image,styleObject,canvasTextureClass)
 
 
 
-
+/**
+ * Binds the texture
+ * @extends CanvasTexture
+ * @ignore 
+ */
 CanvasTexture.prototype.ToGPU = function()
 {
      this.gl.enable(this.gl.TEXTURE_2D);
@@ -284,7 +296,12 @@ CanvasTexture.prototype.ToGPU = function()
  
 
 
- 
+/**
+ * Returns a mesh for the poi-pole.
+ * @extends CanvasTexture
+ * @param{float} x x,y,z cartesian pole start coordinates.
+ * @param{float} x x2,y2,z2 cartesian pole end coordinates.
+ */ 
 CanvasTexture.prototype.GetPoleMesh = function(x,y,z,x2,y2,z2)
 {
    this.poleMesh = new Mesh(engine);

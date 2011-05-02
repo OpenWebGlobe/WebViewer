@@ -25,9 +25,10 @@
  * @class poi
  * {@link http://www.openwebglobe.org} 
  * 
+ * @description A "Point Of Interest" Class.
+ * 
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch
  */
- 
  function Poi(engine)
  {
    this.engine = engine;
@@ -42,6 +43,13 @@
  }
  
  
+/**
+ * @description Set the poi content.
+ * @extends POI
+ * @param{string} text the poi text.
+ * @param{string} string to set predefined style. (e.g. "WB","Symbol" etc.)
+ * @param{url} url poi icon url.
+ */ 
  Poi.prototype.SetContent = function(text,style,imgurl)
  {
    canvasText = new CanvasTexture(this.engine);
@@ -49,7 +57,14 @@
  }
 
  
- 
+ /**
+ * @description Set the Poi postion in wgs84 coordinates.
+ * @extends POI
+ * @param{float} lat the latitude value
+ * @param{float} lng the longitude value
+ * @param{float} elv the elevation value
+ * @param{float} signElv the elevation of poi text -> if this is set, the poi gets a pole from elv to signElv.
+ */ 
  Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
  {
      this.geoCoord = new GeoCoord(lng,lat,elv);
@@ -69,7 +84,10 @@
  }
  
 
- 
+  /**
+ * @description Draws the poi
+ * @extends POI
+ */ 
  Poi.prototype.Draw = function()
  {  
     if(this.pole)
