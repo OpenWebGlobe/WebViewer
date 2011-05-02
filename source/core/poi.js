@@ -42,10 +42,10 @@
  }
  
  
- Poi.prototype.SetContent = function(text,style)
+ Poi.prototype.SetContent = function(text,style,imgurl)
  {
    canvasText = new CanvasTexture(this.engine);
-   this.mesh = canvasText.GenerateText(text,style); 
+   this.mesh = canvasText.GenerateText(text,style,imgurl); 
  }
 
  

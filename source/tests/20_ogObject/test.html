@@ -1,10 +1,10 @@
 <!--
-      Virtual Globe Demo
+OpenWebGlobe Object Test
 -->
 <!DOCTYPE html>
 <html lang="en">
          
-            <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
+          <!-- <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script> -->
          
          <script type="text/javascript" src="../../core/openwebglobe.js"></script>
          <script type="text/javascript" src="../../core/shaders.js"></script>
@@ -45,19 +45,14 @@
           <script type="text/javascript" src="../../core/poi.js"></script>
           <script type="text/javascript" src="../../core/viewfrustum.js"></script>
           <script type="text/javascript" src="../../core/canvastexture.js"></script>
+          <script type="text/javascript" src="../../core/videopoi.js"></script>
          <script type="text/javascript">
          
          //---------------------------------------------------------------------
          var engine = null;
          var poi = null;
          var poi2 = null;
-         var poi3 = null;
-         
-         var symPoi1 = null;
-         var symPoi2 = null;
-         var symPoi3 = null;
-         var symPoi4 = null;
-         var symPoi5 = null;
+         var videoPoi = null;
 
          
          //---------------------------------------------------------------------
@@ -70,61 +65,34 @@
          function OnResize(w,h)
          {
             width = w;
-            height = h;       
+            height = h;
          }
          
          //---------------------------------------------------------------------
          function OnKey(key)
          {
+            
          }
          
          //---------------------------------------------------------------------
          
          function OnRender()
-         {          
-            poi.Draw();
-            poi2.Draw();
-            poi3.Draw();
-            
-            symPoi1.Draw();
-            symPoi2.Draw();
-            symPoi3.Draw();
-            symPoi4.Draw();
+         {
+            //poi.Draw();
+            //videoPoi.Draw();
+         }
+         
+         function OnMouseUp(button, x, y)
+         {
+            //videoPoi.Play(); Todo...
          }
          
          //---------------------------------------------------------------------
          
          function OnInit()
-         { 
+         {
            
-            poi = new Poi(engine);
-            poi.SetContent("Bern","BB");
-            poi.SetPosition(46.9510827861504654,7.4386324175389165,800); 
-            
-            poi2 = new Poi(engine);
-            poi2.SetContent("BernLausanneGenfBellinzona","RB");
-            poi2.SetPosition(46.9510827861504654,7.5489334175389165,1800,600);
-            
-            poi3 = new Poi(engine);
-            poi3.SetContent("Test","Symbol","airport.png");
-            poi3.SetPosition(46.9510827861504654,7.2489334175389165,17000,600);
-            
-            symPoi1 = new Poi(engine);
-            symPoi1.SetContent("Basel-Mulhouse","Symbol","airport.png");
-            symPoi1.SetPosition(47.589583,7.529914,400);
-            
-            symPoi2 = new Poi(engine);
-            symPoi2.SetContent("Zürich","Symbol","airport.png");
-            symPoi2.SetPosition(47.458333,8.548056,600);
-            
-            symPoi3 = new Poi(engine);
-            symPoi3.SetContent("Genf","Symbol","airport.png");
-            symPoi3.SetPosition(46.236389,6.107222,600);
-            
-            symPoi4 = new Poi(engine);
-            symPoi4.SetContent("Sion","Symbol","airport.png");
-            symPoi4.SetPosition(46.219592,7.326764,700);
-            symPoi4.SetSize(1);
+
             
          }
         
@@ -132,18 +100,19 @@
         
          function main()
          {
-         	engine = new engine3d();
+          engine = new engine3d();
            
             // Set Callbacks:
             engine.SetInitCallback(OnInit);
             engine.SetTimerCallback(OnTimer);
             engine.SetRenderCallback(OnRender);
             engine.SetResizeCallback(OnResize);
-            engine.SetKeyDownCallback(OnKey)
+            engine.SetKeyDownCallback(OnKey);
+            engine.SetMouseUpCallback(OnMouseUp);
             
             // Start engine...
-            engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
-            engine.CreateScene();               // Create Globe Scene
+            engine.InitEngine("canvas", true); // (canvasid, fullscreen)
+            engine.CreateScene(); // Create Globe Scene
             engine.SetClearColor(0.5,0.5,1,1);
          }
          

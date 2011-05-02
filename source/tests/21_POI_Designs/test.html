@@ -1,0 +1,140 @@
+<!--
+      OpenWebGlobe Object Test
+-->
+<!DOCTYPE html>
+<html lang="en">
+         
+          <!--  <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  -->
+         
+        
+         <script type="text/javascript">
+         
+         //---------------------------------------------------------------------
+
+
+        function drawSymbolPoi(canvas,text,imgurl,iconSize,fontString,iconTextSpace)
+        {
+                               
+           ctx = canvas.getContext("2d");
+           
+           //Determine canvas Size 
+           ctx.save();
+              ctx.font = fontString;
+              ctx.textAlign = 'left';
+              ctx.textBaseline = 'middle';
+              ctx.lineWidth = 2.5;
+              ctx.strokeStyle = 'black';  
+              var dim = this.ctx.measureText(this.text);
+              textWidth = Math.round(dim.width);
+              textHeight = iconSize+10;       
+           ctx.restore();
+                     
+           ctx.canvas.height = iconSize+10; //maximal width and height.          
+           ctx.canvas.width = iconSize+iconTextSpace+textWidth+15; 
+           
+           
+           //draw background
+           ctx.fillStyle = 'rgba(255,255,0,0)';
+           ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+           ctx.fillStyle = 'rgba(255,255,255,1.0)';
+
+           //shadow
+           ctx.shadowOffsetX = 5;
+           ctx.shadowOffsetY = 5;
+           ctx.shadowBlur    = 4;
+           ctx.shadowColor   = 'rgba(0, 0, 0, 0.5)';
+           
+           //write text
+           ctx.font = fontString;
+           ctx.textAlign = 'left';
+           ctx.textBaseline = 'middle';
+           ctx.lineWidth = 2.5;
+           ctx.strokeStyle = 'black'; 
+           ctx.strokeText(text,QuadIconSize+5+iconTextSpace,QuadIconSize/2+5);
+           ctx.fillText(text,QuadIconSize+5+iconTextSpace,QuadIconSize/2+5);
+
+           //load poi icon
+           var myImage = new Image();
+           myImage.onload = function() {
+           ctx.drawImage(myImage, 5, 5, iconSize, iconSize);
+           }
+           myImage.src = imgurl;
+        } 
+        
+        
+        
+        
+        function drawBallonPoi(canvas,sizeX,sizeY)
+        {
+           
+           fontString = '14px Arial';
+           ctx = canvas.getContext("2d");
+                         
+           ctx.canvas.height = sizeX; //maximal width and height.          
+           ctx.canvas.width = sizeY; 
+           
+           
+           //draw background
+           ctx.fillStyle = 'rgba(255,255,0,0.75)';
+           ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+           ctx.fillStyle = 'rgba(255,255,255,1.0)';
+
+           //shadow
+           ctx.shadowOffsetX = 5;
+           ctx.shadowOffsetY = 5;
+           ctx.shadowBlur    = 4;
+           ctx.shadowColor   = 'rgba(0, 0, 0, 0.5)';
+           
+          // text="dies ist ein langer text mit vielen verschiedneen \n zeilenumbrüchen."
+           
+           //write text
+           ctx.font = fontString;
+           ctx.textAlign = 'left';
+           ctx.textBaseline = 'middle';
+           ctx.lineWidth = 2.5;
+           ctx.strokeStyle = 'black'; 
+           ctx.strokeText(text,5,5);
+           //ctx.fillText(text,);
+
+/*
+           //load poi icon
+           var myImage = new Image();
+           myImage.onload = function() {
+           ctx.drawImage(myImage, 5, 5, iconSize, iconSize);
+           }
+           myImage.src = imgurl;
+      */     
+        }
+        
+         
+      
+         
+        
+        
+         function main()
+         {
+            
+           text = "This is a poi with icon!";
+           imgurl ="airport.png";
+           QuadIconSize = 64; //px quadratic icon size
+           font = 'bold 48px Arial';   // font string         
+           iconTextSpace=5;
+           
+           symbolPoiCanvas = document.getElementById("SymbolPoi");
+           drawSymbolPoi(symbolPoiCanvas,text,imgurl,QuadIconSize,font,iconTextSpace);
+         	
+           //balloonPoiCanvas = document.getElementById("Balloon");
+           //drawBallonPoi(balloonPoiCanvas,400,600);	
+         }
+         
+         //---------------------------------------------------------------------
+         
+      </script>
+    </head>
+    <body onload="main()">
+        <div style="text-align: center">
+            <canvas id="SymbolPoi" ></canvas>
+            <canvas id="Balloon"></canvas>           
+        </div>
+    </body>
+</html>
