@@ -1,2 +1,26 @@
-java -jar ..\external\closure\compiler.jar --js=..\source\core\aabb.js --js=..\source\core\cache.js --js=..\source\core\datasetinfo.js --js=..\source\core\eventhandler.js --js=..\source\core\font.js --js=..\source\core\geocoord.js --js=..\source\core\globecache.js --js=..\source\core\globerenderer.js --js=..\source\core\globeutils.js --js=..\source\core\mat4.js --js=..\source\core\mathutils.js --js=..\source\core\mercator.js --js=..\source\core\mercatorquadtree.js --js=..\source\core\mesh.js --js=..\source\core\node.js --js=..\source\core\openwebglobe.js --js=..\source\core\poi.js --js=..\source\core\scenegraph.js --js=..\source\core\shaders.js --js=..\source\core\terrainblock.js --js=..\source\core\texture.js --js=..\source\core\traversalstate.js --js=..\source\core\triangleintersector.js --js=..\source\core\vec3.js --js=..\source\core\vec4.js --js=..\source\core\viewfrustum.js --js=..\source\core\layer\elevationlayer.js --js=..\source\core\layer\elevationlayer_i3d.js --js=..\source\core\layer\imagelayer.js --js=..\source\core\layer\imagelayer_i3d.js --js=..\source\core\layer\imagelayer_osm.js --js=..\source\core\nodes\beginrender.js --js=..\source\core\nodes\camera.js --js=..\source\core\nodes\endrender.js --js=..\source\core\nodes\logos.js --js=..\source\core\nodes\navigation.js --js=..\source\core\nodes\render.js --js=..\source\core\nodes\renderobject.js --js_output_file=..\compiled\owg.js
+@echo off
+
+set COMPILATION_LEVEL=SIMPLE_OPTIMIZATIONS
+set CLOSURE_LIBRARY=..\external\closure-library
+set COMPILER_JAR=..\external\closure\compiler.jar
+set PYTHON=C:\Python27\python.exe
+
+if not exist ..\compiled mkdir ..\compiled
+
+%PYTHON% %CLOSURE_LIBRARY%\closure\bin\build\depswriter.py ^
+ --output_file=..\compiled\deps.js ^
+ --root_with_prefix="%CLOSURE_LIBRARY% ../" ^
+ --root_with_prefix="..\source ../../../../source"
+
+%PYTHON% %CLOSURE_LIBRARY%\closure\bin\build\closurebuilder.py ^
+ --compiler_flags=--compilation_level=%COMPILATION_LEVEL% ^
+ --compiler_flags=--create_source_map=..\compiled\owg-optimized.map ^
+ --compiler_flags=--warning_level=VERBOSE ^
+ --compiler_jar=%COMPILER_JAR% ^
+ --namespace=owg.engine3d ^
+ --output_file=..\compiled\owg-optimized.js ^
+ --output_mode=compiled ^
+ --root=..\external\closure-library\ ^
+ --root=..\source\
+
 pause

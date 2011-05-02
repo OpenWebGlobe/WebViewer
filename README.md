@@ -43,9 +43,14 @@ it in `external\closure`.
 
 2. Change directory to `external` and check out the latest version of the
 Closure Library with the command
-    svn checkout http://closure-library.googlecode.com/svn/trunk/ closure-library
 
-2. Change directory to `scripts` and run `compile.bat`.
+    `svn checkout http://closure-library.googlecode.com/svn/trunk/ closure-library`
+
+3. Install Python from <http://www.python.org/download/windows/>.
+
+4. Change directory to `scripts` and run `compile.bat`.  You may need to edit
+`compile.bat` if you have installed the Closure Compiler, Closure Library or
+Python in a non-standard location.
 
 
 Linux
