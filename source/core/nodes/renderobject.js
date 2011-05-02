@@ -60,6 +60,20 @@ function RenderObjectNode()
             // #fixme This is temporary, in future, adding layers is done via SDK
             // ADD IMAGE LAYERS 
             
+            var imglayerOSM = 
+            {
+               url     : ["http://a.tile.openstreetmap.org", "http://b.tile.openstreetmap.org", "http://c.tile.openstreetmap.org" ],
+               service : "osm"
+            };
+            
+            var imglayer2 = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "LandsatCH",
+               /*transparency : 0.5,*/
+               service : "i3d"
+            };
+            
             var imglayer1 = 
             {
                url     : ["http://www.openwebglobe.org/data/img"],
@@ -67,13 +81,7 @@ function RenderObjectNode()
                service : "i3d"
             };
             
-            var imglayer2 = 
-            {
-               url     : ["http://www.openwebglobe.org/data/img"],
-               layer   : "LandsatCH",
-               service : "i3d"
-            };
-            
+            //this.globerenderer.AddImageLayer(imglayerOSM);
             this.globerenderer.AddImageLayer(imglayer1);
             this.globerenderer.AddImageLayer(imglayer2);
         

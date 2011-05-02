@@ -89,16 +89,22 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
                 
                 // Create i3d layer:
                 var imgLayer = new i3dImageLayer();
-                imgLayer.Setup(url, layer);
+                imgLayer.Setup(url, layer, options.transparency);
                 this.imagelayerlist.push(imgLayer);
                 this._UpdateLayers();
              }
           }
        }
-       /*else if (options.service == "osm")
+       else if (options.service == "osm")
        {
-          // #todo: support OSM Service
-       }*/
+          if (options.url && options.url.length>0)
+          {
+            var imgLayer = new OSMImageLayer();
+            imgLayer.Setup(options.url);
+            this.imagelayerlist.push(imgLayer);
+            this._UpdateLayers(); 
+          }
+       }
     }
 }
 

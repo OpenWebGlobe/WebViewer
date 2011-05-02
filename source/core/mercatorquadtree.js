@@ -107,23 +107,42 @@ MercatorQuadtree.prototype.GetQuad = function(quadKey)
  * 
  * @param{string} quadKey the quadKey as string for example "0123"
  * @param coords an empty array to store the tile coordinates in it.
+ * returns result.x, result.y -> Tile coordinates
+ *         result.lod -> level of detail
  */
-MercatorQuadtree.prototype.QuadKeyToTileCoord = function(quadKey, coords)
+MercatorQuadtree.prototype.QuadKeyToTileCoord = function(quadcode, result)
 {
-   var lod = quadKey.length;
-   var x = 0;
-   var y = 0;
-   this.QuadKeyToNormalizedCoord(quadKey, coords); 
+   result.x = 0;
+   result.y = 0;
+   result.lod = quadcode.length;
+   var mask;
    
-   var x0 = coords[0];
-   var y1 = coords[3];
+   for (var i = result.lod; i > 0; i--)
+   {
+      mask = 1 << (i - 1);
+      switch (quadcode[result.lod - i])
+      {
+      case '0':
+         break;
 
-   coords[0] = Math.floor(x0 * Math.pow(2,lod-1));   
-   coords[1] = Math.floor(y1 * Math.pow(2,lod-1));  
-   coords[2] = null;
-   coords[3] = null;  
+      case '1':
+         result.x |= mask;
+         break;
+
+      case '2':
+         result.y |= mask;
+         break;
+
+      case '3':
+         result.x |= mask;
+         result.y |= mask;
+         break;  
+      }
+   }
 }
 //------------------------------------------------------------------------------
+
+
 
 
 
