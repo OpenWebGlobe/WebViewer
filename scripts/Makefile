@@ -2,7 +2,7 @@ CLOSURE_LIBRARY=../external/closure-library
 COMPILATION_LEVEL=SIMPLE_OPTIMIZATIONS
 COMPILER_JAR=../external/closure/compiler.jar
 SOURCES=$(shell find ../source/core ../source/core/layer ../source/core/nodes -maxdepth 1 -name \*.js)
-TARGETS=../compiled/deps.js ../compiled/owg.js ../compiled/owg-optimized.js ../compiled/owg-optimized.map
+TARGETS=../compiled/deps.js ../compiled/owg-optimized.js ../compiled/owg-optimized.map
 
 .PHONY: all
 all: $(TARGETS)
@@ -27,7 +27,7 @@ all: $(TARGETS)
 
 .PHONY: clean
 clean:
-	rm $(TARGETS)
+	rm -f $(TARGETS)
 
 .PHONY: lint
 lint:
