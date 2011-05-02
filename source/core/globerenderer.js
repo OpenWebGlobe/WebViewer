@@ -36,6 +36,7 @@ function GlobeRenderer(engine)
    this.cachesize = 1000;
    this.globecache = null;
    this.lstFrustum = [];
+   this.lastalt = 0;
    
    this.iterator = new Object();
    this.iterator.cnt = 0;
@@ -451,7 +452,7 @@ GlobeRenderer.prototype.AltitudeAboveGround = function()
    var vDirection = new vec3();
    
    vDirection.Set(-campos[0], -campos[1], -campos[2]);
-   vDirection.Normalize(); // for precision reasons it should be normalized... to speed up this could also be
+   //vDirection.Normalize(); // for precision reasons it should be normalized... to speed up this could also be
                            // multiplied with 1/((2^24)-1) but that is too much voodoo for the first version
    var dir = vDirection.Get();                        
     
@@ -499,10 +500,12 @@ GlobeRenderer.prototype.AltitudeAboveGround = function()
          dist = -dist;
       }
       
+      this.lastalt = dist;
+      
       return dist;
    }
 
-   return NaN;
+   return this.lastalt;
    
 }
  //-----------------------------------------------------------------------------

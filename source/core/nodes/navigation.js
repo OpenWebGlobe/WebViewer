@@ -441,7 +441,7 @@ function NavigationNode()
             if (newAltitudeG < sender.minAltitude) 
             {
                var cor = sender.minAltitude - newAltitudeG;
-               sender._ellipsoidHeight += cor;
+               sender._ellipsoidHeight += cor;             
             }
          //}
          
