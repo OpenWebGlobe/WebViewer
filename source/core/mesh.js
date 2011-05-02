@@ -580,11 +580,11 @@ Mesh.prototype.SetJSONLoadCallback = function(f)
 Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
 {
    var hit = false;
-   var vertexlength = 0;
-   var hitresult = null;
-   var t=null;      
-            
-            
+   var u,v,t;
+   u = 0;
+   v = 0;
+   t = 1e20;      
+                     
    for(var i=0; i < this.numOfTriangles; i++)
    {
       var setTriangle = this.SetCurrentTriangle(i);
@@ -597,8 +597,6 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
       //not tested...yet !!!!        
       if(this.modelMatrix)
       {
-               
-       
          var invModelMatrix = new mat4();
          invModelMatrix.Inverse(this.modelMatrix); 
               
@@ -628,28 +626,33 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
          v3z = vec.Get()[2];
          
        }  
-         */
+       */
         
       var result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,this.currentTriangle.v1x,this.currentTriangle.v1y,this.currentTriangle.v1z,this.currentTriangle.v2x,this.currentTriangle.v2y,this.currentTriangle.v2z,this.currentTriangle.v3x,this.currentTriangle.v3y,this.currentTriangle.v3z);      
              
       if(result)
       {
          hit = true;  
-         if(hitresult)
+
+         if(result.t < t)
          {
-            if(result.t < hitresult.t)
-            {
-               hitresult = result;      
-            }  
-            
-         }
-         else
-         {
-            hitresult = result;    
-         }            
+            t = result.t;
+            u = result.u;
+            v = result.v;
+         }              
       }
-   } 
-   return hitresult;
+   }
+   
+   if (hit)
+   {
+      var hitresult = {};
+      hitresult.t = t;
+      hitresult.u = u;
+      hitresult.v = v;
+      return hitresult;
+   }
+    
+   return null;
 }
 
 

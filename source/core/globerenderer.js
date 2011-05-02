@@ -502,7 +502,7 @@ GlobeRenderer.prototype.AltitudeAboveGround = function()
       return dist;
    }
 
-   return 0;
+   return NaN;
    
 }
  //-----------------------------------------------------------------------------
