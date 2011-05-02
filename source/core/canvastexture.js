@@ -39,54 +39,40 @@ function CanvasTexture(engine)
 
 
 //returns a mesh with canvas2d as font
-CanvasTexture.prototype.GenerateText =  function(text,style,imgurl)
+CanvasTexture.prototype.GenerateTexture =  function(text,style,imgurl)
 {
-  /* if(pole)
-   {
-      this.pole = true;
-   }*/
+  
    this.texCanvas = document.createElement('canvas'); 
    this.texCanvas.style.display = 'none';
    document.body.appendChild(this.texCanvas);
    this.ctx = this.texCanvas.getContext('2d');  
-   this.ctx.canvas.height = 512; //maximal width and height.
-   this.ctx.canvas.width = 512; 
-  
-   
+ 
    //set canvas as texture
    this.tex = new Texture(this.engine);
    this.tex.texture = this.gl.createTexture();
       
-   //draw text
+   //draw canvas content
    this.text = text;
-   this.DrawToCanvas2D(text,style,imgurl); //just to get the text size
-   
-   if(!this.textHeight)
-   {
-      this.textHeight = 80;
-   }
-    
-    //get next power of two    
-    var textWidthP2 = MathUtils.GetNextPowerOfTwo(this.textWidth);
-    var textHeightP2 = MathUtils.GetNextPowerOfTwo(this.textHeight);   
-     
-   this.tex.width = textWidthP2;
-   this.tex.height = textHeightP2; 
+   this.SetCanvasContent(text,style,imgurl); 
 
-   this.ctx.canvas.width = textWidthP2; //resize the canvas
-   this.ctx.canvas.height = textHeightP2;
-   this.DrawToCanvas2D(text,style,imgurl);
-
-
+   //create mesh
    this.mesh = new Mesh(engine);
    this.mesh.SetTexture(this.tex);
 
    var vert = new Array();
-     
-   vert.push(-textWidthP2/2,textHeightP2/2,0,0,1);
-   vert.push(-textWidthP2/2,-textHeightP2/2,0,0,0);
-   vert.push(textWidthP2/2,-textHeightP2/2,0,1,0);
-   vert.push(textWidthP2/2,textHeightP2/2,0,1,1);
+   
+  /*   
+   vert.push(-this.meshWidth/2,this.meshHeight/2,0,0,1);
+   vert.push(-this.meshWidth/2,-this.meshHeight/2,0,0,(1/this.textureHeight*this.meshHeight));
+   vert.push(this.meshWidth/2,-this.meshHeight/2,0,(1/this.textureWidth*this.meshWidth),(1/this.textureHeight*this.meshHeight));
+   vert.push(this.meshWidth/2,this.meshHeight/2,0,(1/this.textureWidth*this.meshWidth),1);
+  */
+  
+   vert.push(-this.meshWidth/2,this.meshHeight/2,0,0,0);
+   vert.push(-this.meshWidth/2,-this.meshHeight/2,0,0,(1/this.textureHeight*this.meshHeight));
+   vert.push(this.meshWidth/2,-this.meshHeight/2,0,1/this.textureWidth*this.meshWidth,(1/this.textureHeight*this.meshHeight));
+   vert.push(this.meshWidth/2,this.meshHeight/2,0,(1/this.textureWidth*this.meshWidth),0);  
+  
                  
    this.mesh.SetBufferFont(vert);
    this.mesh.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");  
@@ -96,138 +82,132 @@ CanvasTexture.prototype.GenerateText =  function(text,style,imgurl)
 
 
 
-
+  var imglayer1 = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "World500",
+               service : "i3d"
+            };
 /*
  * style: "RB" -> Red Font with black border. 
  */
-CanvasTexture.prototype.DrawToCanvas2D = function(text,style,imgurl)
+CanvasTexture.prototype.SetCanvasContent = function(text,style,imgurl)
 {
    
     switch(style)
     {
        case "Symbol": 
-                     var fontString = 'bold 48px Arial';          
-                     this.drawSymbolPoi(text,imgurl,64,fontString,5);
+                     var styleObject = 
+                     {
+                        fontString : 'bold 48px Arial', 
+                        fontSize : 48, 
+                        border : 5,
+                        iconSize : 64,
+                        iconTextSpace : 5,
+                        backgroundColor : 'rgba(255,255,255,0)',
+                        fontColor : 'rgba(255,255,255,1.0)'         
+                     };
+                     this.DrawToCanvas(text,styleObject,imgurl);                                         
                      break;
 
-       case "RB":    this.ctx.fillStyle = 'rgba(255,255,0,0.0)';
-                     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-                     this.ctx.fillStyle = 'rgba(255,0,0,1.0)';
-                     this.ctx.lineWidth = 2.5;
-                     this.ctx.strokeStyle = 'black'; 
-                     this.ctx.save();
-                     this.ctx.font = 'bold 80px sans-serif';
-                     this.ctx.textAlign = 'center';
-                     this.ctx.textBaseline = 'top';
-                     var leftOffset = this.ctx.canvas.width / 2;
-                     var topOffset = this.ctx.canvas.height / 2;
-                     this.ctx.strokeText(this.text,leftOffset,0);
-                     this.ctx.fillText(this.text,leftOffset,0);
-                     var dim = this.ctx.measureText(this.text);
-                     this.textWidth = Math.round(dim.width);
-                     this.textHeight = Math.round(dim.height);          
-                     this.ctx.restore();
+
+       case "RB":    var styleObject = 
+                     {
+                        fontString : 'bold 48px Arial', 
+                        fontSize : 48, 
+                        border : 5,
+                        backgroundColor : 'rgba(255,255,255,0)',
+                        fontColor : 'rgba(255,0,0,1.0)'         
+                     };
+                     this.DrawToCanvas(text,styleObject);
+                     this.ToGPU();
                      break;
        
-       case "WB":    this.ctx.fillStyle = 'rgba(255,255,0,0.0)';
-                     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-                     this.ctx.fillStyle = 'rgba(255,255,255,1.0)';
-                     this.ctx.lineWidth = 2.5;
-                     this.ctx.strokeStyle = 'black'; 
-                     this.ctx.save();
-                     this.ctx.font = 'bold 80px sans-serif';
-                     this.ctx.textAlign = 'center';
-                     this.ctx.textBaseline = 'top';
-                     var leftOffset = this.ctx.canvas.width / 2;
-                     var topOffset = this.ctx.canvas.height / 2;
-                     this.ctx.strokeText(this.text,leftOffset,0);
-                     this.ctx.fillText(this.text,leftOffset,0);
-                     var dim = this.ctx.measureText(this.text);
-                     this.textWidth = Math.round(dim.width);
-                     this.textHeight = Math.round(dim.height);          
-                     this.ctx.restore();
+       case "WB":    var styleObject = 
+                     {
+                        fontString : 'bold 48px Arial', 
+                        fontSize : 48, 
+                        border : 5,
+                        backgroundColor : 'rgba(255,255,255,0)',
+                        fontColor : 'rgba(255,255,255,1.0)'         
+                     };
+                     this.DrawToCanvas(text,styleObject);
+                     this.ToGPU();
                      break;
                      
-       case "BB":    this.ctx.fillStyle = 'rgba(255,255,0,0.3)';
-                     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-                     this.ctx.fillStyle = 'rgba(0,0,255,1.0)';
-                     this.ctx.lineWidth = 2.5;
-                     this.ctx.strokeStyle = 'black'; 
-                     this.ctx.save();
-                     this.ctx.font = 'bold 80px sans-serif';
-                     this.ctx.textAlign = 'center';
-                     this.ctx.textBaseline = 'top';
-                     var leftOffset = this.ctx.canvas.width / 2;
-                     var topOffset = this.ctx.canvas.height / 2;
-                     this.ctx.strokeText(this.text,leftOffset,0);
-                     this.ctx.fillText(this.text,leftOffset,0);
-                     var dim = this.ctx.measureText(this.text);
-                     this.textWidth = Math.round(dim.width);
-                     this.textHeight = Math.round(dim.height);          
-                     this.ctx.restore();
+       case "BB":    var styleObject = 
+                     {
+                        fontString : 'bold 32px SansSerif', 
+                        fontSize : 32, 
+                        border : 5,
+                        backgroundColor : 'rgba(255,255,0,0.8)',
+                        fontColor : 'rgba(255,255,255,1.0)'         
+                     };
+                     this.DrawToCanvas(text,styleObject);
+                     this.ToGPU();
                      break;
        
-       default:    
-                     this.ctx.fillStyle = 'rgba(255,255,0,0.0)';
-                     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-                     this.ctx.fillStyle = 'rgba(255,255,255,1.0)';
-                     this.ctx.lineWidth = 2.5;
-                     this.ctx.strokeStyle = 'black'; 
-                     this.ctx.save();
-                     this.ctx.font = 'bold 80px ArialMS';
-                     this.ctx.textAlign = 'center';
-                     this.ctx.textBaseline = 'top';
-                     var leftOffset = this.ctx.canvas.width / 2;
-                     var topOffset = this.ctx.canvas.height / 2;
-                     this.ctx.strokeText(this.text,leftOffset,0);
-                     this.ctx.fillText(this.text,leftOffset,0);
-                     var dim = this.ctx.measureText(this.text);
-                     this.textWidth = Math.round(dim.width);
-                     this.textHeight = Math.round(dim.height);          
-                     this.ctx.restore();
+       default:      var styleObject = 
+                     {
+                        fontString : 'bold 48px Arial', 
+                        fontSize : 48, 
+                        border : 5,
+                        backgroundColor : 'rgba(255,255,255,0)',
+                        fontColor : 'rgba(255,255,255,1.0)'         
+                     };
+                     this.DrawToCanvas(text,styleObject);               
+                     this.ToGPU();
                      break;     
     }
-
-     //handle loaded canvas     
-     this.gl.enable(this.gl.TEXTURE_2D);
-     this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex.texture); 
-     this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
-     this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA,engine.gl.RGBA,this.gl.UNSIGNED_BYTE, this.texCanvas);
-     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
-     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-     this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, false);         
-     this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-     this.tex.ready = true;
 }  
  
+ 
 
 
  
-CanvasTexture.prototype.drawSymbolPoi = function(text,imgurl,iconSize,fontString,iconTextSpace)
-{
-           
+CanvasTexture.prototype.DrawToCanvas = function(text,styleObject,imgurl)
+{           
            //Determine canvas Size 
            this.ctx.save();
-              this.ctx.font = fontString;
+              this.ctx.font = styleObject.fontString;
               this.ctx.textAlign = 'left';
-              this.ctx.textBaseline = 'middle';
+              this.ctx.textBaseline = 'top';
               this.ctx.lineWidth = 2.5;
               this.ctx.strokeStyle = 'black';  
               var dim = this.ctx.measureText(this.text);
               var textWidth = Math.round(dim.width);
-              var textHeight = iconSize+10;       
+              var textHeight = styleObject.fontSize+styleObject.border;//iconSize+10;       
            this.ctx.restore();
+           
+           if(imgurl)
+           {
+              this.meshWidth = textWidth+styleObject.iconSize+2*styleObject.border+styleObject.iconTextSpace; //maximal width and height.          
+              this.meshHeight = styleObject.iconSize+2*styleObject.border; 
+            
+           }
+           else
+           {
+              this.meshWidth = textWidth+2*styleObject.border;
+              this.meshHeight = styleObject.fontSize+2*styleObject.border;//parse fontstring//textHeight+5;
+           }          
+            
+            
+            //get next power of two    
+            this.textureWidth = MathUtils.GetNextPowerOfTwo(this.meshWidth);
+            this.textureHeight = MathUtils.GetNextPowerOfTwo(this.meshHeight);   
+     
+            this.tex.width = this.textureWidth;
+            this.tex.height = this.textureHeight; 
+            this.ctx.canvas.width = this.textureWidth; 
+            this.ctx.canvas.height = this.textureHeight;
+               
+            
+            
                      
-           this.textHeight = iconSize+10; //maximal width and height.          
-           this.textWidth = iconSize+iconTextSpace+textWidth+15; 
-           
-           
            //draw background
-           this.ctx.fillStyle = 'rgba(255,255,0,0)';
-           this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-           this.ctx.fillStyle = 'rgba(255,255,255,1.0)';
+           this.ctx.fillStyle = styleObject.backgroundColor;
+           this.ctx.fillRect(0, 0, this.meshWidth, this.meshWidth);
+           
 
            //shadow
            /*
@@ -238,41 +218,69 @@ CanvasTexture.prototype.drawSymbolPoi = function(text,imgurl,iconSize,fontString
            */
            
            //write text
-           this.ctx.font = fontString;
+           this.ctx.fillStyle = styleObject.fontColor; 
+           this.ctx.font = styleObject.fontString;
            this.ctx.textAlign = 'left';
-           this.ctx.textBaseline = 'middle';
+           this.ctx.textBaseline = 'top';
            this.ctx.lineWidth = 2.5;
-           this.ctx.strokeStyle = 'black'; 
-           this.ctx.strokeText(text,iconSize+5+iconTextSpace,iconSize/2+5);
-           this.ctx.fillText(text,iconSize+5+iconTextSpace,iconSize/2+5);
+           this.ctx.strokeStyle = 'black';
+            
 
-           //load poi icon
-           var image = new Image();
-           var context = this.ctx;
-           var canvasTextureClass = this;
-           image.onload = function() {
+
+           if(imgurl)
+           {
+              //draw text
               
-             _cbfDrawImage(context,image,iconSize,canvasTextureClass);
+              this.ctx.strokeText(text,styleObject.iconSize+styleObject.border+styleObject.iconTextSpace,2*styleObject.border+(styleObject.iconSize/2-styleObject.fontSize/2));
+              this.ctx.fillText(text,styleObject.iconSize+styleObject.border+styleObject.iconTextSpace,2*styleObject.border+(styleObject.iconSize/2-styleObject.fontSize/2));
+               
+              
+              //load poi icon
+              var image = new Image();
+              var context = this.ctx;
+              var canvasTextureClass = this;
+              image.onload = function() 
+              {
+               _cbfDrawImage(context,image,styleObject,canvasTextureClass);
+              }
+              image.src = imgurl;
+              
            }
-           image.src = imgurl;
+           else
+           {
+              //draw text
+              this.ctx.strokeText(text,styleObject.border,2*styleObject.border);
+              this.ctx.fillText(text,styleObject.border,2*styleObject.border);
+           }
+           
 } 
 
-function _cbfDrawImage(context,image,iconSize,canvasTextureClass)
+function _cbfDrawImage(context,image,styleObject,canvasTextureClass)
 {
-   context.drawImage(image, 5, 5, iconSize, iconSize);
-    //handle loaded canvas     
-     canvasTextureClass.gl.enable(canvasTextureClass.gl.TEXTURE_2D);
-     canvasTextureClass.gl.bindTexture(canvasTextureClass.gl.TEXTURE_2D, canvasTextureClass.tex.texture); 
-     canvasTextureClass.gl.pixelStorei(canvasTextureClass.gl.UNPACK_FLIP_Y_WEBGL, true);
-     canvasTextureClass.gl.texImage2D(canvasTextureClass.gl.TEXTURE_2D, 0, canvasTextureClass.gl.RGBA,canvasTextureClass.gl.RGBA,canvasTextureClass.gl.UNSIGNED_BYTE, canvasTextureClass.texCanvas);
-     canvasTextureClass.gl.texParameteri(canvasTextureClass.gl.TEXTURE_2D, canvasTextureClass.gl.TEXTURE_MAG_FILTER, canvasTextureClass.gl.LINEAR);
-     canvasTextureClass.gl.texParameteri(canvasTextureClass.gl.TEXTURE_2D, canvasTextureClass.gl.TEXTURE_MIN_FILTER, canvasTextureClass.gl.LINEAR);
-     canvasTextureClass.gl.texParameteri(canvasTextureClass.gl.TEXTURE_2D, canvasTextureClass.gl.TEXTURE_WRAP_S, canvasTextureClass.gl.CLAMP_TO_EDGE);
-     canvasTextureClass.gl.texParameteri(canvasTextureClass.gl.TEXTURE_2D, canvasTextureClass.gl.TEXTURE_WRAP_T, canvasTextureClass.gl.CLAMP_TO_EDGE);
-     canvasTextureClass.gl.pixelStorei(canvasTextureClass.gl.UNPACK_FLIP_Y_WEBGL, false);         
-     canvasTextureClass.gl.bindTexture(canvasTextureClass.gl.TEXTURE_2D, null);
-     canvasTextureClass.tex.ready = true;
+     context.drawImage(image, styleObject.border, styleObject.border, styleObject.iconSize, styleObject.iconSize);
+     canvasTextureClass.ToGPU();    
+     
 }
+
+
+
+
+CanvasTexture.prototype.ToGPU = function()
+{
+     this.gl.enable(this.gl.TEXTURE_2D);
+     this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex.texture); 
+    // this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+     this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA,engine.gl.RGBA,this.gl.UNSIGNED_BYTE, this.texCanvas);
+     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+    //this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, false);         
+     this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+     this.tex.ready = true;
+}
+
+
  
 
 
@@ -294,7 +302,10 @@ CanvasTexture.prototype.GetPoleMesh = function(x,y,z,x2,y2,z2)
 
 }
 
-      
+
+
+
+/* Video POIs not supported...      
 function _cbHandleLoadedVideo(gl,canvasTex)
 {
    gl.enable(gl.TEXTURE_2D);
@@ -311,6 +322,10 @@ function _cbHandleLoadedVideo(gl,canvasTex)
   
    canvasTex.mesh.SetTexture(canvasTex.tex);
 }
+
+
+
+
 
 CanvasTexture.prototype.GenerateVideoPoi = function(url)
 {   
@@ -357,10 +372,10 @@ CanvasTexture.prototype.GenerateVideoPoi = function(url)
    this.mesh.SetBufferFont(vert);
    this.mesh.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");  
    
-  return this.mesh;
-
-   
+  return this.mesh;  
 }
+
+*/
 
 
 

@@ -45,7 +45,7 @@
  Poi.prototype.SetContent = function(text,style,imgurl)
  {
    canvasText = new CanvasTexture(this.engine);
-   this.mesh = canvasText.GenerateText(text,style,imgurl); 
+   this.mesh = canvasText.GenerateTexture(text,style,imgurl); 
  }
 
  
@@ -71,8 +71,7 @@
 
  
  Poi.prototype.Draw = function()
- {
-   
+ {  
     if(this.pole)
     {
        this.poleMesh.Draw();
