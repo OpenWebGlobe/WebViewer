@@ -1,10 +1,10 @@
 <!--
-OpenWebGlobe Object Test
+      OpenWebGlobe Object Test
 -->
 <!DOCTYPE html>
 <html lang="en">
          
-          <!-- <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script> -->
+          <!--  <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  -->
          
          <script type="text/javascript" src="../../core/openwebglobe.js"></script>
          <script type="text/javascript" src="../../core/shaders.js"></script>
@@ -42,17 +42,23 @@ OpenWebGlobe Object Test
          <script type="text/javascript" src="../../core/layer/elevationlayer_i3d.js"></script>
          <script type="text/javascript" src="../../core/triangleintersector.js"></script>
          <script type="text/javascript" src="../../core/aabb.js"></script>
-          <script type="text/javascript" src="../../core/poi.js"></script>
-          <script type="text/javascript" src="../../core/viewfrustum.js"></script>
-          <script type="text/javascript" src="../../core/canvastexture.js"></script>
-          <script type="text/javascript" src="../../core/videopoi.js"></script>
+         <script type="text/javascript" src="../../core/poi.js"></script>
+         <script type="text/javascript" src="../../core/viewfrustum.js"></script>
+         <script type="text/javascript" src="../../core/canvastexture.js"></script>
+         <script type="text/javascript" src="../../core/videopoi.js"></script>
+         <script type="text/javascript" src="../../core/og/ogCamera.js"></script>
+         <script type="text/javascript" src="../../core/og/ogContext.js"></script>
+         <script type="text/javascript" src="../../core/og/ogImage.js"></script>
+         <script type="text/javascript" src="../../core/og/ogImageLayer.js"></script>
+         <script type="text/javascript" src="../../core/og/ogNavigationController.js"></script>
+         <script type="text/javascript" src="../../core/og/ogObject.js"></script>
+         <script type="text/javascript" src="../../core/og/ogScene.js"></script>
+         <script type="text/javascript" src="../../core/og/ogTexture.js"></script>
+         <script type="text/javascript" src="../../core/og/ogWorld.js"></script>
          <script type="text/javascript">
          
          //---------------------------------------------------------------------
          var engine = null;
-         var poi = null;
-         var poi2 = null;
-         var videoPoi = null;
 
          
          //---------------------------------------------------------------------
@@ -65,7 +71,7 @@ OpenWebGlobe Object Test
          function OnResize(w,h)
          {
             width = w;
-            height = h;
+            height = h;       
          }
          
          //---------------------------------------------------------------------
@@ -77,20 +83,17 @@ OpenWebGlobe Object Test
          //---------------------------------------------------------------------
          
          function OnRender()
-         {
-            //poi.Draw();
-            //videoPoi.Draw();
+         {          
          }
          
          function OnMouseUp(button, x, y)
          {
-            //videoPoi.Play(); Todo...
          }
          
          //---------------------------------------------------------------------
          
          function OnInit()
-         {
+         { 
            
 
             
@@ -100,7 +103,7 @@ OpenWebGlobe Object Test
         
          function main()
          {
-          engine = new engine3d();
+         	engine = new engine3d();
            
             // Set Callbacks:
             engine.SetInitCallback(OnInit);
@@ -111,8 +114,8 @@ OpenWebGlobe Object Test
             engine.SetMouseUpCallback(OnMouseUp);
             
             // Start engine...
-            engine.InitEngine("canvas", true); // (canvasid, fullscreen)
-            engine.CreateScene(); // Create Globe Scene
+            engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
+            engine.CreateScene();               // Create Globe Scene
             engine.SetClearColor(0.5,0.5,1,1);
          }
          
@@ -122,7 +125,7 @@ OpenWebGlobe Object Test
     </head>
     <body onload="main()">
         <div style="text-align: center">
-            <canvas id="canvas" width="640" height="480"></canvas>
+            <canvas id="canvas" width="640" height="480"></canvas>          
         </div>
     </body>
 </html>

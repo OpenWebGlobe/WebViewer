@@ -116,7 +116,7 @@ CanvasTexture.prototype.DrawToCanvas2D = function(text,style,imgurl)
                      this.ctx.lineWidth = 2.5;
                      this.ctx.strokeStyle = 'black'; 
                      this.ctx.save();
-                     this.ctx.font = 'bold 80px ArialMS';
+                     this.ctx.font = 'bold 80px sans-serif';
                      this.ctx.textAlign = 'center';
                      this.ctx.textBaseline = 'top';
                      var leftOffset = this.ctx.canvas.width / 2;
@@ -135,7 +135,7 @@ CanvasTexture.prototype.DrawToCanvas2D = function(text,style,imgurl)
                      this.ctx.lineWidth = 2.5;
                      this.ctx.strokeStyle = 'black'; 
                      this.ctx.save();
-                     this.ctx.font = 'bold 80px ArialMS';
+                     this.ctx.font = 'bold 80px sans-serif';
                      this.ctx.textAlign = 'center';
                      this.ctx.textBaseline = 'top';
                      var leftOffset = this.ctx.canvas.width / 2;
@@ -154,7 +154,7 @@ CanvasTexture.prototype.DrawToCanvas2D = function(text,style,imgurl)
                      this.ctx.lineWidth = 2.5;
                      this.ctx.strokeStyle = 'black'; 
                      this.ctx.save();
-                     this.ctx.font = 'bold 80px ArialMS';
+                     this.ctx.font = 'bold 80px sans-serif';
                      this.ctx.textAlign = 'center';
                      this.ctx.textBaseline = 'top';
                      var leftOffset = this.ctx.canvas.width / 2;
