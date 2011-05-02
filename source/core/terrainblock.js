@@ -516,7 +516,14 @@ TerrainBlock.prototype.Render = function(/*cache*/)
       {
          if (this.images[i] != null)
          {
-            this.images[i].Blit(0,0,0, 0,1,1,true, true); 
+            if (this.images[i].transparency < 1.0)
+            {
+               this.images[i].Blit(0,0,0, 0,1,1,true, true, this.images[i].transparency);
+            }
+            else
+            {
+               this.images[i].Blit(0,0,0, 0,1,1,true, true);
+            } 
          } 
       }
          

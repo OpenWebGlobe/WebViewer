@@ -184,7 +184,7 @@ Texture.prototype.Disable = function()
 /**
  * Blit Texture: Draw texture on screen
  */
-Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend, invtexcoord)
+Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend, invtexcoord, alpha)
 {   
    if (z==null) { z = 0; }
    if (angle==null) {angle = 0;}
@@ -192,12 +192,13 @@ Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend, invtexcoord)
    if (scaley==null) { scaley = 1; }
    if (blend==null)  { blend = false;}
    if (invtexcoord==null) {invtexcoord = false;}
+   if (alpha == null) { alpha = 1.0;}
    
    
    if (this.ready)
    {
       
-       var w = this.width;
+      var w = this.width;
       var h = this.height;
       
       var xr = this.width/2;
@@ -258,6 +259,12 @@ Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend, invtexcoord)
       else
       {
          this.engine.gl.disable(this.engine.gl.BLEND);
+      }
+      
+      if (alpha < 1.0)
+      {
+         this.engine.gl.blendColor(0,0,0,alpha);
+         this.engine.gl.blendFunc(this.engine.gl.CONSTANT_ALPHA, this.engine.gl.ONE_MINUS_CONSTANT_ALPHA);
       }
 
       this.blitMesh.Draw();

@@ -21,24 +21,14 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-goog.provide('owg.Poi');
-
-goog.require('goog.debug.Logger');
-goog.require('owg.CanvasTexture');
-goog.require('owg.Font');
-goog.require('owg.GeoCoord');
-goog.require('owg.Mesh');
-goog.require('owg.Texture');
-
 /** 
  * @class poi
  * {@link http://www.openwebglobe.org} 
  * 
- * @description A "Point Of Interest" Class.
- * 
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch
  */
- function Poi(engine)
+ 
+ function VideoPoi(engine)
  {
    this.engine = engine;
    this.gl = engine.gl;
@@ -48,33 +38,20 @@ goog.require('owg.Texture');
    this.pole = false;
    this.poleMesh = null;
    this.scale = 20;
+   this.drawMVP = null;
            
  }
  
- 
-/**
- * @description Set the poi content.
- * @extends POI
- * @param{string} text the poi text.
- * @param{string} string to set predefined style. (e.g. "WB","Symbol" etc.)
- * @param{url} url poi icon url.
- */ 
- Poi.prototype.SetContent = function(text,style,imgurl)
- {
-   canvasText = new CanvasTexture(this.engine);
-   this.mesh = canvasText.GenerateTexture(text,style,imgurl); 
- }
 
+ VideoPoi.prototype.SetVideoContent = function(url)
+ {
+   this.videoTextureGenerator = new CanvasTexture(this.engine);
+   this.mesh = this.videoTextureGenerator.GenerateVideoPoi(url);
+   
+ }
  
- /**
- * @description Set the Poi postion in wgs84 coordinates.
- * @extends POI
- * @param{float} lat the latitude value
- * @param{float} lng the longitude value
- * @param{float} elv the elevation value
- * @param{float} signElv the elevation of poi text -> if this is set, the poi gets a pole from elv to signElv.
- */ 
- Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
+ 
+ VideoPoi.prototype.SetPosition = function(lat,lng,elv,signElv)
  {
      this.geoCoord = new GeoCoord(lng,lat,elv);
      var cart = new Array(3);
@@ -93,12 +70,17 @@ goog.require('owg.Texture');
  }
  
 
-  /**
- * @description Draws the poi
- * @extends POI
- */ 
- Poi.prototype.Draw = function()
- {  
+ 
+ VideoPoi.prototype.Draw = function()
+ {
+   if(this.videoTextureGenerator)
+   {
+      if(this.videoTextureGenerator.tex.ready)
+      {
+         _cbHandleLoadedVideo(this.gl,this.videoTextureGenerator);
+      }    
+   }
+   
     if(this.pole)
     {
        this.poleMesh.Draw();
@@ -115,22 +97,42 @@ goog.require('owg.Texture');
     this.engine.SetModelMatrix(mmat);
     this.mesh.Draw();
     
+   
+    
     engine.PopMatrices();
     this.engine.gl.disable(this.engine.gl.BLEND);
  }
  
  
- Poi.prototype.SetSize = function(size)
+ VideoPoi.prototype.SetSize = function(size)
  {
-    this.scale = size;
-    
+    this.scale = size;    
+ }
+ 
+ 
+ VideoPoi.prototype.Play = function()
+ {
+    this.videoTextureGenerator.videoElement.play();
+ }
+ 
+ VideoPoi.prototype.Pause = function()
+ {
+    this.videoTextureGenerator.videoElement.pause();
+ }
+ 
+  VideoPoi.prototype.TogglePlayPause = function()
+ {
+    if(this.videoTextureGenerator.videoElement.paused)
+    {
+     this.videoTextureGenerator.videoElement.play(); 
+    }
+    else
+    {
+     this.videoTextureGenerator.videoElement.pause();  
+    }
+
  }
  
  
  
  
-goog.exportSymbol('Poi', Poi); 
-goog.exportProperty(Poi.prototype, 'Draw', Poi.prototype.Draw);
-goog.exportProperty(Poi.prototype, 'SetContent', Poi.prototype.SetContent);
-goog.exportProperty(Poi.prototype, 'SetPosition', Poi.prototype.SetPosition);
-goog.exportProperty(Poi.prototype, 'SetSize', Poi.prototype.SetSize);

@@ -827,7 +827,6 @@ engine3d.prototype.SetKeyUpCallback = function(f)
 }
 
 //------------------------------------------------------------------------------
-
 /*
  * @description PickGlobe: Retrieve clicked position on globe (high precision result)
  * The result contains the following:
@@ -857,15 +856,34 @@ engine3d.prototype.AltitudeAboveGround = function()
       return this.scene.nodeRenderObject.globerenderer.AltitudeAboveGround();
    }   
    
-   return 0;
-   
+   return 0;  
 }
 
+ //-----------------------------------------------------------------------------
+ /**
+ * @description Returns the altitude above ellipsoid [m]
+ */
+engine3d.prototype.AltitudeAboveEllipsoid = function()
+{
+   if (this.scene)
+   {
+      return this.scene.nodeNavigation.GetPosition().elevation;
+   }   
+   
+   return 0;
+}
+
+ //-----------------------------------------------------------------------------
+
 goog.exportSymbol('engine3d', engine3d);
+goog.exportProperty(engine3d.prototype, 'AltitudeAboveEllipsoid', engine3d.prototype.AltitudeAboveEllipsoid);
 goog.exportProperty(engine3d.prototype, 'AltitudeAboveGround', engine3d.prototype.AltitudeAboveGround);
+goog.exportProperty(engine3d.prototype, 'Clear', engine3d.prototype.Clear);
 goog.exportProperty(engine3d.prototype, 'CreateScene', engine3d.prototype.CreateScene);
 goog.exportProperty(engine3d.prototype, 'DrawText', engine3d.prototype.DrawText);
+goog.exportProperty(engine3d.prototype, 'GetClearColor', engine3d.prototype.GetClearColor);
 goog.exportProperty(engine3d.prototype, 'GetDirectionMousePos', engine3d.prototype.GetDirectionMousePos);
+goog.exportProperty(engine3d.prototype, 'GetViewport', engine3d.prototype.GetViewport);
 goog.exportProperty(engine3d.prototype, 'InitEngine', engine3d.prototype.InitEngine);
 goog.exportProperty(engine3d.prototype, 'LoadMesh', engine3d.prototype.LoadMesh);
 goog.exportProperty(engine3d.prototype, 'LoadTexture', engine3d.prototype.LoadTexture);
@@ -875,12 +893,16 @@ goog.exportProperty(engine3d.prototype, 'PushMatrices', engine3d.prototype.PushM
 goog.exportProperty(engine3d.prototype, 'SetClearColor', engine3d.prototype.SetClearColor);
 goog.exportProperty(engine3d.prototype, 'SetInitCallback', engine3d.prototype.SetInitCallback);
 goog.exportProperty(engine3d.prototype, 'SetKeyDownCallback', engine3d.prototype.SetKeyDownCallback);
+goog.exportProperty(engine3d.prototype, 'SetKeyUpCallback', engine3d.prototype.SetKeyUpCallback);
 goog.exportProperty(engine3d.prototype, 'SetModelMatrix', engine3d.prototype.SetModelMatrix);
 goog.exportProperty(engine3d.prototype, 'SetMouseDownCallback', engine3d.prototype.SetMouseDownCallback);
 goog.exportProperty(engine3d.prototype, 'SetMouseMoveCallback', engine3d.prototype.SetMouseMoveCallback);
 goog.exportProperty(engine3d.prototype, 'SetMouseUpCallback', engine3d.prototype.SetMouseUpCallback);
+goog.exportProperty(engine3d.prototype, 'SetMouseWheelCallback', engine3d.prototype.SetMouseWheelCallback);
+goog.exportProperty(engine3d.prototype, 'SetOrtho2D', engine3d.prototype.SetOrtho2D);
 goog.exportProperty(engine3d.prototype, 'SetProjectionMatrix', engine3d.prototype.SetProjectionMatrix);
 goog.exportProperty(engine3d.prototype, 'SetRenderCallback', engine3d.prototype.SetRenderCallback);
 goog.exportProperty(engine3d.prototype, 'SetResizeCallback', engine3d.prototype.SetResizeCallback);
 goog.exportProperty(engine3d.prototype, 'SetTimerCallback', engine3d.prototype.SetTimerCallback);
 goog.exportProperty(engine3d.prototype, 'SetViewMatrix', engine3d.prototype.SetViewMatrix);
+goog.exportProperty(engine3d.prototype, 'SetViewport', engine3d.prototype.SetViewport);

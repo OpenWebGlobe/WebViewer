@@ -42,6 +42,7 @@ function i3dImageLayer()
    this.layer = null;
    this.quadtree = new MercatorQuadtree();
    this.coords = new Array(4);
+   this.transparency = 1.0;
    
    //---------------------------------------------------------------------------
    this.Ready = function()
@@ -79,6 +80,7 @@ function i3dImageLayer()
       ImageTexture.cbfReady = cbfReady;   // store the ready callback in texture object
       ImageTexture.cbfFailed = cbfFailed; // store the failure callback in texture object
       ImageTexture.caller = caller;
+      ImageTexture.transparency = this.transparency;
       ImageTexture.loadTexture(sFilename, _cbTileReady, _cbTileFailed, true); 
       
    };
@@ -133,8 +135,16 @@ function i3dImageLayer()
    
    //---------------------------------------------------------------------------
    
-   this.Setup = function(server, layer)
+   this.Setup = function(server, layer, transparency)
    {
+      if (transparency == null)
+      {
+         this.transparency = 1;
+      }
+      else
+      {
+         this.transparency = transparency;
+      }
       this.server = server;
       this.layer = layer;
      /* Example for i3d Tile-Service.

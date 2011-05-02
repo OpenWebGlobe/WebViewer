@@ -26,6 +26,7 @@ goog.provide('owg.GlobeRenderer');
 goog.require('goog.debug.Logger');
 goog.require('owg.GlobeCache');
 goog.require('owg.MercatorQuadtree');
+goog.require('owg.OSMImageLayer');
 goog.require('owg.ViewFrustum');
 goog.require('owg.i3dImageLayer');
 goog.require('owg.i3dElevationLayer');
@@ -45,6 +46,7 @@ function GlobeRenderer(engine)
    this.cachesize = 1000;
    this.globecache = null;
    this.lstFrustum = [];
+   this.lastalt = 0;
    
    this.iterator = new Object();
    this.iterator.cnt = 0;
@@ -97,16 +99,22 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
                 
                 // Create i3d layer:
                 var imgLayer = new i3dImageLayer();
-                imgLayer.Setup(url, layer);
+                imgLayer.Setup(url, layer, options.transparency);
                 this.imagelayerlist.push(imgLayer);
                 this._UpdateLayers();
              }
           }
        }
-       /*else if (options.service == "osm")
+       else if (options.service == "osm")
        {
-          // #todo: support OSM Service
-       }*/
+          if (options.url && options.url.length>0)
+          {
+            var imgLayer = new OSMImageLayer();
+            imgLayer.Setup(options.url);
+            this.imagelayerlist.push(imgLayer);
+            this._UpdateLayers(); 
+          }
+       }
     }
 }
 
@@ -382,10 +390,7 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
 {
    var pointDir = this.engine.GetDirectionMousePos(mx, my, this.matPick);           
    var candidates = new Array();
-   
-   
-   // pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz
-   
+  
    for (var i=0;i<this.lstFrustum.length;i++)
    {
       var bbmin = this.lstFrustum[i].mesh.bbmin;
@@ -438,26 +443,32 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
  //-----------------------------------------------------------------------------
  /**
  * @description Returns the altitude above ground [m]
+ * (If under world the returned value is negative)
+ * This function can be used for collision detection when implementing a navigation controller.
+ * Returns NaN, if query is not possible.
  */
 GlobeRenderer.prototype.AltitudeAboveGround = function()
 {
    // There are basically two cases:
    //    CASE 1: the user is above the terrain: shoot a ray from the camerea position to (0,0,0)
    //            in this case the distance is cameraposition <-> hitpoint
-   //    CASE 2: the user is somehow under the terrain: shoot a ray from the camera position to (0,0,0)
-   //            in this case there is no hit point! 
+   //    CASE 2: the user is somehow under the terrain: shoot a ray from the camera position to (0,0,0).
    //            So shoot a ray from (0,0,0) in direction of the camera position
    //            the hitpoint <-> cameraposition is now the distance UNDER the terrain (negative).
    //    DIFFERENCE CASE 1/2: This leads to an opposite sign in t because the direction is either 
    //                         (-eye, -eye, -eye) or (+eye, +eye, +eye.)
    //
+   if (!this.cameraposition)
+   {
+      return NaN;
+   }
    
    var candidates = new Array();
    var campos = this.cameraposition.Get();
    var vDirection = new vec3();
    
    vDirection.Set(-campos[0], -campos[1], -campos[2]);
-   vDirection.Normalize(); // for precision reasons it should be normalized... to speed up this could also be
+   //vDirection.Normalize(); // for precision reasons it should be normalized... to speed up this could also be
                            // multiplied with 1/((2^24)-1) but that is too much voodoo for the first version
    var dir = vDirection.Get();                        
     
@@ -505,10 +516,12 @@ GlobeRenderer.prototype.AltitudeAboveGround = function()
          dist = -dist;
       }
       
+      this.lastalt = dist;
+      
       return dist;
    }
 
-   
+   return this.lastalt;
    
 }
  //-----------------------------------------------------------------------------

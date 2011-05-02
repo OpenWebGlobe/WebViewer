@@ -22,8 +22,9 @@
            
            console.log("parent: "+mqtree.GetParent("0123"));
            
-           mqtree.QuadKeyToTileCoord("0121", result);
-           console.log("result[0]: "+result[0]+" result[1]: "+result[1]+" result[2]: "+result[2]+" result[3]: "+result[3]);
+           var res = {};
+           mqtree.QuadKeyToTileCoord("0121", res);
+           console.log("tilex: "+res.x+" tiley: "+res.y+" lod: "+res.lod);
            
            console.log(GlobeUtils.MakeHierarchicalFilename("diesIsteinTest.jpg"));
 

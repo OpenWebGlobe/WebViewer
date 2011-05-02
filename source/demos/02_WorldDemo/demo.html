@@ -3,6 +3,7 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
          <!-- >
             <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
          -->
@@ -55,8 +56,9 @@
             fontcolor.Set(1,1,0,1);
             engine.DrawText("OpenWebGlobe for WebGL", 0, height-32,1,fontcolor);
       
-            var altitude = engine.AltitudeAboveGround();
-            engine.DrawText("Altitude: "+ altitude, 0, height-64,1); 
+            var altitude = engine.AltitudeAboveGround(); altitude = altitude.toFixed(2);
+            var elv = engine.AltitudeAboveEllipsoid(); elv = elv.toFixed(2);
+            engine.DrawText("Altitude: "+ altitude+ " (" + elv + ")",  0, height-64,1); 
          }
          
          //---------------------------------------------------------------------
