@@ -183,17 +183,26 @@ Texture.prototype.Disable = function()
 //------------------------------------------------------------------------------
 /**
  * Blit Texture: Draw texture on screen
+ * @param {number} x
+ * @param {number} y
+ * @param {number=} opt_z
+ * @param {number=} opt_angle
+ * @param {number=} opt_scalex
+ * @param {number=} opt_scaley
+ * @param {boolean=} opt_blend
+ * @param {boolean=} opt_invtexcoord
+ * @param {number=} opt_alpha
  */
-Texture.prototype.Blit = function(x,y,z,angle,scalex,scaley,blend, invtexcoord, alpha)
+Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley, opt_blend, opt_invtexcoord, opt_alpha)
 {   
-   if (z==null) { z = 0; }
-   if (angle==null) {angle = 0;}
-   if (scalex==null) {scalex = 1;}
-   if (scaley==null) { scaley = 1; }
-   if (blend==null)  { blend = false;}
-   if (invtexcoord==null) {invtexcoord = false;}
-   if (alpha == null) { alpha = 1.0;}
-   
+   /** @type {number} */
+   var z = goog.isNull(opt_z) ? 0 : z;
+   var angle = goog.isNull(opt_angle) ? 0 : angle;
+   var scalex = goog.isNull(opt_scalex) ? 1 : scalex;
+   var scaley = goog.isNull(opt_scaley) ? 1 : scaley;
+   var blend = goog.isNull(opt_blend) ? false : blend;
+   var invtexcoord = goog.isNull(opt_invtexcoord) ? false : invtexcoord;
+   var alpha = goog.isNull(opt_alpha) ? 1.0 : alpha;
    
    if (this.ready)
    {
