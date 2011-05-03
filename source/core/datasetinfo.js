@@ -82,18 +82,18 @@ function _cbfdsidownload(dsi)
          var data=dsi.http.responseText;      
          var obj=/** @type {DatasetInfoJSON} */ goog.json.parse(data);
       
-         dsi.sLayerName = obj.layer;         
-         dsi.sLayerCopyright = obj.copyright;    
-         dsi.nSRS = obj.srs;               
-         dsi.vBoundingBox = obj.boundingbox;       
-         dsi.nLevelofDetail = obj.levelofdetail;     
-         dsi.nImageWidth = obj.imagewidth;        
-         dsi.nImageHeight = obj.imageheight;       
-         dsi.nTileSize = obj.tilesize;          
-         dsi.vTileLayout = obj.tilelayout;        
-         dsi.sTileFormat = obj.tileformat;        
-         dsi.vBounds = obj.bounds;            
-         dsi.vCenterCoord = obj.center;
+         dsi.sLayerName = obj['layer'];
+         dsi.sLayerCopyright = obj['copyright'];
+         dsi.nSRS = obj['srs'];
+         dsi.vBoundingBox = obj['boundingbox'];
+         dsi.nLevelofDetail = obj['levelofdetail'];
+         dsi.nImageWidth = obj['imagewidth'];
+         dsi.nImageHeight = obj['imageheight'];
+         dsi.nTileSize = obj['tilesize'];
+         dsi.vTileLayout = obj['tilelayout'];
+         dsi.sTileFormat = obj['tileformat'];
+         dsi.vBounds = obj['bounds'];
+         dsi.vCenterCoord = obj['center'];
          
          if (dsi.sTileFormat == "image/png")
          {

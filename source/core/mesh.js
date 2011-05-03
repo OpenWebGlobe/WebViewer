@@ -488,58 +488,58 @@ function _cbfjsondownload(mesh)
          var data=mesh.http.responseText;      
          var jsonobject=/** @type {ObjectJSON} */ goog.json.parse(data);
          
-         if (jsonobject.BoundingBox)
+         if (jsonobject['BoundingBox'])
          {
-            mesh.bbmin = jsonobject.BoundingBox[0];
-            mesh.bbmax = jsonobject.BoundingBox[1];
+            mesh.bbmin = jsonobject['BoundingBox'][0];
+            mesh.bbmax = jsonobject['BoundingBox'][1];
          }
          
-         if (jsonobject.Offset)
+         if (jsonobject['Offset'])
          {
-            mesh.offset = jsonobject.Offset;
+            mesh.offset = jsonobject['Offset'];
          }
          
-         if (jsonobject.CurtainIndex)   
+         if (jsonobject['CurtainIndex'])
          {
-            mesh.curtainindex = jsonobject.CurtainIndex;
+            mesh.curtainindex = jsonobject['CurtainIndex'];
          }
          
-         switch(jsonobject.VertexSemantic)
+         switch(jsonobject['VertexSemantic'])
          {
-            case "p":      mesh.numvertex = jsonobject.Vertices.length/3;    
-                           mesh.SetBufferP(jsonobject.Vertices);
+            case "p":      mesh.numvertex = jsonobject['Vertices'].length/3;
+                           mesh.SetBufferP(jsonobject['Vertices']);
                            mesh.mode = "p";
                                 
                            break;
                             
-            case "pnt":    mesh.numvertex = jsonobject.Vertices.length/8;
-                           mesh.SetBufferPNT(jsonobject.Vertices);
+            case "pnt":    mesh.numvertex = jsonobject['Vertices'].length/8;
+                           mesh.SetBufferPNT(jsonobject['Vertices']);
                            mesh.mode = "pnt";
                            
                            break;
                            
-            case "pc":     mesh.numvertex = jsonobject.Vertices.length/7; 
+            case "pc":     mesh.numvertex = jsonobject['Vertices'].length/7; 
                            mesh.mode = "pc";
-                           mesh.SetBufferPC(jsonobject.Vertices); 
+                           mesh.SetBufferPC(jsonobject['Vertices']); 
                            break;
                            
-            case "pt":     mesh.numvertex = jsonobject.Vertices.length/5; 
+            case "pt":     mesh.numvertex = jsonobject['Vertices'].length/5; 
                            mesh.mode = "pt";   
-                           mesh.SetBufferPT(jsonobject.Vertices);                     
+                           mesh.SetBufferPT(jsonobject['Vertices']);
                            break;
                            
-            case "pnct":   mesh.numvertex = jsonobject.Vertices.length/12;
+            case "pnct":   mesh.numvertex = jsonobject['Vertices'].length/12;
                            mesh.mode = "p";
-                           mesh.SetBufferPNCT(jsonobject.Vertices); 
+                           mesh.SetBufferPNCT(jsonobject['Vertices']);
                            break;
         
             default:       
                            alert("unknown mesh mode!!");
          }      
-         mesh.SetIndexBuffer(jsonobject.Indices,jsonobject.IndexSemantic);
+         mesh.SetIndexBuffer(jsonobject['Indices'],jsonobject['IndexSemantic']);
          
          
-         mesh.numindex = jsonobject.Indices.length;         // number of elements of index vector
+         mesh.numindex = jsonobject['Indices'].length;         // number of elements of index vector
          mesh.Ready = true; 
          
          if(mesh.cbfJSONLoad)
