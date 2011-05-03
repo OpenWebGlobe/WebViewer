@@ -597,12 +597,12 @@ Mesh.prototype.SetJSONLoadCallback = function(f)
 
 /**
  * @description   Test for ray mesh intersection iterates through all triangles.
- * @param x x ray startpoint x coordinate
- * @param y y ray startpoint y coordinate
- * @param z z ray startpoint z coordinate
- * @param dirx normalized direction x coordinate
- * @param diry normalized direction y coordinate
- * @param dirz normalized direction z coordinate
+ * @param {number} x x ray startpoint x coordinate
+ * @param {number} y y ray startpoint y coordinate
+ * @param {number} z z ray startpoint z coordinate
+ * @param {number} dirx normalized direction x coordinate
+ * @param {number} diry normalized direction y coordinate
+ * @param {number} dirz normalized direction z coordinate
  */
 Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
 {
@@ -828,12 +828,12 @@ Mesh.prototype.UpdateAABB = function()
 //------------------------------------------------------------------------------
 /**
  * @description   Test for ray bounding box intersection
- * @param x x ray startpoint x coordinate
- * @param y y ray startpoint y coordinate
- * @param z z ray startpoint z coordinate
- * @param dirx normalized direction x coordinate
- * @param diry normalized direction y coordinate
- * @param dirz normalized direction z coordinate
+ * @param {number} x x ray startpoint x coordinate
+ * @param {number} y y ray startpoint y coordinate
+ * @param {number} z z ray startpoint z coordinate
+ * @param {number} dirx normalized direction x coordinate
+ * @param {number} diry normalized direction y coordinate
+ * @param {number} dirz normalized direction z coordinate
  */
 Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
 {
