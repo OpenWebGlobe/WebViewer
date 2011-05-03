@@ -57,8 +57,8 @@ function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_frameb
    {       
         this.rttFramebuffer = this.gl.createFramebuffer();
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.rttFramebuffer);
-        this.rttFramebuffer.width = opt_framebufferWidth;
-        this.rttFramebuffer.height = opt_framebufferHeight;
+        this.rttFramebuffer.width = opt_framebufferWidth || 0;
+        this.rttFramebuffer.height = opt_framebufferHeight || 0;
 
         this.texture = this.gl.createTexture();
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
@@ -196,13 +196,13 @@ Texture.prototype.Disable = function()
 Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley, opt_blend, opt_invtexcoord, opt_alpha)
 {   
    /** @type {number} */
-   var z = goog.isNull(opt_z) ? 0 : z;
-   var angle = goog.isNull(opt_angle) ? 0 : angle;
-   var scalex = goog.isNull(opt_scalex) ? 1 : scalex;
-   var scaley = goog.isNull(opt_scaley) ? 1 : scaley;
-   var blend = goog.isNull(opt_blend) ? false : blend;
-   var invtexcoord = goog.isNull(opt_invtexcoord) ? false : invtexcoord;
-   var alpha = goog.isNull(opt_alpha) ? 1.0 : alpha;
+   var z = opt_z || 0;
+   var angle = opt_angle || 0;
+   var scalex = opt_scalex || 1;
+   var scaley = opt_scaley || 1;
+   var blend = opt_blend || false;
+   var invtexcoord = opt_invtexcoord || false;
+   var alpha = opt_alpha || 1.0;
    
    if (this.ready)
    {

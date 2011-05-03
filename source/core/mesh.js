@@ -335,6 +335,9 @@ Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor)
    {
       return;  // not yet loaded
    }
+
+   var count = opt_count || 0;
+   var offset = opt_offset || 0;
    
    // this will be changed, but for now the draw function creates the GPU buffers.
    if (this.vbo == null)
@@ -425,7 +428,7 @@ Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor)
          case "TRIANGLES":
                            if(opt_ranged)
                            {
-                              this.gl.drawElements(this.gl.TRIANGLES, opt_count, this.gl.UNSIGNED_SHORT, opt_offset);
+                              this.gl.drawElements(this.gl.TRIANGLES, count, this.gl.UNSIGNED_SHORT, offset);
                            }
                            else
                            {
@@ -435,7 +438,7 @@ Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor)
          case "TRIANGLESTRIP":
                            if(opt_ranged)
                            {
-                              this.gl.drawElements(this.gl.TRIANGLE_STRIP, opt_count, this.gl.UNSIGNED_SHORT, opt_offset);
+                              this.gl.drawElements(this.gl.TRIANGLE_STRIP, count, this.gl.UNSIGNED_SHORT, offset);
                            }
                            else
                            {
