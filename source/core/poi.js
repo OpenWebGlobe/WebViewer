@@ -54,10 +54,9 @@ goog.require('owg.Texture');
  
 /**
  * @description Set the poi content.
- * @extends POI
- * @param{string} text the poi text.
- * @param{string} string to set predefined style. (e.g. "WB","Symbol" etc.)
- * @param{url} url poi icon url.
+ * @param {string} text the poi text.
+ * @param {string} string to set predefined style. (e.g. "WB","Symbol" etc.)
+ * @param {string} url poi icon url.
  */ 
  Poi.prototype.SetContent = function(text,style,imgurl)
  {
@@ -68,11 +67,10 @@ goog.require('owg.Texture');
  
  /**
  * @description Set the Poi postion in wgs84 coordinates.
- * @extends POI
- * @param{float} lat the latitude value
- * @param{float} lng the longitude value
- * @param{float} elv the elevation value
- * @param{float} signElv the elevation of poi text -> if this is set, the poi gets a pole from elv to signElv.
+ * @param {number} lat the latitude value
+ * @param {number} lng the longitude value
+ * @param {number} elv the elevation value
+ * @param {number} signElv the elevation of poi text -> if this is set, the poi gets a pole from elv to signElv.
  */ 
  Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
  {
@@ -95,7 +93,6 @@ goog.require('owg.Texture');
 
   /**
  * @description Draws the poi
- * @extends POI
  */ 
  Poi.prototype.Draw = function()
  {  

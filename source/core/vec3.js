@@ -27,7 +27,6 @@ goog.provide('owg.vec3');
 /** 
  * @class vec3
  * @description Vector class (3 components)
- * float32 and 
  * {@link http://www.openwebglobe.org} 
  *
  * @author Martin Christen martin.christen@fhnw.ch  
@@ -40,19 +39,12 @@ goog.provide('owg.vec3');
  * Create a new Vector Object
  * Initialised the vector as [0,0,0]
  * This is the basic vec3.class 
- * @param {string=} opt_typeparam "float": vector values will be stored as float32. "double": vector values will be stored as float64. 
  * @constructor
  */
-function vec3(opt_typeparam)
+function vec3()
 {
-   if (opt_typeparam == "double")
-   {
-      this._values = new Array([0.0, 0.0, 0.0]);  
-   }
-   else //(opt_typeparam == "float")
-   {
-      this._values = new Float32Array([0.0, 0.0, 0.0]);
-   }
+   /** @type {!Float32Array} */
+   this._values = new Float32Array([0.0, 0.0, 0.0]);
 }
 
 //------------------------------------------------------------------------------
@@ -74,6 +66,7 @@ vec3.prototype.Set = function(x,y,z)
 /**
  * Returns the values as array
  *
+ * @return {!Float32Array}
  */
 vec3.prototype.Get = function()
 {
@@ -84,44 +77,34 @@ vec3.prototype.Get = function()
 /**
  * @description Returns a copy of the vec3 object. (Allocates memory)
  *
+ * @return {vec3}
  */
 vec3.prototype.Copy = function()
 {
-   var cpy;
-   if (this._values instanceof Float32Array)
-   {
-      cpy = new vec3("float");
-   }
-   if (this._values instanceof Array)
-   {
-      cpy = new vec3("double");
-   }
-
+   var cpy = new vec3();
    cpy.Set(this._values[0],this._values[1],this._values[2]);
-    
    return cpy;  
 }
 
 //------------------------------------------------------------------------------
 /**
  * Adds the vector vec to this instance
- * @param{vec3} vec
+ * @param {vec3} vec
+ * @return {vec3}
  */
 vec3.prototype.Add = function(vec)
 {   
-   if(vec instanceof vec3)
-   {
-      this._values[0]=this._values[0]+vec._values[0];
-      this._values[1]=this._values[1]+vec._values[1];
-      this._values[2]=this._values[2]+vec._values[2];
-      return this;  
-   }
+   this._values[0]=this._values[0]+vec._values[0];
+   this._values[1]=this._values[1]+vec._values[1];
+   this._values[2]=this._values[2]+vec._values[2];
+   return this;  
 }
 
 //------------------------------------------------------------------------------
 /**
  * Subtracts the vector vec from this instance
- * @param{vec3} vec
+ * @param {vec3} vec
+ * @return {vec3}
  */
 vec3.prototype.Sub = function(vec)
 {
@@ -134,6 +117,9 @@ vec3.prototype.Sub = function(vec)
 //-----------------------------------------------------------------------
 /**
  * Subtracts the vector vec1-vec2 and stores the result in this instance
+ *
+ * @param {vec3} vec1
+ * @param {vec3} vec2
  */
 vec3.prototype.Subtract = function(vec1, vec2)
 {
@@ -145,25 +131,22 @@ vec3.prototype.Subtract = function(vec1, vec2)
 //------------------------------------------------------------------------------
 /**
  * Calculates the cross product of this instance and the vector vec.
- * @param{vec3} vec
+ * @param {vec3} vec
  */
 vec3.prototype.Cross = function(vec)
 {
-   if(vec instanceof vec3)
-   {
-      var x1=this._values[0];
-      var y1=this._values[1];
-      var z1=this._values[2];
-   
-      var x2=vec._values[0];
-      var y2=vec._values[1];
-      var z2=vec._values[2];
-   
-      this._values[0]=y1*z2-y2*z1;
-      this._values[1]=z1*x2-z2*x1;
-      this._values[2]=x1*y2-x2*y1;
-      return this;
-    }
+   var x1=this._values[0];
+   var y1=this._values[1];
+   var z1=this._values[2];
+
+   var x2=vec._values[0];
+   var y2=vec._values[1];
+   var z2=vec._values[2];
+
+   this._values[0]=y1*z2-y2*z1;
+   this._values[1]=z1*x2-z2*x1;
+   this._values[2]=x1*y2-x2*y1;
+   return this;
 }  
 
 //------------------------------------------------------------------------------
@@ -194,16 +177,13 @@ function Cross(result, v1, v2)
  */
 vec3.prototype.Dot = function(vec)
 {
-   if(vec instanceof vec3)
-   {
-      return this._values[0]*vec._values[0]+this._values[1]*vec._values[1]+this._values[2]*vec._values[2];
-   }
+   return this._values[0]*vec._values[0]+this._values[1]*vec._values[1]+this._values[2]*vec._values[2];
 }
 
 //------------------------------------------------------------------------------
 /**
  * Calculates the length of the vector.
- * @return length of the current vector instance. length=sqrt(x^2+y^2+z^2)
+ * @return {number} length of the current vector instance. length=sqrt(x^2+y^2+z^2)
  */
 vec3.prototype.Length = function()
 {
@@ -217,7 +197,7 @@ vec3.prototype.Length = function()
 //------------------------------------------------------------------------------
 /**
  * Calculates the squared length of the vector.
- * @return squared length of the current vector instance. len=x^2+y^2+z^2
+ * @return {number} squared length of the current vector instance. len=x^2+y^2+z^2
  */
 vec3.prototype.SquaredLength = function()
 {
@@ -230,7 +210,7 @@ vec3.prototype.SquaredLength = function()
 //------------------------------------------------------------------------------
 /**
  * Normalizes this vector instance. Afterward the vector length will be 1.
- * @return length of the current vector instance. length=sqrt(x^2+y^2+z^2)
+ * @return {vec3} length of the current vector instance. length=sqrt(x^2+y^2+z^2)
  */
 vec3.prototype.Normalize = function()
 {
@@ -247,6 +227,7 @@ vec3.prototype.Normalize = function()
 //------------------------------------------------------------------------------
 /**
  * Negates all elements.
+ * @return {vec3}
  */
 vec3.prototype.Neg = function()
 {
@@ -260,7 +241,7 @@ vec3.prototype.Neg = function()
 //------------------------------------------------------------------------------
 /**
  * 
- * @return a string like: "[1,2,3]";
+ * @return {string} a string like: "[1,2,3]";
  */
 vec3.prototype.ToString = function()
 {
@@ -269,5 +250,17 @@ vec3.prototype.ToString = function()
 
 //------------------------------------------------------------------------------
 
+goog.exportSymbol('Cross', Cross);
 goog.exportSymbol('vec3', vec3);
+goog.exportProperty(vec3.prototype, 'Add', vec3.prototype.Add);
+goog.exportProperty(vec3.prototype, 'Cross', vec3.prototype.Cross);
+goog.exportProperty(vec3.prototype, 'Dot', vec3.prototype.Dot);
+goog.exportProperty(vec3.prototype, 'Get', vec3.prototype.Get);
+goog.exportProperty(vec3.prototype, 'Length', vec3.prototype.Length);
+goog.exportProperty(vec3.prototype, 'Neg', vec3.prototype.Neg);
+goog.exportProperty(vec3.prototype, 'Normalize', vec3.prototype.Normalize);
 goog.exportProperty(vec3.prototype, 'Set', vec3.prototype.Set);
+goog.exportProperty(vec3.prototype, 'SquaredLength', vec3.prototype.SquaredLength);
+goog.exportProperty(vec3.prototype, 'Subtract', vec3.prototype.Subtract);
+goog.exportProperty(vec3.prototype, 'Sub', vec3.prototype.Sub);
+goog.exportProperty(vec3.prototype, 'ToString', vec3.prototype.ToString);

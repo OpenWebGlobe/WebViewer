@@ -10,22 +10,22 @@
       
       function calc()
       {
-         var mat=new mat4("float");
+         var mat=new mat4();
         // mat.Set(new Float32Array([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,1]));
 
 
-         vec=new vec3("float");
+         vec=new vec3();
          vec.Set(640,480,0);
          mat.Ortho2D(0,640,0,480);
 
          
-         matScale=new mat4("float");
+         matScale=new mat4();
          matScale.Scale(0.5,0.5,0.5);
          
-         matId=new mat4("float");
+         matId=new mat4();
          matId.Translation(1,2,3);
          
-         var matResult=new mat4("float");
+         var matResult=new mat4();
          matResult.Multiply(matId,matScale);
          
 

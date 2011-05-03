@@ -26,7 +26,7 @@ goog.provide('owg.mat4');
 goog.require('owg.vec3');
 
 /** 
- * mat4(string type)     with type "double", "float" or "native". Matrix is initialized with identity.
+ * mat4()                Matrix is initialized with identity.
  * Set(array mat)        mat is an array with 16 values (4x4)
  * Copy()                copy matrix, returs an exact copy of the matrix
  * CopyFrom(M)           copy matrix from another matrix
@@ -51,28 +51,19 @@ goog.require('owg.vec3');
 /**
  * Create a new Matrix Object
  * @class This is the basic mat4.class 
- * @param {string=} opt_typeparam "float": matrix values will be stored as float32. "double": matrix is a javascript array. 
  * @constructor
  * @return A new 4 x 4 Identity-Matrix
  */
-function mat4(opt_typeparam)
+function mat4()
 {
-   if (opt_typeparam == "double")
-   {
-      this._values = new Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
-   }
-   else //(opt_typeparam == "float")
-   {
-      this._values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
-   }
- 
-   this.type = opt_typeparam;
+   /** @type {!Float32Array} */
+   this._values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
 }
 
 //------------------------------------------------------------------------------
 /**
  * Set Values
- * @param {Array|Float32Array} oMatrix an array of any type containing 16 values 
+ * @param {Array.<number>|Float32Array} oMatrix an array of any type containing 16 values 
  */
 mat4.prototype.Set = function(oMatrix)
 {
@@ -89,7 +80,7 @@ mat4.prototype.Set = function(oMatrix)
 /**
  * Get Values
  * 
- * @return An array with the 16 element values.
+ * @return {!Float32Array} An array with the 16 element values.
  */
 mat4.prototype.Get = function()
 {
@@ -100,26 +91,17 @@ mat4.prototype.Get = function()
 /**
  * Copy matrix (creates new array)
  * 
- * @return a copy of this mat4 object.
+ * @return {mat4} a copy of this mat4 object.
  */
 mat4.prototype.Copy = function()
 {
-   var cpy;
-
-   if (this._values instanceof Array)
-   {
-      cpy = new mat4("double");
-   }
-   else if (this._values instanceof Float32Array)
-   {
-      cpy = new mat4("float");
-   }
+   var cpy = new mat4();
 
    for (var i = 0; i < 16; i++)
    {
       cpy._values[i] = this._values[i];
    } 
-   
+
    return cpy;
 }
 
@@ -128,7 +110,6 @@ mat4.prototype.Copy = function()
  * CopyFrom: Copy matrix to an existing matrix
  * @param{mat4} cpy The matrix to copy from
  * 
- * @return a copy of this mat4 object.
  */
 mat4.prototype.CopyFrom = function(cpy)
 {
@@ -187,10 +168,10 @@ mat4.prototype.Translation = function(x,y,z)
 /**
  * @description Overwrites the Translation values in matrix mat with x,y,z. 
  *
- * @param mat mat4 matrix wich will be overwritten
- * @param x translation in x direction
- * @param y translation in y direction
- * @param z translation in z direction
+ * @param {mat4} mat mat4 matrix wich will be overwritten
+ * @param {number} x translation in x direction
+ * @param {number} y translation in y direction
+ * @param {number} z translation in z direction
  */
 mat4.prototype.OverwriteTranslation = function(mat,x,y,z)
 {     
@@ -426,38 +407,35 @@ mat4.prototype.LookAt = function(eyex, eyey, eyez, centerx, centery, centerz, up
  */ 
 mat4.prototype.Multiply = function(a,b)
 {
-   if (a instanceof mat4 && b instanceof mat4)
-   {
-      var a00 = a._values[0],  a01 = a._values[1],  a02 = a._values[2],  a03 = a._values[3];
-      var a10 = a._values[4],  a11 = a._values[5],  a12 = a._values[6],  a13 = a._values[7];
-      var a20 = a._values[8],  a21 = a._values[9],  a22 = a._values[10], a23 = a._values[11];
-      var a30 = a._values[12], a31 = a._values[13], a32 = a._values[14], a33 = a._values[15];
+   var a00 = a._values[0],  a01 = a._values[1],  a02 = a._values[2],  a03 = a._values[3];
+   var a10 = a._values[4],  a11 = a._values[5],  a12 = a._values[6],  a13 = a._values[7];
+   var a20 = a._values[8],  a21 = a._values[9],  a22 = a._values[10], a23 = a._values[11];
+   var a30 = a._values[12], a31 = a._values[13], a32 = a._values[14], a33 = a._values[15];
+
+   var b00 = b._values[0],  b01 = b._values[1],  b02 = b._values[2],  b03 = b._values[3];
+   var b10 = b._values[4],  b11 = b._values[5],  b12 = b._values[6],  b13 = b._values[7];
+   var b20 = b._values[8],  b21 = b._values[9],  b22 = b._values[10], b23 = b._values[11];
+   var b30 = b._values[12], b31 = b._values[13], b32 = b._values[14], b33 = b._values[15];
    
-      var b00 = b._values[0],  b01 = b._values[1],  b02 = b._values[2],  b03 = b._values[3];
-      var b10 = b._values[4],  b11 = b._values[5],  b12 = b._values[6],  b13 = b._values[7];
-      var b20 = b._values[8],  b21 = b._values[9],  b22 = b._values[10], b23 = b._values[11];
-      var b30 = b._values[12], b31 = b._values[13], b32 = b._values[14], b33 = b._values[15];
-      
-      this._values[0] = b00*a00 + b01*a10 + b02*a20 + b03*a30;
-      this._values[1] = b00*a01 + b01*a11 + b02*a21 + b03*a31;
-      this._values[2] = b00*a02 + b01*a12 + b02*a22 + b03*a32;
-      this._values[3] = b00*a03 + b01*a13 + b02*a23 + b03*a33;
-      
-      this._values[4] = b10*a00 + b11*a10 + b12*a20 + b13*a30;
-      this._values[5] = b10*a01 + b11*a11 + b12*a21 + b13*a31;
-      this._values[6] = b10*a02 + b11*a12 + b12*a22 + b13*a32;
-      this._values[7] = b10*a03 + b11*a13 + b12*a23 + b13*a33;
-      
-      this._values[8] = b20*a00 + b21*a10 + b22*a20 + b23*a30;
-      this._values[9] = b20*a01 + b21*a11 + b22*a21 + b23*a31;
-      this._values[10] = b20*a02 + b21*a12 + b22*a22 + b23*a32;
-      this._values[11] = b20*a03 + b21*a13 + b22*a23 + b23*a33;
-      
-      this._values[12] = b30*a00 + b31*a10 + b32*a20 + b33*a30;
-      this._values[13] = b30*a01 + b31*a11 + b32*a21 + b33*a31;
-      this._values[14] = b30*a02 + b31*a12 + b32*a22 + b33*a32;
-      this._values[15] = b30*a03 + b31*a13 + b32*a23 + b33*a33;
-   }
+   this._values[0] = b00*a00 + b01*a10 + b02*a20 + b03*a30;
+   this._values[1] = b00*a01 + b01*a11 + b02*a21 + b03*a31;
+   this._values[2] = b00*a02 + b01*a12 + b02*a22 + b03*a32;
+   this._values[3] = b00*a03 + b01*a13 + b02*a23 + b03*a33;
+   
+   this._values[4] = b10*a00 + b11*a10 + b12*a20 + b13*a30;
+   this._values[5] = b10*a01 + b11*a11 + b12*a21 + b13*a31;
+   this._values[6] = b10*a02 + b11*a12 + b12*a22 + b13*a32;
+   this._values[7] = b10*a03 + b11*a13 + b12*a23 + b13*a33;
+   
+   this._values[8] = b20*a00 + b21*a10 + b22*a20 + b23*a30;
+   this._values[9] = b20*a01 + b21*a11 + b22*a21 + b23*a31;
+   this._values[10] = b20*a02 + b21*a12 + b22*a22 + b23*a32;
+   this._values[11] = b20*a03 + b21*a13 + b22*a23 + b23*a33;
+   
+   this._values[12] = b30*a00 + b31*a10 + b32*a20 + b33*a30;
+   this._values[13] = b30*a01 + b31*a11 + b32*a21 + b33*a31;
+   this._values[14] = b30*a02 + b31*a12 + b32*a22 + b33*a32;
+   this._values[15] = b30*a03 + b31*a13 + b32*a23 + b33*a33;
 }
 
 //------------------------------------------------------------------------------
@@ -487,31 +465,21 @@ mat4.prototype.Transpose = function()
  * The vector is changed internally to a homogenous coordinate vector.
  * 
  * @param {vec3} vec
+ * @return {vec3}
  */ 
 mat4.prototype.MultiplyVec3 = function(vec)
 {
-   if(vec instanceof vec3)
-   {
-      var resVec;
-      if(this._values instanceof Float32Array)
-      {
-         resVec = new vec3("float"); 
-      }
-      else
-      {
-       resVec = new vec3("double");
-      }  
-      resVec._values[0]=this._values[0]*vec._values[0]+this._values[4]*vec._values[1]+this._values[8]*vec._values[2]+this._values[12];
-      resVec._values[1]=this._values[1]*vec._values[0]+this._values[5]*vec._values[1]+this._values[9]*vec._values[2]+this._values[13];
-      resVec._values[2]=this._values[2]*vec._values[0]+this._values[6]*vec._values[1]+this._values[10]*vec._values[2]+this._values[14];
-      var w=this._values[3]*vec._values[0]+this._values[7]*vec._values[1]+this._values[11]*vec._values[2]+this._values[15]; 
-      
-      resVec._values[0]=resVec._values[0]/w;
-      resVec._values[1]=resVec._values[1]/w;
-      resVec._values[2]=resVec._values[2]/w;
-             
-      return resVec;
-   }
+   var resVec = new vec3();
+   resVec._values[0]=this._values[0]*vec._values[0]+this._values[4]*vec._values[1]+this._values[8]*vec._values[2]+this._values[12];
+   resVec._values[1]=this._values[1]*vec._values[0]+this._values[5]*vec._values[1]+this._values[9]*vec._values[2]+this._values[13];
+   resVec._values[2]=this._values[2]*vec._values[0]+this._values[6]*vec._values[1]+this._values[10]*vec._values[2]+this._values[14];
+   var w=this._values[3]*vec._values[0]+this._values[7]*vec._values[1]+this._values[11]*vec._values[2]+this._values[15];
+
+   resVec._values[0]=resVec._values[0]/w;
+   resVec._values[1]=resVec._values[1]/w;
+   resVec._values[2]=resVec._values[2]/w;
+
+   return resVec;
 }
 
 //------------------------------------------------------------------------------
@@ -630,6 +598,8 @@ mat4.prototype.Ortho2D = function(left, right, bottom, top)
 /**
  * @description calc navigation frame, lng and lat in degree!
  *
+ * @param {number} lng_deg
+ * @param {number} lat_deg
  */
 mat4.prototype.CalcNavigationFrame = function(lng_deg, lat_deg)
 {
@@ -651,6 +621,9 @@ mat4.prototype.CalcNavigationFrame = function(lng_deg, lat_deg)
 /**
  * @description calc body frame, yaw, pitch and roll are in RAD
  *
+ * @param {number} yaw
+ * @param {number} pitch
+ * @param {number} roll
  */
 mat4.prototype.CalcBodyFrame = function(yaw, pitch, roll)
 {
@@ -733,7 +706,7 @@ mat4.prototype.Inverse = function(M)
 /**
  * ToString
  *
- * @return A string with all matrix elements.
+ * @return {string} A string with all matrix elements.
  *
  */
 mat4.prototype.ToString = function()
@@ -745,12 +718,28 @@ mat4.prototype.ToString = function()
 }
 
 goog.exportSymbol('mat4', mat4);
+goog.exportProperty(mat4.prototype, 'CalcBodyFrame', mat4.prototype.CalcBodyFrame);
+goog.exportProperty(mat4.prototype, 'CalcNavigationFrame', mat4.prototype.CalcNavigationFrame);
+goog.exportProperty(mat4.prototype, 'Cami3d', mat4.prototype.Cami3d);
 goog.exportProperty(mat4.prototype, 'CopyFrom', mat4.prototype.CopyFrom);
+goog.exportProperty(mat4.prototype, 'Copy', mat4.prototype.Copy);
+goog.exportProperty(mat4.prototype, 'Frustum', mat4.prototype.Frustum);
+goog.exportProperty(mat4.prototype, 'Get', mat4.prototype.Get);
 goog.exportProperty(mat4.prototype, 'Identity', mat4.prototype.Identity);
+goog.exportProperty(mat4.prototype, 'Inverse', mat4.prototype.Inverse);
 goog.exportProperty(mat4.prototype, 'LookAt', mat4.prototype.LookAt);
 goog.exportProperty(mat4.prototype, 'Multiply', mat4.prototype.Multiply);
+goog.exportProperty(mat4.prototype, 'MultiplyVec3', mat4.prototype.MultiplyVec3);
 goog.exportProperty(mat4.prototype, 'Ortho2D', mat4.prototype.Ortho2D);
+goog.exportProperty(mat4.prototype, 'Ortho', mat4.prototype.Ortho);
+goog.exportProperty(mat4.prototype, 'OverwriteTranslation', mat4.prototype.OverwriteTranslation);
 goog.exportProperty(mat4.prototype, 'Perspective', mat4.prototype.Perspective);
+goog.exportProperty(mat4.prototype, 'RotationX', mat4.prototype.RotationX);
+goog.exportProperty(mat4.prototype, 'RotationY', mat4.prototype.RotationY);
+goog.exportProperty(mat4.prototype, 'RotationZ', mat4.prototype.RotationZ);
 goog.exportProperty(mat4.prototype, 'Scale', mat4.prototype.Scale);
+goog.exportProperty(mat4.prototype, 'Set', mat4.prototype.Set);
 goog.exportProperty(mat4.prototype, 'ToString', mat4.prototype.ToString);
 goog.exportProperty(mat4.prototype, 'Translation', mat4.prototype.Translation);
+goog.exportProperty(mat4.prototype, 'Transpose', mat4.prototype.Transpose);
+goog.exportProperty(mat4.prototype, 'Zero', mat4.prototype.Zero);
