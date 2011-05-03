@@ -42,7 +42,6 @@ function CanvasTexture(engine)
 
 /**
  * Generates a mesh with a canvas2d as texture. The mesh size depends on the text length and style.
- * @extends CanvasTexture
  * @param{string}  text the poi text.
  * @param {string} string to set predefined style e.g. "RB","WB" or "Symbol".
  * @param {url} imgurl url for poi icon.
@@ -84,7 +83,6 @@ CanvasTexture.prototype.GenerateTexture =  function(text,style,imgurl)
 
 /**
  * Sets the canvas content (poi text and icon) in predefined styles.
- * @extends CanvasTexture
  * @param{string}  text the poi text.
  * @param {string} string to set predefined style e.g. "RB","WB" or "Symbol".
  * @param {url} imgurl url for poi icon.
@@ -164,7 +162,6 @@ CanvasTexture.prototype.SetCanvasContent = function(text,style,imgurl)
 
 /**
  * Draws the canvas 2d.
- * @extends CanvasTexture
  * @param{string}  text the poi text.
  * @param {style} styleObject style definition.
  * @param {url} imgurl url for poi icon.
@@ -262,7 +259,6 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject,imgurl)
 
 /**
  * callback function for async image load.
- * @extends CanvasTexture
  * @ignore 
  */
 function _cbfDrawImage(context,image,styleObject,canvasTextureClass)
@@ -276,7 +272,6 @@ function _cbfDrawImage(context,image,styleObject,canvasTextureClass)
 
 /**
  * Binds the texture
- * @extends CanvasTexture
  * @ignore 
  */
 CanvasTexture.prototype.ToGPU = function()
@@ -300,7 +295,6 @@ CanvasTexture.prototype.ToGPU = function()
 
 /**
  * Returns a mesh for the poi-pole.
- * @extends CanvasTexture
  * @param {number} x x cartesian pole start coordinate
  * @param {number} y y cartesian pole start coordinate
  * @param {number} z z cartesian pole start coordinate

@@ -54,7 +54,6 @@ goog.require('owg.Texture');
  
 /**
  * @description Set the poi content.
- * @extends POI
  * @param {string} text the poi text.
  * @param {string} string to set predefined style. (e.g. "WB","Symbol" etc.)
  * @param {string} url poi icon url.
@@ -68,7 +67,6 @@ goog.require('owg.Texture');
  
  /**
  * @description Set the Poi postion in wgs84 coordinates.
- * @extends POI
  * @param {number} lat the latitude value
  * @param {number} lng the longitude value
  * @param {number} elv the elevation value
@@ -95,7 +93,6 @@ goog.require('owg.Texture');
 
   /**
  * @description Draws the poi
- * @extends POI
  */ 
  Poi.prototype.Draw = function()
  {  
