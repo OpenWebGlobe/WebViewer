@@ -89,7 +89,7 @@ mat4.prototype.Set = function(oMatrix)
 /**
  * Get Values
  * 
- * @return An array with the 16 element values.
+ * @return {Array|Float32Array} An array with the 16 element values.
  */
 mat4.prototype.Get = function()
 {
@@ -100,7 +100,7 @@ mat4.prototype.Get = function()
 /**
  * Copy matrix (creates new array)
  * 
- * @return a copy of this mat4 object.
+ * @return {mat4} a copy of this mat4 object.
  */
 mat4.prototype.Copy = function()
 {
@@ -128,7 +128,6 @@ mat4.prototype.Copy = function()
  * CopyFrom: Copy matrix to an existing matrix
  * @param{mat4} cpy The matrix to copy from
  * 
- * @return a copy of this mat4 object.
  */
 mat4.prototype.CopyFrom = function(cpy)
 {
@@ -187,10 +186,10 @@ mat4.prototype.Translation = function(x,y,z)
 /**
  * @description Overwrites the Translation values in matrix mat with x,y,z. 
  *
- * @param mat mat4 matrix wich will be overwritten
- * @param x translation in x direction
- * @param y translation in y direction
- * @param z translation in z direction
+ * @param {mat4} mat mat4 matrix wich will be overwritten
+ * @param {number} x translation in x direction
+ * @param {number} y translation in y direction
+ * @param {number} z translation in z direction
  */
 mat4.prototype.OverwriteTranslation = function(mat,x,y,z)
 {     
@@ -487,6 +486,7 @@ mat4.prototype.Transpose = function()
  * The vector is changed internally to a homogenous coordinate vector.
  * 
  * @param {vec3} vec
+ * @return {vec3}
  */ 
 mat4.prototype.MultiplyVec3 = function(vec)
 {
@@ -630,6 +630,8 @@ mat4.prototype.Ortho2D = function(left, right, bottom, top)
 /**
  * @description calc navigation frame, lng and lat in degree!
  *
+ * @param {number} lng_deg
+ * @param {number} lat_deg
  */
 mat4.prototype.CalcNavigationFrame = function(lng_deg, lat_deg)
 {
@@ -651,6 +653,9 @@ mat4.prototype.CalcNavigationFrame = function(lng_deg, lat_deg)
 /**
  * @description calc body frame, yaw, pitch and roll are in RAD
  *
+ * @param {number} yaw
+ * @param {number} pitch
+ * @param {number} roll
  */
 mat4.prototype.CalcBodyFrame = function(yaw, pitch, roll)
 {
@@ -733,7 +738,7 @@ mat4.prototype.Inverse = function(M)
 /**
  * ToString
  *
- * @return A string with all matrix elements.
+ * @return {string} A string with all matrix elements.
  *
  */
 mat4.prototype.ToString = function()
