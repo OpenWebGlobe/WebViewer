@@ -26,7 +26,7 @@ goog.provide('owg.mat4');
 goog.require('owg.vec3');
 
 /** 
- * mat4(string type)     with type "double", "float" or "native". Matrix is initialized with identity.
+ * mat4()                Matrix is initialized with identity.
  * Set(array mat)        mat is an array with 16 values (4x4)
  * Copy()                copy matrix, returs an exact copy of the matrix
  * CopyFrom(M)           copy matrix from another matrix
@@ -51,28 +51,19 @@ goog.require('owg.vec3');
 /**
  * Create a new Matrix Object
  * @class This is the basic mat4.class 
- * @param {string=} opt_typeparam "float": matrix values will be stored as float32. "double": matrix is a javascript array. 
  * @constructor
  * @return A new 4 x 4 Identity-Matrix
  */
-function mat4(opt_typeparam)
+function mat4()
 {
-   if (opt_typeparam == "double")
-   {
-      this._values = new Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
-   }
-   else //(opt_typeparam == "float")
-   {
-      this._values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
-   }
- 
-   this.type = opt_typeparam;
+   /** @type {!Float32Array} */
+   this._values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
 }
 
 //------------------------------------------------------------------------------
 /**
  * Set Values
- * @param {Array|Float32Array} oMatrix an array of any type containing 16 values 
+ * @param {Array.<number>|Float32Array} oMatrix an array of any type containing 16 values 
  */
 mat4.prototype.Set = function(oMatrix)
 {
@@ -89,7 +80,7 @@ mat4.prototype.Set = function(oMatrix)
 /**
  * Get Values
  * 
- * @return {Array|Float32Array} An array with the 16 element values.
+ * @return {!Float32Array} An array with the 16 element values.
  */
 mat4.prototype.Get = function()
 {
@@ -104,26 +95,13 @@ mat4.prototype.Get = function()
  */
 mat4.prototype.Copy = function()
 {
-   var cpy;
-
-   if (this._values instanceof Array)
-   {
-      cpy = new mat4("double");
-   }
-   else if (this._values instanceof Float32Array)
-   {
-      cpy = new mat4("float");
-   }
-   else
-   {
-      throw Error;
-   }
+   var cpy = new mat4();
 
    for (var i = 0; i < 16; i++)
    {
       cpy._values[i] = this._values[i];
    } 
-   
+
    return cpy;
 }
 
@@ -491,15 +469,7 @@ mat4.prototype.Transpose = function()
  */ 
 mat4.prototype.MultiplyVec3 = function(vec)
 {
-   var resVec;
-   if(this._values instanceof Float32Array)
-   {
-      resVec = new vec3("float");
-   }
-   else
-   {
-    resVec = new vec3("double");
-   }
+   var resVec = new vec3();
    resVec._values[0]=this._values[0]*vec._values[0]+this._values[4]*vec._values[1]+this._values[8]*vec._values[2]+this._values[12];
    resVec._values[1]=this._values[1]*vec._values[0]+this._values[5]*vec._values[1]+this._values[9]*vec._values[2]+this._values[13];
    resVec._values[2]=this._values[2]*vec._values[0]+this._values[6]*vec._values[1]+this._values[10]*vec._values[2]+this._values[14];

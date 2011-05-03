@@ -24,7 +24,7 @@
 goog.provide('owg.vec4');
 
 //Constructor
-//vec4(string type)     with "double" or "float"(default) Vector is initialized with [0.0,0.0,0.0,0.0]
+//vec4()     Vector is initialized with [0.0,0.0,0.0,0.0]
 //Set(r,g,b,a)         
 //Get                   returns the values as array
 
@@ -42,18 +42,11 @@ goog.provide('owg.vec4');
  * @author Martin Christen martin.christen@fhnw.ch 
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch  
  * @version 0.1  
- * @param {string=} opt_typeparam
  */
-function vec4(opt_typeparam)
+function vec4()
 {
-   if (opt_typeparam == "double")
-   {
-      this._values = new Array([0.0, 0.0, 0.0, 0.0]);  
-   }
-   else //(opt_typeparam == "float")
-   {
-      this._values = new Float32Array([0.0, 0.0, 0.0, 0.0]);
-   }
+   /** @type {!Float32Array} */
+   this._values = new Float32Array([0.0, 0.0, 0.0, 0.0]);
 }
 
 /**
@@ -75,7 +68,7 @@ vec4.prototype.Set = function(r,g,b,a)
 /**
  * Get Values 
  *
- * @return {Array|Float32Array} returns an array with all values [r,g,b,a]
+ * @return {!Float32Array} returns an array with all values [r,g,b,a]
  */
 vec4.prototype.Get = function()
 {

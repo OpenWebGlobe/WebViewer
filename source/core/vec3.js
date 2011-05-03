@@ -27,7 +27,6 @@ goog.provide('owg.vec3');
 /** 
  * @class vec3
  * @description Vector class (3 components)
- * float32 and 
  * {@link http://www.openwebglobe.org} 
  *
  * @author Martin Christen martin.christen@fhnw.ch  
@@ -40,19 +39,12 @@ goog.provide('owg.vec3');
  * Create a new Vector Object
  * Initialised the vector as [0,0,0]
  * This is the basic vec3.class 
- * @param {string=} opt_typeparam "float": vector values will be stored as float32. "double": vector values will be stored as float64. 
  * @constructor
  */
-function vec3(opt_typeparam)
+function vec3()
 {
-   if (opt_typeparam == "double")
-   {
-      this._values = new Array([0.0, 0.0, 0.0]);  
-   }
-   else //(opt_typeparam == "float")
-   {
-      this._values = new Float32Array([0.0, 0.0, 0.0]);
-   }
+   /** @type {!Float32Array} */
+   this._values = new Float32Array([0.0, 0.0, 0.0]);
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +66,7 @@ vec3.prototype.Set = function(x,y,z)
 /**
  * Returns the values as array
  *
- * @return {Array|Float32Array}
+ * @return {!Float32Array}
  */
 vec3.prototype.Get = function()
 {
@@ -89,23 +81,8 @@ vec3.prototype.Get = function()
  */
 vec3.prototype.Copy = function()
 {
-   var cpy;
-   if (this._values instanceof Float32Array)
-   {
-      cpy = new vec3("float");
-   }
-   else if (this._values instanceof Array)
-   {
-      cpy = new vec3("double");
-   }
-   else
-   {
-      throw Error;
-   }
-
-
+   var cpy = new vec3();
    cpy.Set(this._values[0],this._values[1],this._values[2]);
-    
    return cpy;  
 }
 
