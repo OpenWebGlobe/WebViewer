@@ -75,7 +75,7 @@ vec4.prototype.Set = function(r,g,b,a)
 /**
  * Get Values 
  *
- * @return returns an array with all values [r,g,b,a]
+ * @return {Array|Float32Array} returns an array with all values [r,g,b,a]
  */
 vec4.prototype.Get = function()
 {
@@ -85,7 +85,7 @@ vec4.prototype.Get = function()
 /**
  * ToString
  *
- * @return returns a string like: [1,0,1,1]
+ * @return {string} returns a string like: [1,0,1,1]
  */
 vec4.prototype.ToString = function()
 {

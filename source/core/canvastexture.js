@@ -301,8 +301,12 @@ CanvasTexture.prototype.ToGPU = function()
 /**
  * Returns a mesh for the poi-pole.
  * @extends CanvasTexture
- * @param{float} x x,y,z cartesian pole start coordinates.
- * @param{float} x x2,y2,z2 cartesian pole end coordinates.
+ * @param {number} x x cartesian pole start coordinate
+ * @param {number} y y cartesian pole start coordinate
+ * @param {number} z z cartesian pole start coordinate
+ * @param {number} x2 x2 cartesian pole end coordinate
+ * @param {number} y2 y2 cartesian pole end coordinate
+ * @param {number} z2 z2 cartesian pole end coordinate
  */ 
 CanvasTexture.prototype.GetPoleMesh = function(x,y,z,x2,y2,z2)
 {
