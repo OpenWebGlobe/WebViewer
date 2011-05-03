@@ -19,11 +19,12 @@
 #                           martin.christen@fhnw.ch                            #
 ********************************************************************************
 *     Licensed under MIT License. Read the file LICENSE for more information   *
-*******************************************************************************/
+*******************************************************************************/      
 
-goog.provide('owg.ogObject');
 
-function ogObject()
+goog.provide('owg.ogElevationLayer');
+
+function ogElevationLayer()
 {
    
    

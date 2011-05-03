@@ -20,3 +20,11 @@
 ********************************************************************************
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/      
+
+goog.provide('owg.ogNavigationController');
+
+function ogNavigationController()
+{
+   
+   
+}
