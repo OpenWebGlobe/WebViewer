@@ -1,52 +1,21 @@
 <!--
-      Virtual Globe Demo
+      Video Poi Demo
 -->
 <!DOCTYPE html>
 <html lang="en">
          
-          <!--  <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  -->
-         
-         <script type="text/javascript" src="../../core/openwebglobe.js"></script>
-         <script type="text/javascript" src="../../core/shaders.js"></script>
-         <script type="text/javascript" src="../../core/vec4.js"></script>
-         <script type="text/javascript" src="../../core/mat4.js"></script>
-         <script type="text/javascript" src="../../core/vec3.js"></script>
-         <script type="text/javascript" src="../../core/mesh.js"></script>
-         <script type="text/javascript" src="../../core/texture.js"></script>
-         <script type="text/javascript" src="../../core/traversalstate.js"></script>
-         <script type="text/javascript" src="../../core/eventhandler.js"></script>
-         <script type="text/javascript" src="../../core/scenegraph.js"></script>
-         <script type="text/javascript" src="../../core/node.js"></script>
-         <script type="text/javascript" src="../../core/nodes/beginrender.js"></script>
-         <script type="text/javascript" src="../../core/nodes/camera.js"></script>
-         <script type="text/javascript" src="../../core/nodes/endrender.js"></script>
-         <script type="text/javascript" src="../../core/nodes/logos.js"></script>
-         <script type="text/javascript" src="../../core/nodes/navigation.js"></script>
-         <script type="text/javascript" src="../../core/nodes/render.js"></script>
-         <script type="text/javascript" src="../../core/nodes/renderobject.js"></script>
-         <script type="text/javascript" src="../../core/font.js"></script>
-         <script type="text/javascript" src="../../core/mathutils.js"></script>
-         <script type="text/javascript" src="../../core/geocoord.js"></script>
-         <script type="text/javascript" src="../../core/globeutils.js"></script>
-         <script type="text/javascript" src="../../core/mercatorquadtree.js"></script>
-         <script type="text/javascript" src="../../core/datasetinfo.js"></script>
-         <script type="text/javascript" src="../../core/terrainblock.js"></script>
-         <script type="text/javascript" src="../../core/globerenderer.js"></script>
-         <script type="text/javascript" src="../../core/mercator.js"></script>
-         <script type="text/javascript" src="../../core/cache.js"></script>
-         <script type="text/javascript" src="../../core/globecache.js"></script>
-         <script type="text/javascript" src="../../core/layer/imagelayer.js"></script>
-         <script type="text/javascript" src="../../core/layer/imagelayer_i3d.js"></script>
-         <script type="text/javascript" src="../../core/layer/imagelayer_osm.js"></script>
-         <script type="text/javascript" src="../../core/layer/elevationlayer.js"></script>
-         <script type="text/javascript" src="../../core/layer/elevationlayer_i3d.js"></script>
-         <script type="text/javascript" src="../../core/triangleintersector.js"></script>
-         <script type="text/javascript" src="../../core/aabb.js"></script>
-          <script type="text/javascript" src="../../core/poi.js"></script>
-          <script type="text/javascript" src="../../core/viewfrustum.js"></script>
-          <script type="text/javascript" src="../../core/canvastexture.js"></script>
-          <script type="text/javascript" src="../../core/videopoi.js"></script>
-         <script type="text/javascript">
+      <!--  <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  -->
+      <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+      <script type="text/javascript" src="../../../external/closure-library/closure/goog/debug/debug.js"></script>
+      <script type="text/javascript" src="../../../external/closure-library/closure/goog/debug/logger.js"></script>
+      <script type="text/javascript" src="../../../external/closure-library/closure/goog/json/json.js"></script>
+      <script type="text/javascript" src="../../../compiled/deps.js"></script>
+      <script type="text/javascript">goog.require('owg.engine3d');</script>
+      <script type="text/javascript">goog.require('owg.i3dImageLayer');</script>
+      <script type="text/javascript">goog.require('owg.vec4');</script>
+      <script type="text/javascript">goog.require('owg.Poi');</script>
+      <script type="text/javascript">goog.require('owg.VideoPoi');</script>
+      <script type="text/javascript">
          
          //---------------------------------------------------------------------
          var engine = null;

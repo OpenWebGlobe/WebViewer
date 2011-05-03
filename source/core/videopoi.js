@@ -21,6 +21,15 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.VideoPoi');
+
+goog.require('goog.debug.Logger');
+goog.require('owg.CanvasTexture');
+goog.require('owg.Font');
+goog.require('owg.GeoCoord');
+goog.require('owg.Mesh');
+goog.require('owg.Texture');
+
 /** 
  * @class poi
  * {@link http://www.openwebglobe.org} 

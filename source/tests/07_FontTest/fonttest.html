@@ -7,6 +7,9 @@
    <head>
       <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>
       <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+      <script type="text/javascript" src="../../../external/closure-library/closure/goog/debug/debug.js"></script>
+      <script type="text/javascript" src="../../../external/closure-library/closure/goog/debug/logger.js"></script>
+      <script type="text/javascript" src="../../../external/closure-library/closure/goog/json/json.js"></script>
       <script type="text/javascript" src="../../../compiled/deps.js"></script>
       <script type="text/javascript">goog.require('owg.Font');</script>
       <script type="text/javascript">goog.require('owg.engine3d');</script>
@@ -35,17 +38,19 @@
          var v = 1;
          var x_textpos = 100;
          var y_textpos = 100;
+         var g_text = "";
          
          //---------------------------------------------------------------------
          function OnTimer(delta)
          {
             totaltime += delta;
+            g_text = "Time: "+totaltime/1000.0+" s";
             
-            if((x_textpos > width-font.GetStringWidth()) || (x_textpos < 0) )
+            if((x_textpos > width-font.GetStringWidth(g_text)) || (x_textpos < 0) )
             {
                u *=-1;
             }
-            if((y_textpos > height-font.GetStringHeight()) || (y_textpos < 0) )
+            if((y_textpos > height-font.GetStringHeight(g_text)) || (y_textpos < 0) )
             {
                v *=-1;
             }
@@ -100,7 +105,8 @@
    
             model.Identity();
             engine.SetModelMatrix(model);
-            font.DrawText("Time: "+totaltime/1000.0+" s",x_textpos,y_textpos);                
+            
+            font.DrawText(g_text,x_textpos,y_textpos);                
          }
          
          //---------------------------------------------------------------------
