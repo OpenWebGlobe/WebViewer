@@ -114,6 +114,10 @@ mat4.prototype.Copy = function()
    {
       cpy = new mat4("float");
    }
+   else
+   {
+      throw Error;
+   }
 
    for (var i = 0; i < 16; i++)
    {
