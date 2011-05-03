@@ -522,7 +522,7 @@ TerrainBlock.prototype.Render = function(/*cache*/)
             }
             else
             {
-               this.images[i].Blit(0,0,0, 0,1,1,true, true);
+               this.images[i].Blit(0,0,0, 0,1,1,true, true, 1.0);
             } 
          } 
       }

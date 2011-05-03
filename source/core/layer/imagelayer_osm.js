@@ -23,6 +23,11 @@
 
 goog.provide('owg.OSMImageLayer');
 
+goog.require('owg.GlobeUtils');
+goog.require('owg.ImageLayer');
+goog.require('owg.MercatorQuadtree');
+goog.require('owg.Texture');
+
 //------------------------------------------------------------------------------
 /**
  * @constructor
