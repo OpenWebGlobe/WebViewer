@@ -103,7 +103,9 @@ function Mesh(engine)
    this.engine = engine;
    this.gl = engine.gl;
    
+   /** @type {WebGLBuffer} */
    this.vbo = null;              // vertex buffer (WebGL)
+   /** @type {WebGLBuffer} */
    this.ibo = null;              // index buffer  (WebGL)
    this.texture = null;          // Texture (texture class)
    
@@ -299,13 +301,13 @@ Mesh.prototype.Destroy = function()
    if (this.vbo)
    {
       this.gl.deleteBuffer(this.vbo);
-      this.vbo = 0;
+      this.vbo = null;
    }
    
    if (this.ibo )
    {
       this.gl.deleteBuffer(this.ibo);
-      this.ibo = 0;
+      this.ibo = null;
    }
    
    this.texture = null;          
