@@ -126,9 +126,6 @@ goog.require('owg.Texture');
     
  }
  
- 
- 
- 
 goog.exportSymbol('Poi', Poi); 
 goog.exportProperty(Poi.prototype, 'Draw', Poi.prototype.Draw);
 goog.exportProperty(Poi.prototype, 'SetContent', Poi.prototype.SetContent);

@@ -37,6 +37,9 @@ optimized, minified Javascript file containing all the WebViewer code.
 Windows
 -------
 
+Download http://www.openwebglobe.org/downloads/external.zip and extract to the base directory.
+or:
+
 1. Download the latest version of the Closure Compiler from
 <http://closure-compiler.googlecode.com/files/compiler-latest.zip> and unzip
 it in `external\closure`.

@@ -143,5 +143,11 @@ goog.require('owg.Texture');
  }
  
  
- 
- 
+goog.exportSymbol('VideoPoi', VideoPoi); 
+goog.exportProperty(VideoPoi.prototype, 'SetVideoContent', VideoPoi.prototype.SetVideoContent);
+goog.exportProperty(VideoPoi.prototype, 'SetPosition', VideoPoi.prototype.SetPosition);
+goog.exportProperty(VideoPoi.prototype, 'Draw',VideoPoi.prototype.Draw);
+goog.exportProperty(VideoPoi.prototype, 'SetSize', VideoPoi.prototype.SetSize);
+goog.exportProperty(VideoPoi.prototype, 'Play', VideoPoi.prototype.Play);
+goog.exportProperty(VideoPoi.prototype, 'Pause', VideoPoi.prototype.Pause);
+goog.exportProperty(VideoPoi.prototype, 'TogglePlayPause', VideoPoi.prototype.TogglePlayPause);

@@ -9,8 +9,8 @@ if not exist ..\compiled mkdir ..\compiled
 
 %PYTHON% %CLOSURE_LIBRARY%\closure\bin\build\depswriter.py ^
  --output_file=..\compiled\deps.js ^
- --root_with_prefix="%CLOSURE_LIBRARY% ../" ^
- --root_with_prefix="..\source ../../../../source"
+ --root_with_prefix="%CLOSURE_LIBRARY%\closure\ ../" ^
+ --root_with_prefix="..\source\ ../../../../source"
 
 %PYTHON% %CLOSURE_LIBRARY%\closure\bin\build\closurebuilder.py ^
  --compiler_flags=--compilation_level=%COMPILATION_LEVEL% ^
@@ -22,5 +22,3 @@ if not exist ..\compiled mkdir ..\compiled
  --output_mode=compiled ^
  --root=..\external\closure-library\ ^
  --root=..\source\
-
-

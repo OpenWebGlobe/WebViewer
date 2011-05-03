@@ -398,8 +398,7 @@ CanvasTexture.prototype.GenerateVideoPoi = function(url)
 
 
 
-
- 
 goog.exportSymbol('CanvasTexture', CanvasTexture);
+goog.exportProperty(CanvasTexture.prototype, 'SetCanvasContent', CanvasTexture.prototype.SetCanvasContent);
 goog.exportProperty(CanvasTexture.prototype, 'DrawToCanvas2D', CanvasTexture.prototype.DrawToCanvas2D);
 goog.exportProperty(CanvasTexture.prototype, 'GenerateText', CanvasTexture.prototype.GenerateText);
