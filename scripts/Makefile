@@ -1,5 +1,5 @@
 CLOSURE_LIBRARY=../external/closure-library
-COMPILATION_LEVEL=SIMPLE_OPTIMIZATIONS
+COMPILATION_LEVEL=ADVANCED_OPTIMIZATIONS
 COMPILER_JAR=../external/closure/compiler.jar
 SOURCES=$(shell find ../source/core ../source/core/layer ../source/core/nodes -maxdepth 1 -name \*.js)
 TARGETS=../compiled/deps.js ../compiled/owg-optimized.js ../compiled/owg-optimized.map

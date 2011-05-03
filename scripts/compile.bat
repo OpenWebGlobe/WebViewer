@@ -1,6 +1,6 @@
 @echo off
 
-set COMPILATION_LEVEL=SIMPLE_OPTIMIZATIONS
+set COMPILATION_LEVEL=ADVANCED_OPTIMIZATIONS
 set CLOSURE_LIBRARY=..\external\closure-library
 set COMPILER_JAR=..\external\closure\compiler.jar
 set PYTHON=C:\Python27\python.exe
