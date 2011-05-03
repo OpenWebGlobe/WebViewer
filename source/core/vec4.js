@@ -93,4 +93,5 @@ vec4.prototype.ToString = function()
 }
 
 goog.exportSymbol('vec4', vec4);
+goog.exportProperty(vec4.prototype, 'Get', vec4.prototype.Get);
 goog.exportProperty(vec4.prototype, 'Set', vec4.prototype.Set);

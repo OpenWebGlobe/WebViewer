@@ -273,5 +273,17 @@ vec3.prototype.ToString = function()
 
 //------------------------------------------------------------------------------
 
+goog.exportSymbol('Cross', Cross);
 goog.exportSymbol('vec3', vec3);
+goog.exportProperty(vec3.prototype, 'Add', vec3.prototype.Add);
+goog.exportProperty(vec3.prototype, 'Cross', vec3.prototype.Cross);
+goog.exportProperty(vec3.prototype, 'Dot', vec3.prototype.Dot);
+goog.exportProperty(vec3.prototype, 'Get', vec3.prototype.Get);
+goog.exportProperty(vec3.prototype, 'Length', vec3.prototype.Length);
+goog.exportProperty(vec3.prototype, 'Neg', vec3.prototype.Neg);
+goog.exportProperty(vec3.prototype, 'Normalize', vec3.prototype.Normalize);
 goog.exportProperty(vec3.prototype, 'Set', vec3.prototype.Set);
+goog.exportProperty(vec3.prototype, 'SquaredLength', vec3.prototype.SquaredLength);
+goog.exportProperty(vec3.prototype, 'Subtract', vec3.prototype.Subtract);
+goog.exportProperty(vec3.prototype, 'Sub', vec3.prototype.Sub);
+goog.exportProperty(vec3.prototype, 'ToString', vec3.prototype.ToString);

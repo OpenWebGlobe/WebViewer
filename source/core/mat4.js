@@ -748,12 +748,28 @@ mat4.prototype.ToString = function()
 }
 
 goog.exportSymbol('mat4', mat4);
+goog.exportProperty(mat4.prototype, 'CalcBodyFrame', mat4.prototype.CalcBodyFrame);
+goog.exportProperty(mat4.prototype, 'CalcNavigationFrame', mat4.prototype.CalcNavigationFrame);
+goog.exportProperty(mat4.prototype, 'Cami3d', mat4.prototype.Cami3d);
 goog.exportProperty(mat4.prototype, 'CopyFrom', mat4.prototype.CopyFrom);
+goog.exportProperty(mat4.prototype, 'Copy', mat4.prototype.Copy);
+goog.exportProperty(mat4.prototype, 'Frustum', mat4.prototype.Frustum);
+goog.exportProperty(mat4.prototype, 'Get', mat4.prototype.Get);
 goog.exportProperty(mat4.prototype, 'Identity', mat4.prototype.Identity);
+goog.exportProperty(mat4.prototype, 'Inverse', mat4.prototype.Inverse);
 goog.exportProperty(mat4.prototype, 'LookAt', mat4.prototype.LookAt);
 goog.exportProperty(mat4.prototype, 'Multiply', mat4.prototype.Multiply);
+goog.exportProperty(mat4.prototype, 'MultiplyVec3', mat4.prototype.MultiplyVec3);
 goog.exportProperty(mat4.prototype, 'Ortho2D', mat4.prototype.Ortho2D);
+goog.exportProperty(mat4.prototype, 'Ortho', mat4.prototype.Ortho);
+goog.exportProperty(mat4.prototype, 'OverwriteTranslation', mat4.prototype.OverwriteTranslation);
 goog.exportProperty(mat4.prototype, 'Perspective', mat4.prototype.Perspective);
+goog.exportProperty(mat4.prototype, 'RotationX', mat4.prototype.RotationX);
+goog.exportProperty(mat4.prototype, 'RotationY', mat4.prototype.RotationY);
+goog.exportProperty(mat4.prototype, 'RotationZ', mat4.prototype.RotationZ);
 goog.exportProperty(mat4.prototype, 'Scale', mat4.prototype.Scale);
+goog.exportProperty(mat4.prototype, 'Set', mat4.prototype.Set);
 goog.exportProperty(mat4.prototype, 'ToString', mat4.prototype.ToString);
 goog.exportProperty(mat4.prototype, 'Translation', mat4.prototype.Translation);
+goog.exportProperty(mat4.prototype, 'Transpose', mat4.prototype.Transpose);
+goog.exportProperty(mat4.prototype, 'Zero', mat4.prototype.Zero);
