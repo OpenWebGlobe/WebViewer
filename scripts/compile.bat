@@ -23,4 +23,4 @@ if not exist ..\compiled mkdir ..\compiled
  --root=..\external\closure-library\ ^
  --root=..\source\
 
-pause
+
