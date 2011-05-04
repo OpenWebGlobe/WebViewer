@@ -24,8 +24,19 @@
 
 goog.provide('owg.ogImage');
 
+goog.require('owg.ogObject');
+
+//------------------------------------------------------------------------------
+/**
+ * @constructor
+ * @description Image class (OpenWebGlobe object)
+ * @author Martin Christen, martin.christen@fhnw.ch
+ */
 function ogImage()
 {
-   
-   
+   this.name = "ogImage";
+   this.type = OG_OBJECT_IMAGE; 
 }
+
+//------------------------------------------------------------------------------
+ogImage.prototype = new ogObject();

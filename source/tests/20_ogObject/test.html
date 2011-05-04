@@ -2,84 +2,31 @@
       OpenWebGlobe Object Test
 -->
 <!DOCTYPE html>
-<html lang="en">         
-      <!--  <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  -->
-      <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
-      <script type="text/javascript" src="../../../compiled/deps.js"></script>
-      <script type="text/javascript">goog.require('owg.engine3d');</script>
-      <script type="text/javascript">goog.require('owg.i3dImageLayer');</script>
-      <script type="text/javascript">goog.require('owg.vec4');</script>
-      <script type="text/javascript">
-         
-         //---------------------------------------------------------------------
-         var engine = null;
+<html lang="en">
+   <!--  <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  -->
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+<script type="text/javascript">
 
-         
-         //---------------------------------------------------------------------
-         function OnTimer(delta)
-         {
-         }
-         
-         //---------------------------------------------------------------------
-         
-         function OnResize(w,h)
-         {
-            width = w;
-            height = h;       
-         }
-         
-         //---------------------------------------------------------------------
-         function OnKey(key)
-         {
-            
-         }
-         
-         //---------------------------------------------------------------------
-         
-         function OnRender()
-         {          
-         }
-         
-         function OnMouseUp(button, x, y)
-         {
-         }
-         
-         //---------------------------------------------------------------------
-         
-         function OnInit()
-         { 
-           
+//------------------------------------------------------------------------------
+function main()
+{
+   // create context from existing canvas and go fullscreen
+   // (this is a JavaScript specific OpenWebGlobe function!)
+   ogCreateContextFromCanvas("canvas", true);
 
-            
-         }
-        
-         //---------------------------------------------------------------------
-        
-         function main()
-         {
-         	engine = new engine3d();
-           
-            // Set Callbacks:
-            engine.SetInitCallback(OnInit);
-            engine.SetTimerCallback(OnTimer);
-            engine.SetRenderCallback(OnRender);
-            engine.SetResizeCallback(OnResize);
-            engine.SetKeyDownCallback(OnKey);
-            engine.SetMouseUpCallback(OnMouseUp);
-            
-            // Start engine...
-            engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
-            engine.CreateScene();               // Create Globe Scene
-            engine.SetClearColor(0.5,0.5,1,1);
-         }
-         
-         //---------------------------------------------------------------------
-         
-      </script>
-    </head>
-    <body onload="main()">
-        <div style="text-align: center">
-            <canvas id="canvas" width="640" height="480"></canvas>          
-        </div>
-    </body>
+   // in JavaScript, calling ogExec is not necessary.
+   ogExec();
+}
+//------------------------------------------------------------------------------
+   
+</script>
+
+</head>
+<body onload="main()">
+   <div style="text-align: center">
+   <canvas id="canvas" width="640" height="480"></canvas>          
+   </div>
+</body>
 </html>

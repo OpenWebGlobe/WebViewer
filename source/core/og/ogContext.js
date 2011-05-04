@@ -23,9 +23,19 @@
 
 
 goog.provide('owg.ogContext');
+goog.require('owg.ogObject');
 
+//------------------------------------------------------------------------------
+/**
+ * @constructor
+ * @description Context class (OpenWebGlobe object)
+ * @author Martin Christen, martin.christen@fhnw.ch
+ */
 function ogContext()
 {
-   
-   
+   this.name = "ogContext";
+   this.type = OG_OBJECT_CONTEXT;
 }
+
+//------------------------------------------------------------------------------
+ogContext.prototype = new ogObject();

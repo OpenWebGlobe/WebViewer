@@ -23,8 +23,20 @@
 
 goog.provide('owg.ogTexture');
 
+goog.require('owg.ogObject');
+
+//------------------------------------------------------------------------------
+/**
+ * @constructor
+ * @description Texture class (OpenWebGlobe object)
+ * @author Martin Christen, martin.christen@fhnw.ch
+ */
 function ogTexture()
 {
    
    
 }
+
+
+//------------------------------------------------------------------------------
+ogTexture.prototype = new ogObject();

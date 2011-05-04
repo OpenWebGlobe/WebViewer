@@ -24,8 +24,20 @@
 
 goog.provide('owg.ogImageLayer');
 
+goog.require('owg.ogObject');
+
+//------------------------------------------------------------------------------
+/**
+ * @constructor
+ * @description Image-Layer class (OpenWebGlobe object)
+ * @author Martin Christen, martin.christen@fhnw.ch
+ */
 function ogImageLayer()
 {
-   
-   
+   this.name = "ogImageLayer";
+   this.type = OG_OBJECT_IMAGELAYER;    
 }
+
+
+//------------------------------------------------------------------------------
+ogImageLayer.prototype = new ogObject();

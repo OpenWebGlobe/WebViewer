@@ -23,9 +23,21 @@
 
 goog.provide('owg.ogScene');
 
+goog.require('owg.ogObject');
+
+
+//------------------------------------------------------------------------------
+/**
+ * @constructor
+ * @description Scene class (OpenWebGlobe object)
+ * @author Martin Christen, martin.christen@fhnw.ch
+ */
 function ogScene()
 {
-   
-   
+   this.name = "ogScene";
+   this.type = OG_OBJECT_SCENE; 
 }
 
+
+//------------------------------------------------------------------------------
+ogScene.prototype = new ogObject();
