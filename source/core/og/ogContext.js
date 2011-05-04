@@ -24,8 +24,10 @@
 
 goog.provide('owg.ogContext');
 
+goog.require('goog.debug.Logger');
 goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
+goog.require('owg.engine3d');
 
 //------------------------------------------------------------------------------
 /**
@@ -37,7 +39,44 @@ function ogContext()
 {
    this.name = "ogContext";
    this.type = OG_OBJECT_CONTEXT;
+   this.fullscreen = false;
+   this.engine = null;
 }
 
 //------------------------------------------------------------------------------
 ogContext.prototype = new ogObject();
+//------------------------------------------------------------------------------
+
+
+
+//------------------------------------------------------------------------------
+/**
+ * @description Parse options for context
+ */
+ogContext.prototype.ParseOptions = function(options)
+{
+   if (options == null)
+   {
+      goog.debug.Logger.getLogger('owg.ogContext').warning("** WARNING: no options for context creation!");
+      return;  // no options!!
+   }
+   
+   if (options.fullscreen)
+   {
+      this.fullscreen = true;
+   }
+   
+   this.engine = new engine3d();
+   
+   // a html5 canvasid is provided:
+   if (options.canvas)
+   {
+      this.engine.InitEngine(options.canvas, true);  // (canvasid, fullscreen)
+   }
+   else
+   {
+      goog.debug.Logger.getLogger('owg.ogContext').error("**ERROR: auto creating canvas is not supported yet!");
+   }
+   
+}
+//------------------------------------------------------------------------------

@@ -32,7 +32,6 @@ goog.require('owg.ogScene');
 goog.require('owg.ogTexture');
 goog.require('owg.ogWorld');
 goog.require('owg.ogNavigationController');
-
 goog.require('owg.ogImageLayer');
 goog.require('owg.ogElevationLayer');
 
@@ -138,7 +137,7 @@ function _CreateObject(type, parent, options)
       newobject.SetId(_CreateID());
       newobject.SetParent(parent);
       newobject.RegisterObject();
-      newobject.SetOptions(options);
+      newobject.ParseOptions(options);
    }
    
    return newobject;
@@ -217,6 +216,8 @@ function ogCreateContextFromCanvas(sCanvasId, fullscreen, cbfInit, cbfExit, cbfR
    {
       contextoptions.fullscreen = false;
    }
+   
+   contextoptions.canvas = sCanvasId;
    
    var context = _CreateObject(OG_OBJECT_CONTEXT, null, contextoptions);
    if (context != null)

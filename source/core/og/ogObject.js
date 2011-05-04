@@ -134,7 +134,7 @@ ogObject.prototype.RegisterObject = function()
 
 //------------------------------------------------------------------------------
 
-ogObject.prototype.SetOptions = function(options)
+ogObject.prototype.ParseOptions = function(options)
 {
    
 }

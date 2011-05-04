@@ -385,8 +385,11 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    this.nodata = new Texture(this);
    this.nodata.LoadNoDataTexture();
    
-   // call init callback 
-   this.cbfInit();
+   // call init callback
+	if (this.cbfInit)
+   {
+		this.cbfInit();
+	}
    
    canvas.addEventListener("mousedown", _fncMouseDown, false);
    canvas.addEventListener("mouseup", _fncMouseUp, false);
