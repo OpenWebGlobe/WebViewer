@@ -24,6 +24,8 @@
 goog.provide('owg.ObjectDefs');
 
 //------------------------------------------------------------------------------
+// OBJECT TYPES
+//------------------------------------------------------------------------------
 //* @constant
 var OG_OBJECT_CONTEXT               = 0;
 //* @constant
@@ -67,4 +69,17 @@ var OG_OBJECT_NAVIGATIONCONTROLLER  = 19;
 //* @constant
 var OG_OBJECT_INVALID               = 65535;
 
+
+//------------------------------------------------------------------------------
+// SCENE TYPES
+//------------------------------------------------------------------------------
+
+//* @constant
+var OG_SCENE_3D_ELLIPSOID_WGS84     = 1;
+//* @constant
+var OG_SCENE_3D_FLAT_CARTESIAN      = 2;
+//* @constant
+var OG_SCENE_2D_SCREEN              = 3;
+//* @constant
+var OG_SCENE_CUSTOM                 = 4;
 
