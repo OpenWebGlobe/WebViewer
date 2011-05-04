@@ -23,6 +23,9 @@
 
 goog.provide('owg.AABB');
 
+/** @typedef {{tmin: number, tmax: number}} */
+var AABBResult;
+
 //------------------------------------------------------------------------------
 /** 
  * @class aabb 
@@ -44,12 +47,26 @@ function AABB()
    this.tzmax = 0.0;
    this.flag = 1.0;
    
-   this.result = {};
-   this.result.tmin = 0.0;
-   this.result.tmax = 0.0;
+   /** @type {AABBResult} */
+   this.result = {tmin: 0.0, tmax: 0.0};
 }
 
 
+/**
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {number} dirx
+ * @param {number} diry
+ * @param {number} dirz
+ * @param {number} m1x
+ * @param {number} m1y
+ * @param {number} m1z
+ * @param {number} m2x
+ * @param {number} m2y
+ * @param {number} m2z
+ * @return {null|AABBResult}
+ */
 AABB.prototype.HitBox = function(x,y,z,dirx,diry,dirz,m1x,m1y,m1z,m2x,m2y,m2z)
 {
    this.flag = 1.0;
@@ -122,6 +139,10 @@ AABB.prototype.HitBox = function(x,y,z,dirx,diry,dirz,m1x,m1y,m1z,m2x,m2y,m2z)
    if(this.flag > 0.0)
    {
       return this.result;
+   }
+   else
+   {
+      return null;
    }
 }
 

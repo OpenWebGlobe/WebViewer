@@ -28,23 +28,31 @@ goog.provide('owg.CanvasTexture');
  * @description This class is used to create meshes with Canvas(2d) as textures. E.g. for POIs.
  * 
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch
+ * @param {engine3d} engine
  */
 function CanvasTexture(engine)
 {
+   /** @type {engine3d} */
    this.engine = engine;
+   /** @type {WebGLRenderingContext} */
    this.gl = engine.gl;
+   /** @type {boolean} */
    this.pole = false;
+   /** @type {Mesh} */
    this.mesh = null;
+   /** @type {Mesh} */
    this.poleMesh = null;
+   /** @type {Mesh} */
    this.videoMesh = null;
 }
 
 
 /**
  * Generates a mesh with a canvas2d as texture. The mesh size depends on the text length and style.
- * @param{string}  text the poi text.
+ * @param {string}  text the poi text.
  * @param {string} string to set predefined style e.g. "RB","WB" or "Symbol".
- * @param {url} imgurl url for poi icon.
+ * @param {string} imgurl url for poi icon.
+ * @return {Mesh}
  */
 CanvasTexture.prototype.GenerateTexture =  function(text,style,imgurl)
 {
@@ -83,9 +91,9 @@ CanvasTexture.prototype.GenerateTexture =  function(text,style,imgurl)
 
 /**
  * Sets the canvas content (poi text and icon) in predefined styles.
- * @param{string}  text the poi text.
+ * @param {string} text the poi text.
  * @param {string} string to set predefined style e.g. "RB","WB" or "Symbol".
- * @param {url} imgurl url for poi icon.
+ * @param {string} imgurl url for poi icon.
  */
 CanvasTexture.prototype.SetCanvasContent = function(text,style,imgurl)
 {
@@ -162,9 +170,9 @@ CanvasTexture.prototype.SetCanvasContent = function(text,style,imgurl)
 
 /**
  * Draws the canvas 2d.
- * @param{string}  text the poi text.
- * @param {style} styleObject style definition.
- * @param {url} imgurl url for poi icon.
+ * @param {string} text the poi text.
+ * @param {string} styleObject style definition.
+ * @param {string} imgurl url for poi icon.
  */
 CanvasTexture.prototype.DrawToCanvas = function(text,styleObject,imgurl)
 {           
@@ -301,6 +309,7 @@ CanvasTexture.prototype.ToGPU = function()
  * @param {number} x2 x2 cartesian pole end coordinate
  * @param {number} y2 y2 cartesian pole end coordinate
  * @param {number} z2 z2 cartesian pole end coordinate
+ * @return {Mesh}
  */ 
 CanvasTexture.prototype.GetPoleMesh = function(x,y,z,x2,y2,z2)
 {

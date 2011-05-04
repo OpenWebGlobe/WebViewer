@@ -53,26 +53,44 @@ var DatasetInfoJSON;
  */
 function DatasetInfo()
 {
+   /** @type {boolean} */
    this.bReady = false;            // true if dataset info is ready
+   /** @type {boolean} */
    this.bFailed = false;           // true if download failed
    
+   /** @type {null|string} */
    this.sLayerName = null;         // Layer Name (string)
+   /** @type {null|string} */
    this.sLayerCopyright = null;    // Layer Copyright String
+   /** @type {null|string} */
    this.nSRS = null;               // Spatial Reference System: 3395 or 3785
+   /** @type {Array.<number>|null} */
    this.vBoundingBox = null;       // Bounding Box: ulx uly lrx lry
+   /** @type {null|number} */
    this.nLevelofDetail = null;     // Level of Detail
+   /** @type {null|number} */
    this.nImageWidth = null;        // for image datasets: original image width
+   /** @type {null|number} */
    this.nImageHeight = null;       // for image datasets: original image width
+   /** @type {null|number} */
    this.nTileSize = null;          // for image datasets: size of a tile (in pixel)
+   /** @type {Array.<number>} */
    this.vTileLayout = null;        // Tile Dimension: x y
+   /** @type {null|string} */
    this.sTileFormat = null;        // mime type of data, for example "image/png"
+   /** @type {Array.<number>} */
    this.vBounds = null;            // Zoom, TileX0, TileY0, TileX1, TileY1
+   /** @type {Array.<number>} */
    this.vCenterCoord = null;       // Dataset Center coord in WGS84
+   /** @type {string} */
    this.sFileExtension = "";      // file extension.   
 }
 
 //------------------------------------------------------------------------------
 
+/**
+ * @param {DatasetInfo} dsi
+ */
 function _cbfdsidownload(dsi)
 {
    if (dsi.http.readyState==4)
@@ -123,16 +141,10 @@ function _cbfdsidownload(dsi)
 //------------------------------------------------------------------------------
 /**
  * @description Holds information about a dataset (image, elevation, poi, ...)
- * @param url The URL where of the dataset info (JSON)
+ * @param {string} url The URL where of the dataset info (JSON)
  */
 DatasetInfo.prototype.Download = function(url)
 {
-   if(url == null) 
-   {
-      alert("invalid url");
-      return;
-   }  
-  
    this.http=new XMLHttpRequest();
    this.http.open("GET",url,true);
    var me=this;
