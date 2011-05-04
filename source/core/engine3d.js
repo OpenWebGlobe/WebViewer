@@ -46,15 +46,6 @@ goog.require('owg.vec3');
 //------------------------------------------------------------------------------
 // Global Variables
 //------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-// STANDARD FONT
-// This font texture has a size of 512x512 and contains 16x16s characters
-var fonttexture;        
-var charwidth = 512 / 16;
-var charheight = 512 / 16;
-//------------------------------------------------------------------------------
-
 //------------------------------------------------------------------------------
 var dtEnd, dtStart = new Date();
 var _g_vInstances    = new Array();    // array of all current instances
@@ -331,8 +322,8 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    
    if (bFullscreen)
    {
-         this.xoffset = 20;
-         this.yoffset = 20;
+         this.xoffset = document.body.scrollLeft - document.body.clientLeft;
+         this.yoffset = document.body.scrollTop - document.body.clientTop;
          canvas.width = window.innerWidth-this.xoffset;
          canvas.height = window.innerHeight-this.yoffset;
          this.bFullscreen = true;
@@ -355,7 +346,7 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    }
    if (!this.gl) 
    {
-      alert("Can't find webgl context. It seems your browser is not compatible! For example, you can get the latest Firefoxor Chrome");
+      alert("Can't find webgl context. It seems your browser is not compatible! For example, you can get the latest Firefox or Chrome");
       return;
    }
    
