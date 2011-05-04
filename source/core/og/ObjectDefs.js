@@ -27,7 +27,7 @@ goog.provide('owg.ObjectDefs');
 // OBJECT TYPES
 //------------------------------------------------------------------------------
 //* @constant
-var OG_OBJECT_CONTEXT               = 0;
+var OG_OBJECT_CONTEXT               = 0;  
 //* @constant
 var OG_OBJECT_SCENE                 = 1;          
 //* @constant
@@ -69,6 +69,26 @@ var OG_OBJECT_NAVIGATIONCONTROLLER  = 19;
 //* @constant
 var OG_OBJECT_INVALID               = 65535;
 
+goog.exportSymbol('OG_OBJECT_CONTEXT', OG_OBJECT_CONTEXT);
+goog.exportSymbol('OG_OBJECT_SCENE', OG_OBJECT_SCENE);
+goog.exportSymbol('OG_OBJECT_WORLD', OG_OBJECT_WORLD);
+goog.exportSymbol('OG_OBJECT_IMAGELAYER', OG_OBJECT_IMAGELAYER);
+goog.exportSymbol('OG_OBJECT_ELEVATIONLAYER', OG_OBJECT_ELEVATIONLAYER);
+goog.exportSymbol('OG_OBJECT_WAYPOINTLAYER', OG_OBJECT_WAYPOINTLAYER);
+goog.exportSymbol('OG_OBJECT_GEOMETRYLAYER', OG_OBJECT_GEOMETRYLAYER);
+goog.exportSymbol('OG_OBJECT_VOXELLAYER', OG_OBJECT_VOXELLAYER);
+goog.exportSymbol('OG_OBJECT_IMAGE', OG_OBJECT_IMAGE);
+goog.exportSymbol('OG_OBJECT_TEXTURE', OG_OBJECT_TEXTURE);
+goog.exportSymbol('OG_OBJECT_PIXELBUFFER', OG_OBJECT_PIXELBUFFER);
+goog.exportSymbol('OG_OBJECT_GEOMETRY', OG_OBJECT_GEOMETRY);
+goog.exportSymbol('OG_OBJECT_MESH', OG_OBJECT_MESH);
+goog.exportSymbol('OG_OBJECT_SURFACE', OG_OBJECT_SURFACE);
+goog.exportSymbol('OG_OBJECT_CAMERA', OG_OBJECT_CAMERA);
+goog.exportSymbol('OG_OBJECT_TEXT', OG_OBJECT_TEXT);
+goog.exportSymbol('OG_OBJECT_BINARYDATA', OG_OBJECT_BINARYDATA);
+goog.exportSymbol('OG_OBJECT_LIGHT', OG_OBJECT_LIGHT);
+goog.exportSymbol('OG_OBJECT_NAVIGATIONCONTROLLER', OG_OBJECT_NAVIGATIONCONTROLLER);
+goog.exportSymbol('OG_OBJECT_INVALID', OG_OBJECT_INVALID);
 
 //------------------------------------------------------------------------------
 // SCENE TYPES
@@ -82,4 +102,9 @@ var OG_SCENE_3D_FLAT_CARTESIAN      = 2;
 var OG_SCENE_2D_SCREEN              = 3;
 //* @constant
 var OG_SCENE_CUSTOM                 = 4;
+
+goog.exportSymbol('OG_SCENE_3D_ELLIPSOID_WGS84', OG_SCENE_3D_ELLIPSOID_WGS84);
+goog.exportSymbol('OG_SCENE_3D_FLAT_CARTESIAN', OG_SCENE_3D_FLAT_CARTESIAN);
+goog.exportSymbol('OG_SCENE_2D_SCREEN', OG_SCENE_2D_SCREEN);
+goog.exportSymbol('OG_SCENE_CUSTOM', OG_SCENE_CUSTOM);
 

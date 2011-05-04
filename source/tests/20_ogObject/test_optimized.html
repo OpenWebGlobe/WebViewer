@@ -4,9 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
    <!--  <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  -->
-<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
-<script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
 <script type="text/javascript">
 
 
@@ -40,10 +38,10 @@ function main()
    var type = ogGetObjectType(ctx);
    console.log("type = " + type);
    
-   /*var name = ogGetObjectName(ctx);
+   var name = ogGetObjectName(ctx);
    console.log("name = " + name);
    
-   console.log(""+OG_SCENE_CUSTOM);*/
+   console.log(""+OG_SCENE_CUSTOM);
 
    // in JavaScript, calling ogExec is not necessary.
    ogExec();

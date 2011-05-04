@@ -144,17 +144,6 @@ function _CreateObject(type, parent, options)
 }
 
 //------------------------------------------------------------------------------
-/**
- * @description Factory: Internal function to Destroy an OpenWebGlobeObject
- * @param {number} type the object type
- * @ignore
- */
-_DestroyObject = function(obj)
-{
-   
-}
-
-//------------------------------------------------------------------------------
 // OBJECT UTILS:
 //------------------------------------------------------------------------------
 
@@ -171,7 +160,7 @@ function ogGetObjectType(object)
    }
    //return object.GetType();   
 }
-goog.exportSymbol('ogGetObjectType', ogGetObjectType);
+
 
 //------------------------------------------------------------------------------
 function ogGetObjectName(object)
@@ -186,7 +175,6 @@ function ogGetObjectName(object)
       return "";
    }
 }
-goog.exportSymbol('ogGetObjectName', ogGetObjectName);
 
 //------------------------------------------------------------------------------
 // FUBCTIONS FOR CONTEXT OBJECTS:
@@ -201,13 +189,12 @@ function ogCreateContext(contextoptions, cbfInit, cbfExit, cbfResize)
    }
    return -1;
 }
-goog.exportSymbol('ogCreateContext', ogCreateContext);
 
 //------------------------------------------------------------------------------
 
 function ogCreateContextFromCanvas(sCanvasId, fullscreen, cbfInit, cbfExit, cbfResize)
 {
-   contextoptions = {};
+   var contextoptions = {};
    if (fullscreen)
    {
       contextoptions.fullscreen = true;
@@ -226,7 +213,8 @@ function ogCreateContextFromCanvas(sCanvasId, fullscreen, cbfInit, cbfExit, cbfR
    }
    return -1;
 }
-goog.exportSymbol('ogCreateContextFromCanvas', ogCreateContextFromCanvas);
+
+
 
 //------------------------------------------------------------------------------
 
@@ -234,7 +222,6 @@ function ogCreateRenderWindow(title, width, height)
 {
    
 }
-goog.exportSymbol('ogCreateRenderWindow', ogCreateRenderWindow);
 
 //------------------------------------------------------------------------------
 
@@ -242,7 +229,6 @@ function ogGetWidth()
 {
    
 }
-goog.exportSymbol('ogGetWidth', ogGetWidth);
 
 //------------------------------------------------------------------------------
 
@@ -250,7 +236,6 @@ function ogGetHeight()
 {
    
 }
-goog.exportSymbol('ogGetHeight', ogGetHeight);
 
 //------------------------------------------------------------------------------
 
@@ -258,7 +243,6 @@ function ogGetScene(context)
 {
    
 }
-goog.exportSymbol('ogGetScene', ogGetScene);
 
 //------------------------------------------------------------------------------
 
@@ -266,7 +250,17 @@ function ogExec()
 {
    // in JavaScript ogExec is not required. This function is
 }
-goog.exportSymbol('ogExec', ogExec);
 
 //------------------------------------------------------------------------------
+
+
+goog.exportSymbol('ogGetObjectType', ogGetObjectType);
+goog.exportSymbol('ogGetObjectName', ogGetObjectName);
+goog.exportSymbol('ogCreateContext', ogCreateContext);
+goog.exportSymbol('ogCreateContextFromCanvas', ogCreateContextFromCanvas);
+goog.exportSymbol('ogCreateRenderWindow', ogCreateRenderWindow);
+goog.exportSymbol('ogGetWidth', ogGetWidth);
+goog.exportSymbol('ogGetHeight', ogGetHeight);
+goog.exportSymbol('ogGetScene', ogGetScene);
+goog.exportSymbol('ogExec', ogExec);
 

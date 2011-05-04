@@ -19,7 +19,7 @@ all: $(TARGETS)
 		--compiler_flags=--create_source_map=../compiled/owg-optimized.map \
 		--compiler_flags=--warning_level=VERBOSE \
 		--compiler_jar=$(COMPILER_JAR) \
-		--namespace=owg.engine3d \
+		--namespace=owg.OpenWebGlobe \
 		--output_file=$@ \
 		--output_mode=compiled \
 		--root=../external/closure-library/ \

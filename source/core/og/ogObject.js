@@ -27,7 +27,7 @@ goog.require('owg.ObjectDefs');
 
 //------------------------------------------------------------------------------
 /** @ignore */
-_g_objects = [];  // array containing all OpenWebGlobe objects
+var _g_objects = [];  // array containing all OpenWebGlobe objects
 
 //------------------------------------------------------------------------------
 /** @description register object*/ 
@@ -43,7 +43,7 @@ function _UnregisterObject(objid)
 {
    for (var i=0;i<_g_objects.length;i++)
    {
-      if (_g_objects[i].id == id)
+      if (_g_objects[i].id == objid)
       {
          _g_objects[i].Destroy();
          _g_objects.splice(i,1);
