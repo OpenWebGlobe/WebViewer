@@ -24,6 +24,7 @@
 
 goog.provide('owg.ogElevationLayer');
 
+goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
 
 //------------------------------------------------------------------------------

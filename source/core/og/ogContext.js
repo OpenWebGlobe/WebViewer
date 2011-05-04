@@ -23,6 +23,8 @@
 
 
 goog.provide('owg.ogContext');
+
+goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
 
 //------------------------------------------------------------------------------

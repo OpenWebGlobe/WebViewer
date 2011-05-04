@@ -23,6 +23,7 @@
 
 goog.provide('owg.OpenWebGlobe');
 
+goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
 goog.require('owg.ogContext');
 goog.require('owg.ogCamera');
@@ -37,49 +38,6 @@ goog.require('owg.ogElevationLayer');
 
 goog.require('goog.debug.Logger');
 
-//------------------------------------------------------------------------------
-//* @constant
-var OG_OBJECT_CONTEXT               = 0;
-//* @constant
-var OG_OBJECT_SCENE                 = 1;          
-//* @constant
-var OG_OBJECT_WORLD                 = 2;
-//* @constant
-var OG_OBJECT_IMAGELAYER            = 3;
-//* @constant
-var OG_OBJECT_ELEVATIONLAYER        = 4;
-//* @constant
-var OG_OBJECT_WAYPOINTLAYER         = 5;
-//* @constant
-var OG_OBJECT_POILAYER              = 6;
-//* @constant
-var OG_OBJECT_GEOMETRYLAYER         = 7;
-//* @constant
-var OG_OBJECT_VOXELLAYER            = 8;
-//* @constant
-var OG_OBJECT_IMAGE                 = 9;
-//* @constant
-var OG_OBJECT_TEXTURE               = 10;
-//* @constant
-var OG_OBJECT_PIXELBUFFER           = 11;
-//* @constant
-var OG_OBJECT_GEOMETRY              = 12;
-//* @constant
-var OG_OBJECT_MESH                  = 13;
-//* @constant
-var OG_OBJECT_SURFACE               = 14;
-//* @constant
-var OG_OBJECT_CAMERA                = 15;
-//* @constant
-var OG_OBJECT_TEXT                  = 16;             
-//* @constant
-var OG_OBJECT_BINARYDATA            = 17;       
-//* @constant
-var OG_OBJECT_LIGHT                 = 18;
-//* @constant
-var OG_OBJECT_NAVIGATIONCONTROLLER  = 19;
-//* @constant
-var OG_OBJECT_INVALID               = 65535;
 //------------------------------------------------------------------------------
 //* @ignore
 var _g_ogobjID = -1;
@@ -182,6 +140,8 @@ function _CreateObject(type, parent, options)
       newobject.RegisterObject();
       newobject.SetOptions(options);
    }
+   
+   return newobject;
 }
 
 //------------------------------------------------------------------------------
@@ -204,7 +164,7 @@ function ogGetObjectType(object)
    var obj = _GetObjectFromId(object);
    if (obj)
    {
-
+      return obj.type;
    }
    else
    {
@@ -212,7 +172,22 @@ function ogGetObjectType(object)
    }
    //return object.GetType();   
 }
-goog.exportSymbol('ogCreateContext', ogCreateContext);
+goog.exportSymbol('ogGetObjectType', ogGetObjectType);
+
+//------------------------------------------------------------------------------
+function ogGetObjectName(object)
+{
+   var obj = _GetObjectFromId(object);
+   if (obj)
+   {
+      return obj.name;
+   }
+   else
+   {
+      return "";
+   }
+}
+goog.exportSymbol('ogGetObjectName', ogGetObjectName);
 
 //------------------------------------------------------------------------------
 // FUBCTIONS FOR CONTEXT OBJECTS:
@@ -220,9 +195,37 @@ goog.exportSymbol('ogCreateContext', ogCreateContext);
 
 function ogCreateContext(contextoptions, cbfInit, cbfExit, cbfResize)
 {
-   
+   var context = _CreateObject(OG_OBJECT_CONTEXT, null, contextoptions);
+   if (context != null)
+   {
+      return context.id;
+   }
+   return -1;
 }
 goog.exportSymbol('ogCreateContext', ogCreateContext);
+
+//------------------------------------------------------------------------------
+
+function ogCreateContextFromCanvas(sCanvasId, fullscreen, cbfInit, cbfExit, cbfResize)
+{
+   contextoptions = {};
+   if (fullscreen)
+   {
+      contextoptions.fullscreen = true;
+   }
+   else
+   {
+      contextoptions.fullscreen = false;
+   }
+   
+   var context = _CreateObject(OG_OBJECT_CONTEXT, null, contextoptions);
+   if (context != null)
+   {
+      return context.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogCreateContextFromCanvas', ogCreateContextFromCanvas);
 
 //------------------------------------------------------------------------------
 
@@ -250,19 +253,11 @@ goog.exportSymbol('ogGetHeight', ogGetHeight);
 
 //------------------------------------------------------------------------------
 
-function ogGetScene()
+function ogGetScene(context)
 {
    
 }
 goog.exportSymbol('ogGetScene', ogGetScene);
-
-//------------------------------------------------------------------------------
-
-function ogCreateContextFromCanvas(sCanvasId, bFullscreen)
-{
-
-}
-goog.exportSymbol('ogCreateContextFromCanvas', ogCreateContextFromCanvas);
 
 //------------------------------------------------------------------------------
 

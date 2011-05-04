@@ -23,6 +23,7 @@
 
 goog.provide('owg.ogScene');
 
+goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
 
 

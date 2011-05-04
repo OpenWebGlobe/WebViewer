@@ -23,6 +23,7 @@
 
 goog.provide('owg.ogNavigationController');
 
+goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
 
 

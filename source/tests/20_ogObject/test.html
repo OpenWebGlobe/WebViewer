@@ -9,12 +9,38 @@
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 <script type="text/javascript">
 
+
+function OnInit(context)
+{
+   
+}
+
+function OnExit(context)
+{
+   
+}
+
+function OnResize(context, w, h)
+{
+   
+}
+
+
 //------------------------------------------------------------------------------
 function main()
 {
    // create context from existing canvas and go fullscreen
    // (this is a JavaScript specific OpenWebGlobe function!)
-   ogCreateContextFromCanvas("canvas", true);
+   
+   var ctx = ogCreateContextFromCanvas("canvas", true, OnInit, OnExit, OnResize);
+   
+   console.log("ctx = " + ctx);
+   
+   var type = ogGetObjectType(ctx);
+   console.log("type = " + type);
+   
+   var name = ogGetObjectName(ctx);
+   console.log("name = " + name);
 
    // in JavaScript, calling ogExec is not necessary.
    ogExec();

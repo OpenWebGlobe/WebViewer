@@ -24,6 +24,7 @@
 
 goog.provide('owg.ogImage');
 
+goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
 
 //------------------------------------------------------------------------------

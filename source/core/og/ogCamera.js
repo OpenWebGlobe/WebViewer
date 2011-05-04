@@ -24,6 +24,7 @@
 
 goog.provide('owg.ogCamera');
 
+goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
 
 //------------------------------------------------------------------------------

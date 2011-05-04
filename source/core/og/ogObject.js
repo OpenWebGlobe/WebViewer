@@ -23,6 +23,8 @@
 
 goog.provide('owg.ogObject');
 
+goog.require('owg.ObjectDefs');
+
 //------------------------------------------------------------------------------
 /** @ignore */
 _g_objects = [];  // array containing all OpenWebGlobe objects
@@ -39,7 +41,7 @@ function _RegisterObject(obj)
 /** @ignore */
 function _UnregisterObject(objid)
 {
-   for (var i=0;i<_g_objects.length();i++)
+   for (var i=0;i<_g_objects.length;i++)
    {
       if (_g_objects[i].id == id)
       {
@@ -77,7 +79,7 @@ function _GetObjectFromId(id)
       return null;
    }
    
-   for (var i=0;i<_g_objects.length();i++)
+   for (var i=0;i<_g_objects.length;i++)
    {
       if (_g_objects[i].id == id)
       {

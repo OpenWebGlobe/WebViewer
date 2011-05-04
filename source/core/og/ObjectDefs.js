@@ -19,24 +19,52 @@
 #                           martin.christen@fhnw.ch                            #
 ********************************************************************************
 *     Licensed under MIT License. Read the file LICENSE for more information   *
-*******************************************************************************/      
+*******************************************************************************/
 
-goog.provide('owg.ogTexture');
-
-goog.require('owg.ObjectDefs');
-goog.require('owg.ogObject');
+goog.provide('owg.ObjectDefs');
 
 //------------------------------------------------------------------------------
-/**
- * @constructor
- * @description Texture class (OpenWebGlobe object)
- * @author Martin Christen, martin.christen@fhnw.ch
- */
-function ogTexture()
-{
-   this.name = "ogTexture";
-   this.type = OG_OBJECT_TEXTURE;
-}
+//* @constant
+var OG_OBJECT_CONTEXT               = 0;
+//* @constant
+var OG_OBJECT_SCENE                 = 1;          
+//* @constant
+var OG_OBJECT_WORLD                 = 2;
+//* @constant
+var OG_OBJECT_IMAGELAYER            = 3;
+//* @constant
+var OG_OBJECT_ELEVATIONLAYER        = 4;
+//* @constant
+var OG_OBJECT_WAYPOINTLAYER         = 5;
+//* @constant
+var OG_OBJECT_POILAYER              = 6;
+//* @constant
+var OG_OBJECT_GEOMETRYLAYER         = 7;
+//* @constant
+var OG_OBJECT_VOXELLAYER            = 8;
+//* @constant
+var OG_OBJECT_IMAGE                 = 9;
+//* @constant
+var OG_OBJECT_TEXTURE               = 10;
+//* @constant
+var OG_OBJECT_PIXELBUFFER           = 11;
+//* @constant
+var OG_OBJECT_GEOMETRY              = 12;
+//* @constant
+var OG_OBJECT_MESH                  = 13;
+//* @constant
+var OG_OBJECT_SURFACE               = 14;
+//* @constant
+var OG_OBJECT_CAMERA                = 15;
+//* @constant
+var OG_OBJECT_TEXT                  = 16;             
+//* @constant
+var OG_OBJECT_BINARYDATA            = 17;       
+//* @constant
+var OG_OBJECT_LIGHT                 = 18;
+//* @constant
+var OG_OBJECT_NAVIGATIONCONTROLLER  = 19;
+//* @constant
+var OG_OBJECT_INVALID               = 65535;
 
-//------------------------------------------------------------------------------
-ogTexture.prototype = new ogObject();
+
