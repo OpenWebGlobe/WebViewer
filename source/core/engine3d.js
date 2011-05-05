@@ -255,7 +255,7 @@ function engine3d()
 	
 	this.bFullscreen = false;
 
-        /** @type {WebGLRenderingContext} */
+   /** @type {WebGLRenderingContext} */
    this.gl = null;          // opengl context
 	this.context = null;
 	

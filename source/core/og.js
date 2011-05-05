@@ -428,7 +428,7 @@ function ogGetScene(context_id)
          return obj.scene.id;
       }
    }
-   
+
    return -1; 
 }
 goog.exportSymbol('ogGetScene', ogGetScene);

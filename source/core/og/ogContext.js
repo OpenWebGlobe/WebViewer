@@ -40,8 +40,12 @@ function ogContext()
    this.name = "ogContext";
    this.type = OG_OBJECT_CONTEXT;
    this.fullscreen = false;
+   /** @type {engine3d} */
    this.engine = null;
+   /** @type {ogScene} */
    this.scene = null;  // scene object attached to context
+   /** @type {vec4} */
+   this.fontcolor = new vec4(1,1,1,1);
    
    // number of render passes:
    this.numRenderPasses = 1;
@@ -117,4 +121,25 @@ ogContext.prototype.ParseOptions = function(options)
    }
    
 }
+//------------------------------------------------------------------------------
+/**
+ * @description Set background color (clear color)
+ */
+ogContext.prototype.SetBackgroundColor = function(r,g,b,a)
+{
+   if (this.engine)
+   {
+      this.engine.SetClearColor(r,g,b,a);
+   }
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Set text color
+ */
+ogContext.prototype.SetTextColor = function(r,g,b)
+{
+   this.fontcolor.Set(r,g,b,1);
+}
+
 //------------------------------------------------------------------------------
