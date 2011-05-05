@@ -379,7 +379,8 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    // call init callback
 	if (this.cbfInit)
    {
-		this.cbfInit();
+		var engine = this;
+		this.cbfInit(engine);
 	}
    
    canvas.addEventListener("mousedown", _fncMouseDown, false);
