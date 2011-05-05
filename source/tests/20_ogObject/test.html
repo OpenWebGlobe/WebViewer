@@ -1,5 +1,5 @@
 <!--
-      OpenWebGlobe Object Test
+      OpenWebGlobe SDK Test
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +9,18 @@
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 <script type="text/javascript">
 
+//------------------------------------------------------------------------------
+function TEST(testname, equ)
+{
+   if (equ)
+   {
+      console.log("[OK] " + testname)
+   }
+   else
+   {
+      console.log("[FAILED] " + testname)
+   }
+}
 
 //------------------------------------------------------------------------------
 function OnInit(context)
@@ -33,18 +45,31 @@ function main()
    // create context from existing canvas and go fullscreen
    // (this is a JavaScript specific OpenWebGlobe function!)
    
+   // CASE 1: CREATE CONTEXT
    var ctx = ogCreateContextFromCanvas("canvas", true, OnInit, OnExit, OnResize);
+   TEST("Create Context", ctx == 0);
    
-   console.log("ctx = " + ctx);
-   
+   // CASE 2: 
    var type = ogGetObjectType(ctx);
-   console.log("type = " + type);
+   TEST("Context Type", type == OG_OBJECT_CONTEXT);
    
-   /*var name = ogGetObjectName(ctx);
-   console.log("name = " + name);
+   var name = ogGetObjectName(ctx);
+   TEST("Get Context Name", name == "ogContext");
    
-   console.log(""+OG_SCENE_CUSTOM);*/
-
+   ogSetObjectName(ctx, "myContext");
+   name = ogGetObjectName(ctx);
+   TEST("Set Context Name", name == "myContext");
+   
+   var numObject = ogGetNumObjects();
+   TEST("Num Objects", numObject == 1);
+   
+   var ctxsearch = ogGetObjectByName("myContext");
+   TEST("Search Context (name)", ctxsearch == ctx);
+   
+   var width = ogGetWidth(ctx);
+   var height = ogGetHeight(ctx);
+   TEST("width, height", height>0 && width>0);
+   
    // in JavaScript, calling ogExec is not necessary, but doing it anyways
    ogExec();
 }

@@ -9,6 +9,19 @@
 
 
 //------------------------------------------------------------------------------
+function TEST(testname, equ)
+{
+   if (equ)
+   {
+      console.log("[OK] " + testname + "<br/>")
+   }
+   else
+   {
+      console.log("[FAILED] " + testname + "<br/>")
+   }
+}
+
+//------------------------------------------------------------------------------
 function OnInit(context)
 {
    
@@ -31,18 +44,32 @@ function main()
    // create context from existing canvas and go fullscreen
    // (this is a JavaScript specific OpenWebGlobe function!)
    
+   // CASE 1: CREATE CONTEXT
    var ctx = ogCreateContextFromCanvas("canvas", true, OnInit, OnExit, OnResize);
+   TEST("Create Context", ctx == 0);
    
-   console.log("ctx = " + ctx);
-   
+   // CASE 2: 
    var type = ogGetObjectType(ctx);
-   console.log("type = " + type);
+   TEST("Context Type", type == OG_OBJECT_CONTEXT);
    
    var name = ogGetObjectName(ctx);
-   console.log("name = " + name);
+   TEST("Get Context Name", name == "ogContext");
    
-
-   // in JavaScript, calling ogExec is not necessary.
+   ogSetObjectName(ctx, "myContext");
+   name = ogGetObjectName(ctx);
+   TEST("Set Context Name", name == "myContext");
+   
+   var numObject = ogGetNumObjects();
+   TEST("Num Objects", numObject == 1);
+   
+   var ctxsearch = ogGetObjectByName("myContext");
+   TEST("Search Context (name)", ctxsearch == ctx);
+   
+   var width = ogGetWidth(ctx);
+   var height = ogGetHeight(ctx);
+   TEST("width, height", height>0 && width>0);
+   
+   // in JavaScript, calling ogExec is not necessary, but doing it anyways
    ogExec();
 }
 //------------------------------------------------------------------------------
