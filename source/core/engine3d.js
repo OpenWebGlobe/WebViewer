@@ -591,6 +591,11 @@ engine3d.prototype.CreateScene = function()
 //------------------------------------------------------------------------------
 /**
  * @description Draw Text using internal bitmap font
+ * @param {string} txt the text
+ * @param {number} x x-coord (window)
+ * @param {number} y y-coord (window)
+ * @param {number=} scale a scale for the font size
+ * @param {vec4=} fontcolor the color
  */
 engine3d.prototype.DrawText = function(txt,x,y,scale,fontcolor)
 {
@@ -598,6 +603,25 @@ engine3d.prototype.DrawText = function(txt,x,y,scale,fontcolor)
    {
       this.systemfont.DrawText(txt,x,y,scale,fontcolor); 
    }
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Get Text size
+ * @param {string} txt the text
+ * @returns {Array} array with width, height
+ */
+engine3d.prototype.GetTextSize = function(txt)
+{
+	var ret = new Array(2);
+	ret[0] = 0; ret[1] = 0;
+   if (this.systemfont)
+   {
+      var w = this.systemfont.GetStringWidth(txt);
+		var h = this.systemfont.GetStringHeight();
+		ret[0] = w;
+		ret[1] = h;
+   }
+	return ret;
 }
 //------------------------------------------------------------------------------
 /**

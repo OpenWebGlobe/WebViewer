@@ -433,7 +433,85 @@ function ogGetScene(context_id)
 }
 goog.exportSymbol('ogGetScene', ogGetScene);
 //------------------------------------------------------------------------------
-
+/**
+ * @description Set background color
+ * @param {number} context_id id of the context
+ * @param {number} r red component [0,1]
+ * @param {number} g green component [0,1]
+ * @param {number} b blue component [0,1]
+ * @param {number} a alpha component [0,1]
+ */
+function ogSetBackgroundColor(context_id, r, g, b, a)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.SetBackgroundColor(r,g,b,a);
+   }
+}
+goog.exportSymbol('ogSetBackgroundColor', ogSetBackgroundColor);
+//------------------------------------------------------------------------------
+/**
+ * @description Set text color
+ * @param {number} context_id id of the context
+ * @param {number} r red component [0,1]
+ * @param {number} g green component [0,1]
+ * @param {number} b blue component [0,1]
+ */
+function ogSetTextColor(context_id, r, g, b)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.SetTextColor(r,g,b);
+   }
+}
+goog.exportSymbol('ogSetTextColor', ogSetTextColor);
+//------------------------------------------------------------------------------
+/**
+ * @description Set text color
+ * @param {number} context_id id of the context
+ * @param {string} text The text to be drawn
+ * @param {number} x x position (window coordinate)
+ * @param {number} y y position (window coordinate)
+ */
+function ogDrawText(context_id, text, x, y)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.DrawText(text, x, y);
+   }
+}
+goog.exportSymbol('ogSetTextColor', ogSetTextColor);
+//------------------------------------------------------------------------------
+/**
+ * @description Set text color
+ * @param {number} context_id id of the context
+ * @param {string} text The text to be drawn
+ * @returns {Array} Array with 2 items 0: width, 1:height
+ */
+function ogGetTextSize(context_id, text)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      var result = obj.GetTextSize(text);
+      if (result)
+      {
+         return result;
+      }
+   }
+   
+   var ret = new Array(2);
+   ret[0] = 0;
+   ret[1] = 0;
+   return ret;
+}
+goog.exportSymbol('ogSetTextColor', ogSetTextColor);
+//------------------------------------------------------------------------------
+// ** MISC **
+//------------------------------------------------------------------------------
 function ogExec()
 {
    // in JavaScript ogExec is not required. This function is just empty

@@ -143,3 +143,26 @@ ogContext.prototype.SetTextColor = function(r,g,b)
 }
 
 //------------------------------------------------------------------------------
+/**
+ * @description Draw text 
+ */
+ogContext.prototype.DrawText = function(text, x, y)
+{
+   if (this.engine)
+   {
+      this.engine.DrawText(text,x,y,1,this.fontcolor);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Get text size
+ */
+ogContext.prototype.GetTextSize = function(text)
+{
+   if (this.engine)
+   {   
+      return this.engine.GetTextSize(text);
+   }
+   
+   return null;
+}
