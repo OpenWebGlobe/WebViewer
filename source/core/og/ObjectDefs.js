@@ -21,15 +21,16 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+
 goog.provide('owg.ObjectDefs');
 
 //------------------------------------------------------------------------------
 // OBJECT TYPES
 //------------------------------------------------------------------------------
 //* @constant
-var OG_OBJECT_CONTEXT               = 0;  
+var OG_OBJECT_CONTEXT               = 0;
 //* @constant
-var OG_OBJECT_SCENE                 = 1;          
+var OG_OBJECT_SCENE                 = 1;
 //* @constant
 var OG_OBJECT_WORLD                 = 2;
 //* @constant
@@ -59,9 +60,9 @@ var OG_OBJECT_SURFACE               = 14;
 //* @constant
 var OG_OBJECT_CAMERA                = 15;
 //* @constant
-var OG_OBJECT_TEXT                  = 16;             
+var OG_OBJECT_TEXT                  = 16;
 //* @constant
-var OG_OBJECT_BINARYDATA            = 17;       
+var OG_OBJECT_BINARYDATA            = 17;
 //* @constant
 var OG_OBJECT_LIGHT                 = 18;
 //* @constant
