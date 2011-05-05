@@ -35,18 +35,24 @@ goog.provide('owg.vec4');
  * 
  * @class vec4
  * @constructor
- * vec4 object for colors. (R,G,B,A)
- * 
- * {@link http://www.openwebglobe.org} 
- *
+ * @description vec4 4-component vector, mainly used for colors 
  * @author Martin Christen martin.christen@fhnw.ch 
- * @author Benjamin Loesch benjamin.loesch@fhnw.ch  
- * @version 0.1  
+ * @author Benjamin Loesch benjamin.loesch@fhnw.ch
+ *
+ * @param {number=} opt_x component of vector (optional)
+ * @param {number=} opt_y component of vector (optional)
+ * @param {number=} opt_z component of vector (optional)
+ * @param {number=} opt_w component of vector (optional)
  */
-function vec4()
+function vec4(opt_x,opt_y,opt_z,opt_w)
 {
+   var x = opt_x || 0;
+   var y = opt_y || 0;
+   var z = opt_z || 0;
+   var w = opt_w || 0;
+   
    /** @type {!Float32Array} */
-   this._values = new Float32Array([0.0, 0.0, 0.0, 0.0]);
+   this._values = new Float32Array([x, y, z, w]);
 }
 
 /**

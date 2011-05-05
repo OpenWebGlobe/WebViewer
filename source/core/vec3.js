@@ -40,11 +40,19 @@ goog.provide('owg.vec3');
  * Initialised the vector as [0,0,0]
  * This is the basic vec3.class 
  * @constructor
+ * 
+ * @param {number=} opt_x component of vector (optional)
+ * @param {number=} opt_y component of vector (optional)
+ * @param {number=} opt_z component of vector (optional)
  */
-function vec3()
+function vec3(opt_x, opt_y, opt_z)
 {
+   var x = opt_x || 0;
+   var y = opt_y || 0;
+   var z = opt_z || 0;
+   
    /** @type {!Float32Array} */
-   this._values = new Float32Array([0.0, 0.0, 0.0]);
+   this._values = new Float32Array([x, y, z]);
 }
 
 //------------------------------------------------------------------------------
