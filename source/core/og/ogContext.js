@@ -41,14 +41,52 @@ function ogContext()
    this.type = OG_OBJECT_CONTEXT;
    this.fullscreen = false;
    this.engine = null;
+   this.scene = null;  // scene object attached to context
+   
+   // number of render passes:
+   this.numRenderPasses = 1;
+   
+   // context-related callback functions
+   this.cbfMouseDown = null;
+   this.cbfMouseUp = null;
+   this.cbfMouseWheel = null;
+   this.cbfKeyDown = null;
+   this.cbfKeyUp = null;
+   this.cbfResize = null;
+   this.cbfRender = null;
+   this.cbfTimer = null;
+   this.cbfRenderGeometry = null;
+   this.cbfBeginRender = null;
+   this.cbfEndRender = null;
 }
 
 //------------------------------------------------------------------------------
 ogContext.prototype = new ogObject();
 //------------------------------------------------------------------------------
-
-
-
+/**
+ * @description Returns the width of the context
+ */
+ogContext.prototype.GetWidth = function()
+{
+   if (this.engine)
+   {
+      return this.engine.width;
+   }
+   return 0;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Returns the height of the context
+ */
+ogContext.prototype.GetHeight = function()
+{
+   if (this.engine)
+   {
+      return this.engine.height;
+   }
+   
+   return 0;
+}
 //------------------------------------------------------------------------------
 /**
  * @description Parse options for context

@@ -65,6 +65,10 @@ function _GetNumObjects()
 /** @ignore */
 function _GetObjectAt(index)
 {
+   if (index<0 || index>_g_objects.length-1)
+   {
+      return null;
+   }
    return _g_objects[index];
 }
 //------------------------------------------------------------------------------
@@ -90,6 +94,23 @@ function _GetObjectFromId(id)
    return null;
 }
 //------------------------------------------------------------------------------
+/** @description return object with specified name*/
+/** @param {string} name The object name */
+/** @returns {ogObject} The object or null if not found.
+/** @ignore */
+function _GetObjectByName(name)
+{
+   for (var i=0;i<_g_objects.length;i++)
+   {
+      if (_g_objects[i].name == name)
+      {
+         return _g_objects[i];
+      }
+   }
+   
+   return null;
+}
+//------------------------------------------------------------------------------
 /**
  * @constructor
  * @description Base class for all OpenWebGlobe objects
@@ -101,6 +122,7 @@ function ogObject()
    this.name = "ogObject";
    this.type = OG_OBJECT_INVALID;
    this.id = -1;
+   this.status = OG_OBJECT_READY;
 }
 
 //------------------------------------------------------------------------------

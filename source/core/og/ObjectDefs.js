@@ -108,3 +108,21 @@ goog.exportSymbol('OG_SCENE_3D_FLAT_CARTESIAN', OG_SCENE_3D_FLAT_CARTESIAN);
 goog.exportSymbol('OG_SCENE_2D_SCREEN', OG_SCENE_2D_SCREEN);
 goog.exportSymbol('OG_SCENE_CUSTOM', OG_SCENE_CUSTOM);
 
+
+//------------------------------------------------------------------------------
+// OBJECT STATUS
+//------------------------------------------------------------------------------
+
+//* @constant
+var OG_OBJECT_READY     = 1;
+//* @constant
+var OG_OBJECT_BUSY      = 2;
+//* @constant
+var OG_OBJECT_FAILED    = 3;
+
+goog.exportSymbol('OG_OBJECT_READY', OG_OBJECT_READY);
+goog.exportSymbol('OG_OBJECT_BUSY', OG_OBJECT_BUSY);
+goog.exportSymbol('OG_OBJECT_FAILED', OG_OBJECT_FAILED);
+
+
+
