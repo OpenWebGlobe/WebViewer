@@ -53,7 +53,7 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.OnRender = function()
       {
-         this.logo.Blit(this.engine.width-72, this.engine.height-72,0,0,1,1,true);
+         //this.logo.Blit(this.engine.width-72, this.engine.height-72,0,0,1,1,true);
          
          if (this.btn)
          {       
@@ -81,8 +81,8 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.OnInit = function()
       {
-          this.logo = new Texture(this.engine);
-          this.logo.LoadLogo();
+          //this.logo = new Texture(this.engine);
+          //this.logo.LoadLogo();
           
           this.compassbg = new Texture(this.engine);
           this.compassbg.LoadCompassBackground();
