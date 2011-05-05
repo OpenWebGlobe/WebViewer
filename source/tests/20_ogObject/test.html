@@ -70,6 +70,8 @@ function main()
    var height = ogGetHeight(ctx);
    TEST("width, height", height>0 && width>0);
    
+   ogSetBackgroundColor(ctx,1,0,0,1);
+   
    // in JavaScript, calling ogExec is not necessary, but doing it anyways
    ogExec();
 }

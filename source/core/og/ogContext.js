@@ -30,6 +30,115 @@ goog.require('owg.ogObject');
 goog.require('owg.engine3d');
 
 //------------------------------------------------------------------------------
+// CALLBACK FUNCTIONS FOR ENGINE
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_init(engine)
+{
+   
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} dt time delta (in milliseconds)
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_timer(dt, engine)
+{
+   
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_render(engine)
+{
+   
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} button mouse button
+ * @param {number} x mouse x-coord (window coord)
+ * @param {number} y mouse y-coord (window coord)
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_mousedown(button, x, y, engine)
+{
+   
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} button mouse button
+ * @param {number} x mouse x-coord (window coord)
+ * @param {number} y mouse y-coord (window coord)
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_mouseup(button, x, y, engine)
+{
+   
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} x mouse x-coord (window coord)
+ * @param {number} y mouse y-coord (window coord)
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_mousemove(x, y, engine)
+{
+   
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} delta mouse wheel delta
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_mousewheel(delta, engine)
+{
+   
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} width width
+ * @param {number} height height
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_resize(width, height, engine)
+{
+   
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} keycode the keycode
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_keydown(keycode, engine)
+{
+   
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} keycode the keycode
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_keyup(keycode, engine)
+{
+   
+}
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
 /**
  * @constructor
  * @description Context class (OpenWebGlobe object)
@@ -109,6 +218,18 @@ ogContext.prototype.ParseOptions = function(options)
    }
    
    this.engine = new engine3d();
+   this.engine.owg = this;
+   
+   this.engine.SetInitCallback(_ctx_callback_init);
+   this.engine.SetTimerCallback(_ctx_callback_timer);
+   this.engine.SetRenderCallback(_ctx_callback_render);
+   this.engine.SetMouseDownCallback(_ctx_callback_mousedown);
+   this.engine.SetMouseUpCallback(_ctx_callback_mouseup);
+   this.engine.SetMouseMoveCallback(_ctx_callback_mousemove);
+   this.engine.SetMouseWheelCallback(_ctx_callback_mousewheel);
+   this.engine.SetResizeCallback(_ctx_callback_resize);
+   this.engine.SetKeyDownCallback(_ctx_callback_keydown);
+   this.engine.SetKeyUpCallback(_ctx_callback_keyup);
    
    // a html5 canvasid is provided:
    if (options.canvas)
