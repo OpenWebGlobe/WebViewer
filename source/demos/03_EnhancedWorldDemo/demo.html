@@ -1,0 +1,465 @@
+<!--
+      Virtual Globe Demo
+-->
+<!DOCTYPE html>
+<html lang="en">
+         <link rel="stylesheet" href="styles.css" type="text/css">
+         <!-- >
+            <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
+         -->
+         <script type="text/javascript" src="../../core/openwebglobe.js"></script>
+         <script type="text/javascript" src="../../core/shaders.js"></script>
+         <script type="text/javascript" src="../../core/vec4.js"></script>
+         <script type="text/javascript" src="../../core/mat4.js"></script>
+         <script type="text/javascript" src="../../core/vec3.js"></script>
+         <script type="text/javascript" src="../../core/mesh.js"></script>
+         <script type="text/javascript" src="../../core/texture.js"></script>
+         <script type="text/javascript" src="../../core/traversalstate.js"></script>
+         <script type="text/javascript" src="../../core/eventhandler.js"></script>
+         <script type="text/javascript" src="../../core/scenegraph.js"></script>
+         <script type="text/javascript" src="../../core/node.js"></script>
+         <script type="text/javascript" src="../../core/nodes/beginrender.js"></script>
+         <script type="text/javascript" src="../../core/nodes/camera.js"></script>
+         <script type="text/javascript" src="../../core/nodes/endrender.js"></script>
+         <script type="text/javascript" src="../../core/nodes/logos.js"></script>
+         <script type="text/javascript" src="../../core/nodes/navigation.js"></script>
+         <script type="text/javascript" src="../../core/nodes/render.js"></script>
+         <script type="text/javascript" src="../../core/nodes/renderobject.js"></script>
+         <script type="text/javascript" src="../../core/font.js"></script>
+         <script type="text/javascript" src="../../core/mathutils.js"></script>
+         <script type="text/javascript" src="../../core/geocoord.js"></script>
+         <script type="text/javascript" src="../../core/globeutils.js"></script>
+         <script type="text/javascript" src="../../core/mercatorquadtree.js"></script>
+         <script type="text/javascript" src="../../core/datasetinfo.js"></script>
+         <script type="text/javascript" src="../../core/terrainblock.js"></script>
+         <script type="text/javascript" src="../../core/globerenderer.js"></script>
+         <script type="text/javascript" src="../../core/mercator.js"></script>
+         <script type="text/javascript" src="../../core/cache.js"></script>
+         <script type="text/javascript" src="../../core/globecache.js"></script>
+         <script type="text/javascript" src="../../core/layer/imagelayer.js"></script>
+         <script type="text/javascript" src="../../core/layer/imagelayer_i3d.js"></script>
+         <script type="text/javascript" src="../../core/layer/imagelayer_osm.js"></script>
+         <script type="text/javascript" src="../../core/layer/elevationlayer.js"></script>
+         <script type="text/javascript" src="../../core/layer/elevationlayer_i3d.js"></script>
+         <script type="text/javascript" src="../../core/triangleintersector.js"></script>
+         <script type="text/javascript" src="../../core/aabb.js"></script>
+         <script type="text/javascript" src="../../core/viewfrustum.js"></script>
+         <script type="text/javascript" src="../../core/og/ogCamera.js"></script>
+         <script type="text/javascript" src="../../core/og/ogContext.js"></script>
+         <script type="text/javascript" src="../../core/og/ogImage.js"></script>
+         <script type="text/javascript" src="../../core/og/ogImageLayer.js"></script>
+         <script type="text/javascript" src="../../core/og/ogNavigationController.js"></script>
+         <script type="text/javascript" src="../../core/og/ogObject.js"></script>
+         <script type="text/javascript" src="../../core/og/ogScene.js"></script>
+         <script type="text/javascript" src="../../core/og/ogTexture.js"></script>
+         <script type="text/javascript" src="../../core/og/ogWorld.js"></script>
+         <script type="text/javascript" src="jquery-1.5.2.min.js"></script>
+  
+<style type="text/css">
+   
+   #divTopRowContent {
+                        text-align: center;
+                        /*background-color:#ffffff;*/
+                        position:absolute;
+                        width:600px;
+                        height:400px;
+                        top: 50%;
+                        left:50%;
+                        margin-left:-300px;
+                        margin-top:-200px;  
+                        opacity:1.0;
+                     }
+                     
+
+   #divTopRow h1{    color:#ffffff;
+                     font-family: arial;
+                     font-size:32px;
+                }          
+   #divTopRow h3{    color:#ffffff;                     
+                     
+                }
+                
+     
+
+   #divTopRow p {    color:#ffffff;                   
+                     position:relative;
+                     background-color:transparent;
+                     font-family: arial;
+                     font-size:16px;
+                     text-align:left;
+                     text-shadow: 0 0 2px #000, 0 0 2px #000,0 0 2px #000;
+                     
+                }
+                
+   #divTopRowTitle{  color:#ffffff;
+                     font-family: arial;
+                     font-size:32px;
+                     text-shadow: 0 0 2px #000, 0 0 2px #000,0 0 2px #000;
+                  }      
+                
+   #divCredits p {
+       color: #FFFFFF;
+       font-family: arial;
+       text-align: left;
+       padding-left:  8px; 
+       text-shadow: 0 0 2px #000, 0 0 2px #000,0 0 2px #000;
+       margin-top: -15px;
+   }
+   
+   #divCredits h3 {
+       color: #FFFFFF;
+       font-family: arial;
+       text-align: center;
+       padding-left: 8px;
+        text-shadow: 0 0 2px #000, 0 0 2px #000,0 0 2px #000;
+   }
+                
+   .content{ color:#ffffff; }
+   
+   .placeSearchResult {
+       background-image: url(images/resultbg.png);
+       background-repeat: repeat-x;
+       cursor: pointer;
+       height: 37px;
+       left: -32px;
+       list-style-position: inside;
+       list-style-type: none;
+       padding: 5px;
+       position: relative;
+       text-align: left;
+       width: 290px;
+       color: #ffffff;
+       font-family: arial;
+       overflow: hidden;
+   }
+   
+   .placeSearchResult:hover {
+      background-color: #ccccff;
+   }
+   #divSearchInput {
+       padding: 15px;
+       margin:5px;
+   }
+   
+.creditsSmall a {
+    font-size: 10px;
+    text-shadow: 0 0 2px #000000, 0 0 2px #000000, 0 0 2px #000000;
+    color: #ffffff;
+    text-decoration: none;
+}
+                
+                
+</style>
+<script type="text/javascript">
+         
+         
+         
+         //---------------------------------------------------------------------
+         var engine = null;
+       
+         
+         //---------------------------------------------------------------------
+         function OnTimer(delta)
+         {
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnResize(w,h)
+         {
+            width = w;
+            height = h;       
+         }
+         
+         //---------------------------------------------------------------------
+         function OnKey(key)
+         {
+         }
+         
+         //---------------------------------------------------------------------
+         function OnMouse(button,x,y)
+         {
+            var pickresult = new Object();
+            engine.PickGlobe(x, y, pickresult);
+            
+            if (pickresult.hit)
+            {
+               console.log("PICK: lng: " + pickresult.lng + ", lat: " + pickresult.lat + ", elv:" + pickresult.elv);
+               console.log("PICK: x: " + pickresult.x + ", y: " + pickresult.y + ", z:" + pickresult.z);
+            }
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnRender()
+         {  
+            var fontcolor = new vec4();
+            fontcolor.Set(1,1,0,1);
+           // engine.DrawText("OpenWebGlobe for WebGL", 0, height-32,1,fontcolor);
+      
+            var altitude = engine.AltitudeAboveGround(); altitude = altitude.toFixed(2);
+            var elv = engine.AltitudeAboveEllipsoid(); elv = elv.toFixed(2);
+            //engine.DrawText("Altitude: "+ altitude+ " (" + elv + ")",  0, height-64,1); 
+         }
+         
+         //---------------------------------------------------------------------
+         
+         function OnInit()
+         { 
+         }
+        
+         //---------------------------------------------------------------------
+        
+         function main()
+         {
+         	engine = new engine3d();
+           
+            // Set Callbacks:
+            engine.SetInitCallback(OnInit);
+            engine.SetTimerCallback(OnTimer);
+            engine.SetRenderCallback(OnRender);
+            engine.SetResizeCallback(OnResize);
+            engine.SetKeyDownCallback(OnKey)
+            engine.SetMouseDownCallback(OnMouse);
+            
+            // Start engine...
+            engine.InitEngine("canvas",true);  // (canvasid, fullscreen)
+            engine.CreateScene();               // Create Globe Scene
+            engine.SetClearColor(0.5,0.5,1,1);
+         }
+         
+         
+         
+         $(document).ready(function() {
+          
+         /*
+          *   Top-Row..............................................................
+          */       
+         $('#divTopRow').css({'background-image':'url(images/transp.png)','background-repeat':'repeat', 'width':'100%','height':'580px','position':'absolute', 'left':'0px','top':'0px'});          
+         $('#divTopRow').click(function(){
+              if ( parseInt($('#divTopRow').css("top")) > -80 )
+              {
+                  $('#divTopRow').animate({top:'-500'},1000,function(){$('#divTopRowTitle').toggle();});
+              }
+              else
+              {
+               $('#divTopRowTitle').toggle();
+                 $('#divTopRow').animate({top:'0'},1000,function(){});
+              }
+             });  
+         $('#divTopRowBtn').css({'background-image':'url(images/intro.png)','background-position':'-2px -5px','background-repeat':'no-repeat','width':'80px','height':'25px','position':'absolute', 'left':'10px','bottom':'-25px','cursor':'pointer'});           
+         $('#divTopRowTitle').css({'width':'600px','height':'50px','position':'absolute', 'left':'35%','bottom':'0px','display':'none'});
+   
+         
+          /*
+           *   FHNW Logo..............................................................
+           */ 
+         $('#divFhnwLogo').css({'background-image':'url(images/fhnw_logo.png)','background-repeat':'no-repeat','height':'60px','width':'300px','position':'absolute', 'left':'60px','top':'15px','display':'none','opacity':'1.0','z-index':'1','cursor':'pointer'});
+         $('#divFhnwLogo').click(function(){ window.open("http://www.fhnw.ch/homepage");});
+         $('#divCampToCamp').click(function(){ window.open("http://www.camptocamp.com");});               
+         $('#divCampToCamp').css({'background-image':'url(images/camptocamp.png)','background-repeat':'no-repeat','height':'60px','width':'80px','position':'absolute', 'left':'420px','top':'15px','display':'none','opacity':'1.0','cursor':'pointer'});
+
+          /*
+           *   Fly to feature..............................................................
+           */ 
+         $('#divFlyTo').css({'background-color':'#000000','background-repeat':'no-repeat','width':'330px','height':'75px','position':'absolute', 'left':'-300px','top':'200px','display':'none'});
+         $('#divFlyToPullBtn').click(function(){
+              if ( parseInt($('#divFlyTo').css("left")) > -1 )
+              {
+                  $('#divFlyTo').animate({left:'-300'},1000,function(){});
+              }
+              else
+              {
+                 $('#divFlyTo').animate({left:'0'},1000,function(){});
+              }
+             });            
+         $('#divFlyToPullBtn').css({'background-image':'url(images/flytobg.png)','background-position':'4px 0px','background-repeat':'no-repeat','width':'30px','height':'80px','position':'absolute', 'right':'-2px','top':'-4px','cursor':'pointer'});
+         
+       
+                
+
+          /*
+           *   Like Buttons (Twitter,Facebook etc.)..................................
+           */ 
+         $('#divLikeButtons').css({'background-image':'url(images/openWEBglobe.png)','background-repeat':'no-repeat','width':'300px','height':'100px','position':'absolute', 'left':'80%','top':'40px','display':'none','z-index':'1'});
+
+          
+          /*
+           *   Stats, currently not used..................................
+           */  
+         $('#divStats').css({'background-color':'#000000','width':'300px','height':'40px','position':'absolute', 'left':'80%','bottom':'0%','display':'none','opacity':'0.5'});
+         
+         
+          /*
+           *   Credits..................................
+           */
+         $('#divCredits').css({'background-image':'url(images/transp.png)','background-repeat':'repeat','width':'250px','height':'250px','position':'absolute', 'left':'60%','bottom':'-250px','display':'none'});
+         $('#divCreditsBtn').css({'background-image':'url(images/credits.png)','background-position':'0px 0px','width':'80px','height':'25px','position':'absolute', 'left':'60%','top':'-25px','cursor':'pointer'});
+         $('#divCreditsBtn').click(function(){
+              if ( parseInt($('#divCredits').css("bottom")) > -1 )
+              {
+                  $('#divCredits').animate({bottom:'-250'},1000,function(){});
+              }
+              else
+              {
+                 $('#divCredits').animate({bottom:'6px'},1000,function(){});
+              }
+             });  
+                  
+           
+          /*
+           *   Handle visibility on start-up..................................
+           */      
+         $('#divFhnwLogo').show("slow");
+         $('#divCampToCamp').show("slow");
+         $('#divFlyTo').slideToggle("slow");
+         $('#divLikeButtons').slideToggle("slow");
+          //$('#divStats').slideToggle("slow");
+         $('#divCredits').slideToggle("slow");
+         
+         });
+         
+
+         /*
+          *  Fly-to Button callback
+          */
+         function getPlaceSearchResults()
+         {
+            var textInput = $('#placeSearchTb').val();
+            while(textInput.indexOf(' ')!=-1)textInput = textInput.replace(' ','+'); //replace spaces with '+'
+
+            //alert(textInput);
+             queryUrl = "http://open.mapquestapi.com/nominatim/v1/search?"
+ 
+               $.getJSON(queryUrl,{ format:"json",
+                                    q:textInput
+                                    },
+                                    _cbfAjaxQuery
+                                    );      
+         }
+        
+         /*
+          *  Fly to results callback
+          */
+         function _cbfAjaxQuery(result)
+         {
+             $("#placeList").empty();
+            if(result.length>0)
+            {
+            $.each(result,
+                  function(index,content)
+                  {
+                     if(index<10)
+                     {                         
+                        $("#placeList")
+                        .append($("<li>")
+                        .addClass("placeSearchResult")
+                        .text(content.display_name)
+                        .attr("lat",content.lat)
+                        .attr("lng",content.lon)
+                        .click(function(){flyTo(content.lat,content.lon);}));                      
+                     }      
+                  }
+                  );
+            }
+            else
+            {
+               $("#placeList")
+                        .append($("<li>")
+                        .addClass("placeSearchResult")
+                        .text("No place found..."));
+            }
+         }
+         
+         /*
+          * Fly to function
+          */
+         function flyTo(lat,lon)
+         {
+            
+            //engine.
+            $('#divFlyTo').animate({left:'-300'},1000,function(){}); //pull in menu
+         }
+        
+         
+        
+         
+         //---------------------------------------------------------------------
+         
+      </script>
+    </head>
+    <body onload="main()" style="background-color:#000000; overflow:hidden;">
+        <div style="text-align: center">           
+            <canvas id="canvas"></canvas>
+            <div id='divTopRow'>
+               <div id='divTopRowBtn'></div>
+               <div id=divTopRowContent>               
+               <h1>Welcome to OpenWebGlobe SDK WebGL Viewer</h1>
+               <p> This is the WebGL Version of the OpenWebGlobe SDK. With the OpenWebGlobe SDK you can create your own virtual globe applications.
+                   You can develop your new application in your favorite language like C++, C#, Visual Basic, Python, JavaScript.
+                   OpenWebGlobe SDK is initially created by the Geomatics Engineering department at the University of Applied Sciences Northwestern
+                   Switzerland.
+                   <br>
+                   <br>
+                   To navigate just click somewhere on the globe and drag into the desired direction.
+                   Use the 'Q' and 'A' key to move up and down and see the world in more details.
+                   With the scrolling wheel you can adjust camera pitch.
+                   <br>
+                   <br>
+                   Try it for yourselves, just click on this panel and start exploring the world.
+                   Don't forget to try the new "FlyTo" feature, just click on the button at the left border...
+  
+               </p>                  
+               </div>
+               <div id="divTopRowTitle">OpenWebGlobe WebGL Viewer</div>
+            </div>           
+            <div id='divLikeButtons'>       
+               <!-- AddThis Button BEGIN -->
+               <div style="position:absolute; bottom:0px;right:0px;" class="addthis_toolbox addthis_default_style addthis_32x32_style">
+               <a class="addthis_button_facebook"></a>
+               <a class="addthis_button_twitter"></a>
+               <a class="addthis_button_digg"></a>
+               <a class="addthis_button_more"></a>
+               <a class="addthis_counter addthis_bubble_style"></a>
+               <!--
+               <a class="addthis_button_compact"></a>
+               <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a> 
+               <a class="addthis_button_tweet"></a>-->
+               </div>
+               <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4dc13505170fbc5e"></script>               
+               <!-- AddThis Button END -->
+            </div>              
+            <div id='divFlyTo'>
+               <div id="divFlyToPullBtn"></div>
+               <div id= "divSearchInput">
+                  <input id="placeSearchTb" type="text" name="flyto"/>
+                  <input type="button" onclick="getPlaceSearchResults()" value="FlyTo" />
+               </div>
+                  <ul id="placeList"></ul>
+               </div>
+               
+            </div>  
+            <div id='divLikeButtons'></div>
+            <div id='divFhnwLogo'></div> 
+            <div id='divCampToCamp'></div> 
+            <div id='divStats'></div> 
+            <div id='divCredits'>
+               <div id='divCreditsBtn'></div>
+               <h3>Created by</h3>
+               <p>Martin Christen
+               <br>
+                  <p class='creditsSmall'><a href='http://www.fhnw.ch/homepage' target="_blank">FHNW</a><p>
+               <br>
+               Benjamin Loesch
+               <br>
+                  <p class='creditsSmall'><a href='http://www.fhnw.ch/homepage' target="_blank">FHNW</a><p>
+               <br>
+               Tom Payne
+               <br>
+                  <p class='creditsSmall'><a href='http://www.camptocamp.com' target="_blank">CampToCamp</a><p>
+               <br>
+               </p>
+            </div>              
+        </div>
+    </body>
+</html>
