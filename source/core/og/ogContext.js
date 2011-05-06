@@ -30,6 +30,166 @@ goog.require('owg.ogObject');
 goog.require('owg.engine3d');
 
 //------------------------------------------------------------------------------
+// CALLBACK FUNCTIONS FOR ENGINE
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_init(engine)
+{ 
+   var context = engine.owg;
+   
+   if (context.cbfInit)
+   {
+      context.cbfInit(context.id);
+   }
+   
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} dt time delta (in milliseconds)
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_timer(dt, engine)
+{
+   var context = engine.owg;
+   
+   if (context.cbfTimer)
+   {
+      context.cbfTimer(context.id, dt);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_render(engine)
+{
+   var context = engine.owg;
+   
+   if (context.cbfRender)
+   {
+      context.cbfRender(context.id);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} button mouse button
+ * @param {number} x mouse x-coord (window coord)
+ * @param {number} y mouse y-coord (window coord)
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_mousedown(button, x, y, engine)
+{
+      var context = engine.owg;
+   
+   if (context.cbfMouseDown)
+   {
+      context.cbfMouseDown(context.id, button, x, y);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} button mouse button
+ * @param {number} x mouse x-coord (window coord)
+ * @param {number} y mouse y-coord (window coord)
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_mouseup(button, x, y, engine)
+{
+   var context = engine.owg;
+   
+   if (context.cbfMouseUp)
+   {
+      context.cbfMouseUp(context.id);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} x mouse x-coord (window coord)
+ * @param {number} y mouse y-coord (window coord)
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_mousemove(x, y, engine)
+{
+   var context = engine.owg;
+   
+   if (context.cbfMouseMove)
+   {
+      context.cbfMouseMove(context.id, x, y);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} delta mouse wheel delta
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_mousewheel(delta, engine)
+{
+   var context = engine.owg;
+   
+   if (context.cbfMouseWheel)
+   {
+      context.cbfMouseWheel(context.id, delta);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} width width
+ * @param {number} height height
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_resize(width, height, engine)
+{
+   var context = engine.owg;
+   
+   if (context.cbfResize)
+   {
+      context.cbfResize(context.id, width, height);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} keycode the keycode
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_keydown(keycode, engine)
+{
+   var context = engine.owg;
+   
+   if (context.cbfKeyDown)
+   {
+      context.cbfKeyDown(context.id, keycode);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} keycode the keycode
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_keyup(keycode, engine)
+{
+   var context = engine.owg;
+   
+   if (context.cbfKeyUp)
+   {
+      context.cbfKeyUp(context.id, keycode);
+   }
+}
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
 /**
  * @constructor
  * @description Context class (OpenWebGlobe object)
@@ -54,6 +214,7 @@ function ogContext()
    this.cbfMouseDown = null;
    this.cbfMouseUp = null;
    this.cbfMouseWheel = null;
+   this.cbfMouseMove = null;
    this.cbfKeyDown = null;
    this.cbfKeyUp = null;
    this.cbfResize = null;
@@ -62,6 +223,8 @@ function ogContext()
    this.cbfRenderGeometry = null;
    this.cbfBeginRender = null;
    this.cbfEndRender = null;
+   this.cbfInit = null;
+   this.cbfExit = null;
 }
 
 //------------------------------------------------------------------------------
@@ -103,12 +266,28 @@ ogContext.prototype.ParseOptions = function(options)
       return;  // no options!!
    }
    
+   this.cbfInit = options.cbfInit;
+   this.cbfExit = options.cbfExit;
+   this.cbfResize = options.cbfResize;
+   
    if (options.fullscreen)
    {
       this.fullscreen = true;
    }
    
    this.engine = new engine3d();
+   this.engine.owg = this;
+   
+   this.engine.SetInitCallback(_ctx_callback_init);
+   this.engine.SetTimerCallback(_ctx_callback_timer);
+   this.engine.SetRenderCallback(_ctx_callback_render);
+   this.engine.SetMouseDownCallback(_ctx_callback_mousedown);
+   this.engine.SetMouseUpCallback(_ctx_callback_mouseup);
+   this.engine.SetMouseMoveCallback(_ctx_callback_mousemove);
+   this.engine.SetMouseWheelCallback(_ctx_callback_mousewheel);
+   this.engine.SetResizeCallback(_ctx_callback_resize);
+   this.engine.SetKeyDownCallback(_ctx_callback_keydown);
+   this.engine.SetKeyUpCallback(_ctx_callback_keyup);
    
    // a html5 canvasid is provided:
    if (options.canvas)

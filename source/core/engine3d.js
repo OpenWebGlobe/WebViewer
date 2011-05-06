@@ -64,7 +64,7 @@ function _fncKeyDown(evt)
    for (var i=0;i<_g_vInstances.length;i++)
    {
       var engine = _g_vInstances[i];
-      engine.eventhandler.KeyDown(evt.keyCode);
+      engine.eventhandler.KeyDown(evt.keyCode, engine);
    }
    
    if (_gcbfKeyDown)
@@ -84,7 +84,7 @@ function _fncKeyUp(evt)
    for (var i=0;i<_g_vInstances.length;i++)
    {
       var engine = _g_vInstances[i];
-      engine.eventhandler.KeyUp(evt.keyCode);
+      engine.eventhandler.KeyUp(evt.keyCode, engine);
    }
    
    if (_gcbfKeyUp)
@@ -111,7 +111,7 @@ function _fncMouseUp(evt)
          engine.eventhandler.MouseUp(evt.button,x,y);
          if (engine.cbfMouseUp)
          {
-            engine.cbfMouseUp(evt.button, x, y); // call mouse up callback function
+            engine.cbfMouseUp(evt.button, x, y, engine); // call mouse up callback function
          }
          return;
       }
@@ -136,7 +136,7 @@ function _fncMouseDown(evt)
          
          if (_g_vInstances[i].cbfMouseDown)
          {
-            _g_vInstances[i].cbfMouseDown(evt.button,x,y); // call mouse down callback function
+            _g_vInstances[i].cbfMouseDown(evt.button,x,y, engine); // call mouse down callback function
          }
          return;
       }
@@ -161,7 +161,7 @@ function _fncMouseMove(evt)
          
          if (engine.cbfMouseMove)
          {
-            engine.cbfMouseMove(x,y); // call mouse up callback function
+            engine.cbfMouseMove(x,y, engine); // call mouse up callback function
          }
          return;
       }
@@ -201,7 +201,7 @@ function _fncMouseWheel(evt)
          
       if (engine.cbfMouseWheel)
       {
-        engine.cbfMouseWheel(delta);
+        engine.cbfMouseWheel(delta, engine);
       }
    }
 }
@@ -222,7 +222,7 @@ function _fncResize(evt)
          engine.context.height = window.innerHeight-20;
       }
       
-      engine._resize(engine.context.width, engine.context.height);
+      engine._resize(engine.context.width, engine.context.height, engine);
    }
 }
   
@@ -379,7 +379,8 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    // call init callback
 	if (this.cbfInit)
    {
-		this.cbfInit();
+		var engine = this;
+		this.cbfInit(engine);
 	}
    
    canvas.addEventListener("mousedown", _fncMouseDown, false);
@@ -700,7 +701,7 @@ function fncTimer()
       
       if (engine.cbfTimer)
       {
-         engine.cbfTimer(nMSeconds);
+         engine.cbfTimer(nMSeconds, engine);
       }
       
       // (2) Set Current Viewport and clear
@@ -717,7 +718,7 @@ function fncTimer()
       // (4) Call Render Callback (-> integrate in Scenegraph)
       if (engine.cbfRender)
       {
-         engine.cbfRender(); // call  draw callback function
+         engine.cbfRender(engine); // call  draw callback function
       }
    }
 }
@@ -736,7 +737,8 @@ engine3d.prototype._resize = function(w,h)
    // called on resize...
    if (this.cbfResize)
    {
-      this.cbfResize(w, h);
+		var engine = this;
+      this.cbfResize(w, h, engine);
    }
 }
 

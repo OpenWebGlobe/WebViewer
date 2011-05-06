@@ -336,14 +336,13 @@ goog.exportSymbol('ogOnFailure', ogOnFailure);
 //------------------------------------------------------------------------------
 /**
  * @description Create context
- * @param {Object} contextoptions options for context creation
- * @param {function(number)} cbfInit the callback function, called after context is initialized
- * @param {function(number)} cbfExit the callback function, called before context is destroyed
- * @param {function(number,number,number)} cbfResize the callback function, called when size of context changes
- * @returns {number} the context id
  */
 function ogCreateContext(contextoptions, cbfInit, cbfExit, cbfResize)
 {
+   contextoptions.cbfInit = cbfInit;
+   contextoptions.cbfExit = cbfExit;
+   contextoptions.cbfResize = cbfResize;
+   
    var context = _CreateObject(OG_OBJECT_CONTEXT, null, contextoptions);
    if (context != null)
    {
@@ -355,12 +354,6 @@ goog.exportSymbol('ogCreateContext', ogCreateContext);
 //------------------------------------------------------------------------------
 /**
  * @description Convienience function to create context
- * @param {string} sCanvasId id of the HTML5 Canvas object
- * @param {boolean} fullscreen true, if canvas should fill all browser window
- * @param {function(number)} cbfInit the callback function, called after context is initialized
- * @param {function(number)} cbfExit the callback function, called before context is destroyed
- * @param {function(number,number,number)} cbfResize the callback function, called when size of context changes
- * @returns {number} the context id
  */
 function ogCreateContextFromCanvas(sCanvasId, fullscreen, cbfInit, cbfExit, cbfResize)
 {
@@ -483,7 +476,7 @@ function ogDrawText(context_id, text, x, y)
       obj.DrawText(text, x, y);
    }
 }
-goog.exportSymbol('ogSetTextColor', ogSetTextColor);
+goog.exportSymbol('ogDrawText', ogDrawText);
 //------------------------------------------------------------------------------
 /**
  * @description Set text color
@@ -508,7 +501,151 @@ function ogGetTextSize(context_id, text)
    ret[1] = 0;
    return ret;
 }
-goog.exportSymbol('ogSetTextColor', ogSetTextColor);
+goog.exportSymbol('ogGetTextSize', ogGetTextSize);
+//------------------------------------------------------------------------------
+// ** CONTEXT-EVENTS **
+//------------------------------------------------------------------------------
+/**
+ * @description Set callback function for mouse down event
+ * @param {number} context_id id of the context
+ * @param {function(number, number, number, number)} cbfMouseDown the callback function
+ *
+ * the callback function has the following params:
+ *    1: context_id
+ *    2: mouse button
+ *    3: mouse x-coord
+ *    4: mouse y-coord
+ * 
+ */
+function ogSetMouseDownFunction(context_id, cbfMouseDown)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfMouseDown = cbfMouseDown;
+   }
+}
+goog.exportSymbol('ogSetMouseDownFunction', ogSetMouseDownFunction);
+//------------------------------------------------------------------------------
+function ogSetMouseUpFunction(context_id, cbfMouseUp)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfMouseUp = cbfMouseUp;
+   } 
+}
+goog.exportSymbol('ogSetMouseUpFunction', ogSetMouseUpFunction);
+//------------------------------------------------------------------------------
+function ogSetMouseMoveFunction(context_id, cbfMouseMove)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfMouseMove = cbfMouseMove;
+   } 
+}
+goog.exportSymbol('ogSetMouseMoveFunction', ogSetMouseMoveFunction);
+//------------------------------------------------------------------------------
+function ogSetMouseWheelFunction(context_id, cbfMouseWheel)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfMouseWheel = cbfMouseWheel;
+   } 
+}
+goog.exportSymbol('ogSetMouseWheelFunction', ogSetMouseWheelFunction);
+//------------------------------------------------------------------------------
+function ogSetKeyDownFunction(context_id, cbfKeyDown)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfKeyDown = cbfKeyDown;
+   } 
+}
+goog.exportSymbol('ogSetKeyDownFunction', ogSetKeyDownFunction);
+//------------------------------------------------------------------------------
+function ogSetKeyUpFunction(context_id, cbfKeyUp)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfKeyUp = cbfKeyUp;
+   } 
+}
+goog.exportSymbol('ogSetKeyUpFunction', ogSetKeyUpFunction);
+//------------------------------------------------------------------------------
+function ogSetResizeFunction(context_id, cbfResize)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfResize = cbfResize;
+   } 
+}
+goog.exportSymbol('ogSetResizeFunction', ogSetResizeFunction);
+//------------------------------------------------------------------------------
+function ogSetRenderFunction(context_id, cbfRender)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfRender = cbfRender;
+   } 
+}
+goog.exportSymbol('ogSetRenderFunction', ogSetRenderFunction);
+//------------------------------------------------------------------------------
+function ogSetTimerFunction(context_id, cbfTimer)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfTimer = cbfTimer;
+   } 
+}
+goog.exportSymbol('ogSetTimerFunction', ogSetTimerFunction);
+//------------------------------------------------------------------------------
+function ogSetRenderGeometryFunction(context_id, cbfGeometry)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfGeometry = cbfGeometry;
+   } 
+}
+goog.exportSymbol('ogSetRenderGeometryFunction', ogSetRenderGeometryFunction);
+//------------------------------------------------------------------------------
+function ogSetBeginRenderFunction(context_id, cbfBeginRender)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfBeginRender = cbfBeginRender;
+   } 
+}
+goog.exportSymbol('ogSetBeginRenderFunction', ogSetBeginRenderFunction);
+//------------------------------------------------------------------------------
+function ogSetEndRenderFunction(context_id, cbfEndRender)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfEndRender = cbfEndRender;
+   } 
+}
+goog.exportSymbol('ogSetEndRenderFunction', ogSetEndRenderFunction);
+//------------------------------------------------------------------------------
+function ogSetNumRenderPasses(context_id, numPasses)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.numRenderPasses = numPasses;
+   } 
+}
+goog.exportSymbol('ogSetNumRenderPasses', ogSetNumRenderPasses);
 //------------------------------------------------------------------------------
 // ** MISC **
 //------------------------------------------------------------------------------
@@ -518,6 +655,7 @@ function ogExec()
 }
 goog.exportSymbol('ogExec', ogExec);
 //------------------------------------------------------------------------------
+
 
 
 
