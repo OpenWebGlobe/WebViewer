@@ -25,19 +25,30 @@ function TEST(testname, equ)
 //------------------------------------------------------------------------------
 function OnInit(context)
 {
-   
+   console.log("OnInit() called");
 }
 
 //------------------------------------------------------------------------------
 function OnExit(context)
 {
-   
+   console.log("OnExit() called");
 }
 
 //------------------------------------------------------------------------------
 function OnResize(context, w, h)
 {
-   
+   console.log("OnResize: " + w + ", " + h);
+}
+//------------------------------------------------------------------------------
+function OnKeyDown(context, keycode)
+{
+   console.log("OnKeyDown: " + keycode);
+}
+//------------------------------------------------------------------------------
+function OnRender(context)
+{
+   ogSetTextColor(context, 0,1,0);
+   ogDrawText(context, "Hello World", 0, 20);
 }
 //------------------------------------------------------------------------------
 function main()
@@ -71,6 +82,10 @@ function main()
    TEST("width, height", height>0 && width>0);
    
    ogSetBackgroundColor(ctx,1,0,0,1);
+   
+   ogSetKeyDownFunction(ctx, OnKeyDown);
+   ogSetRenderFunction(ctx, OnRender);
+   
    
    // in JavaScript, calling ogExec is not necessary, but doing it anyways
    ogExec();
