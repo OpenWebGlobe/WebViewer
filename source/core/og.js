@@ -476,7 +476,7 @@ function ogDrawText(context_id, text, x, y)
       obj.DrawText(text, x, y);
    }
 }
-goog.exportSymbol('ogSetTextColor', ogSetTextColor);
+goog.exportSymbol('ogDrawText', ogDrawText);
 //------------------------------------------------------------------------------
 /**
  * @description Set text color
@@ -501,7 +501,7 @@ function ogGetTextSize(context_id, text)
    ret[1] = 0;
    return ret;
 }
-goog.exportSymbol('ogSetTextColor', ogSetTextColor);
+goog.exportSymbol('ogGetTextSize', ogGetTextSize);
 //------------------------------------------------------------------------------
 // ** CONTEXT-EVENTS **
 //------------------------------------------------------------------------------
