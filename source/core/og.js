@@ -336,14 +336,13 @@ goog.exportSymbol('ogOnFailure', ogOnFailure);
 //------------------------------------------------------------------------------
 /**
  * @description Create context
- * @param {Object} contextoptions options for context creation
- * @param {function(number)} cbfInit the callback function, called after context is initialized
- * @param {function(number)} cbfExit the callback function, called before context is destroyed
- * @param {function(number,number,number)} cbfResize the callback function, called when size of context changes
- * @returns {number} the context id
  */
 function ogCreateContext(contextoptions, cbfInit, cbfExit, cbfResize)
 {
+   contextoptions.cbfInit = cbfInit;
+   contextoptions.cbfExit = cbfExit;
+   contextoptions.cbfResize = cbfResize;
+   
    var context = _CreateObject(OG_OBJECT_CONTEXT, null, contextoptions);
    if (context != null)
    {
@@ -355,12 +354,6 @@ goog.exportSymbol('ogCreateContext', ogCreateContext);
 //------------------------------------------------------------------------------
 /**
  * @description Convienience function to create context
- * @param {string} sCanvasId id of the HTML5 Canvas object
- * @param {boolean} fullscreen true, if canvas should fill all browser window
- * @param {function(number)} cbfInit the callback function, called after context is initialized
- * @param {function(number)} cbfExit the callback function, called before context is destroyed
- * @param {function(number,number,number)} cbfResize the callback function, called when size of context changes
- * @returns {number} the context id
  */
 function ogCreateContextFromCanvas(sCanvasId, fullscreen, cbfInit, cbfExit, cbfResize)
 {

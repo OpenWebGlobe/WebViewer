@@ -37,7 +37,13 @@ goog.require('owg.engine3d');
  * @param {engine3d} engine the engine
  */
 function _ctx_callback_init(engine)
-{
+{ 
+   var context = engine.owg;
+   
+   if (context.cbfInit)
+   {
+      context.cbfInit(context.id);
+   }
    
 }
 //------------------------------------------------------------------------------
@@ -48,7 +54,12 @@ function _ctx_callback_init(engine)
  */
 function _ctx_callback_timer(dt, engine)
 {
+   var context = engine.owg;
    
+   if (context.cbfTimer)
+   {
+      context.cbfTimer(context.id, dt);
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -57,7 +68,12 @@ function _ctx_callback_timer(dt, engine)
  */
 function _ctx_callback_render(engine)
 {
+   var context = engine.owg;
    
+   if (context.cbfRender)
+   {
+      context.cbfRender(context.id);
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -69,7 +85,12 @@ function _ctx_callback_render(engine)
  */
 function _ctx_callback_mousedown(button, x, y, engine)
 {
+      var context = engine.owg;
    
+   if (context.cbfMouseDown)
+   {
+      context.cbfMouseDown(context.id, button, x, y);
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -81,7 +102,12 @@ function _ctx_callback_mousedown(button, x, y, engine)
  */
 function _ctx_callback_mouseup(button, x, y, engine)
 {
+   var context = engine.owg;
    
+   if (context.cbfMouseUp)
+   {
+      context.cbfMouseUp(context.id);
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -92,7 +118,12 @@ function _ctx_callback_mouseup(button, x, y, engine)
  */
 function _ctx_callback_mousemove(x, y, engine)
 {
+   var context = engine.owg;
    
+   if (context.cbfMouseMove)
+   {
+      context.cbfMouseMove(context.id, x, y);
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -102,7 +133,12 @@ function _ctx_callback_mousemove(x, y, engine)
  */
 function _ctx_callback_mousewheel(delta, engine)
 {
+   var context = engine.owg;
    
+   if (context.cbfMouseWheel)
+   {
+      context.cbfMouseWheel(context.id, delta);
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -113,7 +149,12 @@ function _ctx_callback_mousewheel(delta, engine)
  */
 function _ctx_callback_resize(width, height, engine)
 {
+   var context = engine.owg;
    
+   if (context.cbfResize)
+   {
+      context.cbfResize(context.id, width, height);
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -123,7 +164,12 @@ function _ctx_callback_resize(width, height, engine)
  */
 function _ctx_callback_keydown(keycode, engine)
 {
+   var context = engine.owg;
    
+   if (context.cbfKeyDown)
+   {
+      context.cbfKeyDown(context.id, keycode);
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -133,7 +179,12 @@ function _ctx_callback_keydown(keycode, engine)
  */
 function _ctx_callback_keyup(keycode, engine)
 {
+   var context = engine.owg;
    
+   if (context.cbfKeyUp)
+   {
+      context.cbfKeyUp(context.id, keycode);
+   }
 }
 //------------------------------------------------------------------------------
 
@@ -163,6 +214,7 @@ function ogContext()
    this.cbfMouseDown = null;
    this.cbfMouseUp = null;
    this.cbfMouseWheel = null;
+   this.cbfMouseMove = null;
    this.cbfKeyDown = null;
    this.cbfKeyUp = null;
    this.cbfResize = null;
@@ -171,6 +223,8 @@ function ogContext()
    this.cbfRenderGeometry = null;
    this.cbfBeginRender = null;
    this.cbfEndRender = null;
+   this.cbfInit = null;
+   this.cbfExit = null;
 }
 
 //------------------------------------------------------------------------------
@@ -211,6 +265,10 @@ ogContext.prototype.ParseOptions = function(options)
       goog.debug.Logger.getLogger('owg.ogContext').warning("** WARNING: no options for context creation!");
       return;  // no options!!
    }
+   
+   this.cbfInit = options.cbfInit;
+   this.cbfExit = options.cbfExit;
+   this.cbfResize = options.cbfResize;
    
    if (options.fullscreen)
    {
