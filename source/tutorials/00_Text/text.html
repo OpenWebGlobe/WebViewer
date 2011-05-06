@@ -1,13 +1,15 @@
 <!--
       OpenWebGlobe SDK Tutorial 0:
-      Print text on screen
+      Draw text on screen
       
-      tags: render callback,
-            create context,
+      tags: create context,
+            render callback,
+            draw text
             
 -->
 <!DOCTYPE html>
 <html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
 <script type="text/javascript">
 
@@ -22,10 +24,11 @@ function OnRender(context)
 function main()
 {
    // create an OpenWebGlobe context using canvas
+   // first parameter is canvas-id and second is "fullscreen"
    var ctx = ogCreateContextFromCanvas("canvas", true);
    
-   // Set the "Render-Callback" function. This callback function will be called
-   // everytime a frame is drawn.
+   // Set the "Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
    ogSetRenderFunction(ctx, OnRender);
    
    // Set the background color of the OpenWebGlobe context
@@ -39,7 +42,7 @@ function main()
 </head>
 <body onload="main()">
    <div style="text-align: center">
-   <canvas id="canvas" width="640" height="480"></canvas>          
+   <canvas id="canvas"></canvas>          
    </div>
 </body>
 </html>
