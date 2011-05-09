@@ -24,7 +24,6 @@ Once you have a suitable browser, visit `source/demos/02_WorldDemo/demo.html` to
 see a demonstration.
 
 
-
 Building WebViewer
 ==================
 
@@ -34,34 +33,16 @@ Library](http://code.google.com/p/closure-library/).  The compiler produces an
 optimized, minified Javascript file containing all the WebViewer code.
 
 
-Windows
--------
+Windows, Linux, MacOS X
+-----------------------
 
-Download http://www.openwebglobe.org/downloads/external.zip and extract to the base directory.
-or:
+1) Install Python (2.6 or 2.7) if you don't have it already. You can get python at http://www.python.org/
 
-1. Download the latest version of the Closure Compiler from
-<http://closure-compiler.googlecode.com/files/compiler-latest.zip> and unzip
-it in `external\closure`.
+2) Go into the scripts directory and start 
+"download_external.py". This will download all required external files.
 
-2. Change directory to `external` and check out the latest version of the
-Closure Library with the command
-
-    `svn checkout http://closure-library.googlecode.com/svn/trunk/ closure-library`
-
-3. Install Python from <http://www.python.org/download/windows/>.
-
-4. Change directory to `scripts` and run `compile.bat`.  You may need to edit
-`compile.bat` if you have installed the Closure Compiler, Closure Library or
-Python in a non-standard location.
-
-
-Linux
------
-
-1. Change directory to `scripts` and run `make`.  This will download the Closure
-Compiler and Library (if required) and compile WebViewer.
-
+It will also download a project file and some integration macros for the "Komodo Editor or IDE".
+You can get Komodo editor here: http://www.activestate.com/komodo-edit
 
 
 License

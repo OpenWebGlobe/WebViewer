@@ -1,9 +1,10 @@
 @echo off
 
+call setup.bat
+
 set COMPILATION_LEVEL=ADVANCED_OPTIMIZATIONS
 set CLOSURE_LIBRARY=..\external\closure-library
 set COMPILER_JAR=..\external\closure\compiler.jar
-set PYTHON=C:\Python27\python.exe
 
 if not exist ..\compiled mkdir ..\compiled
 
