@@ -23,6 +23,33 @@
 
 goog.provide('owg.EventHandler');
 
+/** @typedef {function(*, number): null} */
+var KeyDownCallback;
+
+/** @typedef {function(*, number): null} */
+var KeyUpCallback;
+
+/** @typedef {function(*, number, number, number): null} */
+var MouseDownCallback;
+
+/** @typedef {function(*, number, number, number): null} */
+var MouseUpCallback;
+
+/** @typedef {function(*, number): null} */
+var MouseWheelCallback;
+
+/** @typedef {function(*, number, number): null} */
+var MouseMoveCallback;
+
+/** @typedef {function(*): null} */
+var RenderCallback;
+
+/** @typedef {function(*): null} */
+var ResizeCallback;
+
+/** @typedef {function(*, number): null} */
+var TimerCallback;
+
 //------------------------------------------------------------------------------
 /** 
  * @description EventHandler: Class to manage callback functions called on a certain event.
@@ -30,15 +57,61 @@ goog.provide('owg.EventHandler');
  */
 function EventHandler()
 {
-   this.vecKeyDown      = new Array(); // array containing all key down callbacks
-   this.vecKeyUp        = new Array(); // array containing all key up callbacks
-   this.vecMouseDown    = new Array(); // array containing all mouse down callbacks
-   this.vecMouseUp      = new Array(); // array containing all mouse up callbacks
-   this.vecMouseMove    = new Array(); // array containing all mouse move callbacks
-   this.vecMouseWheel   = new Array(); // array containing all mouse wheel callbacks
-   this.vecRender       = new Array(); // array containing all render callbacks
-   this.vecResize       = new Array(); // array containing all resize callbacks
-   this.vecTimer        = new Array(); // array containing all timer callbacks
+
+   /**
+    * @description array containing all key down callbacks
+    * @type {Array.<EventInfo>}
+    */
+   this.vecKeyDown = new Array();
+
+   /**
+    * @description array containing all key up callbacks
+    * @type {Array.<EventInfo>}
+    */
+
+   this.vecKeyUp = new Array();
+   /**
+    * @description array containing all mouse down callbacks
+    * @type {Array.<EventInfo>}
+    */
+
+   this.vecMouseDown = new Array();
+   /**
+    * @description array containing all mouse up callbacks
+    * @type {Array.<EventInfo>}
+    */
+
+   this.vecMouseUp = new Array();
+   /**
+    * @description array containing all mouse move callbacks
+    * @type {Array.<EventInfo>}
+    */
+
+   this.vecMouseMove = new Array();
+   /**
+    * @description array containing all mouse wheel callbacks
+    * @type {Array.<EventInfo>}
+    */
+
+   this.vecMouseWheel = new Array();
+   /**
+    * @description array containing all render callbacks
+    * @type {Array.<EventInfo>}
+    */
+   this.vecRender = new Array();
+
+   /**
+    * @description array containing all resize callbacks
+    * @type {Array.<EventInfo>}
+    */
+   this.vecResize = new Array();
+
+   /**
+    * @description array containing all timer callbacks
+    * @type {Array.<EventInfo>}
+    */
+   this.vecTimer = new Array();
+
 }
 
 //------------------------------------------------------------------------------
@@ -56,6 +129,7 @@ function EventInfo(sender, func)
 //------------------------------------------------------------------------------
 /** 
  * @description Handle Key Down Event
+ * @param {number} key
  */
 EventHandler.prototype.KeyDown = function(key)
 {
@@ -68,6 +142,7 @@ EventHandler.prototype.KeyDown = function(key)
 //------------------------------------------------------------------------------
 /** 
  * @description Handle Key Up Event
+ * @param {number} key
  */
 EventHandler.prototype.KeyUp = function(key)
 {
@@ -164,6 +239,8 @@ EventHandler.prototype.Timer = function(dt)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Key Down Event
+ * @param {*} sender
+ * @param {KeyDownCallback} cbf
  */
 EventHandler.prototype.AddKeyDownCallback = function(sender, cbf)
 {
@@ -173,6 +250,8 @@ EventHandler.prototype.AddKeyDownCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Key Up Event
+ * @param {*} sender
+ * @param {KeyUpCallback} cbf
  */
 EventHandler.prototype.AddKeyUpCallback = function(sender, cbf)
 {
@@ -182,6 +261,8 @@ EventHandler.prototype.AddKeyUpCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Mouse Down Event
+ * @param {*} sender
+ * @param {MouseDownCallback} cbf
  */
 EventHandler.prototype.AddMouseDownCallback = function(sender, cbf)
 {
@@ -191,6 +272,8 @@ EventHandler.prototype.AddMouseDownCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Mouse Up Event
+ * @param {*} sender
+ * @param {MouseUpCallback} cbf
  */
 EventHandler.prototype.AddMouseUpCallback = function(sender, cbf)
 {
@@ -200,6 +283,8 @@ EventHandler.prototype.AddMouseUpCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Mouse Wheel Event
+ * @param {*} sender
+ * @param {MouseWheelCallback} cbf
  */
 EventHandler.prototype.AddMouseWheelCallback = function(sender, cbf)
 {
@@ -209,6 +294,8 @@ EventHandler.prototype.AddMouseWheelCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Mouse Move Event
+ * @param {*} sender
+ * @param {MouseMoveCallback} cbf
  */
 EventHandler.prototype.AddMouseMoveCallback = function(sender, cbf)
 {
@@ -218,6 +305,8 @@ EventHandler.prototype.AddMouseMoveCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Render Event
+ * @param {*} sender
+ * @param {RenderCallback} cbf
  */
 EventHandler.prototype.AddRenderCallback = function(sender, cbf)
 {
@@ -227,6 +316,8 @@ EventHandler.prototype.AddRenderCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Resize Event
+ * @param {*} sender
+ * @param {ResizeCallback} cbf
  */
 EventHandler.prototype.AddResizeCallback = function(sender, cbf)
 {
@@ -236,6 +327,8 @@ EventHandler.prototype.AddResizeCallback = function(sender, cbf)
 //------------------------------------------------------------------------------
 /** 
  * @description Add Timer Event
+ * @param {*} sender
+ * @param {TimerCallback} cbf
  */
 EventHandler.prototype.AddTimerCallback = function(sender, cbf)
 {
@@ -249,12 +342,12 @@ EventHandler.prototype.AddTimerCallback = function(sender, cbf)
  */
 EventHandler.prototype.ClearAll = function()
 { 
-   this.vecKeyDown   = new Array(); // array containing all key down callbacks
-   this.vecKeyUp     = new Array(); // array containing all key up callbacks
-   this.vecMouseDown = new Array(); // array containing all mouse down callbacks
-   this.vecMouseUp   = new Array(); // array containing all mouse up callbacks
-   this.vecMouseMove = new Array(); // array containing all mouse move callbacks
-   this.vecRender    = new Array(); // array containing all render callbacks
-   this.vecResize    = new Array(); // array containing all resize callbacks
-   this.vecTimer     = new Array(); // array containing all timer callbacks
+   this.vecKeyDown   = new Array();
+   this.vecKeyUp     = new Array();
+   this.vecMouseDown = new Array();
+   this.vecMouseUp   = new Array();
+   this.vecMouseMove = new Array();
+   this.vecRender    = new Array();
+   this.vecResize    = new Array();
+   this.vecTimer     = new Array();
 }
