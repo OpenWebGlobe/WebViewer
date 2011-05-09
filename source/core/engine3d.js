@@ -46,15 +46,6 @@ goog.require('owg.vec3');
 //------------------------------------------------------------------------------
 // Global Variables
 //------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-// STANDARD FONT
-// This font texture has a size of 512x512 and contains 16x16s characters
-var fonttexture;        
-var charwidth = 512 / 16;
-var charheight = 512 / 16;
-//------------------------------------------------------------------------------
-
 //------------------------------------------------------------------------------
 var dtEnd, dtStart = new Date();
 var _g_vInstances    = new Array();    // array of all current instances
@@ -73,7 +64,7 @@ function _fncKeyDown(evt)
    for (var i=0;i<_g_vInstances.length;i++)
    {
       var engine = _g_vInstances[i];
-      engine.eventhandler.KeyDown(evt.keyCode);
+      engine.eventhandler.KeyDown(evt.keyCode, engine);
    }
    
    if (_gcbfKeyDown)
@@ -93,7 +84,7 @@ function _fncKeyUp(evt)
    for (var i=0;i<_g_vInstances.length;i++)
    {
       var engine = _g_vInstances[i];
-      engine.eventhandler.KeyUp(evt.keyCode);
+      engine.eventhandler.KeyUp(evt.keyCode, engine);
    }
    
    if (_gcbfKeyUp)
@@ -120,7 +111,7 @@ function _fncMouseUp(evt)
          engine.eventhandler.MouseUp(evt.button,x,y);
          if (engine.cbfMouseUp)
          {
-            engine.cbfMouseUp(evt.button, x, y); // call mouse up callback function
+            engine.cbfMouseUp(evt.button, x, y, engine); // call mouse up callback function
          }
          return;
       }
@@ -145,7 +136,7 @@ function _fncMouseDown(evt)
          
          if (_g_vInstances[i].cbfMouseDown)
          {
-            _g_vInstances[i].cbfMouseDown(evt.button,x,y); // call mouse down callback function
+            _g_vInstances[i].cbfMouseDown(evt.button,x,y, engine); // call mouse down callback function
          }
          return;
       }
@@ -170,7 +161,7 @@ function _fncMouseMove(evt)
          
          if (engine.cbfMouseMove)
          {
-            engine.cbfMouseMove(x,y); // call mouse up callback function
+            engine.cbfMouseMove(x,y, engine); // call mouse up callback function
          }
          return;
       }
@@ -210,7 +201,7 @@ function _fncMouseWheel(evt)
          
       if (engine.cbfMouseWheel)
       {
-        engine.cbfMouseWheel(delta);
+        engine.cbfMouseWheel(delta, engine);
       }
    }
 }
@@ -231,7 +222,7 @@ function _fncResize(evt)
          engine.context.height = window.innerHeight-20;
       }
       
-      engine._resize(engine.context.width, engine.context.height);
+      engine._resize(engine.context.width, engine.context.height, engine);
    }
 }
   
@@ -264,7 +255,7 @@ function engine3d()
 	
 	this.bFullscreen = false;
 
-        /** @type {WebGLRenderingContext} */
+   /** @type {WebGLRenderingContext} */
    this.gl = null;          // opengl context
 	this.context = null;
 	
@@ -331,8 +322,8 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    
    if (bFullscreen)
    {
-         this.xoffset = 20;
-         this.yoffset = 20;
+         this.xoffset = 20; //document.body.scrollLeft - document.body.clientLeft;
+         this.yoffset = 20; //document.body.scrollTop - document.body.clientTop;
          canvas.width = window.innerWidth-this.xoffset;
          canvas.height = window.innerHeight-this.yoffset;
          this.bFullscreen = true;
@@ -355,7 +346,7 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    }
    if (!this.gl) 
    {
-      alert("Can't find webgl context. It seems your browser is not compatible! For example, you can get the latest Firefoxor Chrome");
+      alert("Can't find webgl context. It seems your browser is not compatible! For example, you can get the latest Firefox or Chrome");
       return;
    }
    
@@ -385,8 +376,12 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    this.nodata = new Texture(this);
    this.nodata.LoadNoDataTexture();
    
-   // call init callback 
-   this.cbfInit();
+   // call init callback
+	if (this.cbfInit)
+   {
+		var engine = this;
+		this.cbfInit(engine);
+	}
    
    canvas.addEventListener("mousedown", _fncMouseDown, false);
    canvas.addEventListener("mouseup", _fncMouseUp, false);
@@ -597,6 +592,11 @@ engine3d.prototype.CreateScene = function()
 //------------------------------------------------------------------------------
 /**
  * @description Draw Text using internal bitmap font
+ * @param {string} txt the text
+ * @param {number} x x-coord (window)
+ * @param {number} y y-coord (window)
+ * @param {number=} scale a scale for the font size
+ * @param {vec4=} fontcolor the color
  */
 engine3d.prototype.DrawText = function(txt,x,y,scale,fontcolor)
 {
@@ -604,6 +604,25 @@ engine3d.prototype.DrawText = function(txt,x,y,scale,fontcolor)
    {
       this.systemfont.DrawText(txt,x,y,scale,fontcolor); 
    }
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Get Text size
+ * @param {string} txt the text
+ * @returns {Array} array with width, height
+ */
+engine3d.prototype.GetTextSize = function(txt)
+{
+	var ret = new Array(2);
+	ret[0] = 0; ret[1] = 0;
+   if (this.systemfont)
+   {
+      var w = this.systemfont.GetStringWidth(txt);
+		var h = this.systemfont.GetStringHeight();
+		ret[0] = w;
+		ret[1] = h;
+   }
+	return ret;
 }
 //------------------------------------------------------------------------------
 /**
@@ -682,7 +701,7 @@ function fncTimer()
       
       if (engine.cbfTimer)
       {
-         engine.cbfTimer(nMSeconds);
+         engine.cbfTimer(nMSeconds, engine);
       }
       
       // (2) Set Current Viewport and clear
@@ -699,7 +718,7 @@ function fncTimer()
       // (4) Call Render Callback (-> integrate in Scenegraph)
       if (engine.cbfRender)
       {
-         engine.cbfRender(); // call  draw callback function
+         engine.cbfRender(engine); // call  draw callback function
       }
    }
 }
@@ -718,7 +737,8 @@ engine3d.prototype._resize = function(w,h)
    // called on resize...
    if (this.cbfResize)
    {
-      this.cbfResize(w, h);
+		var engine = this;
+      this.cbfResize(w, h, engine);
    }
 }
 

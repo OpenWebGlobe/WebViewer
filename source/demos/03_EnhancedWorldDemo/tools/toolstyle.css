@@ -19,24 +19,53 @@
 #                           martin.christen@fhnw.ch                            #
 ********************************************************************************
 *     Licensed under MIT License. Read the file LICENSE for more information   *
-*******************************************************************************/      
+*******************************************************************************/        
 
-goog.provide('owg.ogTexture');
 
-goog.require('owg.ObjectDefs');
-goog.require('owg.ogObject');
 
-//------------------------------------------------------------------------------
-/**
- * @constructor
- * @description Texture class (OpenWebGlobe object)
- * @author Martin Christen, martin.christen@fhnw.ch
- */
-function ogTexture()
-{
-   this.name = "ogTexture";
-   this.type = OG_OBJECT_TEXTURE;
+.pickCoordinatesTooldisplay {
+    color: #ffffff;
+    font-family: arial ;
+    font-size: 12px;
+    padding: 10px;
+    padding-top: 24px;
+    font-weight: bold;
 }
 
-//------------------------------------------------------------------------------
-ogTexture.prototype = new ogObject();
+.pickCoordinatesTooldisplayCoor {
+    color: #ffffff;
+    font-family: arial ;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#pickCoordinatesIcon
+{
+    background-image    :   url('images/latlng.png');
+    
+}
+
+#pickCoordinatesToolDisplayDiv
+{
+     background-image: url('images/positiondisplay.png');
+     background-repeat : no-repeat;
+     background-position : 0px 0px;
+     height: 175px;
+     position: absolute;
+     width: 150px;
+}
+
+
+
+#toolbox
+{
+     background-image: url('images/toolbox.png');
+     background-repeat : no-repeat;
+     background-position : 0px 0px;
+     height: 175px;
+     position: absolute;
+     width: 150px;
+     position : absolute;
+     left : 100px;
+     top : 650px;
+}

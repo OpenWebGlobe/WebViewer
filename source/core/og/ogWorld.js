@@ -23,8 +23,21 @@
 
 goog.provide('owg.ogWorld');
 
+goog.require('owg.ObjectDefs');
+goog.require('owg.ogObject');
+
+//------------------------------------------------------------------------------
+/**
+ * @constructor
+ * @description World class (OpenWebGlobe object)
+ * @author Martin Christen, martin.christen@fhnw.ch
+ */
 function ogWorld()
 {
-   
-   
+   this.name = "ogWorld";
+   this.type = OG_OBJECT_WORLD; 
 }
+
+
+//------------------------------------------------------------------------------
+ogWorld.prototype = new ogObject();

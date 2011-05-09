@@ -24,8 +24,20 @@
 
 goog.provide('owg.ogCamera');
 
+goog.require('owg.ObjectDefs');
+goog.require('owg.ogObject');
+
+//------------------------------------------------------------------------------
+/**
+ * @constructor
+ * @description Camera class (OpenWebGlobe object)
+ * @author Martin Christen, martin.christen@fhnw.ch
+ */
 function ogCamera()
 {
-   
-   
+   this.name = "ogCamera";
+   this.type = OG_OBJECT_CAMERA;
 }
+
+//------------------------------------------------------------------------------
+ogCamera.prototype = new ogObject();

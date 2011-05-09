@@ -1,9 +1,10 @@
 @echo off
 
+call setup.bat
+
 set COMPILATION_LEVEL=ADVANCED_OPTIMIZATIONS
 set CLOSURE_LIBRARY=..\external\closure-library
 set COMPILER_JAR=..\external\closure\compiler.jar
-set PYTHON=C:\Python27\python.exe
 
 if not exist ..\compiled mkdir ..\compiled
 
@@ -17,7 +18,7 @@ if not exist ..\compiled mkdir ..\compiled
  --compiler_flags=--create_source_map=..\compiled\owg-optimized.map ^
  --compiler_flags=--warning_level=VERBOSE ^
  --compiler_jar=%COMPILER_JAR% ^
- --namespace=owg.engine3d ^
+ --namespace=owg.OpenWebGlobe ^
  --output_file=..\compiled\owg-optimized.js ^
  --output_mode=compiled ^
  --root=..\external\closure-library\ ^

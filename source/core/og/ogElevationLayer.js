@@ -24,8 +24,25 @@
 
 goog.provide('owg.ogElevationLayer');
 
+goog.require('owg.ObjectDefs');
+goog.require('owg.ogObject');
+
+//------------------------------------------------------------------------------
+/**
+ * @constructor
+ * @description Elevation-Layer class (OpenWebGlobe object)
+ * @author Martin Christen, martin.christen@fhnw.ch
+ */
 function ogElevationLayer()
 {
-   
+   this.name = "ogElevationLayer";
+   this.type = OG_OBJECT_ELEVATIONLAYER;
    
 }
+
+
+//------------------------------------------------------------------------------
+ogElevationLayer.prototype = new ogObject();
+
+
+
