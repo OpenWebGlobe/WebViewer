@@ -129,24 +129,27 @@
           
          /*
           *   Top-Row..............................................................
-          */       
-            $('#divTopRow').click(function(){
+          */
+         
+            var topRowHandling = function(){
               if ( parseInt($('#divTopRow').css("top")) > -80 )
               {
                //scroll up
                $('#divTopRow').animate({top:'-500'},1000,function(){$('#divTopRowTitle').toggle();});
-              // $('#canvas').unbind('click');
+               $('#canvas').unbind('click');
               }
               else
               {
                //scroll down
                $('#divTopRowTitle').toggle();
                $('#divTopRow').animate({top:'0'},1000,function(){});
-              // $('#canvas').click(function(){$('#divTopRow').animate({top:'-500'},1000,function(){$('#divTopRowTitle').toggle();});});
-               
+               $('#canvas').click(topRowHandling);
               }
-             });
-        // $('#canvas').click(function(){$('#divTopRow').animate({top:'-500'},1000);});
+             };
+            $('#divTopRow,#canvas').click(topRowHandling);
+                                          
+            
+       
         
          
           /*
