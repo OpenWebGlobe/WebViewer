@@ -3,7 +3,7 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
-         <link rel="stylesheet" href="styles.css" type="text/css">
+
          <!-- >
             <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
          -->
@@ -12,8 +12,12 @@
          <script type="text/javascript">goog.require('owg.engine3d');</script>
          <script type="text/javascript">goog.require('owg.vec4');</script>
          <script type="text/javascript" src="jquery-1.5.2.min.js"></script>
+         <script type="text/javascript" src="tools/toolbox.js"></script>
+         <script type="text/javascript" src="tools/pickcoordinates.js"></script>
+         <link rel="stylesheet" type="text/css" href="tools/toolstyle.css">
   
 <style type="text/css">
+   
    
    #divTopRowContent {
                         text-align: center;
@@ -104,6 +108,8 @@
     text-shadow: 0 0 2px #000000, 0 0 2px #000000, 0 0 2px #000000;
     color: #ffffff;
     text-decoration: none;
+    
+ 
 }
                 
                 
@@ -147,6 +153,7 @@
             }
          }
          
+         
          //---------------------------------------------------------------------
          
          function OnRender()
@@ -187,7 +194,7 @@
                return;
             }
             
-         	engine = new engine3d();
+            engine = new engine3d();
            
             // Set Callbacks:
             engine.SetInitCallback(OnInit);
@@ -198,6 +205,7 @@
             engine.SetMouseDownCallback(OnMouse);
             
             // Start engine...
+            
             engine.InitEngine("canvas",true);  // (canvasid, fullscreen)
             engine.CreateScene();               // Create Globe Scene
             engine.SetClearColor(0.5,0.5,1,1);
@@ -214,14 +222,20 @@
          $('#divTopRow').click(function(){
               if ( parseInt($('#divTopRow').css("top")) > -80 )
               {
-                  $('#divTopRow').animate({top:'-500'},1000,function(){$('#divTopRowTitle').toggle();});
+               //scroll up
+               $('#divTopRow').animate({top:'-500'},1000,function(){$('#divTopRowTitle').toggle();});
+              // $('#canvas').unbind('click');
               }
               else
               {
+               //scroll down
                $('#divTopRowTitle').toggle();
-                 $('#divTopRow').animate({top:'0'},1000,function(){});
+               $('#divTopRow').animate({top:'0'},1000,function(){});
+              // $('#canvas').click(function(){$('#divTopRow').animate({top:'-500'},1000,function(){$('#divTopRowTitle').toggle();});});
+               
               }
-             });  
+             });
+        // $('#canvas').click(function(){$('#divTopRow').animate({top:'-500'},1000);});
          $('#divTopRowBtn').css({'background-image':'url(images/intro.png)','background-position':'-2px -5px','background-repeat':'no-repeat','width':'80px','height':'25px','position':'absolute', 'left':'10px','bottom':'-25px','cursor':'pointer'});           
          $('#divTopRowTitle').css({'width':'600px','height':'50px','position':'absolute', 'left':'35%','bottom':'0px','display':'none'});
    
@@ -251,8 +265,7 @@
              });            
          $('#divFlyToPullBtn').css({'background-image':'url(images/flytobg.png)','background-position':'4px 0px','background-repeat':'no-repeat','width':'30px','height':'80px','position':'absolute', 'right':'-2px','top':'-4px','cursor':'pointer'});
           */
-       
-                
+            
 
           /*
            *   Like Buttons (Twitter,Facebook etc.)..................................
@@ -269,8 +282,8 @@
           /*
            *   Credits..................................
            */
-         $('#divCredits').css({'background-image':'url(images/transp.png)','background-repeat':'repeat','width':'250px','height':'250px','position':'absolute', 'left':'60%','bottom':'-250px','display':'none'});
-         $('#divCreditsBtn').css({'background-image':'url(images/credits.png)','background-position':'0px 0px','width':'80px','height':'25px','position':'absolute', 'left':'60%','top':'-25px','cursor':'pointer'});
+         $('#divCredits').css({'background-image':'url(images/transp.png)','background-repeat':'repeat','width':'250px','height':'250px','position':'absolute', 'right':'0%','bottom':'-250px','display':'none'});
+         $('#divCreditsBtn').css({'background-image':'url(images/credits.png)','background-position':'0px 0px','width':'80px','height':'25px','position':'absolute', 'right':'0%','top':'-25px','cursor':'pointer'});
          $('#divCreditsBtn').click(function(){
               if ( parseInt($('#divCredits').css("bottom")) > -1 )
               {
@@ -280,7 +293,11 @@
               {
                  $('#divCredits').animate({bottom:'6px'},1000,function(){});
               }
-             });  
+             });
+         
+          
+         
+         
                   
            
           /*
@@ -292,6 +309,13 @@
          $('#divLikeButtons').slideToggle("slow");
           //$('#divStats').slideToggle("slow");
          $('#divCredits').slideToggle("slow");
+         
+  
+         /*
+          *    Toolbox
+          */
+            var tb = new ToolBox('divToolBox');
+           
          
          });
          
@@ -352,7 +376,6 @@
           */
          function flyTo(lat,lon)
          {
-            
             //engine.
             $('#divFlyTo').animate({left:'-300'},1000,function(){}); //pull in menu
          }
@@ -373,7 +396,7 @@
                <h1>Welcome to OpenWebGlobe SDK WebGL Viewer</h1>
                <p> This is the WebGL Version of the OpenWebGlobe SDK. With the OpenWebGlobe SDK you can create your own virtual globe applications.
                    You can develop your new application in your favorite language like C++, C#, Visual Basic, Python, JavaScript.
-                   OpenWebGlobe SDK is initially created by the Geomatics Engineering department at the University of Applied Sciences Northwestern
+                   OpenWebGlobe SDK was initiated by the Geomatics Engineering department at the University of Applied Sciences Northwestern
                    Switzerland.
                    <br>
                    <br>
@@ -395,7 +418,7 @@
                <a class="addthis_button_facebook"></a>
                <a class="addthis_button_twitter"></a>
                <a class="addthis_button_digg"></a>
-               <a class="addthis_button_more"></a>
+               <a class="addthis_button_compact"></a>
                <a class="addthis_counter addthis_bubble_style"></a>
                <!--
                <a class="addthis_button_compact"></a>
@@ -418,7 +441,9 @@
             <div id='divLikeButtons'></div>
             <div id='divFhnwLogo'></div> 
             <div id='divCampToCamp'></div> 
-            <div id='divStats'></div> 
+            <div id='divStats'></div>
+            <div id='divToolbox'></div>
+            
             <div id='divCredits'>
                <div id='divCreditsBtn'></div>
                <h3>Created by</h3>

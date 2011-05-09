@@ -1,0 +1,38 @@
+.pickCoordinatesTooldisplay {
+    color: #ffffff;
+    font-family: arial ;
+    font-size: 12px;
+    padding: 10px;
+    padding-top: 24px;
+    font-weight: bold;
+}
+
+.pickCoordinatesTooldisplayCoor {
+    color: #ffffff;
+    font-family: arial ;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#pickCoordinatesToolDisplayDiv {
+     background-image: url('PositionDisplay.png');
+     background-repeat : no-repeat;
+     background-position : 0px -10px;
+     height: 175px;
+     position: absolute;
+     width: 150px;
+}
+
+
+
+#toolbox {
+     background-image: url('Toolbox.png');
+     background-repeat : no-repeat;
+     background-position : 0px -10px;
+     height: 175px;
+     position: absolute;
+     width: 150px;
+     left: 400px;
+     top: 400px;
+     position : absolute;
+}
