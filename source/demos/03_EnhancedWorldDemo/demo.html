@@ -14,103 +14,15 @@
          <script type="text/javascript" src="jquery-1.5.2.min.js"></script>
          <script type="text/javascript" src="tools/toolbox.js"></script>
          <script type="text/javascript" src="tools/pickcoordinates.js"></script>
+         <script type="text/javascript" src="tools/tool.js"></script>
+         <script type="text/javascript" src="tools/coordinates.js"></script>
          <link rel="stylesheet" type="text/css" href="tools/toolstyle.css">
+         <link rel="stylesheet" type="text/css" href="styles.css">
   
 <style type="text/css">
    
    
-   #divTopRowContent {
-                        text-align: center;
-                        /*background-color:#ffffff;*/
-                        position:absolute;
-                        width:600px;
-                        height:400px;
-                        top: 50%;
-                        left:50%;
-                        margin-left:-300px;
-                        margin-top:-200px;  
-                        opacity:1.0;
-                     }
-                     
 
-   #divTopRow h1{    color:#ffffff;
-                     font-family: arial;
-                     font-size:32px;
-                }          
-   #divTopRow h3{    color:#ffffff;                     
-                     
-                }
-                
-     
-
-   #divTopRow p {    color:#ffffff;                   
-                     position:relative;
-                     background-color:transparent;
-                     font-family: arial;
-                     font-size:16px;
-                     text-align:left;
-                     text-shadow: 0 0 2px #000, 0 0 2px #000,0 0 2px #000;
-                     
-                }
-                
-   #divTopRowTitle{  color:#ffffff;
-                     font-family: arial;
-                     font-size:32px;
-                     text-shadow: 0 0 2px #000, 0 0 2px #000,0 0 2px #000;
-                  }      
-                
-   #divCredits p {
-       color: #FFFFFF;
-       font-family: arial;
-       text-align: left;
-       padding-left:  8px; 
-       text-shadow: 0 0 2px #000, 0 0 2px #000,0 0 2px #000;
-       margin-top: -15px;
-   }
-   
-   #divCredits h3 {
-       color: #FFFFFF;
-       font-family: arial;
-       text-align: center;
-       padding-left: 8px;
-        text-shadow: 0 0 2px #000, 0 0 2px #000,0 0 2px #000;
-   }
-                
-   .content{ color:#ffffff; }
-   
-   .placeSearchResult {
-       background-image: url(images/resultbg.png);
-       background-repeat: repeat-x;
-       cursor: pointer;
-       height: 37px;
-       left: -32px;
-       list-style-position: inside;
-       list-style-type: none;
-       padding: 5px;
-       position: relative;
-       text-align: left;
-       width: 290px;
-       color: #ffffff;
-       font-family: arial;
-       overflow: hidden;
-   }
-   
-   .placeSearchResult:hover {
-      background-color: #ccccff;
-   }
-   #divSearchInput {
-       padding: 15px;
-       margin:5px;
-   }
-   
-.creditsSmall a {
-    font-size: 10px;
-    text-shadow: 0 0 2px #000000, 0 0 2px #000000, 0 0 2px #000000;
-    color: #ffffff;
-    text-decoration: none;
-    
- 
-}
                 
                 
 </style>
@@ -218,8 +130,7 @@
          /*
           *   Top-Row..............................................................
           */       
-         $('#divTopRow').css({'background-image':'url(images/transp.png)','background-repeat':'repeat', 'width':'100%','height':'580px','position':'absolute', 'left':'0px','top':'0px'});          
-         $('#divTopRow').click(function(){
+            $('#divTopRow').click(function(){
               if ( parseInt($('#divTopRow').css("top")) > -80 )
               {
                //scroll up
@@ -236,24 +147,20 @@
               }
              });
         // $('#canvas').click(function(){$('#divTopRow').animate({top:'-500'},1000);});
-         $('#divTopRowBtn').css({'background-image':'url(images/intro.png)','background-position':'-2px -5px','background-repeat':'no-repeat','width':'80px','height':'25px','position':'absolute', 'left':'10px','bottom':'-25px','cursor':'pointer'});           
-         $('#divTopRowTitle').css({'width':'600px','height':'50px','position':'absolute', 'left':'35%','bottom':'0px','display':'none'});
-   
+        
          
           /*
            *   FHNW Logo..............................................................
            */ 
-         $('#divFhnwLogo').css({'background-image':'url(images/fhnw_logo.png)','background-repeat':'no-repeat','height':'60px','width':'300px','position':'absolute', 'left':'60px','top':'15px','display':'none','opacity':'1.0','z-index':'1','cursor':'pointer'});
-         $('#divFhnwLogo').click(function(){ window.open("http://www.fhnw.ch/homepage");});
-         $('#divCampToCamp').click(function(){ window.open("http://www.camptocamp.com");});               
-         $('#divCampToCamp').css({'background-image':'url(images/camptocamp.png)','background-repeat':'no-repeat','height':'60px','width':'80px','position':'absolute', 'left':'420px','top':'15px','display':'none','opacity':'1.0','cursor':'pointer'});
-
+            $('#divFhnwLogo').click(function(){ window.open("http://www.fhnw.ch/homepage");});
+            $('#divCampToCamp').click(function(){ window.open("http://www.camptocamp.com");});               
+         
+         
           /*
            *   Fly to feature..............................................................
            */
-          /*
-         $('#divFlyTo').css({'background-color':'#000000','background-repeat':'no-repeat','width':'330px','height':'75px','position':'absolute', 'left':'-300px','top':'200px','display':'none'});
-         $('#divFlyToPullBtn').click(function(){
+          
+            $('#divFlyToPullBtn').click(function(){
               if ( parseInt($('#divFlyTo').css("left")) > -1 )
               {
                   $('#divFlyTo').animate({left:'-300'},1000,function(){});
@@ -263,28 +170,23 @@
                  $('#divFlyTo').animate({left:'0'},1000,function(){});
               }
              });            
-         $('#divFlyToPullBtn').css({'background-image':'url(images/flytobg.png)','background-position':'4px 0px','background-repeat':'no-repeat','width':'30px','height':'80px','position':'absolute', 'right':'-2px','top':'-4px','cursor':'pointer'});
-          */
+               
             
 
           /*
            *   Like Buttons (Twitter,Facebook etc.)..................................
            */ 
-         $('#divLikeButtons').css({'background-image':'url(images/openWEBglobe.png)','background-repeat':'no-repeat','width':'300px','height':'100px','position':'absolute', 'right':'10px','top':'40px','display':'none','z-index':'1'});
-
+     
           
           /*
            *   Stats, currently not used..................................
            */  
-         $('#divStats').css({'background-color':'#000000','width':'300px','height':'40px','position':'absolute', 'left':'80%','bottom':'0%','display':'none','opacity':'0.5'});
-         
+              
          
           /*
            *   Credits..................................
            */
-         $('#divCredits').css({'background-image':'url(images/transp.png)','background-repeat':'repeat','width':'250px','height':'250px','position':'absolute', 'right':'0%','bottom':'-250px','display':'none'});
-         $('#divCreditsBtn').css({'background-image':'url(images/credits.png)','background-position':'0px 0px','width':'80px','height':'25px','position':'absolute', 'right':'0%','top':'-25px','cursor':'pointer'});
-         $('#divCreditsBtn').click(function(){
+           $('#divCreditsBtn').click(function(){
               if ( parseInt($('#divCredits').css("bottom")) > -1 )
               {
                   $('#divCredits').animate({bottom:'-250'},1000,function(){});
@@ -314,8 +216,7 @@
          /*
           *    Toolbox
           */
-            var tb = new ToolBox('divToolBox');
-           
+            var tb = new ToolBox('toolbox','canvas');
          
          });
          
@@ -428,7 +329,7 @@
                <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4dc13505170fbc5e"></script>               
                <!-- AddThis Button END -->
             </div>              
-            <div id='divFlyTo'>
+           <!-- <div id='divFlyTo'>
                <div id="divFlyToPullBtn"></div>
                <div id= "divSearchInput">
                   <input id="placeSearchTb" type="text" name="flyto"/>
@@ -437,7 +338,7 @@
                   <ul id="placeList"></ul>
                </div>
                
-            </div>  
+            </div>  -->
             <div id='divLikeButtons'></div>
             <div id='divFhnwLogo'></div> 
             <div id='divCampToCamp'></div> 
