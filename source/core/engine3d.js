@@ -848,7 +848,7 @@ engine3d.prototype.SetKeyUpCallback = function(f)
 }
 
 //------------------------------------------------------------------------------
-/*
+/**
  * @description PickGlobe: Retrieve clicked position on globe (high precision result)
  * The result contains the following:
  *    pickresult.hit: true if there was a hit with terrain
