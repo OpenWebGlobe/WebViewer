@@ -123,6 +123,7 @@ function ogObject()
    this.type = OG_OBJECT_INVALID;
    this.id = -1;
    this.status = OG_OBJECT_READY;
+   this.cbfObjectReady = null;
 }
 
 //------------------------------------------------------------------------------
@@ -159,6 +160,13 @@ ogObject.prototype.RegisterObject = function()
 ogObject.prototype.ParseOptions = function(options)
 {
    
+}
+
+//------------------------------------------------------------------------------
+
+ogObject.prototype.SetObjectReadyFunction = function(cbfObjectReady)
+{
+   this.cbfObjectReady = cbfObjectReady;
 }
 
 //------------------------------------------------------------------------------

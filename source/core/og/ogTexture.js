@@ -25,6 +25,7 @@ goog.provide('owg.ogTexture');
 
 goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
+goog.require('goog.debug.Logger');
 
 //------------------------------------------------------------------------------
 /**
@@ -34,9 +35,88 @@ goog.require('owg.ogObject');
  */
 function ogTexture()
 {
+   //** @type {String}
    this.name = "ogTexture";
    this.type = OG_OBJECT_TEXTURE;
+   //** @type {Texture}
+   this.texture = null;
+   this.status = OG_OBJECT_BUSY;
 }
 
 //------------------------------------------------------------------------------
 ogTexture.prototype = new ogObject();
+
+//------------------------------------------------------------------------------
+/**
+* @description called when texture download failed
+* @param {Texture} texture
+* @ignore
+*/
+function ogTexture_callbackfailed(texture)
+{
+   texture.textureobject.status = OG_OBJECT_FAILED;
+}
+//------------------------------------------------------------------------------
+/**
+* @description called when texture finished download/creation
+* @param {Texture} texture
+* @ignore
+*/
+function ogTexture_callbackready(texture)
+{
+   texture.textureobject.status = OG_OBJECT_READY;
+   if (texture.textureobject.cbfObjectReady)
+   {
+      texture.textureobject.cbfObjectReady(texture.textureobject.id);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+* @description parse options
+* @param {Object} options
+* @ignore
+*/
+ogTexture.prototype.ParseOptions = function(options)
+{
+   if (options == null)
+   {
+      goog.debug.Logger.getLogger('owg.ogTexture').error("** ERROR: no options for texture creation!");
+      return;  // no options!!
+   }
+   
+   if (this.parent == null)
+   {
+      goog.debug.Logger.getLogger('owg.ogTexture').error("** ERROR: no parent!");
+      return;
+   }
+   
+   if (this.parent.type != OG_OBJECT_CONTEXT)
+   {
+      goog.debug.Logger.getLogger('owg.ogTexture').error("** ERROR: parent is not context!");
+      return;
+   }
+   
+   if (options.url)
+   {
+      var engine = this.parent.engine; // get engine!
+      
+      this.texture = new Texture(engine);
+      this.texture.textureobject = this;
+   
+      this.texture.loadTexture(options.url, ogTexture_callbackready, ogTexture_callbackfailed, false);
+   }
+}
+
+//------------------------------------------------------------------------------
+
+ogTexture.prototype.Destroy = function()
+{
+   if (this.texture)
+   {
+      this.texture.Destroy();
+      this.texture = null;
+      this.status = OG_OBJECT_FAILED;
+   }
+}
+
+//------------------------------------------------------------------------------
