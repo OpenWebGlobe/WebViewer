@@ -24,8 +24,10 @@
 goog.provide('owg.ogScene');
 
 goog.require('owg.ObjectDefs');
-goog.require('owg.ogObject');
 
+goog.require('owg.ogObject');
+goog.require('owg.ogWorld');
+goog.require('owg.ogCamera');
 
 //------------------------------------------------------------------------------
 /**
@@ -37,6 +39,12 @@ function ogScene()
 {
    this.name = "ogScene";
    this.type = OG_OBJECT_SCENE;
+   //** @type ogWorld
+   this.world = null;
+   //** @type ogCamera
+   this.activecamera = null;
+   this.scenetype = OG_SCENE_3D_ELLIPSOID_WGS84;
+   
 }
 //------------------------------------------------------------------------------
 ogScene.prototype = new ogObject();
@@ -54,23 +62,8 @@ ogScene.prototype.ParseOptions = function(options)
       return;  // no options!!
    }
    
-   /*if (options.type)
+   if (options.type)
    {
-      if (options.type == OG_SCENE_3D_ELLIPSOID_WGS84)
-      {
-         
-      }
-      else if (options.type == OG_SCENE_3D_FLAT_CARTESIAN)
-      {
-         
-      }
-      else if (options.type == OG_SCENE_2D_SCREEN)
-      {
-         
-      }
-      else if (options.type == OG_SCENE_CUSTOM)
-      {
-         
-      }
-   }*/
+      this.scenetype = options.type;
+   }
 }

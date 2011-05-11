@@ -91,6 +91,7 @@ goog.exportSymbol('OG_OBJECT_TEXT', OG_OBJECT_TEXT);
 goog.exportSymbol('OG_OBJECT_BINARYDATA', OG_OBJECT_BINARYDATA);
 goog.exportSymbol('OG_OBJECT_LIGHT', OG_OBJECT_LIGHT);
 goog.exportSymbol('OG_OBJECT_NAVIGATIONCONTROLLER', OG_OBJECT_NAVIGATIONCONTROLLER);
+goog.exportSymbol('OG_OBJECT_POI', OG_OBJECT_POI);
 goog.exportSymbol('OG_OBJECT_INVALID', OG_OBJECT_INVALID);
 
 //------------------------------------------------------------------------------

@@ -694,6 +694,71 @@ function ogCreateScene(context_id, scenetype)
 
 }
 goog.exportSymbol('ogCreateScene', ogCreateScene);
+//------------------------------------------------------------------------------
+function ogGetContext(scene_id)
+{
+   //** @type ogScene
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      //** @type ogContext
+      var context = scene.parent;
+      if (context)
+      {
+         return context.id;
+      }
+   }
+   
+   return -1;
+}
+goog.exportSymbol('ogGetContext', ogGetContext);
+//------------------------------------------------------------------------------
+function ogGetWorld(scene_id)
+{
+   //** @type ogScene
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      //** @type ogWorld
+      var world = scene.world;
+      if (world)
+      {
+         return world.id;
+      }
+   }
+   
+   return -1;
+}
+goog.exportSymbol('ogGetWorld', ogGetWorld);
+//------------------------------------------------------------------------------
+//##############################################################################
+// ** WORLD-OBJECT **
+//##############################################################################
+function ogCreateWorld(scene_id)
+{
+   //** @type ogScene
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      var worldoptions = {};
+      worldoptions.scenetype = scene.scenetype;
+      var world = _CreateObject(OG_OBJECT_WORLD, scene, worldoptions);
+      return world.id;
+   }
+   
+   return -1;
+}
+goog.exportSymbol('ogCreateWorld', ogCreateWorld);
+//------------------------------------------------------------------------------
+function ogCreateGlobe(context_id)
+{
+   // this is just a convienience function to save some typing.
+   var scene_id = ogCreateScene(context_id, OG_SCENE_3D_ELLIPSOID_WGS84);
+   var world_id = ogCreateWorld(scene_id);
+   return world_id;
+}
+goog.exportSymbol('ogCreateGlobe', ogCreateGlobe);
+
 //##############################################################################
 // ** TEXTURE-OBJECT **
 //##############################################################################
