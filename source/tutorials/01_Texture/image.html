@@ -22,8 +22,8 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      TUTORIAL 0: Draw text on screen
-*******************************************************************************/    
+                      TUTORIAL 1: Loading a Texture
+*******************************************************************************/                      
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -31,28 +31,59 @@
 <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
 <script type="text/javascript">
 
+var texture;
+
 //------------------------------------------------------------------------------
 // called every frame:
 function OnRender(context)
 {
    ogSetTextColor(context, 0,1,0);
-   ogDrawText(context, "Hello World", 0, 20);
+   ogDrawText(context, "Blit Demo: Drawing a texture on screen!", 0, 10);
+   
+   // If object is downloaded, draw it on screen (2D)
+   // You don't have to do this test, blit just does nothing if
+   // the object is not ready.
+   if (ogGetObjectStatus(texture) == OG_OBJECT_READY)
+   {
+      ogBlitTexture(texture, 50, 100);
+   }
+}
+//------------------------------------------------------------------------------
+function TextureReady(tex)
+{
+   console.log("The texture is now ready!");
+}
+//------------------------------------------------------------------------------
+function TextureFailed(tex)
+{
+   console.log("Texture download failed!");      
 }
 //------------------------------------------------------------------------------
 function main()
-{
-   // (1) Create an OpenWebGlobe context using an existing canvas.
-   // The first parameter is canvas-id and second is "fullscreen"
+{ 
+   // (1) create an OpenWebGlobe context using canvas
+   // first parameter is canvas-id and second is "fullscreen"
    var ctx = ogCreateContextFromCanvas("canvas", true);
    
-   // (2) Set the "Render-Callback" function.
-   // The callback function will be called everytime a frame is drawn.
-   // We need this to draw the text
-   ogSetRenderFunction(ctx, OnRender);
+   // (2) Create a scene. We use "custom" scene as we don't need terrain.
+   var scene = ogCreateScene(ctx, OG_SCENE_CUSTOM);
    
-   // (3) Set the background color of the OpenWebGlobe context
-   // Default would be black
-   ogSetBackgroundColor(ctx, 0,0,0.5,1);
+   // (3) Download a texture (async)
+   texture = ogLoadTextureAsync(scene, "texture.png");
+   
+   // (4) set ready and failure functions (this is optional)
+   ogOnLoad(texture, TextureReady); // this function is called as soon as texture is available
+   ogOnFailure(texture, TextureFailed); // this function is called if texture failed downloading
+   
+   // (5) Set a"Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
+   // in this function we will draw our texture on the screen
+   ogSetRenderFunction(ctx, OnRender);
+
+   // (6) Set the background color of the OpenWebGlobe context.
+   // The default color is black which is not too nice for this demo.
+   ogSetBackgroundColor(ctx, 0.5,0.5,0.5,1);
+   
 }
 //------------------------------------------------------------------------------
    
