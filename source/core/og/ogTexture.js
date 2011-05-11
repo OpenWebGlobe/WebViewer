@@ -35,10 +35,10 @@ goog.require('goog.debug.Logger');
  */
 function ogTexture()
 {
-   //** @type {String}
+   //** @type String
    this.name = "ogTexture";
    this.type = OG_OBJECT_TEXTURE;
-   //** @type {Texture}
+   //** @type Texture
    this.texture = null;
    this.status = OG_OBJECT_BUSY;
 }
@@ -55,6 +55,10 @@ ogTexture.prototype = new ogObject();
 function ogTexture_callbackfailed(texture)
 {
    texture.textureobject.status = OG_OBJECT_FAILED;
+   if (texture.textureobject.cbfFailed)
+   {
+      texture.textureobject.cbfFailed(texture.textureobject.id);
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -65,9 +69,9 @@ function ogTexture_callbackfailed(texture)
 function ogTexture_callbackready(texture)
 {
    texture.textureobject.status = OG_OBJECT_READY;
-   if (texture.textureobject.cbfObjectReady)
+   if (texture.textureobject.cbfReady)
    {
-      texture.textureobject.cbfObjectReady(texture.textureobject.id);
+      texture.textureobject.cbfReady(texture.textureobject.id);
    }
 }
 //------------------------------------------------------------------------------
@@ -80,25 +84,27 @@ ogTexture.prototype.ParseOptions = function(options)
 {
    if (options == null)
    {
-      goog.debug.Logger.getLogger('owg.ogTexture').error("** ERROR: no options for texture creation!");
+      goog.debug.Logger.getLogger('owg.ogTexture').warning("** ERROR: no options for texture creation!");
       return;  // no options!!
    }
    
    if (this.parent == null)
    {
-      goog.debug.Logger.getLogger('owg.ogTexture').error("** ERROR: no parent!");
+      goog.debug.Logger.getLogger('owg.ogTexture').warning("** ERROR: no parent!");
       return;
    }
    
-   if (this.parent.type != OG_OBJECT_CONTEXT)
+   if (this.parent.type != OG_OBJECT_SCENE)
    {
-      goog.debug.Logger.getLogger('owg.ogTexture').error("** ERROR: parent is not context!");
+      goog.debug.Logger.getLogger('owg.ogTexture').warning("** ERROR: parent is not scene!");
       return;
    }
    
    if (options.url)
    {
-      var engine = this.parent.engine; // get engine!
+      var scene = this.parent;
+      var context = scene.parent;
+      var engine = context.engine; // get engine!
       
       this.texture = new Texture(engine);
       this.texture.textureobject = this;
@@ -120,3 +126,16 @@ ogTexture.prototype.Destroy = function()
 }
 
 //------------------------------------------------------------------------------
+
+ogTexture.prototype.Blit = function(x,y,opt_options)
+{
+   if (this.status == OG_OBJECT_READY)
+   {
+      /** @type engine3d */
+      var engine = this.parent.parent;
+      if (this.texture)
+      {
+         this.texture.Blit(x, y);
+      }
+   }
+}
