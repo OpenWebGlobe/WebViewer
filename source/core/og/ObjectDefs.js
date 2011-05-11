@@ -68,6 +68,8 @@ var OG_OBJECT_LIGHT                 = 18;
 //* @constant
 var OG_OBJECT_NAVIGATIONCONTROLLER  = 19;
 //* @constant
+var OG_OBJECT_POI                   = 20;
+//* @constant
 var OG_OBJECT_INVALID               = 65535;
 
 goog.exportSymbol('OG_OBJECT_CONTEXT', OG_OBJECT_CONTEXT);
