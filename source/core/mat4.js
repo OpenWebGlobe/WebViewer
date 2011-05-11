@@ -56,7 +56,7 @@ goog.require('owg.vec3');
  */
 function mat4()
 {
-   /** @type {!Float32Array} */
+   /** @type !Float32Array */
    this._values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
 }
 

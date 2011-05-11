@@ -195,7 +195,7 @@ Texture.prototype.Disable = function()
  */
 Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley, opt_blend, opt_invtexcoord, opt_alpha)
 {   
-   /** @type {number} */
+   /** @type number */
    var z = opt_z || 0;
    var angle = opt_angle || 0;
    var scalex = opt_scalex || 1;

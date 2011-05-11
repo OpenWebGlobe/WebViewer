@@ -36,9 +36,41 @@ goog.require('owg.ogObject');
 function ogScene()
 {
    this.name = "ogScene";
-   this.type = OG_OBJECT_SCENE; 
+   this.type = OG_OBJECT_SCENE;
 }
-
-
 //------------------------------------------------------------------------------
 ogScene.prototype = new ogObject();
+//------------------------------------------------------------------------------
+/**
+* @description parse options
+* @param {Object} options
+* @ignore
+*/
+ogScene.prototype.ParseOptions = function(options)
+{
+   if (options == null)
+   {
+      goog.debug.Logger.getLogger('owg.ogScene').warning("** ERROR: no options for scene creation!");
+      return;  // no options!!
+   }
+   
+   /*if (options.type)
+   {
+      if (options.type == OG_SCENE_3D_ELLIPSOID_WGS84)
+      {
+         
+      }
+      else if (options.type == OG_SCENE_3D_FLAT_CARTESIAN)
+      {
+         
+      }
+      else if (options.type == OG_SCENE_2D_SCREEN)
+      {
+         
+      }
+      else if (options.type == OG_SCENE_CUSTOM)
+      {
+         
+      }
+   }*/
+}

@@ -54,7 +54,7 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.vTilePoints[4] = new vec3();
    
    this.imagelayers = 0;
-   /** @type {Array.<Texture>} */
+   /** @type Array.<Texture> */
    this.images = null;
    this.bPostCreation = false;
    

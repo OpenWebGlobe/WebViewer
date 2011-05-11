@@ -32,17 +32,17 @@ goog.provide('owg.CanvasTexture');
  */
 function CanvasTexture(engine)
 {
-   /** @type {engine3d} */
+   /** @type engine3d */
    this.engine = engine;
-   /** @type {WebGLRenderingContext} */
+   /** @type WebGLRenderingContext */
    this.gl = engine.gl;
-   /** @type {boolean} */
+   /** @type boolean */
    this.pole = false;
-   /** @type {Mesh} */
+   /** @type Mesh */
    this.mesh = null;
-   /** @type {Mesh} */
+   /** @type Mesh */
    this.poleMesh = null;
-   /** @type {Mesh} */
+   /** @type Mesh */
    this.videoMesh = null;
 }
 
