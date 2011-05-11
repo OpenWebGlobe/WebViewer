@@ -152,8 +152,12 @@ ogObject.prototype.SetParent = function(parent)
 
 ogObject.prototype.RegisterObject = function()
 {
-   var obj = this;
-   _RegisterObject(obj);
+   _RegisterObject(this);
+}
+//------------------------------------------------------------------------------
+ogObject.prototype.UnregisterObject = function()
+{
+   _UnregisterObject(this);
 }
 
 //------------------------------------------------------------------------------

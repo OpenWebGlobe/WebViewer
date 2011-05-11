@@ -721,7 +721,7 @@ function ogDestroyTexture(texture_id)
    var texture = _GetObjectFromId(texture_id);
    if (texture && texture.type == OG_OBJECT_TEXTURE)
    {
-      _UnregisterObject(texture);
+      texture.UnregisterObject();
    }
 }
 goog.exportSymbol('ogDestroyTexture', ogDestroyTexture);
@@ -743,14 +743,7 @@ function ogBlitTexture(texture_id, x, y, opt_options)
    {
       texture.Blit(x,y,opt_options);
    }
-
 }
 goog.exportSymbol('ogBlitTexture', ogBlitTexture);
 //------------------------------------------------------------------------------
-
-
-
-
-
-
 
