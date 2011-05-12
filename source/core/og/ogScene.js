@@ -62,8 +62,8 @@ ogScene.prototype.ParseOptions = function(options)
       return;  // no options!!
    }
    
-   if (options.type)
+   if (options["type"])
    {
-      this.scenetype = options.type;
+      this.scenetype = options["type"];
    }
 }

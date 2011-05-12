@@ -34,6 +34,10 @@ goog.require('owg.ogWorld');
 goog.require('owg.ogNavigationController');
 goog.require('owg.ogImageLayer');
 goog.require('owg.ogElevationLayer');
+goog.require('owg.ogMeshObject');
+goog.require('owg.ogPOI');
+goog.require('owg.ogSurface');
+goog.require('owg.ogTexture');
 
 goog.require('goog.debug.Logger');
 
@@ -340,9 +344,9 @@ goog.exportSymbol('ogOnFailure', ogOnFailure);
  */
 function ogCreateContext(contextoptions, cbfInit, cbfExit, cbfResize)
 {
-   contextoptions.cbfInit = cbfInit;
-   contextoptions.cbfExit = cbfExit;
-   contextoptions.cbfResize = cbfResize;
+   contextoptions["cbfInit"] = cbfInit;
+   contextoptions["cbfExit"] = cbfExit;
+   contextoptions["cbfResize"] = cbfResize;
    
    var context = _CreateObject(OG_OBJECT_CONTEXT, null, contextoptions);
    if (context != null)
@@ -361,14 +365,14 @@ function ogCreateContextFromCanvas(sCanvasId, fullscreen, cbfInit, cbfExit, cbfR
    var contextoptions = {};
    if (fullscreen)
    {
-      contextoptions.fullscreen = true;
+      contextoptions["fullscreen"] = true;
    }
    else
    {
-      contextoptions.fullscreen = false;
+      contextoptions["fullscreen"] = false;
    }
    
-   contextoptions.canvas = sCanvasId;
+   contextoptions["canvas"] = sCanvasId;
    return ogCreateContext(contextoptions, cbfInit, cbfExit, cbfResize);
 }
 goog.exportSymbol('ogCreateContextFromCanvas', ogCreateContextFromCanvas);
@@ -670,7 +674,7 @@ function ogCreateScene(context_id, scenetype)
    if (obj && obj.type == OG_OBJECT_CONTEXT)
    {
       var sceneoptions = {};
-      sceneoptions.type = scenetype;
+      sceneoptions["type"] = scenetype;
       
       if (scenetype == OG_SCENE_3D_ELLIPSOID_WGS84 ||
           scenetype == OG_SCENE_3D_FLAT_CARTESIAN ||
@@ -741,7 +745,7 @@ function ogCreateWorld(scene_id)
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
       var worldoptions = {};
-      worldoptions.scenetype = scene.scenetype;
+      worldoptions["scenetype"] = scene.scenetype;
       var world = _CreateObject(OG_OBJECT_WORLD, scene, worldoptions);
       return world.id;
    }
@@ -796,7 +800,7 @@ goog.exportSymbol('ogDestroyTexture', ogDestroyTexture);
  * @param {number} texture_id the texture id
  * @param {number} x x-coord
  * @param {number} y y-coord
- * @param {Object=} opt_options
+ * @param {Object=} opt_options optional options for blitting (rotation, scale, etc.)
  * @ignore
  */
 function ogBlitTexture(texture_id, x, y, opt_options)
@@ -811,4 +815,49 @@ function ogBlitTexture(texture_id, x, y, opt_options)
 }
 goog.exportSymbol('ogBlitTexture', ogBlitTexture);
 //------------------------------------------------------------------------------
+//##############################################################################
+// ** IMAGE LAYER-OBJECT **
+//##############################################################################
+/**
+* @description Add an image layer to the globe
+* @param {number} world_id
+* @param {ImageLayerOptions} options
+*/
+function ogAddImageLayer(world_id, options)
+{
+   // test if context_id is a valid context
+   var world = _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      var imagelayer = _CreateObject(OG_OBJECT_IMAGELAYER, world, options);
+      return imagelayer.id;
+   }
+   
+   return -1;
+
+}
+goog.exportSymbol('ogAddImageLayer', ogAddImageLayer);
+//------------------------------------------------------------------------------
+//##############################################################################
+// ** ELEVATION LAYER-OBJECT **
+//##############################################################################
+/**
+* @description Add an elevation layer to the globe
+* @param {number} world_id
+* @param {ElevationLayerOptions} options
+*/
+function ogAddElevationLayer(world_id, options)
+{
+   // test if context_id is a valid context
+   var world = _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      var elevationlayer = _CreateObject(OG_OBJECT_ELEVATIONLAYER, world, options);
+      return elevationlayer.id;
+   }
+   
+   return -1;
+
+}
+goog.exportSymbol('ogAddElevationLayer', ogAddElevationLayer);
 

@@ -266,11 +266,11 @@ ogContext.prototype.ParseOptions = function(options)
       return;  // no options!!
    }
    
-   this.cbfInit = options.cbfInit;
-   this.cbfExit = options.cbfExit;
-   this.cbfResize = options.cbfResize;
+   this.cbfInit = options["cbfInit"];
+   this.cbfExit = options["cbfExit"];
+   this.cbfResize = options["cbfResize"];
    
-   if (options.fullscreen)
+   if (options["fullscreen"])
    {
       this.fullscreen = true;
    }
@@ -290,9 +290,9 @@ ogContext.prototype.ParseOptions = function(options)
    this.engine.SetKeyUpCallback(_ctx_callback_keyup);
    
    // a html5 canvasid is provided:
-   if (options.canvas)
+   if (options["canvas"])
    {
-      this.engine.InitEngine(options.canvas, true);  // (canvasid, fullscreen)
+      this.engine.InitEngine(options["canvas"], true);  // (canvasid, fullscreen)
    }
    else
    {
