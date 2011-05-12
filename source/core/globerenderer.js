@@ -39,11 +39,13 @@ goog.require('owg.i3dElevationLayer');
  */
 function GlobeRenderer(engine)
 {
+   /** @type engine3d */
    this.engine = engine;
    this.imagelayerlist = new Array();
    this.elevationlayerlist = new Array();
    this.quadtree = new MercatorQuadtree();
    this.cachesize = 1000;
+   /** @type GlobeCache */
    this.globecache = null;
    this.lstFrustum = [];
    this.lastalt = 0;
@@ -81,41 +83,48 @@ function GlobeRenderer(engine)
  *    }; 
  * 
  *    globerenderer.AddImageLayer(imglayer);
+ *
+ *  @returns index of array where this image layer is placed, or -1 on failure 
  *  
  */
 GlobeRenderer.prototype.AddImageLayer = function(options)
 {
-    if (options.service)
-    {
-       if (options.service == "i3d")
-       {
-          // i3d tile service
-          if (options.url && options.layer)
-          {
-             if (options.url.length>0)
-             {
-                var url = options.url[0];
-                var layer = options.layer;
+   var index = -1;
+   if (options.service)
+   {
+      if (options.service == "i3d")
+      {
+         // i3d tile service
+         if (options.url && options.layer)
+         {
+            if (options.url.length>0)
+            {
+               var url = options.url[0];
+               var layer = options.layer;
                 
-                // Create i3d layer:
-                var imgLayer = new i3dImageLayer();
-                imgLayer.Setup(url, layer, options.transparency);
-                this.imagelayerlist.push(imgLayer);
-                this._UpdateLayers();
-             }
-          }
-       }
-       else if (options.service == "osm")
-       {
-          if (options.url && options.url.length>0)
-          {
+               // Create i3d layer:
+               var imgLayer = new i3dImageLayer();
+               imgLayer.Setup(url, layer, options.transparency);
+               index = this.imagelayerlist.length;
+               this.imagelayerlist.push(imgLayer);
+               this._UpdateLayers();
+            }
+         }
+      }
+      else if (options.service == "osm")
+      {
+         if (options.url && options.url.length>0)
+         {
             var imgLayer = new OSMImageLayer();
             imgLayer.Setup(options.url);
+            index = this.imagelayerlist.length;
             this.imagelayerlist.push(imgLayer);
             this._UpdateLayers(); 
-          }
-       }
-    }
+         }
+      }
+   }
+   
+   return index;
 }
 
 //------------------------------------------------------------------------------
@@ -136,33 +145,70 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
  *    }; 
  * 
  *    globerenderer.AddElevationLayer(o);
+ *    
+ *  @returns index of array where this elevation layer is placed, or -1 on failure
  *  
  */
 GlobeRenderer.prototype.AddElevationLayer = function(options)
 {
+   var index = -1;
    if (options.service)
-    {
-       if (options.service == "i3d")
-       {
-          // i3d elevation tile service
-          if (options.url && options.layer)
-          {
-             if (options.url.length>0)
-             {
-                var url = options.url[0];
-                var layer = options.layer;
+   {
+      if (options.service == "i3d")
+      {
+         // i3d elevation tile service
+         if (options.url && options.layer)
+         {
+            if (options.url.length>0)
+            {
+               var url = options.url[0];
+               var layer = options.layer;
                 
-                // Create i3d layer:
-                var elvLayer = new i3dElevationLayer();
-                elvLayer.Setup(url, layer);
-                this.elevationlayerlist.push(elvLayer);
-                this._UpdateLayers();
-             }
-          }
-       }
-    }
+               // Create i3d layer:
+               var elvLayer = new i3dElevationLayer();
+               elvLayer.Setup(url, layer);
+               index = this.elevationlayerlist.length;
+               this.elevationlayerlist.push(elvLayer);
+               this._UpdateLayers();
+            }
+         }
+      }
+   }
+   
+   return index;
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Remove image layer at specified index
+ * @param {number} index the index of the elevation layer to be removed
+ */
+GlobeRenderer.prototype.RemoveImageLayer = function(index)
+{
+   if (index<0 || index>=this.imagelayerlist.length)
+   {
+      return; // wrong index!!
+   }
+   
+   this.imagelayerlist.splice(index, 1);
+   this._UpdateLayers();
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Remove elevation layer at specified index
+ * @param {number} index the index of the elevation layer to be removed
+ */
+GlobeRenderer.prototype.RemoveElevationLayer = function(index)
+{
+   if (index<0 || index>=this.elevationlayerlist.length)
+   {
+      return; // wrong index!!
+   }
+   
+   this.elevationlayerlist.splice(index, 1);
+   this._UpdateLayers();
+}
 //------------------------------------------------------------------------------
 /**
  * @description update layers, this is called when layers change.
