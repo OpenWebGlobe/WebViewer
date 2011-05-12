@@ -871,13 +871,13 @@ engine3d.prototype.SetKeyUpCallback = function(f)
 /**
  * @description PickGlobe: Retrieve clicked position on globe (high precision result)
  * The result contains the following:
- *    pickresult.hit: true if there was a hit with terrain
- *    pickresult.lng: longitude at mouse position
- *    pickresult.lat: latitude at mouse position
- *    pickresult.elv: elevation at mouse position
- *    pickresult.x: geocentric cartesian x-coordinate at mouse position
- *    pickresult.y: geocentric cartesian y-coordinate at mouse position
- *    pickresult.z: geocentric cartesian z-coordinate at mouse position
+ *    pickresult["hit"]: true if there was a hit with terrain
+ *    pickresult["lng"]: longitude at mouse position
+ *    pickresult["lat"]: latitude at mouse position
+ *    pickresult["elv"]: elevation at mouse position
+ *    pickresult["x"]: geocentric cartesian x-coordinate at mouse position
+ *    pickresult["y"]: geocentric cartesian y-coordinate at mouse position
+ *    pickresult["z"]: geocentric cartesian z-coordinate at mouse position
  */
 engine3d.prototype.PickGlobe = function(mx, my, pickresult)
 {

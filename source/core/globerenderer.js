@@ -111,6 +111,7 @@ function GlobeRenderer(engine)
  */
 GlobeRenderer.prototype.AddImageLayer = function(options)
 {
+   /** @type number */
    var index = -1;
    
    if (options["service"] == "i3d")
@@ -120,9 +121,11 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
       {
          if (options["url"].length>0)
          {
+            /** @type string */
             var url = options["url"][0];
+            /** @type string */
             var layer = options["layer"];
-             
+            
             // Create i3d layer:
             var imgLayer = new i3dImageLayer();
             imgLayer.Setup(url, layer, options["transparency"]);
@@ -503,18 +506,15 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
          candidates.push(this.lstFrustum[i]);
       }                                    
    }
-   
-   goog.debug.Logger.getLogger('owg.GlobeRenderer').info("Frustum size: " + this.lstFrustum.length);
-   goog.debug.Logger.getLogger('owg.GlobeRenderer').info("There are " + candidates.length + " candidates");
-   
+      
    var tmin = 1e20;
-   pickresult.hit = false;
+   pickresult["hit"] = false;
    for (var i=0;i<candidates.length;i++)
    {
       var r = candidates[i].mesh.TestRayIntersection(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz);
       if (r)
       {
-         pickresult.hit = true;
+         pickresult["hit"] = true;
          if (r.t < tmin)
          {
             tmin = r.t;
@@ -522,17 +522,17 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
       }
    }
    
-   if (pickresult.hit)
+   if (pickresult["hit"])
    {
-      pickresult.x = pointDir.x + tmin*pointDir.dirx;
-      pickresult.y = pointDir.y + tmin*pointDir.diry;
-      pickresult.z = pointDir.z + tmin*pointDir.dirz;
+      pickresult["x"] = pointDir.x + tmin*pointDir.dirx;
+      pickresult["y"] = pointDir.y + tmin*pointDir.diry;
+      pickresult["z"] = pointDir.z + tmin*pointDir.dirz;
       
       var gc = new GeoCoord(0,0,0);
-      gc.FromCartesian(pickresult.x,pickresult.y,pickresult.z);
-      pickresult.lng = gc._wgscoords[0];
-      pickresult.lat = gc._wgscoords[1];
-      pickresult.elv = gc._wgscoords[2];
+      gc.FromCartesian(pickresult["x"],pickresult["y"],pickresult["z"]);
+      pickresult["lng"] = gc._wgscoords[0];
+      pickresult["lat"] = gc._wgscoords[1];
+      pickresult["elv"] = gc._wgscoords[2];
    }
 
    

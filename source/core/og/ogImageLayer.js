@@ -102,6 +102,19 @@ ogImageLayer.prototype.AddImageLayer = function(options)
 }
 //------------------------------------------------------------------------------
 /**
+ * @description Remove image layer
+ */
+ogImageLayer.prototype.RemoveImageLayer = function()
+{
+   /** @type GlobeRenderer */
+   var renderer = this.GetGlobeRenderer();
+   if (renderer && this.layerindex != -1)
+   {
+       renderer.RemoveElevationLayer(this.layerindex);
+   }
+}
+//------------------------------------------------------------------------------
+/**
  * @param {ImageLayerOptions} options
  */
 ogImageLayer.prototype.ParseOptions = function(options)

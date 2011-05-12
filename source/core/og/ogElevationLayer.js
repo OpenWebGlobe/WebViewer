@@ -88,7 +88,7 @@ ogElevationLayer.prototype.GetGlobeRenderer = function()
 
 //------------------------------------------------------------------------------
 /**
- * @description Add an image layer to the world
+ * @description Add an elevation layer to the world
  */
 ogElevationLayer.prototype.AddElevationLayer = function(options)
 {
@@ -97,6 +97,21 @@ ogElevationLayer.prototype.AddElevationLayer = function(options)
    if (renderer)
    {
       this.layerindex = renderer.AddElevationLayer(options);
+   }
+}
+
+
+//------------------------------------------------------------------------------
+/**
+ * @description Remove elevation layer
+ */
+ogElevationLayer.prototype.RemoveElevationLayer = function()
+{
+   /** @type GlobeRenderer */
+   var renderer = this.GetGlobeRenderer();
+   if (renderer && this.layerindex != -1)
+   {
+       renderer.RemoveElevationLayer(this.layerindex);
    }
 }
 
@@ -109,5 +124,6 @@ ogElevationLayer.prototype.ParseOptions = function(options)
    this.AddElevationLayer(options);
 }
 
+//------------------------------------------------------------------------------
 
 

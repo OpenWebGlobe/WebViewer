@@ -418,12 +418,12 @@ goog.exportSymbol('ogGetHeight', ogGetHeight);
  */
 function ogGetScene(context_id)
 {
-   var obj = _GetObjectFromId(context_id);
-   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   var context = _GetObjectFromId(context_id);
+   if (context && context.type == OG_OBJECT_CONTEXT)
    {
-      if (obj.scene)
+      if (context.scene)
       {
-         return obj.scene.id;
+         return context.scene.id;
       }
    }
 
@@ -666,12 +666,13 @@ goog.exportSymbol('ogExec', ogExec);
 * @description create a new scene object
 * @param {number} context_id the id of the context
 * @param {number} scenetype the type of scene. This must be OG_SCENE_3D_ELLIPSOID_WGS84, OG_SCENE_3D_FLAT_CARTESIAN, OG_SCENE_2D_SCREEN, or OG_SCENE_CUSTOM
+* @returns {number} the scene or -1 if failed
 */
 function ogCreateScene(context_id, scenetype)
 {
    // test if context_id is a valid context
-   var obj = _GetObjectFromId(context_id);
-   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   var context = _GetObjectFromId(context_id);
+   if (context && context.type == OG_OBJECT_CONTEXT)
    {
       var sceneoptions = {};
       sceneoptions["type"] = scenetype;
@@ -682,14 +683,15 @@ function ogCreateScene(context_id, scenetype)
           scenetype == OG_SCENE_CUSTOM
           )
       {
-         var scene = _CreateObject(OG_OBJECT_SCENE, obj, sceneoptions);
+         /** @type ogScene */
+         var scene = _CreateObject(OG_OBJECT_SCENE, context, sceneoptions);
+         context.scene = scene;
          return scene.id;
       }
       else
       {
          goog.debug.Logger.getLogger('owg.og').warning("** WARNING: wrong scene type");
          return -1; // wrong scene type
-      
       }
    }
    
@@ -699,6 +701,10 @@ function ogCreateScene(context_id, scenetype)
 }
 goog.exportSymbol('ogCreateScene', ogCreateScene);
 //------------------------------------------------------------------------------
+/** @description get the context object of the specified scene
+*   @param {number} scene_id the scene
+*   @returns {number} the context object or -1 if there is none
+*/
 function ogGetContext(scene_id)
 {
    //** @type ogScene
@@ -717,6 +723,10 @@ function ogGetContext(scene_id)
 }
 goog.exportSymbol('ogGetContext', ogGetContext);
 //------------------------------------------------------------------------------
+/** @description get the world object of the specified scene
+*   @param {number} scene_id the scene
+*   @returns {number} the world object or -1 if there is none
+*/
 function ogGetWorld(scene_id)
 {
    //** @type ogScene
@@ -735,9 +745,32 @@ function ogGetWorld(scene_id)
 }
 goog.exportSymbol('ogGetWorld', ogGetWorld);
 //------------------------------------------------------------------------------
+/** @description Pick globe. This only works if scene type is OG_SCENE_3D_ELLIPSOID_WGS84 
+*   @param {number} scene_id the scene
+*   @param {number} mx x-coord of mouse
+*   @param {number} my y-coord of mouse
+*   @returns {Array} array with [hit, lng, lat, elv]. If hit is false there was no pick.
+*/
+function ogPickGlobe(scene_id, mx, my)
+{
+   //** @type ogScene
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+      return scene.Pick(mx, my);
+   }
+   
+   return [false,0,0,0];
+}
+goog.exportSymbol('ogPickGlobe', ogPickGlobe);
+//------------------------------------------------------------------------------
 //##############################################################################
 // ** WORLD-OBJECT **
 //##############################################################################
+/** @description create world object
+*   @param {number} scene_id the scene
+*   @returns {number} the world id
+*/
 function ogCreateWorld(scene_id)
 {
    //** @type ogScene
@@ -754,6 +787,10 @@ function ogCreateWorld(scene_id)
 }
 goog.exportSymbol('ogCreateWorld', ogCreateWorld);
 //------------------------------------------------------------------------------
+/** @description create globe (WGS84 world)
+*   @param {number} context_id the context
+*   @returns {number} the world object (globe)
+*/
 function ogCreateGlobe(context_id)
 {
    // this is just a convienience function to save some typing.
@@ -766,7 +803,11 @@ goog.exportSymbol('ogCreateGlobe', ogCreateGlobe);
 //##############################################################################
 // ** TEXTURE-OBJECT **
 //##############################################################################
-
+/** @description load a texture in background
+*   @param {number} scene_id the scene
+*   @param {string} url the url of the image
+*   @returns {number} the texture id
+*/
 function ogLoadTextureAsync(scene_id, url)
 {
    //** @type ogScene
@@ -784,6 +825,9 @@ function ogLoadTextureAsync(scene_id, url)
 goog.exportSymbol('ogLoadTextureAsync', ogLoadTextureAsync);
 
 //------------------------------------------------------------------------------
+/** @description destroy texture (free all memory)
+*   @param {number} texture_id the texture to be destroyed
+*/
 function ogDestroyTexture(texture_id)
 {
    //** @type ogTexture
@@ -801,7 +845,6 @@ goog.exportSymbol('ogDestroyTexture', ogDestroyTexture);
  * @param {number} x x-coord
  * @param {number} y y-coord
  * @param {Object=} opt_options optional options for blitting (rotation, scale, etc.)
- * @ignore
  */
 function ogBlitTexture(texture_id, x, y, opt_options)
 {
@@ -838,6 +881,23 @@ function ogAddImageLayer(world_id, options)
 }
 goog.exportSymbol('ogAddImageLayer', ogAddImageLayer);
 //------------------------------------------------------------------------------
+/**
+* @description Remove image layer from globe
+* @param {number} layer_id
+*/
+function ogRemoveImageLayer(layer_id)
+{
+   // test if context_id is a valid image layer
+   // @type ogImageLayer
+   var layer = _GetObjectFromId(layer_id);
+   if (layer && layer.type == OG_OBJECT_IMAGELAYER)
+   {
+      layer.RemoveImageLayer();
+      layer.UnregisterObject();
+   }
+}
+goog.exportSymbol('ogRemoveImageLayer', ogRemoveImageLayer);
+//------------------------------------------------------------------------------
 //##############################################################################
 // ** ELEVATION LAYER-OBJECT **
 //##############################################################################
@@ -860,4 +920,23 @@ function ogAddElevationLayer(world_id, options)
 
 }
 goog.exportSymbol('ogAddElevationLayer', ogAddElevationLayer);
+//------------------------------------------------------------------------------
+/**
+* @description Remove elevation layer from globe
+* @param {number} layer_id
+*/
+function ogRemoveElevationLayer(layer_id)
+{
+   // test if context_id is a valid elevation layer
+   // @type ogElevationLayer
+   var layer = _GetObjectFromId(layer_id);
+   if (layer && layer.type == OG_OBJECT_ELEVATIONLAYER)
+   {
+      layer.RemoveImageLayer();
+      layer.UnregisterObject();
+   }
+}
+goog.exportSymbol('ogRemoveElevationLayer', ogRemoveElevationLayer);
+//------------------------------------------------------------------------------
+
 
