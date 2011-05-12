@@ -211,6 +211,42 @@ GlobeRenderer.prototype.RemoveElevationLayer = function(index)
 }
 //------------------------------------------------------------------------------
 /**
+ * @description Swap order of image layers
+ * @param {number} index1
+ * @param {number} index2
+ */
+GlobeRenderer.prototype.SwapImageLayers = function(index1, index2)
+{
+   if (index1 <0 || index2<0 || index1>=this.elevationlayerlist.length || index2>=this.elevationlayerlist.length)
+   {
+      return; // wrong index!!
+   }
+   
+   var tmp = this.elevationlayerlist[index1];
+   this.elevationlayerlist[index1] = this.elevationlayerlist[index2];
+   this.elevationlayerlist[index2] = tmp;
+   this._UpdateLayers();
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Swap order of image layers
+ * @param {number} index1
+ * @param {number} index2
+ */
+GlobeRenderer.prototype.SwapElevationLayers = function(index1, index2)
+{
+   if (index1 <0 || index2<0 || index1>=this.imagelayerlist.length || index2>=this.imagelayerlist.length)
+   {
+      return; // wrong index!!
+   }
+   
+   var tmp = this.imagelayerlist[index1];
+   this.imagelayerlist[index1] = this.imagelayerlist[index2];
+   this.imagelayerlist[index2] = tmp;
+   this._UpdateLayers();
+}
+//------------------------------------------------------------------------------
+/**
  * @description update layers, this is called when layers change.
  * @ignore
  */
