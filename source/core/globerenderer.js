@@ -569,7 +569,7 @@ GlobeRenderer.prototype.AltitudeAboveGround = function()
    if (this.elevationlayerlist.length == 0)
    {
       var g = new GeoCoord();
-      g.FromCartesian(campos[0], campos[1], campos);
+      g.FromCartesian(campos[0], campos[1], campos[2]);
       return g.GetElevation();
    }
    
