@@ -37,22 +37,41 @@ goog.require('owg.Texture');
  * @description A "Point Of Interest" Class.
  * 
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch
+ * 
+ * @param {engine3d} engine
+ * @param {poiManager} poiManager a PoiManager Object.
  */
  function Poi(engine,poiManager)
  {
+   /** @type engine3d */
    this.engine = engine;
+   /** @type WebGLRenderingContext */
    this.gl = engine.gl;
+   /** @type number*/
    this.lat = 0.0;
+   /** @type number*/
    this.lng = 0.0;
+   /** @type number*/
    this.elv = 0.0;
+   /** @type number*/
+   this.signElv = 0.0;
+   /** @type boolean*/
    this.pole = false;
+   /** @type mesh*/
    this.poleMesh = null;
+   /** @type mesh*/
    this.iconMesh = null;
+   /** @type mesh*/
    this.textMesh = null;
+   /** @type number*/
    this.scale = 20;
+   /** @type PoiManager*/
    this.poiManager = poiManager;
+   /** @type string*/
    this.imgurl = "";
+   /** @type string*/
    this.style = "";
+   /** @type string*/
    this.text = "";
    
    this.canvasText = new CanvasTexture(engine);
@@ -64,10 +83,13 @@ goog.require('owg.Texture');
  
  
  /**
- * @description Set the poi content.
+ * @description Set the poi content. If no text is desired just use "" for as text argument.
  * @param {string} text the poi text.
- * @param {string} string to set predefined style. (e.g. "WB","Symbol" etc.)
- * @param {string} url poi icon url.
+ * @param {string} string to set predefined style.
+ *                   RB : Red text, black text border.
+ *                   WB : White text, black text border.
+ *                   BB : White text, black text border, yellow semi-transparent background.
+ * @param {string=} url poi icon url.
  */ 
  Poi.prototype.SetContent = function(text,style,imgurl)
  {
@@ -85,7 +107,6 @@ goog.require('owg.Texture');
   }
  }
 
- 
  /**
  * @description Set the Poi postion in wgs84 coordinates.
  * @param {number} lat the latitude value
@@ -95,12 +116,16 @@ goog.require('owg.Texture');
  */ 
  Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
  {
-   
+      this.lat = lat;
+      this.lng = lng;
+      this.elv = elv;
+      this.signElv = signElv;
+      
      //calc poi width
      if(this.iconMesh && this.textMesh)
      {
       this.poiWidth = this.iconMesh.meshWidth + this.textMesh.meshWidth;
-      this.poiHeight = this.iconMesh.meshHeight + this.textMesh.meshHeigth;
+      this.poiHeight = this.iconMesh.meshHeight;
      }
      else if (this.iconMesh)
      {
@@ -119,11 +144,11 @@ goog.require('owg.Texture');
      this.geoCoord.ToCartesian(cart);
      if(this.iconMesh)
      {
-      this.iconMesh.SetAsBillboard(cart[0],cart[1],cart[2],-(this.iconMesh.meshWidth/2)+(this.poiWidth/2-this.iconMesh.meshWidth)*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);
+      this.iconMesh.SetAsBillboard(cart[0],cart[1],cart[2],-((this.iconMesh.meshWidth/2)+(this.poiWidth/2-this.iconMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);
      }
      if(this.textMesh)
      {
-      this.textMesh.SetAsBillboard(cart[0],cart[1],cart[2],(this.textMesh.meshWidth/2)+(this.poiWidth/2-this.textMesh.meshWidth),0,0);  
+      this.textMesh.SetAsBillboard(cart[0],cart[1],cart[2],((this.textMesh.meshWidth/2)+(this.poiWidth/2-this.textMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);  
      }
      //think about this.
      
@@ -139,11 +164,10 @@ goog.require('owg.Texture');
  
 
 /**
- * @description Draws the poi
+ * @description Draws the poi.
  */ 
  Poi.prototype.Draw = function()
  {
-
     if(this.pole)
     {
        this.poleMesh.Draw();
@@ -181,11 +205,14 @@ goog.require('owg.Texture');
  
  /**
  * @description Set the poi size.
+ * @param {number} size the poi size in meters, default is 20.
  */
  Poi.prototype.SetSize = function(size)
  {
-    this.scale = size;
+   this.scale = size;
+   this.SetPosition(this.lat,this.lng,this.elv,this.signElv);
  }
+ 
  
  /**
  * @description Destroy the poi
@@ -207,9 +234,6 @@ goog.require('owg.Texture');
    {
       this.textMesh.Destroy();
    }
-   
-   
-   
    /*
    this.pole = null;
    this.poleMesh = null;

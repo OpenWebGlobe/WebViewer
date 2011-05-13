@@ -47,18 +47,21 @@
          //---------------------------------------------------------------------
          function OnKey(key)
          {
-            /*
+            
             if(symPoi1)
             {
              symPoi1.Destroy();
              symPoi1 = null;     
             }
+            
+            
             if(symPoi2)
             {
               symPoi2.Destroy();
               symPoi2 = null;    
             }
             
+            /*
             if(poi)
             {
              poi.Destroy();
@@ -109,12 +112,12 @@
             }
             
            
-            /*
+            
             hostel1.Draw();
             hostel2.Draw();  
            
             berg1.Draw();        
-            */
+            
             
          }
          
@@ -126,9 +129,10 @@
            
             poi = new Poi(engine,pm);
             //poi.SetContent("Bern 伯尔尼","BB");
+            //poi.SetSize(30);
             poi.SetContent("Bern","RB");
             poi.SetPosition(46.9540119257936, 7.441864013671875,2500,500); 
-            poi.SetSize(30);
+            
             
             poi2 = new Poi(engine,pm);
             //poi2.SetContent("Zürich 苏黎世 ","RB");
@@ -142,52 +146,47 @@
             poi3.SetSize(50);
             
            
-            
-           
             symPoi1 = new Poi(engine,pm);
-            symPoi1.SetContent("Test","BB","http://google-maps-icons.googlecode.com/files/airport.png");
-            symPoi1.SetPosition(47.589583,7.529914,2000,200,3200); //why changed altitude values?
-            
+            symPoi1.SetContent("Airport Basel Mulhouse","WB","http://google-maps-icons.googlecode.com/files/airport.png");
+            symPoi1.SetPosition(47.589583,7.529914,2000,3200,200); 
+            symPoi1.SetSize(50);
             
             symPoi2 = new Poi(engine,pm);
-            symPoi2.SetContent("test","BB","http://google-maps-icons.googlecode.com/files/airport.png");
+            symPoi2.SetContent("Airport Basel Mulhouse","WB","http://google-maps-icons.googlecode.com/files/airport.png");
             symPoi2.SetPosition(47.458333,8.548056,1500);
             
             
             symPoi3 = new Poi(engine,pm);
-            symPoi3.SetContent("ss","RB","http://google-maps-icons.googlecode.com/files/hostel.png");
-            symPoi3.SetPosition(46.236389,6.107222,1800);
+            symPoi3.SetContent("","RB","http://google-maps-icons.googlecode.com/files/hostel.png");
+            symPoi3.SetPosition(46.236389,6.107222,1800,200);
             
-            /*
+            
             symPoi4 = new Poi(engine,pm);
-            symPoi4.SetContent("Sion","Symbol","http://google-maps-icons.googlecode.com/files/hostel.png");
-            symPoi4.SetPosition(46.219592,7.326764,1000);
+            symPoi4.SetContent("","","http://google-maps-icons.googlecode.com/files/hostel.png");
+            symPoi4.SetPosition(46.219592,7.326764,1000,100);
             symPoi4.SetSize(10);
             
             hostel1 = new Poi(engine,pm);
-            hostel1.SetContent("","Symbol","http://google-maps-icons.googlecode.com/files/hostel.png");
+            hostel1.SetContent("","","http://google-maps-icons.googlecode.com/files/hostel.png");
             hostel1.SetPosition(46.233333, 7.366654,2000);
-            hostel1.SetSize(1);
+            hostel1.SetSize(30);
             
             
             hostel2 = new Poi(engine,pm);
-            hostel2.SetContent("Hotel Alpenblick","Symbol","http://google-maps-icons.googlecode.com/files/hostel.png");
+            hostel2.SetContent("Hotel Alpenblick","RB","http://google-maps-icons.googlecode.com/files/hostel.png");
             hostel2.SetPosition(46.233333, 7.376654,1000);
             hostel2.SetSize(1);
             
             hostel2 = new Poi(engine,pm);
-            hostel2.SetContent("Hotel Alpenblick","Symbol","http://google-maps-icons.googlecode.com/files/hostel.png");
+            hostel2.SetContent("Hotel Alpenblick","RB","http://google-maps-icons.googlecode.com/files/hostel.png");
             hostel2.SetPosition(46.233333, 7.376654,1000);
             hostel2.SetSize(1);
             
             
             berg1 = new Poi(engine,pm);
-            berg1.SetContent("Klein Matterhorn","Symbol","http://google-maps-icons.googlecode.com/files/panoramic180.png");
+            berg1.SetContent("Klein Matterhorn","RB","http://google-maps-icons.googlecode.com/files/panoramic180.png");
             berg1.SetPosition(45.93808,7.72989,10000);
             berg1.SetSize(5);
-            */
-            
-     
          }
         
          //---------------------------------------------------------------------

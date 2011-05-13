@@ -49,10 +49,8 @@ function CanvasTexture(engine)
 
 
 
-
-
 /**
- * Generates a mesh with a canvas2d as texture. The mesh size depends on the text length and style.
+ * @description Generates a mesh with a canvas2d as texture. The mesh size depends on the text length and style.
  * @param {string}  text the poi text.
  * @param {string} string to set predefined style e.g. "RB","WB" or "Symbol".
  * @param {string} imgurl url for poi icon.
@@ -254,7 +252,7 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject,imgurl)
               var canvasTextureClass = this;
               image.onload = function() 
               {
-               _cbfDrawImage(context,image,styleObject,canvasTextureClass);
+               canvasTextureClass._cbfDrawImage(context,image,styleObject,canvasTextureClass);
               }
               image.src = imgurl;
               
@@ -273,10 +271,10 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject,imgurl)
  * callback function for async image load.
  * @ignore 
  */
-function _cbfDrawImage(context,image,styleObject,canvasTextureClass)
+CanvasTexture.prototype._cbfDrawImage = function(context,image,styleObject,canvasTextureClass)
 {
-     context.drawImage(image, styleObject.border, styleObject.border, styleObject.iconSize, styleObject.iconSize);
-     canvasTextureClass.ToGPU();    
+     this.ctx.drawImage(image, styleObject.border, styleObject.border, styleObject.iconSize, styleObject.iconSize);
+     this.ToGPU();    
      
 }
 
