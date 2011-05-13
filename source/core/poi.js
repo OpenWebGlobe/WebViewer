@@ -148,7 +148,6 @@ goog.require('owg.Texture');
      {
       this.textMesh.SetAsBillboard(cart[0],cart[1],cart[2],((this.textMesh.meshWidth/2)+(this.poiWidth/2-this.textMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);  
      }
-     //think about this.
      
      if(signElv!=null)
      {
@@ -166,14 +165,15 @@ goog.require('owg.Texture');
  */ 
  Poi.prototype.Draw = function()
  {
+   
+    this.engine.gl.enable(this.engine.gl.BLEND);
+    this.engine.gl.depthFunc(this.engine.gl.LEQUAL);
+    this.engine.gl.blendFunc(this.engine.gl.SRC_ALPHA,this.engine.gl.ONE_MINUS_SRC_ALPHA);
+  
     if(this.pole)
     {
        this.poleMesh.Draw();
     }
-    this.engine.gl.enable(this.engine.gl.BLEND);
-    this.engine.gl.depthFunc(this.engine.gl.LEQUAL);
-    this.engine.gl.blendFunc(this.engine.gl.SRC_ALPHA,this.engine.gl.ONE_MINUS_SRC_ALPHA);
-      
     if(this.iconMesh)
     {
       this.iconMesh.UpdateBillboardMatrix();
@@ -182,6 +182,7 @@ goog.require('owg.Texture');
     {
       this.textMesh.UpdateBillboardMatrix();
     }
+
     
     engine.PushMatrices();
     var mmat = new mat4();

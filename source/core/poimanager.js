@@ -48,6 +48,13 @@ function PoiManager(engine)
 }
 
 
+/**
+ * @description Creates a new Poi.
+ * @param {string} text the poi text
+ * @param {PoiTextStyle} style the text style definition object.
+ * @param {string} imgurl 
+ * @param {PoiIconStyle} iconstyle the poi icon style definition.
+ */
 PoiManager.prototype.CreatePoi = function(text,style,imgurl,iconstyle)
 {
    var poi = new Poi(this.engine);
@@ -71,7 +78,10 @@ PoiManager.prototype.CreatePoi = function(text,style,imgurl,iconstyle)
 
 
 
-
+/**
+ * @description Free memory
+ * @param {Poi} poi the poi to delete.
+ */
 PoiManager.prototype.DestroyPoi = function(poi)
 {
    if(poi.iconMesh)
@@ -86,9 +96,11 @@ PoiManager.prototype.DestroyPoi = function(poi)
 }
 
 
+
 /**
  * @description Returns a Mesh with the specific icon as texture.
  * @param {url} url the icon url.
+ * @param {PoiIconStyle} iconstyle 
  */
 PoiManager.prototype.CreateIconMesh = function(url,iconstyle)
 {
@@ -139,7 +151,7 @@ PoiManager.prototype.DestroyIconMesh = function(url)
 /**
  * @description Returns a Mesh with the text in specific style as texture.
  * @param {string} text the poi text.
- * @param {string} style the style e.g. "RB", "WB"...
+ * @param {PoiTextStyle} style 
  */
 PoiManager.prototype.CreateTextMesh = function(text,style)
 {
@@ -147,7 +159,7 @@ PoiManager.prototype.CreateTextMesh = function(text,style)
    var r = this.poiTextMeshes[text+style.id];
    if(r)
    {
-      this.refTextCounts[text+style] = this.refTextCounts[text+style.id]+1;      
+      this.refTextCounts[text+style.id] = this.refTextCounts[text+style.id]+1;      
       var r_new = new Mesh(this.engine);
       r_new.CopyFrom(r);
       r_new.meshWidth = r.meshWidth; //appended attributes, thy will not copyed by mesh's copy function.
@@ -156,7 +168,7 @@ PoiManager.prototype.CreateTextMesh = function(text,style)
    }
    else
    {
-      this.canvastexture = new CanvasTexture(this.engine); //why is this needed?
+      this.canvastexture = new CanvasTexture(this.engine); 
       var r_new = this.canvastexture.CreateTextMesh(text,style);
       this.refTextCounts[text+style.id] = 1;
       this.poiTextMeshes[text+style.id] = r_new;
@@ -169,8 +181,8 @@ PoiManager.prototype.CreateTextMesh = function(text,style)
 
 /**
  * @description Free memory.
- *  @param {string} text the poi text.
- * @param {string} style the style e.g. "RB", "WB"...
+ * @param {string} text the poi text.
+ * @param {PoiTextStyle} style 
  */
 PoiManager.prototype.DestroyTextMesh = function(text,style)
 {   
