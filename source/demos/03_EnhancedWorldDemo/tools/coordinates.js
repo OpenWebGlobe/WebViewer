@@ -46,7 +46,7 @@ function CoordinatesTool(toolbox,sizeX,sizeY,offsetX,offsetY)
    //set up lat,long indicator
    this.display = document.createElement('div');
    this.display.id = "pickCoordinatesToolDisplayDiv";
-   this.display.style.visibility = 'none';
+   this.display.style.visibility = 'hidden';
    document.body.appendChild(this.display);
    
    
@@ -90,7 +90,6 @@ CoordinatesTool.prototype.SetActive = function()
    this.SetIconActive();
    document.getElementById(this.toolbox.canvasId).style.cursor = 'crosshair';
    document.getElementById(this.toolbox.canvasId).addEventListener("click",this.cbfClickWhenActive,false);
-   console.log("SetActive von Coordinates aufgerufen.");
      
 }
 
@@ -103,7 +102,6 @@ CoordinatesTool.prototype.SetInactive = function()
    this.SetIconInactive(); //defined in superclass
    document.getElementById(this.toolbox.canvasId).style.cursor = 'default'; 
    document.getElementById(this.toolbox.canvasId).removeEventListener("click",this.cbfClickWhenActive,false);
-   console.log("SetInactive von Coordinates aufgerufen.");
 }
 
 
