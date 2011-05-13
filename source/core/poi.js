@@ -97,11 +97,11 @@ goog.require('owg.Texture');
   
   if(imgurl)
   {
-   this.iconMesh = this.poiManager.CreateIconMesh(imgurl); 
+  // this.iconMesh = this.poiManager.CreateIconMesh(imgurl); 
   }
   if(text)
   {
-   this.textMesh = this.poiManager.CreateTextMesh(text,style);
+   //this.textMesh = this.poiManager.CreateTextMesh(text,style);
   }
  }
 

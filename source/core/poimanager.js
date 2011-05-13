@@ -45,13 +45,12 @@ function PoiManager(engine)
    this.poiTextMeshes = new Array();
    /** @type Array.<number>*/
    this.refTextCounts = new Array();
-
 }
 
 
-PoiManager.prototype.CreatePoi = function(text,style,imgurl)
+PoiManager.prototype.CreatePoi = function(text,style,imgurl,iconstyle)
 {
-   poi = new Poi(this.engine);
+   var poi = new Poi(this.engine);
    
    poi.imgurl = imgurl;
    poi.style = style;
@@ -60,7 +59,7 @@ PoiManager.prototype.CreatePoi = function(text,style,imgurl)
   
   if(imgurl)
   {
-   poi.iconMesh = this.CreateIconMesh(imgurl); 
+   poi.iconMesh = this.CreateIconMesh(imgurl,iconstyle); 
   }
   if(text)
   {
@@ -88,26 +87,25 @@ PoiManager.prototype.DestroyPoi = function(poi)
 
 
 /**
- * @description Returns a Mesh with the specififc icon as texture.
+ * @description Returns a Mesh with the specific icon as texture.
  * @param {url} url the icon url.
  */
-PoiManager.prototype.CreateIconMesh = function(url)
+PoiManager.prototype.CreateIconMesh = function(url,iconstyle)
 {
    var r = this.poiMeshes[url];
    if(r)
    {
       this.refCounts[url] = this.refCounts[url]+1;      
-      var r_new = new Mesh(engine);
+      var r_new = new Mesh(this.engine);
       r_new.CopyFrom(r);
       r_new.meshWidth = r.meshWidth; //appended attributes, they will not copyed by mesh's copy function.
-      r_new.meshHeigth = r.meshHeigth;
+      r_new.meshHeight = r.meshHeight;
       this.poiMeshes[url] = r_new;
    }
    else
    {
-     
-      this.canvastexture = new CanvasTexture(engine);  
-      var r_new = this.canvastexture.CreateTexturedMesh("","Symbol",url);
+      this.canvastexture = new CanvasTexture(this.engine);  
+      var r_new = this.canvastexture.CreateIconMesh(url,iconstyle);
       this.refCounts[url] = 1;
       this.poiMeshes[url] = r_new;
       this.canvastexture = null;
@@ -145,22 +143,23 @@ PoiManager.prototype.DestroyIconMesh = function(url)
  */
 PoiManager.prototype.CreateTextMesh = function(text,style)
 {
-   var r = this.poiTextMeshes[text+style];
+   console.log(text+style.id);
+   var r = this.poiTextMeshes[text+style.id];
    if(r)
    {
-      this.refTextCounts[text+style] = this.refTextCounts[text+style]+1;      
-      var r_new = new Mesh(engine);
+      this.refTextCounts[text+style] = this.refTextCounts[text+style.id]+1;      
+      var r_new = new Mesh(this.engine);
       r_new.CopyFrom(r);
       r_new.meshWidth = r.meshWidth; //appended attributes, thy will not copyed by mesh's copy function.
-      r_new.meshHeigth = r.meshHeigth;
-      this.poiTextMeshes[text+style] = r_new;
+      r_new.meshHeight = r.meshHeight;
+      this.poiTextMeshes[text+style.id] = r_new;
    }
    else
    {
-      this.canvastexture = new CanvasTexture(engine); //why is this needed?
-      var r_new = this.canvastexture.CreateTexturedMesh(text,style);
-      this.refTextCounts[text+style] = 1;
-      this.poiTextMeshes[text+style] = r_new;
+      this.canvastexture = new CanvasTexture(this.engine); //why is this needed?
+      var r_new = this.canvastexture.CreateTextMesh(text,style);
+      this.refTextCounts[text+style.id] = 1;
+      this.poiTextMeshes[text+style.id] = r_new;
       this.canvastexture = null;
    }  
    return r_new;
@@ -175,15 +174,15 @@ PoiManager.prototype.CreateTextMesh = function(text,style)
  */
 PoiManager.prototype.DestroyTextMesh = function(text,style)
 {   
-   var numInstances = this.refTextCounts[text+style];
-   this.refTextCounts[text+style] = numInstances-1;
+   var numInstances = this.refTextCounts[text+style.id];
+   this.refTextCounts[text+style.id] = numInstances-1;
    
-   if(this.refTextCounts[text+style] == 0)
+   if(this.refTextCounts[text+style.id] == 0)
    {
       //remove from poi array
-      this.poiTextMeshes[text+style].texture.Destroy();
-      delete(this.poiTextMeshes[text+style]);
-      delete(this.refTextCounts[text+style]);
+      this.poiTextMeshes[text+style.id].texture.Destroy();
+      delete(this.poiTextMeshes[text+style.id]);
+      delete(this.refTextCounts[text+style.id]);
    }
 }
 
