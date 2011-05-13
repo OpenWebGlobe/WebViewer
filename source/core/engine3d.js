@@ -234,35 +234,35 @@ function _fncResize(evt)
  */
 function engine3d()
 {
-	// Callbacks:
-	this.cbfInit = null;
-	this.cbfTimer = null;
-	this.cbfRender = null;
-	this.cbfMouseClicked = null;
-	this.cbfMouseReleased = null;
-	this.cbfMouseMoved = null;
-	this.cbfMouseWheel = null;
-	this.cbfKeyPressed = null;
-	this.cbfKeyReleased = null;
-	this.cbfResize = null;
-	// flags
-	this.init = false;
-	this.canvasid = "";
-	this.context = null;
-	// width / height
-	this.width = 0;
-	this.height = 0;
+   // Callbacks:
+   this.cbfInit = null;
+   this.cbfTimer = null;
+   this.cbfRender = null;
+   this.cbfMouseClicked = null;
+   this.cbfMouseReleased = null;
+   this.cbfMouseMoved = null;
+   this.cbfMouseWheel = null;
+   this.cbfKeyPressed = null;
+   this.cbfKeyReleased = null;
+   this.cbfResize = null;
+   // flags
+   this.init = false;
+   this.canvasid = "";
+   this.context = null;
+   // width / height
+   this.width = 0;
+   this.height = 0;
 	
-	this.bFullscreen = false;
+   this.bFullscreen = false;
 
-   /** @type {WebGLRenderingContext} */
+   /** @type WebGLRenderingContext */
    this.gl = null;          // opengl context
-	this.context = null;
+   this.context = null;
 	
-	this.shadermanager = null;
+   this.shadermanager = null;
 	
-	// Default Background color
-	this.bg_r = 0;
+   // Default Background color
+   this.bg_r = 0;
    this.bg_g = 0;
    this.bg_b = 0;
    this.bg_a = 1;
@@ -291,8 +291,8 @@ function engine3d()
    this.vecMeshes = new Array();
    this.vecTextures = new Array();
    
-	// engine instance voodoo
-	_g_vInstances[_g_nInstanceCnt] = this;
+   // engine instance voodoo
+   _g_vInstances[_g_nInstanceCnt] = this;
    _g_nInstanceCnt++;
    
    // Event Handler
@@ -305,7 +305,10 @@ function engine3d()
    this.scene = null;
    
    // an empty texture for "failed" downloads
+   //** @type Texture
    this.nodata = null;
+   
+   this.worldtype = 1; // 0: custom, 1: wgs84, 2: flat, 3: 2D
       
 }
 
@@ -586,7 +589,24 @@ engine3d.prototype.SetOrtho2D = function()
  */
 engine3d.prototype.CreateScene = function()
 {
-   this.scene = new SceneGraph(this);
+   if (this.worldtype == 0) // custom scene
+   {
+      goog.debug.Logger.getLogger('owg.engine3d').warning("** WARNING: not implemented");
+   }
+   else if (this.worldtype == 1) // wgs84
+   {
+      this.scene = new SceneGraph(this);   
+   }
+   else if (this.worldtype == 2)
+   {
+      goog.debug.Logger.getLogger('owg.engine3d').warning("** WARNING: not implemented");
+   }
+   else if (this.worldtype == 3)
+   {
+      goog.debug.Logger.getLogger('owg.engine3d').warning("** WARNING: not implemented");   
+   }
+   
+   
 }
 
 //------------------------------------------------------------------------------
@@ -894,7 +914,16 @@ engine3d.prototype.AltitudeAboveEllipsoid = function()
    return 0;
 }
 
- //-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} worldtype
+ */
+engine3d.prototype.SetWorldType = function(worldtype)
+{
+   this.worldtype = worldtype;
+}
+//------------------------------------------------------------------------------
 
 goog.exportSymbol('engine3d', engine3d);
 goog.exportProperty(engine3d.prototype, 'AltitudeAboveEllipsoid', engine3d.prototype.AltitudeAboveEllipsoid);

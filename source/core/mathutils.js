@@ -28,49 +28,49 @@ goog.provide('owg.MathUtils');
 //------------------------------------------------------------------------------
 /**
  * @description semi major axis [m]
- * @type {number}
+ * @type number
  */
 var WGS84_a = 6378137.0; 
 //------------------------------------------------------------------------------
 /**
  * @description first numeric exccentrity (squared)
- * @type {number}
+ * @type number
  */
 var WGS84_E_SQUARED = 0.006694379990197;  
 //------------------------------------------------------------------------------
 /**
  * @description second numeric exccentrity (squared)
- * @type {number}
+ * @type number
  */
 var WGS84_E_SQUARED2 = 0.006739496742;
 //------------------------------------------------------------------------------
 /**
  * @description second numeric excentrity
- * @type {number}
+ * @type number
  */
 var WGS84_E = 0.081819190842961775161887117288255; 
 //------------------------------------------------------------------------------
 /**
  * @description 1 - WGS84_E_SQUARED
- * @type {number}
+ * @type number
  */
 var WGS84_E_SQQ = 0.993260503258;
 //------------------------------------------------------------------------------
 /**
  * @description factor to convert geocentric cartesian coordinates to interal representation
- * @type {number}
+ * @type number
  */
 var CARTESIAN_SCALE_INV = 1.1920930376163765926810017443897e-7;
 //------------------------------------------------------------------------------
 /**
  * @description factor to convert internal coordinates to geocentric cartesian coordinates
- * @type {number}
+ * @type number
  */
 var CARTESIAN_SCALE = 8388607.0;
 //------------------------------------------------------------------------------        
 /**
  * @description position of prime meridian (0 for Royal Greenwich Observatory)
- * @type {number}
+ * @type number
  */
 var LNG_RAD0 = 0;   
 //------------------------------------------------------------------------------

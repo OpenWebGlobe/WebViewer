@@ -200,11 +200,11 @@ function ogContext()
    this.name = "ogContext";
    this.type = OG_OBJECT_CONTEXT;
    this.fullscreen = false;
-   /** @type {engine3d} */
+   /** @type engine3d */
    this.engine = null;
-   /** @type {ogScene} */
+   /** @type ogScene */
    this.scene = null;  // scene object attached to context
-   /** @type {vec4} */
+   /** @type vec4 */
    this.fontcolor = new vec4(1,1,1,1);
    
    // number of render passes:
@@ -296,7 +296,7 @@ ogContext.prototype.ParseOptions = function(options)
    }
    else
    {
-      goog.debug.Logger.getLogger('owg.ogContext').error("**ERROR: auto creating canvas is not supported yet!");
+      goog.debug.Logger.getLogger('owg.ogContext').warning("**ERROR: auto creating canvas is not supported yet!");
    }
    
 }

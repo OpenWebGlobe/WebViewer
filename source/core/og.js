@@ -93,9 +93,10 @@ function _CreateObject(type, parent, options)
          // not available yet...
          break;
       case OG_OBJECT_IMAGE:
-         // not available yet...
+         // probably not available in WebGL version -> use texture
          break;
       case OG_OBJECT_TEXTURE:
+         newobject = new ogTexture();
          break;
       case OG_OBJECT_PIXELBUFFER:
          // not available yet...
@@ -145,9 +146,9 @@ function _CreateObject(type, parent, options)
    return newobject;
 }
 
-//------------------------------------------------------------------------------
-// ** OBJECT **
-//------------------------------------------------------------------------------
+//##############################################################################
+// ** GENERAL OBJECT FUNCTIONS **
+//##############################################################################
 /**
  * @description Retrieve object type
  * @param {number} object_id the object id
@@ -286,7 +287,7 @@ function ogGetObjectStatus(object_id)
    
    return OG_OBJECT_FAILED;
 }
-goog.exportSymbol('ogSetObjectName', ogSetObjectName);
+goog.exportSymbol('ogGetObjectStatus', ogGetObjectStatus);
 //------------------------------------------------------------------------------
 /**
  * @description Set function to call when object is ready (usefull for async objects only)
@@ -331,9 +332,9 @@ function ogOnFailure(object_id, cbfFailed)
    }
 }
 goog.exportSymbol('ogOnFailure', ogOnFailure);
-//------------------------------------------------------------------------------
+//##############################################################################
 // ** CONTEXT OBJECT **
-//------------------------------------------------------------------------------
+//##############################################################################
 /**
  * @description Create context
  */
@@ -502,9 +503,9 @@ function ogGetTextSize(context_id, text)
    return ret;
 }
 goog.exportSymbol('ogGetTextSize', ogGetTextSize);
-//------------------------------------------------------------------------------
+//##############################################################################
 // ** CONTEXT-EVENTS **
-//------------------------------------------------------------------------------
+//##############################################################################
 /**
  * @description Set callback function for mouse down event
  * @param {number} context_id id of the context
@@ -646,24 +647,168 @@ function ogSetNumRenderPasses(context_id, numPasses)
    } 
 }
 goog.exportSymbol('ogSetNumRenderPasses', ogSetNumRenderPasses);
-//------------------------------------------------------------------------------
+//##############################################################################
 // ** MISC **
-//------------------------------------------------------------------------------
+//##############################################################################
 function ogExec()
 {
-   // in JavaScript ogExec is not required. This function is just empty
+   // in JavaScript ogExec is not required. This function is just empty.
 }
 goog.exportSymbol('ogExec', ogExec);
+//##############################################################################
+// ** SCENE-OBJECT **
+//##############################################################################
+/**
+* @description create a new scene object
+* @param {number} context_id the id of the context
+* @param {number} scenetype the type of scene. This must be OG_SCENE_3D_ELLIPSOID_WGS84, OG_SCENE_3D_FLAT_CARTESIAN, OG_SCENE_2D_SCREEN, or OG_SCENE_CUSTOM
+*/
+function ogCreateScene(context_id, scenetype)
+{
+   // test if context_id is a valid context
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      var sceneoptions = {};
+      sceneoptions.type = scenetype;
+      
+      if (scenetype == OG_SCENE_3D_ELLIPSOID_WGS84 ||
+          scenetype == OG_SCENE_3D_FLAT_CARTESIAN ||
+          scenetype == OG_SCENE_2D_SCREEN ||
+          scenetype == OG_SCENE_CUSTOM
+          )
+      {
+         var scene = _CreateObject(OG_OBJECT_SCENE, obj, sceneoptions);
+         return scene.id;
+      }
+      else
+      {
+         goog.debug.Logger.getLogger('owg.og').warning("** WARNING: wrong scene type");
+         return -1; // wrong scene type
+      
+      }
+   }
+   
+   goog.debug.Logger.getLogger('owg.og').warning("** WARNING: context is not valid");
+   return -1;
+
+}
+goog.exportSymbol('ogCreateScene', ogCreateScene);
 //------------------------------------------------------------------------------
+function ogGetContext(scene_id)
+{
+   //** @type ogScene
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      //** @type ogContext
+      var context = scene.parent;
+      if (context)
+      {
+         return context.id;
+      }
+   }
+   
+   return -1;
+}
+goog.exportSymbol('ogGetContext', ogGetContext);
+//------------------------------------------------------------------------------
+function ogGetWorld(scene_id)
+{
+   //** @type ogScene
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      //** @type ogWorld
+      var world = scene.world;
+      if (world)
+      {
+         return world.id;
+      }
+   }
+   
+   return -1;
+}
+goog.exportSymbol('ogGetWorld', ogGetWorld);
+//------------------------------------------------------------------------------
+//##############################################################################
+// ** WORLD-OBJECT **
+//##############################################################################
+function ogCreateWorld(scene_id)
+{
+   //** @type ogScene
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      var worldoptions = {};
+      worldoptions.scenetype = scene.scenetype;
+      var world = _CreateObject(OG_OBJECT_WORLD, scene, worldoptions);
+      return world.id;
+   }
+   
+   return -1;
+}
+goog.exportSymbol('ogCreateWorld', ogCreateWorld);
+//------------------------------------------------------------------------------
+function ogCreateGlobe(context_id)
+{
+   // this is just a convienience function to save some typing.
+   var scene_id = ogCreateScene(context_id, OG_SCENE_3D_ELLIPSOID_WGS84);
+   var world_id = ogCreateWorld(scene_id);
+   return world_id;
+}
+goog.exportSymbol('ogCreateGlobe', ogCreateGlobe);
 
+//##############################################################################
+// ** TEXTURE-OBJECT **
+//##############################################################################
 
+function ogLoadTextureAsync(scene_id, url)
+{
+   //** @type ogScene
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      var textureoptions = {};
+      textureoptions.url = url;
+      var texture = _CreateObject(OG_OBJECT_TEXTURE, scene, textureoptions);
+      return texture.id;
+   }
+   
+   return -1;
+}
+goog.exportSymbol('ogLoadTextureAsync', ogLoadTextureAsync);
 
-
-
-
-
-
-
-
-
+//------------------------------------------------------------------------------
+function ogDestroyTexture(texture_id)
+{
+   //** @type ogTexture
+   var texture = _GetObjectFromId(texture_id);
+   if (texture && texture.type == OG_OBJECT_TEXTURE)
+   {
+      texture.UnregisterObject();
+   }
+}
+goog.exportSymbol('ogDestroyTexture', ogDestroyTexture);
+//------------------------------------------------------------------------------
+/**
+ * @description Blit texture to screen (2D)
+ * @param {number} texture_id the texture id
+ * @param {number} x x-coord
+ * @param {number} y y-coord
+ * @param {Object=} opt_options
+ * @ignore
+ */
+function ogBlitTexture(texture_id, x, y, opt_options)
+{
+   //** @type ogTexture
+   var texture = _GetObjectFromId(texture_id);
+   
+   if (texture && texture.type == OG_OBJECT_TEXTURE)
+   {
+      texture.Blit(x,y,opt_options);
+   }
+}
+goog.exportSymbol('ogBlitTexture', ogBlitTexture);
+//------------------------------------------------------------------------------
 

@@ -24,8 +24,10 @@
 goog.provide('owg.ogScene');
 
 goog.require('owg.ObjectDefs');
-goog.require('owg.ogObject');
 
+goog.require('owg.ogObject');
+goog.require('owg.ogWorld');
+goog.require('owg.ogCamera');
 
 //------------------------------------------------------------------------------
 /**
@@ -36,9 +38,32 @@ goog.require('owg.ogObject');
 function ogScene()
 {
    this.name = "ogScene";
-   this.type = OG_OBJECT_SCENE; 
+   this.type = OG_OBJECT_SCENE;
+   //** @type ogWorld
+   this.world = null;
+   //** @type ogCamera
+   this.activecamera = null;
+   this.scenetype = OG_SCENE_3D_ELLIPSOID_WGS84;
+   
 }
-
-
 //------------------------------------------------------------------------------
 ogScene.prototype = new ogObject();
+//------------------------------------------------------------------------------
+/**
+* @description parse options
+* @param {Object} options
+* @ignore
+*/
+ogScene.prototype.ParseOptions = function(options)
+{
+   if (options == null)
+   {
+      goog.debug.Logger.getLogger('owg.ogScene').warning("** ERROR: no options for scene creation!");
+      return;  // no options!!
+   }
+   
+   if (options.type)
+   {
+      this.scenetype = options.type;
+   }
+}

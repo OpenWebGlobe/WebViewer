@@ -22,8 +22,8 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      TUTORIAL 0: Draw text on screen
-*******************************************************************************/    
+                      TUTORIAL 2: Creating a virtual globe
+*******************************************************************************/
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -38,21 +38,27 @@ function OnRender(context)
    ogSetTextColor(context, 0,1,0);
    ogDrawText(context, "Hello World", 0, 20);
 }
+
 //------------------------------------------------------------------------------
 function main()
 {
-   // (1) Create an OpenWebGlobe context using an existing canvas.
-   // The first parameter is canvas-id and second is "fullscreen"
+   // (1) create an OpenWebGlobe context using canvas
+   // first parameter is canvas-id and second is "fullscreen"
    var ctx = ogCreateContextFromCanvas("canvas", true);
    
-   // (2) Set the "Render-Callback" function.
+   // (2) Create a virtual globe
+   var globe = ogCreateGlobe(ctx);
+   
+   // (3) Add an image layer
+   //ogAddImageLayer(globe, { url: ["http://www.openwebglobe.org/data/img"], layer: "World500", service : "i3d" });
+
+   // (4) Set the "Render-Callback" function.
    // The callback function will be called everytime a frame is drawn.
-   // We need this to draw the text
    ogSetRenderFunction(ctx, OnRender);
    
-   // (3) Set the background color of the OpenWebGlobe context
-   // Default would be black
-   ogSetBackgroundColor(ctx, 0,0,0.5,1);
+   // (5) Set the background color
+   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+   
 }
 //------------------------------------------------------------------------------
    

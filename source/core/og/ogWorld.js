@@ -35,9 +35,66 @@ goog.require('owg.ogObject');
 function ogWorld()
 {
    this.name = "ogWorld";
-   this.type = OG_OBJECT_WORLD; 
+   this.type = OG_OBJECT_WORLD;
 }
 
 
 //------------------------------------------------------------------------------
 ogWorld.prototype = new ogObject();
+
+//------------------------------------------------------------------------------
+ogWorld.prototype.ParseOptions = function(options)
+{
+   if (options == null)
+   {
+      goog.debug.Logger.getLogger('owg.ogTexture').warning("** ERROR: no options for texture creation!");
+      return;  // no options!!
+   }
+
+   if (options.scenetype)
+   {
+      
+      /** @type ogContext */
+      var context = this.parent.parent;
+      /** @type engine3d */
+      var engine = context.engine;
+      
+      if (options.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+      {
+         engine.SetWorldType(1);
+         engine.CreateScene();
+         if (engine.scene)
+         {
+            engine.scene.world = this;
+         }
+      }
+      else if (options.scenetype == OG_SCENE_3D_FLAT_CARTESIAN)
+      {
+         engine.SetWorldType(2);
+         engine.CreateScene();
+         if (engine.scene)
+         {
+            engine.scene.world = this;
+         }
+      }
+      else if (options.scenetype == OG_SCENE_2D_SCREEN)
+      {
+         engine.SetWorldType(3);
+         engine.CreateScene();
+         if (engine.scene)
+         {
+            engine.scene.world = this;
+         }
+      }
+      else if (options.scenetype == OG_SCENE_CUSTOM)
+      {
+         engine.SetWorldType(0);
+         engine.CreateScene();
+         if (engine.scene)
+         {
+            engine.scene.world = this;
+         }
+      }
+      
+   }
+}

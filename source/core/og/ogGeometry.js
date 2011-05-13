@@ -1,4 +1,3 @@
-<!--
 /*******************************************************************************
 #      ____               __          __  _      _____ _       _               #
 #     / __ \              \ \        / / | |    / ____| |     | |              #
@@ -20,48 +19,25 @@
 #                           martin.christen@fhnw.ch                            #
 ********************************************************************************
 *     Licensed under MIT License. Read the file LICENSE for more information   *
-*******************************************************************************/
+*******************************************************************************/      
 
-                      TUTORIAL 0: Draw text on screen
-*******************************************************************************/    
--->
-<!DOCTYPE html>
-<html lang="en">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
-<script type="text/javascript">
+goog.provide('owg.ogGeometry');
+
+goog.require('owg.ObjectDefs');
+goog.require('owg.ogObject');
 
 //------------------------------------------------------------------------------
-// called every frame:
-function OnRender(context)
+/**
+ * @constructor
+ * @description Geometry class (OpenWebGlobe object)
+ * @author Martin Christen, martin.christen@fhnw.ch
+ */
+function ogGeometry()
 {
-   ogSetTextColor(context, 0,1,0);
-   ogDrawText(context, "Hello World", 0, 20);
+   this.name = "ogGeometry";
+   this.type = OG_OBJECT_GEOMETRY; 
 }
-//------------------------------------------------------------------------------
-function main()
-{
-   // (1) Create an OpenWebGlobe context using an existing canvas.
-   // The first parameter is canvas-id and second is "fullscreen"
-   var ctx = ogCreateContextFromCanvas("canvas", true);
-   
-   // (2) Set the "Render-Callback" function.
-   // The callback function will be called everytime a frame is drawn.
-   // We need this to draw the text
-   ogSetRenderFunction(ctx, OnRender);
-   
-   // (3) Set the background color of the OpenWebGlobe context
-   // Default would be black
-   ogSetBackgroundColor(ctx, 0,0,0.5,1);
-}
-//------------------------------------------------------------------------------
-   
-</script>
 
-</head>
-<body onload="main()">
-   <div style="text-align: center">
-   <canvas id="canvas"></canvas>          
-   </div>
-</body>
-</html>
+//------------------------------------------------------------------------------
+ogGeometry.prototype = new ogGeometry();
+

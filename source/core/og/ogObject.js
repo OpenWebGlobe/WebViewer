@@ -123,7 +123,8 @@ function ogObject()
    this.type = OG_OBJECT_INVALID;
    this.id = -1;
    this.status = OG_OBJECT_READY;
-   this.cbfObjectReady = null;
+   this.cbfReady = null;
+   this.cbfFailed = null;
 }
 
 //------------------------------------------------------------------------------
@@ -151,8 +152,12 @@ ogObject.prototype.SetParent = function(parent)
 
 ogObject.prototype.RegisterObject = function()
 {
-   var obj = this;
-   _RegisterObject(obj);
+   _RegisterObject(this);
+}
+//------------------------------------------------------------------------------
+ogObject.prototype.UnregisterObject = function()
+{
+   _UnregisterObject(this);
 }
 
 //------------------------------------------------------------------------------
@@ -164,12 +169,7 @@ ogObject.prototype.ParseOptions = function(options)
 
 //------------------------------------------------------------------------------
 
-ogObject.prototype.SetObjectReadyFunction = function(cbfObjectReady)
-{
-   this.cbfObjectReady = cbfObjectReady;
-}
 
-//------------------------------------------------------------------------------
 
 
 
