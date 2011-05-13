@@ -44,7 +44,11 @@ function CanvasTexture(engine)
    this.poleMesh = null;
    /** @type Mesh */
    this.videoMesh = null;
+
 }
+
+
+
 
 
 /**
@@ -54,12 +58,9 @@ function CanvasTexture(engine)
  * @param {string} imgurl url for poi icon.
  * @return {Mesh}
  */
-CanvasTexture.prototype.GenerateTexture =  function(text,style,imgurl)
+CanvasTexture.prototype.CreateTexturedMesh =  function(text,style,imgurl)
 {
-  
    this.texCanvas = document.createElement('canvas'); 
-   this.texCanvas.style.display = 'none';
-   document.body.appendChild(this.texCanvas);
    this.ctx = this.texCanvas.getContext('2d');  
  
    //set canvas as texture
@@ -85,6 +86,8 @@ CanvasTexture.prototype.GenerateTexture =  function(text,style,imgurl)
    this.mesh.SetBufferFont(vert);
    this.mesh.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");  
    
+   this.mesh.meshWidth = this.meshWidth;
+   this.mesh.meshHeight = this.meshHeight;
    return this.mesh;
 }
 
@@ -166,6 +169,8 @@ CanvasTexture.prototype.SetCanvasContent = function(text,style,imgurl)
 }  
  
  
+ 
+ 
 
 
 /**
@@ -186,7 +191,7 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject,imgurl)
               var dim = this.ctx.measureText(this.text);
               var textWidth = Math.round(dim.width);
               var textHeight = styleObject.fontSize+styleObject.border;//iconSize+10;       
-           this.ctx.restore();
+            this.ctx.restore();
            
            if(imgurl)
            {
@@ -238,8 +243,7 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject,imgurl)
 
            if(imgurl)
            {
-              //draw text
-              
+              //draw text             
               this.ctx.strokeText(text,styleObject.iconSize+styleObject.border+styleObject.iconTextSpace,2*styleObject.border+(styleObject.iconSize/2-styleObject.fontSize/2));
               this.ctx.fillText(text,styleObject.iconSize+styleObject.border+styleObject.iconTextSpace,2*styleObject.border+(styleObject.iconSize/2-styleObject.fontSize/2));
                
@@ -329,6 +333,45 @@ CanvasTexture.prototype.GetPoleMesh = function(x,y,z,x2,y2,z2)
 }
 
 
+
+//------------------------------------------------------------------------------
+/**
+ * @description Free all memory, especially the GPU buffers.
+ * @ignore
+ */
+CanvasTexture.prototype.Destroy = function()
+{
+   if(this.mesh)
+   {
+      mesh.Destroy();
+      this.mesh = null;
+   }
+   
+   if(this.poleMesh)
+   {
+      this.poleMesh.Destroy();
+      this.poleMesh = null;
+   }
+   
+   if(this.videoMesh)
+   {
+      this.videoMesh.Destroy();
+      this.videoMesh = null;
+   }
+   
+   if(this.tex)
+   {
+      this.tex.Destroy();
+      this.tex = null;
+   }
+   
+   if(this.texCanvas)
+   {
+      document.removeChild(this.texCanvas);
+      this.texCanvas = null; 
+   }
+   
+}
 
 
 /* Video POIs not supported...      

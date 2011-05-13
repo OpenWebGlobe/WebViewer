@@ -306,6 +306,12 @@ Texture.prototype.Destroy = function()
       this.blitMesh.Destroy();
       this.blitMesh = null;
    }
+   
+   if (this.rttFramebuffer)
+   {
+      this.engine.gl.deleteFramebuffer(this.rttFramebuffer);
+      this.rttFramebuffer = null;
+   }
 
 }
 //------------------------------------------------------------------------------

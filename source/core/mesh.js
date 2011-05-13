@@ -139,6 +139,7 @@ function Mesh(engine)
    this.numOfTriangles = 0;     //number of triangles depends on indexsemantic "TRIANGLES or TRIANGLESTRIP"
    this.currentTriangle = {}; //current triangle used for intersection tests.
    this.billboardPos = new Array(3);
+   this.billboardCenterTrans = new Array(3);
    this.newModelMatrix = new mat4();
 
    
@@ -309,7 +310,7 @@ Mesh.prototype.Destroy = function()
       this.gl.deleteBuffer(this.ibo);
       this.ibo = null;
    }
-   
+      
    this.texture = null;          
    this.vertexbufferdata = null; 
    this.mode = ""; 
@@ -880,21 +881,49 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
 /**
  * @description fills the modelmatrix to use this mesh as billboard.
  */
-Mesh.prototype.SetAsBillboard= function(x,y,z)
+Mesh.prototype.SetAsBillboard= function(x,y,z,translationX,translationY,translationZ)
 {
    var view = this.engine.matView.Get();
    var bbmat = new mat4();
    this.billboardPos[0] = x;
    this.billboardPos[1] = y;
    this.billboardPos[2] = z;
+   this.billboardCenterTrans[0] = translationX || 0;
+   this.billboardCenterTrans[1] = translationY || 0;
+   this.billboardCenterTrans[2] = translationZ || 0;
+   
    bbmat.Set([view[0],view[4],view[8],0,view[1],view[5],view[9],0,view[2],view[6],view[10],0,this.billboardPos[0],this.billboardPos[1],this.billboardPos[2],1]);
-   this.modelMatrix = bbmat;
+   var transMat = new mat4();
+   transMat.Translation(this.billboardCenterTrans[0],this.billboardCenterTrans[1],this.billboardCenterTrans[2]);
+   var newBbmat = new mat4();
+   newBbmat.Multiply(bbmat,transMat);
+      
+  
+   this.modelMatrix = newBbmat;
 }
 
 
 Mesh.prototype.UpdateBillboardMatrix = function()
 {
-   this.SetAsBillboard(this.billboardPos[0],this.billboardPos[1],this.billboardPos[2]);
+   this.SetAsBillboard(this.billboardPos[0],this.billboardPos[1],this.billboardPos[2],this.billboardCenterTrans[0],this.billboardCenterTrans[1],this.billboardCenterTrans[2]);
+}
+
+
+/**
+ * @description copies data from another meshclass into this mesh-class. e.g. used for icon-pois
+ *
+ */
+Mesh.prototype.CopyFrom = function(mesh)
+{
+   this.SetTexture(mesh.texture);               
+   this.vertexbufferdata = mesh.vertexbufferdata;
+   this.mode = mesh.mode;
+   this.vertexLength = mesh.vertexLength;
+   this.indexbufferdata = mesh.indexbufferdata;
+   this.indexsemantic = mesh.indexsemantic
+   this.numindex = mesh.numindex
+   this.Ready = mesh.Ready;
+   this.numOfTriangles = mesh.numOfTriangles;
 }
 
 
@@ -952,9 +981,21 @@ Mesh.prototype.SetAsBillboard = function(camX,camY,camZ,objX,objY,objZ)
    
 }
 */
+  
+
+
+
+   
+
+ 
+ 
+
+
+
 
 goog.exportSymbol('Mesh', Mesh);
 goog.exportProperty(Mesh.prototype, 'Draw', Mesh.prototype.Draw);
+goog.exportProperty(Mesh.prototype, 'CopyFrom', Mesh.prototype.CopyFrom);
 goog.exportProperty(Mesh.prototype, 'SetAsBillboard', Mesh.prototype.SetAsBillboard);
 goog.exportProperty(Mesh.prototype, 'SetTexture', Mesh.prototype.SetTexture);
 goog.exportProperty(Mesh.prototype, 'TestBoundingBoxIntersection', Mesh.prototype.TestBoundingBoxIntersection);

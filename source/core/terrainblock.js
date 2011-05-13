@@ -244,6 +244,11 @@ TerrainBlock.prototype.Destroy = function()
    {
       this.texture.Destroy();
    }
+   
+   if (this.mesh)
+   {
+      this.mesh.Destroy();
+   }
 }
 
 //------------------------------------------------------------------------------
