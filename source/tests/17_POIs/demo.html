@@ -50,15 +50,15 @@
             
             if(symPoi1)
             {
-             symPoi1.Destroy();
-             symPoi1 = null;     
+             pm.DestroyPoi(symPoi1);
+   
             }
             
             
             if(symPoi2)
             {
-              symPoi2.Destroy();
-              symPoi2 = null;    
+              pm.DestroyPoi(symPoi2);
+   
             }
             
             /*
@@ -125,66 +125,67 @@
          
          function OnInit()
          {
-            var pm = new PoiManager(engine);
+            pm = new PoiManager(engine);
            
-            poi = new Poi(engine,pm);
-            //poi.SetContent("Bern 伯尔尼","BB");
-            //poi.SetSize(30);
-            poi.SetContent("Bern","RB");
+            poi = pm.CreatePoi("Bern 伯尔尼","BB",200,100);
+            
+            
+            
+           poi = pm.CreatePoi("Bern 伯尔尼","BB");
+            poi.SetSize(30);
+           // poi.SetContent("Bern","RB");
             poi.SetPosition(46.9540119257936, 7.441864013671875,2500,500); 
             
             
-            poi2 = new Poi(engine,pm);
+            poi2 = pm.CreatePoi("Bern","RB");
             //poi2.SetContent("Zürich 苏黎世 ","RB");
-            poi2.SetContent("Bern","RB");
             poi2.SetPosition(47.38812286319825, 8.52813720703125,2000,500);
             poi2.SetSize(50);
             
-            poi3 = new Poi(engine,pm);
-            poi3.SetContent("Basel 巴塞尔","WB");
+            poi3 = pm.CreatePoi("Basel 巴塞尔","WB");
+            //poi3.SetContent();*/
+            
             poi3.SetPosition(47.56170075451973, 7.581939697265625,1000,550);
             poi3.SetSize(50);
             
            
-            symPoi1 = new Poi(engine,pm);
-            symPoi1.SetContent("Airport Basel Mulhouse","WB","http://google-maps-icons.googlecode.com/files/airport.png");
+            symPoi1 = pm.CreatePoi("Airport Basel Mulhouse","WB","http://google-maps-icons.googlecode.com/files/airport.png");
             symPoi1.SetPosition(47.589583,7.529914,2000,3200,200); 
             symPoi1.SetSize(50);
             
-            symPoi2 = new Poi(engine,pm);
-            symPoi2.SetContent("Airport Basel Mulhouse","WB","http://google-maps-icons.googlecode.com/files/airport.png");
+            symPoi2 = pm.CreatePoi("Airport Basel Mulhouse","WB","http://google-maps-icons.googlecode.com/files/airport.png");
             symPoi2.SetPosition(47.458333,8.548056,1500);
             
             
-            symPoi3 = new Poi(engine,pm);
-            symPoi3.SetContent("","RB","http://google-maps-icons.googlecode.com/files/hostel.png");
+            symPoi3 = pm.CreatePoi("","RB","http://google-maps-icons.googlecode.com/files/hostel.png");
+            //symPoi3.SetContent();
             symPoi3.SetPosition(46.236389,6.107222,1800,200);
             
             
-            symPoi4 = new Poi(engine,pm);
-            symPoi4.SetContent("","","http://google-maps-icons.googlecode.com/files/hostel.png");
+            symPoi4 = pm.CreatePoi("","","http://google-maps-icons.googlecode.com/files/hostel.png");
+           // symPoi4.SetContent();
             symPoi4.SetPosition(46.219592,7.326764,1000,100);
             symPoi4.SetSize(10);
             
-            hostel1 = new Poi(engine,pm);
-            hostel1.SetContent("","","http://google-maps-icons.googlecode.com/files/hostel.png");
+            hostel1 = pm.CreatePoi("","","http://google-maps-icons.googlecode.com/files/hostel.png");
+           // hostel1.SetContent();
             hostel1.SetPosition(46.233333, 7.366654,2000);
             hostel1.SetSize(30);
             
             
-            hostel2 = new Poi(engine,pm);
-            hostel2.SetContent("Hotel Alpenblick","RB","http://google-maps-icons.googlecode.com/files/hostel.png");
+            hostel2 = pm.CreatePoi("Hotel Alpenblick","RB","http://google-maps-icons.googlecode.com/files/hostel.png");
+           // hostel2.SetContent();
             hostel2.SetPosition(46.233333, 7.376654,1000);
             hostel2.SetSize(1);
             
-            hostel2 = new Poi(engine,pm);
-            hostel2.SetContent("Hotel Alpenblick","RB","http://google-maps-icons.googlecode.com/files/hostel.png");
+            hostel2 = pm.CreatePoi("Hotel Alpenblick","RB","http://google-maps-icons.googlecode.com/files/hostel.png");
+          //  hostel2.SetContent();
             hostel2.SetPosition(46.233333, 7.376654,1000);
             hostel2.SetSize(1);
             
             
-            berg1 = new Poi(engine,pm);
-            berg1.SetContent("Klein Matterhorn","RB","http://google-maps-icons.googlecode.com/files/panoramic180.png");
+            berg1 = pm.CreatePoi("Klein Matterhorn","RB","http://google-maps-icons.googlecode.com/files/panoramic180.png");
+            //berg1.SetContent("Klein Matterhorn","RB","http://google-maps-icons.googlecode.com/files/panoramic180.png");
             berg1.SetPosition(45.93808,7.72989,10000);
             berg1.SetSize(5);
          }
@@ -205,6 +206,35 @@
             // Start engine...
             engine.InitEngine("canvas", true);  // (canvasid, fullscreen)
             engine.CreateScene();               // Create Globe Scene
+            
+            var imgBlueMarble500 = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "World500",
+               service : "i3d"
+            };
+            
+            var imgLandsat_CH = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "LandsatCH",
+               /*transparency : 0.5,*/
+               service : "i3d"
+            };
+            
+            var elvSRTM_CH = 
+            {
+               url     : ["http://www.openwebglobe.org/data/elv"],
+               layer   : "SRTM",
+               service : "i3d"
+            };
+            
+            engine.scene.nodeRenderObject.globerenderer.AddImageLayer(imgBlueMarble500);
+            engine.scene.nodeRenderObject.globerenderer.AddImageLayer(imgLandsat_CH);
+            engine.scene.nodeRenderObject.globerenderer.AddElevationLayer(elvSRTM_CH);
+            
+            
+            
             engine.SetClearColor(0.5,0.5,1,1);
          }
          

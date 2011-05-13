@@ -41,7 +41,7 @@ goog.require('owg.Texture');
  * @param {engine3d} engine
  * @param {poiManager} poiManager a PoiManager Object.
  */
- function Poi(engine,poiManager)
+ function Poi(engine)
  {
    /** @type engine3d */
    this.engine = engine;
@@ -65,8 +65,6 @@ goog.require('owg.Texture');
    this.textMesh = null;
    /** @type number*/
    this.scale = 20;
-   /** @type PoiManager*/
-   this.poiManager = poiManager;
    /** @type string*/
    this.imgurl = "";
    /** @type string*/
