@@ -100,7 +100,7 @@ ogTexture.prototype.ParseOptions = function(options)
       return;
    }
    
-   if (options.url)
+   if (options["url"])
    {
       var scene = this.parent;
       var context = scene.parent;
@@ -109,7 +109,7 @@ ogTexture.prototype.ParseOptions = function(options)
       this.texture = new Texture(engine);
       this.texture.textureobject = this;
    
-      this.texture.loadTexture(options.url, ogTexture_callbackready, ogTexture_callbackfailed, false);
+      this.texture.loadTexture(options["url"], ogTexture_callbackready, ogTexture_callbackfailed, false);
    }
 }
 

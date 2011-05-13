@@ -62,8 +62,30 @@ ogScene.prototype.ParseOptions = function(options)
       return;  // no options!!
    }
    
-   if (options.type)
+   if (options["type"])
    {
-      this.scenetype = options.type;
+      this.scenetype = options["type"];
    }
+}
+//------------------------------------------------------------------------------
+/**
+* @description Pick globe
+* @param {number} mx x-coord of mouse
+* @param {number} my y-coord of mouse
+*/
+ogScene.prototype.Pick = function(mx, my)
+{
+   /** @type ogContext */
+   var context = this.parent;
+   /** @type Object */
+   var pickresult = {};
+   context.engine.PickGlobe(mx, my, pickresult);
+   
+   var result = new Array(4);
+   result[0] = pickresult["hit"];
+   result[1] = pickresult["lng"];
+   result[2] = pickresult["lat"];
+   result[3] = pickresult["elv"];
+   
+   return result;
 }

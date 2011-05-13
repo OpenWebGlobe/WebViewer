@@ -33,17 +33,40 @@ goog.require('owg.i3dElevationLayer');
 
 //------------------------------------------------------------------------------
 /**
+ * @typedef {{
+ *     url     : Array.<string>,
+ *     layer   : string,
+ *     service : string,
+ *     transparency : number,
+ *     maxlod : number
+ * }}
+ */
+var ImageLayerOptions;
+//------------------------------------------------------------------------------
+/**
+ * @typedef {{
+ *     url     : Array.<string>,
+ *     layer   : string,
+ *     service : string,
+ *     maxlod : number
+ * }}
+ */
+var ElevationLayerOptions;
+//------------------------------------------------------------------------------
+/**
  * @constructor
  * @description Rendering the virtual globe...
  * @author Martin Christen, martin.christen@fhnw.ch
  */
 function GlobeRenderer(engine)
 {
+   /** @type engine3d */
    this.engine = engine;
    this.imagelayerlist = new Array();
    this.elevationlayerlist = new Array();
    this.quadtree = new MercatorQuadtree();
    this.cachesize = 1000;
+   /** @type GlobeCache */
    this.globecache = null;
    this.lstFrustum = [];
    this.lastalt = 0;
@@ -81,41 +104,50 @@ function GlobeRenderer(engine)
  *    }; 
  * 
  *    globerenderer.AddImageLayer(imglayer);
+ *
+ *  @param {ImageLayerOptions} options
+ *  @returns index of array where this image layer is placed, or -1 on failure 
  *  
  */
 GlobeRenderer.prototype.AddImageLayer = function(options)
 {
-    if (options.service)
-    {
-       if (options.service == "i3d")
-       {
-          // i3d tile service
-          if (options.url && options.layer)
-          {
-             if (options.url.length>0)
-             {
-                var url = options.url[0];
-                var layer = options.layer;
-                
-                // Create i3d layer:
-                var imgLayer = new i3dImageLayer();
-                imgLayer.Setup(url, layer, options.transparency);
-                this.imagelayerlist.push(imgLayer);
-                this._UpdateLayers();
-             }
-          }
-       }
-       else if (options.service == "osm")
-       {
-          if (options.url && options.url.length>0)
-          {
-            var imgLayer = new OSMImageLayer();
-            imgLayer.Setup(options.url);
+   /** @type number */
+   var index = -1;
+   
+   if (options["service"] == "i3d")
+   {
+      // i3d tile service
+      if (options["url"] && options["layer"])
+      {
+         if (options["url"].length>0)
+         {
+            /** @type string */
+            var url = options["url"][0];
+            /** @type string */
+            var layer = options["layer"];
+            
+            // Create i3d layer:
+            var imgLayer = new i3dImageLayer();
+            imgLayer.Setup(url, layer, options["transparency"]);
+            index = this.imagelayerlist.length;
             this.imagelayerlist.push(imgLayer);
-            this._UpdateLayers(); 
-          }
-       }
-    }
+            this._UpdateLayers();
+         }
+      }
+   }
+   else if (options["service"] == "osm")
+   {
+      if (options["url"] && options["url"].length>0)
+      {
+         var imgLayer = new OSMImageLayer();
+         imgLayer.Setup(options["url"]);
+         index = this.imagelayerlist.length;
+         this.imagelayerlist.push(imgLayer);
+         this._UpdateLayers(); 
+      }
+   }
+
+   return index;
 }
 
 //------------------------------------------------------------------------------
@@ -136,42 +168,111 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
  *    }; 
  * 
  *    globerenderer.AddElevationLayer(o);
+ *    
+ *  @param {ElevationLayerOptions} options
+ *  @returns index of array where this elevation layer is placed, or -1 on failure
  *  
  */
 GlobeRenderer.prototype.AddElevationLayer = function(options)
 {
-   if (options.service)
-    {
-       if (options.service == "i3d")
-       {
-          // i3d elevation tile service
-          if (options.url && options.layer)
-          {
-             if (options.url.length>0)
-             {
-                var url = options.url[0];
-                var layer = options.layer;
-                
-                // Create i3d layer:
-                var elvLayer = new i3dElevationLayer();
-                elvLayer.Setup(url, layer);
-                this.elevationlayerlist.push(elvLayer);
-                this._UpdateLayers();
-             }
-          }
-       }
-    }
+   var index = -1;
+   if (options["service"] == "i3d")
+   {
+      // i3d elevation tile service
+      if (options["url"] && options["layer"])
+      {
+         if (options["url"].length>0)
+         {
+            var url = options["url"][0];
+            var layer = options["layer"];
+             
+            // Create i3d layer:
+            var elvLayer = new i3dElevationLayer();
+            elvLayer.Setup(url, layer);
+            index = this.elevationlayerlist.length;
+            this.elevationlayerlist.push(elvLayer);
+            this._UpdateLayers();
+         }
+      }
+   }
+   
+   return index;
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Remove image layer at specified index
+ * @param {number} index the index of the elevation layer to be removed
+ */
+GlobeRenderer.prototype.RemoveImageLayer = function(index)
+{
+   if (index<0 || index>=this.imagelayerlist.length)
+   {
+      return; // wrong index!!
+   }
+   
+   this.imagelayerlist.splice(index, 1);
+   this._UpdateLayers();
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Remove elevation layer at specified index
+ * @param {number} index the index of the elevation layer to be removed
+ */
+GlobeRenderer.prototype.RemoveElevationLayer = function(index)
+{
+   if (index<0 || index>=this.elevationlayerlist.length)
+   {
+      return; // wrong index!!
+   }
+   
+   this.elevationlayerlist.splice(index, 1);
+   this._UpdateLayers();
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Swap order of image layers
+ * @param {number} index1
+ * @param {number} index2
+ */
+GlobeRenderer.prototype.SwapImageLayers = function(index1, index2)
+{
+   if (index1 <0 || index2<0 || index1>=this.elevationlayerlist.length || index2>=this.elevationlayerlist.length)
+   {
+      return; // wrong index!!
+   }
+   
+   var tmp = this.elevationlayerlist[index1];
+   this.elevationlayerlist[index1] = this.elevationlayerlist[index2];
+   this.elevationlayerlist[index2] = tmp;
+   this._UpdateLayers();
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Swap order of image layers
+ * @param {number} index1
+ * @param {number} index2
+ */
+GlobeRenderer.prototype.SwapElevationLayers = function(index1, index2)
+{
+   if (index1 <0 || index2<0 || index1>=this.imagelayerlist.length || index2>=this.imagelayerlist.length)
+   {
+      return; // wrong index!!
+   }
+   
+   var tmp = this.imagelayerlist[index1];
+   this.imagelayerlist[index1] = this.imagelayerlist[index2];
+   this.imagelayerlist[index2] = tmp;
+   this._UpdateLayers();
+}
 //------------------------------------------------------------------------------
 /**
  * @description update layers, this is called when layers change.
  * @ignore
  */
 GlobeRenderer.prototype._UpdateLayers = function()
-{
-   goog.debug.Logger.getLogger('owg.GlobeRenderer').info("Updating Layers");
-   
+{ 
    // update layers by creating a new globe cache: The old cache will be deleted
    var cachesize = 1000;
    if (this.globecache)
@@ -405,18 +506,15 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
          candidates.push(this.lstFrustum[i]);
       }                                    
    }
-   
-   goog.debug.Logger.getLogger('owg.GlobeRenderer').info("Frustum size: " + this.lstFrustum.length);
-   goog.debug.Logger.getLogger('owg.GlobeRenderer').info("There are " + candidates.length + " candidates");
-   
+      
    var tmin = 1e20;
-   pickresult.hit = false;
+   pickresult["hit"] = false;
    for (var i=0;i<candidates.length;i++)
    {
       var r = candidates[i].mesh.TestRayIntersection(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz);
       if (r)
       {
-         pickresult.hit = true;
+         pickresult["hit"] = true;
          if (r.t < tmin)
          {
             tmin = r.t;
@@ -424,17 +522,17 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
       }
    }
    
-   if (pickresult.hit)
+   if (pickresult["hit"])
    {
-      pickresult.x = pointDir.x + tmin*pointDir.dirx;
-      pickresult.y = pointDir.y + tmin*pointDir.diry;
-      pickresult.z = pointDir.z + tmin*pointDir.dirz;
+      pickresult["x"] = pointDir.x + tmin*pointDir.dirx;
+      pickresult["y"] = pointDir.y + tmin*pointDir.diry;
+      pickresult["z"] = pointDir.z + tmin*pointDir.dirz;
       
       var gc = new GeoCoord(0,0,0);
-      gc.FromCartesian(pickresult.x,pickresult.y,pickresult.z);
-      pickresult.lng = gc._wgscoords[0];
-      pickresult.lat = gc._wgscoords[1];
-      pickresult.elv = gc._wgscoords[2];
+      gc.FromCartesian(pickresult["x"],pickresult["y"],pickresult["z"]);
+      pickresult["lng"] = gc._wgscoords[0];
+      pickresult["lat"] = gc._wgscoords[1];
+      pickresult["elv"] = gc._wgscoords[2];
    }
 
    
@@ -462,10 +560,19 @@ GlobeRenderer.prototype.AltitudeAboveGround = function()
    {
       return NaN;
    }
-   
+      
    var candidates = new Array();
    var campos = this.cameraposition.Get();
    var vDirection = new vec3();
+   
+   // if there is no elevation layer, don't do expensive test
+   if (this.elevationlayerlist.length == 0)
+   {
+      var g = new GeoCoord();
+      g.FromCartesian(campos[0], campos[1], campos);
+      return g.GetElevation();
+   }
+   
    
    vDirection.Set(-campos[0], -campos[1], -campos[2]);
    //vDirection.Normalize(); // for precision reasons it should be normalized... to speed up this could also be

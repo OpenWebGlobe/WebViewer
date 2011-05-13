@@ -21,22 +21,15 @@
 ********************************************************************************
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
-
-                      TUTORIAL 2: Creating a virtual globe
+                      Hello World: Creating a virtual globe
+		                RELEASE VERSION
 *******************************************************************************/
 -->
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-
 <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
-<!--
-<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
-<script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
--->
-
 <script type="text/javascript">
 
 //------------------------------------------------------------------------------
@@ -57,12 +50,20 @@ function main()
    // (2) Create a virtual globe
    var globe = ogCreateGlobe(ctx);
    
-   // (3) Add an image and an elevation layer
+   // (3) Add image and an elevation layers
    
    var imgBlueMarble500 = 
    {
       url     : ["http://www.openwebglobe.org/data/img"],
       layer   : "World500",
+      service : "i3d"
+   };
+   
+   var imgLandsat_CH = 
+   {
+      url     : ["http://www.openwebglobe.org/data/img"],
+      layer   : "LandsatCH",
+      /*transparency : 0.5,*/
       service : "i3d"
    };
    
@@ -74,7 +75,8 @@ function main()
    };
    
    ogAddImageLayer(globe, imgBlueMarble500);
-   //ogAddElevationLayer(globe, elvSRTM_CH);
+   ogAddImageLayer(globe, imgLandsat_CH);
+   ogAddElevationLayer(globe, elvSRTM_CH);
 
    // (4) Set the "Render-Callback" function.
    // The callback function will be called everytime a frame is drawn.

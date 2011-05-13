@@ -22,21 +22,13 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      TUTORIAL 2: Creating a virtual globe
+          TUTORIAL 3: Creating a virtual globe with OpenStreetMap Data
 *******************************************************************************/
 -->
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-
 <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
-<!--
-<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
-<script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
--->
-
 <script type="text/javascript">
 
 //------------------------------------------------------------------------------
@@ -46,8 +38,8 @@ function OnRender(context)
    ogSetTextColor(context, 0,1,0);
    ogDrawText(context, "Hello World", 0, 20);
 }
+     
 //------------------------------------------------------------------------------
-
 function main()
 {
    // (1) create an OpenWebGlobe context using canvas
@@ -57,24 +49,14 @@ function main()
    // (2) Create a virtual globe
    var globe = ogCreateGlobe(ctx);
    
-   // (3) Add an image and an elevation layer
+   // (3) Add openstreet image layer
    
-   var imgBlueMarble500 = 
+   var imgOpenStreetMap = 
    {
-      url     : ["http://www.openwebglobe.org/data/img"],
-      layer   : "World500",
-      service : "i3d"
+      url     : ["http://a.tile.openstreetmap.org", "http://b.tile.openstreetmap.org", "http://c.tile.openstreetmap.org" ],
+      service : "osm"
    };
-   
-   var elvSRTM_CH = 
-   {
-      url     : ["http://www.openwebglobe.org/data/elv"],
-      layer   : "SRTM",
-      service : "i3d"
-   };
-   
-   ogAddImageLayer(globe, imgBlueMarble500);
-   //ogAddElevationLayer(globe, elvSRTM_CH);
+   ogAddImageLayer(globe, imgOpenStreetMap);
 
    // (4) Set the "Render-Callback" function.
    // The callback function will be called everytime a frame is drawn.

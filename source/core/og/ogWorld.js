@@ -51,7 +51,7 @@ ogWorld.prototype.ParseOptions = function(options)
       return;  // no options!!
    }
 
-   if (options.scenetype)
+   if (options["scenetype"])
    {
       
       /** @type ogContext */
@@ -59,7 +59,7 @@ ogWorld.prototype.ParseOptions = function(options)
       /** @type engine3d */
       var engine = context.engine;
       
-      if (options.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+      if (options["scenetype"] == OG_SCENE_3D_ELLIPSOID_WGS84)
       {
          engine.SetWorldType(1);
          engine.CreateScene();
@@ -68,7 +68,7 @@ ogWorld.prototype.ParseOptions = function(options)
             engine.scene.world = this;
          }
       }
-      else if (options.scenetype == OG_SCENE_3D_FLAT_CARTESIAN)
+      else if (options["scenetype"] == OG_SCENE_3D_FLAT_CARTESIAN)
       {
          engine.SetWorldType(2);
          engine.CreateScene();
@@ -77,7 +77,7 @@ ogWorld.prototype.ParseOptions = function(options)
             engine.scene.world = this;
          }
       }
-      else if (options.scenetype == OG_SCENE_2D_SCREEN)
+      else if (options["scenetype"] == OG_SCENE_2D_SCREEN)
       {
          engine.SetWorldType(3);
          engine.CreateScene();
@@ -86,7 +86,7 @@ ogWorld.prototype.ParseOptions = function(options)
             engine.scene.world = this;
          }
       }
-      else if (options.scenetype == OG_SCENE_CUSTOM)
+      else if (options["scenetype"] == OG_SCENE_CUSTOM)
       {
          engine.SetWorldType(0);
          engine.CreateScene();
