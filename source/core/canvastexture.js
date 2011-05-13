@@ -166,9 +166,7 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
             this.tex.height = this.textureHeight; 
             this.ctx.canvas.width = this.textureWidth; 
             this.ctx.canvas.height = this.textureHeight;
-               
-            
-            
+
                      
            //draw background
            this.ctx.fillStyle = styleObject.backgroundColor;
@@ -176,7 +174,6 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
            
 
            //shadow
-           
            this.ctx.shadowOffsetX = styleObject.shadowOffsetX;
            this.ctx.shadowOffsetY = styleObject.shadowOffsetY;
            this.ctx.shadowBlur    = styleObject.shadowBlur;
@@ -187,14 +184,14 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
            this.ctx.fillStyle = styleObject.fontColor; 
            this.ctx.font = styleObject.fontString;
            this.ctx.textAlign = styleObject.textAlign;
-           this.ctx.textBaseline = 'top';
+           this.ctx.textBaseline = 'middle';
            this.ctx.lineWidth = styleObject.lineWidth;
            this.ctx.strokeStyle = styleObject.strokeStyle;
             
 
             //draw text
-            this.ctx.strokeText(text,styleObject.lineWidth,styleObject.lineWidth);
-            this.ctx.fillText(text,styleObject.lineWidth,styleObject.lineWidth);
+            this.ctx.strokeText(text,styleObject.lineWidth,this.meshHeight/2);
+            this.ctx.fillText(text,styleObject.lineWidth,this.meshHeight/2);
 
            this.ToGPU();          
 }
