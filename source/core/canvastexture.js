@@ -150,7 +150,7 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
               this.ctx.strokeStyle = styleObject.strokeStyle; 
               var dim = this.ctx.measureText(this.text);
               var textWidth = Math.round(dim.width);
-              var textHeight = styleObject.fontSize+styleObject.border;//iconSize+10;       
+              var textHeight = styleObject.fontSize+styleObject.border;   
             this.ctx.restore();
 
 
@@ -273,13 +273,13 @@ CanvasTexture.prototype.ToGPU = function()
 {
      this.gl.enable(this.gl.TEXTURE_2D);
      this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex.texture); 
-    // this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+     this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, false);
      this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA,engine.gl.RGBA,this.gl.UNSIGNED_BYTE, this.texCanvas);
      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-    //this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, false);         
+   //  this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, false);         
      this.gl.bindTexture(this.gl.TEXTURE_2D, null);
      this.tex.ready = true;
 }

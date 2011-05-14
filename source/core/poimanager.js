@@ -199,6 +199,35 @@ PoiManager.prototype.DestroyTextMesh = function(text,style)
 }
 
 
+/**
+ * @description Changes the Poi Icon.
+ */
+PoiManager.prototype.ChangePoiIcon = function(poi,url,style)
+{
+   
+   poi.iconMesh = this.CreateIconMesh(url,style);
+   poi.SetPosition(poi.lat,poi.lng,poi.elv,poi.signElv);
+   this.DestroyIconMesh(poi.imgurl); 
+   poi.imgurl = url;
+   
+}
+
+
+/**
+ * @description Changes the poi text.
+ */
+PoiManager.prototype.ChangePoiText = function(poi,text,style)
+{
+   
+   poi.textMesh = this.CreateTextMesh(text,style);
+   poi.SetPosition(poi.lat,poi.lng,poi.elv,poi.signElv);
+   this.DestroyTextMesh(poi.text,style);
+   poi.text = text;
+   
+   
+}
+
+
 
 
 

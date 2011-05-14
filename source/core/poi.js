@@ -213,6 +213,7 @@ goog.require('owg.Texture');
  }
  
  
+ 
  /**
  * @description Destroy the poi
  */
