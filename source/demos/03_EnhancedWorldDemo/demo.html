@@ -3,18 +3,14 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
-
          <!-- >
             <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
          -->
          <!--<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
          <script type="text/javascript" src="../../../compiled/deps.js"></script>
-         <script type="text/javascript">goog.require('owg.engine3d');</script>
-         <script type="text/javascript">goog.require('owg.vec4');</script>-->
-         <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
-         <script type="text/javascript" src="../../../compiled/deps.js"></script>
          <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
-         
+         -->
+         <script type="text/javascript" src="openwebglobe.js"></script>
          <script type="text/javascript" src="jquery-1.5.2.min.js"></script>
          <script type="text/javascript" src="tools/toolbox.js"></script>
          <script type="text/javascript" src="tools/pickcoordinates.js"></script>
@@ -22,70 +18,19 @@
          <script type="text/javascript" src="tools/coordinates.js"></script>
          <link rel="stylesheet" type="text/css" href="tools/toolstyle.css">
          <link rel="stylesheet" type="text/css" href="styles.css">
-<style type="text/css">
-   
-   
-
-                
-                
+<style type="text/css">        
 </style>
 <script type="text/javascript">
          
-         
-         
-         //---------------------------------------------------------------------
-         var engine = null;
-       
-         
-         //---------------------------------------------------------------------
-         function OnTimer(delta)
-         {
-         }
-         
-         //---------------------------------------------------------------------
-         
-         function OnResize(w,h)
-         {
-            width = w;
-            height = h;       
-         }
-         
-         //---------------------------------------------------------------------
-         function OnKey(key)
-         {
-         }
-         
-         //---------------------------------------------------------------------
-         function OnMouse(button,x,y)
-         {
-            var pickresult = new Object();
-            engine.PickGlobe(x, y, pickresult);
-            
-            if (pickresult.hit)
-            {
-               console.log("PICK: lng: " + pickresult.lng + ", lat: " + pickresult.lat + ", elv:" + pickresult.elv);
-               console.log("PICK: x: " + pickresult.x + ", y: " + pickresult.y + ", z:" + pickresult.z);
-            }
-         }
-         
-         
-         //---------------------------------------------------------------------
-         
-         function OnRender()
-         {  
-            var fontcolor = new vec4();
-            fontcolor.Set(1,1,0,1);
-           // engine.DrawText("OpenWebGlobe for WebGL", 0, height-32,1,fontcolor);
+         var g_context = -1;
       
-            var altitude = engine.AltitudeAboveGround(); altitude = altitude.toFixed(2);
-            var elv = engine.AltitudeAboveEllipsoid(); elv = elv.toFixed(2);
-            //engine.DrawText("Altitude: "+ altitude+ " (" + elv + ")",  0, height-64,1); 
-         }
-         
+      
          //---------------------------------------------------------------------
-         
-         function OnInit()
-         { 
+      
+         function OnRender(context)
+         {
+            ogSetTextColor(context, 0,1,0);
+            ogDrawText(context, "Hello World", 0, 20);
          }
         
          //---------------------------------------------------------------------
@@ -108,16 +53,14 @@
                alert("Sorry, the alpha preview requires Firefox 4.x. Later versions will support more browsers.");
                return;
             }
-            
-            
-            
+      
             // (1) create an OpenWebGlobe context using canvas
-            // first parameter is canvas-id and second is "fullscreen"
-            var ctx = ogCreateContextFromCanvas("canvas", true);
-            
+            g_context = ogCreateContextFromCanvas("canvas", true);
+   
             // (2) Create a virtual globe
-            var globe = ogCreateGlobe(ctx);
+            var globe = ogCreateGlobe(g_context);
             
+
             // (3) Add image and an elevation layers
             var imgBlueMarble500 = 
             {
@@ -147,27 +90,10 @@
          
             // (4) Set the "Render-Callback" function.
             // The callback function will be called everytime a frame is drawn.
-            ogSetRenderFunction(ctx, OnRender);
+            ogSetRenderFunction(g_context, OnRender);
             
             // (5) Set the background color
-            ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
-            
-            /*
-            engine = new engine3d();
-           
-            // Set Callbacks:
-            engine.SetInitCallback(OnInit);
-            engine.SetTimerCallback(OnTimer);
-            engine.SetRenderCallback(OnRender);
-            engine.SetResizeCallback(OnResize);
-            engine.SetKeyDownCallback(OnKey)
-            engine.SetMouseDownCallback(OnMouse);
-            
-            // Start engine...
-            
-            engine.InitEngine("canvas",true);  // (canvasid, fullscreen)
-            engine.CreateScene();               // Create Globe Scene
-            engine.SetClearColor(0.5,0.5,1,1);*/
+            ogSetBackgroundColor(g_context, 0.2,0.2,0.7,1);
          }
          
          

@@ -149,7 +149,7 @@ function _CreateObject(type, parent, options)
    
    return newobject;
 }
-
+goog.exportSymbol('_CreateObject', _CreateObject);
 //##############################################################################
 // ** GENERAL OBJECT FUNCTIONS **
 //##############################################################################

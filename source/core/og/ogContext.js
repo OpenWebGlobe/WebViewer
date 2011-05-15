@@ -260,12 +260,6 @@ ogContext.prototype.GetHeight = function()
  */
 ogContext.prototype.ParseOptions = function(options)
 {
-   if (options == null)
-   {
-      goog.debug.Logger.getLogger('owg.ogContext').warning("** WARNING: no options for context creation!");
-      return;  // no options!!
-   }
-   
    this.cbfInit = options["cbfInit"];
    this.cbfExit = options["cbfExit"];
    this.cbfResize = options["cbfResize"];

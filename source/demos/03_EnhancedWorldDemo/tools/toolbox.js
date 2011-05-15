@@ -148,11 +148,8 @@ function getStyle(oElm, strCssRule){
 	return strValue;
 }
 
-
-
-goog.exportSymbol('ToolBox', ToolBox);
-
 /*
+goog.exportSymbol('ToolBox', ToolBox);
 goog.exportProperty(ToolBox.prototype, 'SetCanvasContent', CanvasTexture.prototype.SetCanvasContent);
 goog.exportProperty(ToolBox.prototype, 'DrawToCanvas2D', CanvasTexture.prototype.DrawToCanvas2D);
 goog.exportProperty(ToolBox.prototype, 'GenerateText', CanvasTexture.prototype.GenerateText);

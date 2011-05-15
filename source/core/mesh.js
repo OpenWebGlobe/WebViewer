@@ -911,7 +911,7 @@ Mesh.prototype.UpdateBillboardMatrix = function()
 
 /**
  * @description copies data from another meshclass into this mesh-class. e.g. used for icon-pois
- * @ parame {Mesh} mesh the mesh object from wich the data will be copied.
+ * @param {Mesh} mesh the mesh object from wich the data will be copied.
  */
 Mesh.prototype.CopyFrom = function(mesh)
 {

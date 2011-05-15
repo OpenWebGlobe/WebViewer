@@ -121,9 +121,19 @@ CoordinatesTool.prototype.onclick = function(eventData)
    
    //here call the web globe picking method...
    //and switch off the compass!
-   var pickresult = new Object();
-   engine.PickGlobe(eventData.clientX, eventData.clientY, pickresult);
-   this.display.innerHTML = "<p class='pickCoordinatesTooldisplay'>Latitude: "+pickresult.lat+"<br><br>Longitude: "+pickresult.lng+"<br><br>Elevation: "+pickresult.elv+"</p>";    
+   //var pickresult = new Object();
+   //engine.PickGlobe(eventData.clientX, eventData.clientY, pickresult);
+   var scene = ogGetScene(g_context);
+   var result = ogPickGlobe(scene, eventData.clientX, eventData.clientY);
+   
+   if (result[0])
+   {
+      this.display.innerHTML = "<p class='pickCoordinatesTooldisplay'>Latitude: "+result[1]+"<br><br>Longitude: "+result[2]+"<br><br>Elevation: "+result[3]+"</p>";
+   }
+   else
+   {
+      this.display.innerHTML = "<p class='pickCoordinatesTooldisplay'>no pick result!</p>";
+   }
 }
 
 
