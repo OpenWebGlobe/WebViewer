@@ -10,3 +10,7 @@
 # build server:
 /cloc.exe
 /code_stats.bat
+
+#internal tests
+/source/tests
+

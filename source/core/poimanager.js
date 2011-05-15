@@ -45,13 +45,19 @@ function PoiManager(engine)
    this.poiTextMeshes = new Array();
    /** @type Array.<number>*/
    this.refTextCounts = new Array();
-
 }
 
 
-PoiManager.prototype.CreatePoi = function(text,style,imgurl)
+/**
+ * @description Creates a new Poi.
+ * @param {string} text the poi text
+ * @param {PoiTextStyle} style the text style definition object.
+ * @param {string} imgurl 
+ * @param {PoiIconStyle} iconstyle the poi icon style definition.
+ */
+PoiManager.prototype.CreatePoi = function(text,style,imgurl,iconstyle)
 {
-   poi = new Poi(this.engine);
+   var poi = new Poi(this.engine);
    
    poi.imgurl = imgurl;
    poi.style = style;
@@ -60,7 +66,7 @@ PoiManager.prototype.CreatePoi = function(text,style,imgurl)
   
   if(imgurl)
   {
-   poi.iconMesh = this.CreateIconMesh(imgurl); 
+   poi.iconMesh = this.CreateIconMesh(imgurl,iconstyle); 
   }
   if(text)
   {
@@ -72,7 +78,10 @@ PoiManager.prototype.CreatePoi = function(text,style,imgurl)
 
 
 
-
+/**
+ * @description Free memory
+ * @param {Poi} poi the poi to delete.
+ */
 PoiManager.prototype.DestroyPoi = function(poi)
 {
    if(poi.iconMesh)
@@ -87,27 +96,28 @@ PoiManager.prototype.DestroyPoi = function(poi)
 }
 
 
+
 /**
- * @description Returns a Mesh with the specififc icon as texture.
+ * @description Returns a Mesh with the specific icon as texture.
  * @param {url} url the icon url.
+ * @param {PoiIconStyle} iconstyle 
  */
-PoiManager.prototype.CreateIconMesh = function(url)
+PoiManager.prototype.CreateIconMesh = function(url,iconstyle)
 {
    var r = this.poiMeshes[url];
    if(r)
    {
       this.refCounts[url] = this.refCounts[url]+1;      
-      var r_new = new Mesh(engine);
+      var r_new = new Mesh(this.engine);
       r_new.CopyFrom(r);
       r_new.meshWidth = r.meshWidth; //appended attributes, they will not copyed by mesh's copy function.
-      r_new.meshHeigth = r.meshHeigth;
+      r_new.meshHeight = r.meshHeight;
       this.poiMeshes[url] = r_new;
    }
    else
    {
-     
-      this.canvastexture = new CanvasTexture(engine);  
-      var r_new = this.canvastexture.CreateTexturedMesh("","Symbol",url);
+      this.canvastexture = new CanvasTexture(this.engine);  
+      var r_new = this.canvastexture.CreateIconMesh(url,iconstyle);
       this.refCounts[url] = 1;
       this.poiMeshes[url] = r_new;
       this.canvastexture = null;
@@ -141,26 +151,27 @@ PoiManager.prototype.DestroyIconMesh = function(url)
 /**
  * @description Returns a Mesh with the text in specific style as texture.
  * @param {string} text the poi text.
- * @param {string} style the style e.g. "RB", "WB"...
+ * @param {PoiTextStyle} style 
  */
 PoiManager.prototype.CreateTextMesh = function(text,style)
 {
-   var r = this.poiTextMeshes[text+style];
+   console.log(text+style.id);
+   var r = this.poiTextMeshes[text+style.id];
    if(r)
    {
-      this.refTextCounts[text+style] = this.refTextCounts[text+style]+1;      
-      var r_new = new Mesh(engine);
+      this.refTextCounts[text+style.id] = this.refTextCounts[text+style.id]+1;      
+      var r_new = new Mesh(this.engine);
       r_new.CopyFrom(r);
       r_new.meshWidth = r.meshWidth; //appended attributes, thy will not copyed by mesh's copy function.
-      r_new.meshHeigth = r.meshHeigth;
-      this.poiTextMeshes[text+style] = r_new;
+      r_new.meshHeight = r.meshHeight;
+      this.poiTextMeshes[text+style.id] = r_new;
    }
    else
    {
-      this.canvastexture = new CanvasTexture(engine); //why is this needed?
-      var r_new = this.canvastexture.CreateTexturedMesh(text,style);
-      this.refTextCounts[text+style] = 1;
-      this.poiTextMeshes[text+style] = r_new;
+      this.canvastexture = new CanvasTexture(this.engine); 
+      var r_new = this.canvastexture.CreateTextMesh(text,style);
+      this.refTextCounts[text+style.id] = 1;
+      this.poiTextMeshes[text+style.id] = r_new;
       this.canvastexture = null;
    }  
    return r_new;
@@ -170,21 +181,50 @@ PoiManager.prototype.CreateTextMesh = function(text,style)
 
 /**
  * @description Free memory.
- *  @param {string} text the poi text.
- * @param {string} style the style e.g. "RB", "WB"...
+ * @param {string} text the poi text.
+ * @param {PoiTextStyle} style 
  */
 PoiManager.prototype.DestroyTextMesh = function(text,style)
 {   
-   var numInstances = this.refTextCounts[text+style];
-   this.refTextCounts[text+style] = numInstances-1;
+   var numInstances = this.refTextCounts[text+style.id];
+   this.refTextCounts[text+style.id] = numInstances-1;
    
-   if(this.refTextCounts[text+style] == 0)
+   if(this.refTextCounts[text+style.id] == 0)
    {
       //remove from poi array
-      this.poiTextMeshes[text+style].texture.Destroy();
-      delete(this.poiTextMeshes[text+style]);
-      delete(this.refTextCounts[text+style]);
+      this.poiTextMeshes[text+style.id].texture.Destroy();
+      delete(this.poiTextMeshes[text+style.id]);
+      delete(this.refTextCounts[text+style.id]);
    }
+}
+
+
+/**
+ * @description Changes the Poi Icon.
+ */
+PoiManager.prototype.ChangePoiIcon = function(poi,url,style)
+{
+   
+   poi.iconMesh = this.CreateIconMesh(url,style);
+   poi.SetPosition(poi.lat,poi.lng,poi.elv,poi.signElv);
+   this.DestroyIconMesh(poi.imgurl); 
+   poi.imgurl = url;
+   
+}
+
+
+/**
+ * @description Changes the poi text.
+ */
+PoiManager.prototype.ChangePoiText = function(poi,text,style)
+{
+   
+   poi.textMesh = this.CreateTextMesh(text,style);
+   poi.SetPosition(poi.lat,poi.lng,poi.elv,poi.signElv);
+   this.DestroyTextMesh(poi.text,style);
+   poi.text = text;
+   
+   
 }
 
 
