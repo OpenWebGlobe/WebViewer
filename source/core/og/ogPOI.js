@@ -91,9 +91,16 @@ ogPOI.prototype.ParseOptions = function(options)
    var context = scene.parent;
    
    this.poi = context.engine.poimanager.CreatePoi(text);
-   this.poi.SetPosition(position[0], position[1], position[2], 0);
+   // todo: fix lat/lng -> lng/lat !!!
+   this.poi.SetPosition(position[1], position[0], position[2], 0);
    this.poi.SetSize(size);
    
+   var poirenderer = this._GetPoiRenderer();
+   
+   if (poirenderer)
+   {
+      poirenderer.AddPoi(this.poi);
+   }
    
 }
 //------------------------------------------------------------------------------
@@ -103,6 +110,21 @@ ogPOI.prototype.ParseOptions = function(options)
  */
 ogPOI.prototype._OnDestroy = function()
 {
+   /** @type ogScene */
+   var scene = this.parent;
+   /** @type ogContext */
+   var context = scene.parent;
+   
+     /** @type PoiRenderer */
+   var poirenderer = this._GetPoiRenderer();
+   
+   if (poirenderer)
+   {
+      poirenderer.RemovePoi(this.poi);
+   }
+   /** @type PoiManager */
+   var poimgr = context.engine.poimanager;
+   poimgr.DestroyPoi(this.poi);
    
 }
 //------------------------------------------------------------------------------
@@ -162,4 +184,29 @@ ogPOI.prototype.Show = function()
    this.hide = false;
 }
 //------------------------------------------------------------------------------
+/**
+ *  @returns {PoiRenderer} the poi-renderer
+ */
+ogPOI.prototype._GetPoiRenderer = function()
+{
+   /** @type PoiRenderer */
+   var renderer = null;
+   /** @type ogScene */
+   var scene = this.parent;
+   /** @type ogContext */
+   var context = scene.parent;
+   // Get the engine
+   /** @type engine3d */
+   var engine = context.engine;
+   
+   // test if there is a scenegraph attached
+   if (engine.scene)
+   {
+      if (engine.scene.nodeRenderObject)
+      {
+         renderer = engine.scene.nodeRenderObject.poirenderer;  
+      }
+   }
+   return renderer;
+}
 

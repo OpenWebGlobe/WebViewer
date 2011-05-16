@@ -37,7 +37,7 @@ function _RegisterObject(obj)
    _g_objects.push(obj);
 }
 //------------------------------------------------------------------------------
-/** @description unregister object*/ 
+/** @description unregister object*/
 /** @ignore */
 function _UnregisterObject(objid)
 {

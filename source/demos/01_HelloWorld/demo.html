@@ -50,10 +50,10 @@ function OnMouseDown(context, button, mx, my)
 	var world = ogGetWorld(scene);
 	
 	var result = ogPickGlobe(scene, mx, my);
-	if (result[0])
+	/*if (result[0])
 	{
 		alert("hit: "+ result[1]+ ", " + result[2] + ", " + result[3]);
-	}
+	}*/
 }
 
 function main()
@@ -95,7 +95,7 @@ function main()
 	//------------ Add POI with default style -----------------------------------
 	var scene = ogGetScene(ctx);
 	var options = {};
-	options.text = "Hello World";
+	options.text = "Hello World! 世界你好";
 	options.position = [7.66, 46.13, 6000];
 	options.size = 50;
 	var poi = ogCreatePOI(scene, options);

@@ -24,6 +24,7 @@
 goog.provide('owg.RenderObjectNode');
 
 goog.require('owg.GlobeRenderer');
+goog.require('owg.PoiRenderer')
 goog.require('owg.ScenegraphNode');
 
 /**
@@ -37,6 +38,8 @@ function RenderObjectNode()
       this.globerenderer = null;
       /** @type vec3 */
       this.camera = new vec3();
+      /** @type PoiRenderer */
+      this.poirenderer = null;
       
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -48,6 +51,7 @@ function RenderObjectNode()
       this.OnRender = function()
       {
          this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
+         this.poirenderer.Render(this.camera, this.engine.matModelViewProjection);
       }
       
       //------------------------------------------------------------------------
@@ -61,6 +65,7 @@ function RenderObjectNode()
       this.OnInit = function()
       {
             this.globerenderer = new GlobeRenderer(this.engine);
+            this.poirenderer = new PoiRenderer(this.engine);
       }
       
       //------------------------------------------------------------------------

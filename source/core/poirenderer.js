@@ -19,77 +19,68 @@
 #                           martin.christen@fhnw.ch                            #
 ********************************************************************************
 *     Licensed under MIT License. Read the file LICENSE for more information   *
-*******************************************************************************/      
+*******************************************************************************/
 
-goog.provide('owg.ogScene');
-
-goog.require('owg.ObjectDefs');
-
-goog.require('owg.ogObject');
-goog.require('owg.ogWorld');
-goog.require('owg.ogCamera');
+goog.provide('owg.PoiRenderer');
 
 //------------------------------------------------------------------------------
-/**
+/** 
+ * @class PoiRenderer
  * @constructor
- * @description Scene class (OpenWebGlobe object)
- * @author Martin Christen, martin.christen@fhnw.ch
+ * 
+ * @author Martin Christen martin.christen@fhnw.ch
+ * 
+ * @param {engine3d} engine
  */
-function ogScene()
+function PoiRenderer(engine)
 {
-   /** @type string */
-   this.name = "ogScene";
-   /** @type number */
-   this.type = OG_OBJECT_SCENE;
-   /** @type ogWorld */
-   this.world = null;
-   /** @type ogCamera */
-   this.activecamera = null;
-   /** @type number */
-   this.scenetype = OG_SCENE_3D_ELLIPSOID_WGS84;
+   /** @type engine3d */
+   this.engine = engine;
+   
+   /** @type Array.<Poi> */
+   this.poiarray = [];
+}
 
-   
-}
-//------------------------------------------------------------------------------
-ogScene.prototype = new ogObject();
 //------------------------------------------------------------------------------
 /**
-* @description parse options
-* @param {Object} options
-* @ignore
-*/
-ogScene.prototype.ParseOptions = function(options)
+ * @description Render visible Poi
+ * @param {vec3} vCameraPosition
+ * @param {mat4} matModelViewProjection
+ */
+PoiRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
 {
-   if (options == null)
+   // todo: frustum culling etc.
+   for (var i=0;i<this.poiarray.length;i++)
    {
-      goog.debug.Logger.getLogger('owg.ogScene').warning("** ERROR: no options for scene creation!");
-      return;  // no options!!
+      this.poiarray[i].Draw();
    }
    
-   if (options["type"])
-   {
-      this.scenetype = options["type"];
-   }
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description add poi to scene
+ * @param {Poi} poi
+ */
+PoiRenderer.prototype.AddPoi = function(poi)
+{
+   this.poiarray.push(poi);
 }
 //------------------------------------------------------------------------------
 /**
-* @description Pick globe
-* @param {number} mx x-coord of mouse
-* @param {number} my y-coord of mouse
-*/
-ogScene.prototype.Pick = function(mx, my)
+ * @description remove poi from scene
+ * @param {Poi} poi
+ */
+PoiRenderer.prototype.RemovePoi = function(poi)
 {
-   /** @type ogContext */
-   var context = this.parent;
-   /** @type Object */
-   var pickresult = {};
-   context.engine.PickGlobe(mx, my, pickresult);
-   
-   var result = new Array(4);
-   result[0] = pickresult["hit"];
-   result[1] = pickresult["lng"];
-   result[2] = pickresult["lat"];
-   result[3] = pickresult["elv"];
-   
-   return result;
+   for (var i=0;i<this.poiarray.length;i++)
+   {
+      if (this.poiarray[i] == poi)
+      {
+         this.poiarray.splice(i, 1);
+         return;
+      }
+   }
 }
+
+
