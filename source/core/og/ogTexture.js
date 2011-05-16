@@ -115,7 +115,7 @@ ogTexture.prototype.ParseOptions = function(options)
 
 //------------------------------------------------------------------------------
 
-ogTexture.prototype.Destroy = function()
+ogTexture.prototype._OnDestroy = function()
 {
    if (this.texture)
    {

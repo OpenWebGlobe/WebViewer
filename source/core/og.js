@@ -938,5 +938,108 @@ function ogRemoveElevationLayer(layer_id)
 }
 goog.exportSymbol('ogRemoveElevationLayer', ogRemoveElevationLayer);
 //------------------------------------------------------------------------------
+//##############################################################################
+// ** POI OBJECT **
+//##############################################################################
+//------------------------------------------------------------------------------
+/**
+* @description Create a POI
+* @param {number} scene_id
+* @param {Object} options
+* @returns {number} poi_id
+*/
+function ogCreatePOI(scene_id, options)
+{
+   // test if scene_id is a valid scene
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      var POI = _CreateObject(OG_OBJECT_POI, scene, options);
+      return POI.id;
+   }
+   
+   return -1;
 
+}
+goog.exportSymbol('ogCreatePOI', ogCreatePOI);
+//------------------------------------------------------------------------------
+/**
+ * @description Destroy POI, free all memory
+ * @param {number} poi_id the POI to be destroyed
+ */
+function ogDestroyPOI(poi_id)
+{
+   // test if scene_id is a valid scene
+   var POI = _GetObjectFromId(poi_id);
+   if (POI && POI.type == OG_OBJECT_POI)
+   {
+      POI.UnregisterObject();
+   }
+}
+goog.exportSymbol('ogDestroyPOI', ogDestroyPOI);
+//------------------------------------------------------------------------------
+/**
+ * @description Change text of POI
+ * @param {number} poi_id the POI
+ */
+function ogChangePOIText(poi_id, text)
+{
+   
+}
+goog.exportSymbol('ogChangePOIText', ogChangePOIText);
+//------------------------------------------------------------------------------
+/**
+ * @description Change POI Icon
+ * @param {number} poi_id the POI
+ */
+function ogChangePOIIcon(poi_id, url)
+{
+   
+}
+goog.exportSymbol('ogChangePOIIcon', ogChangePOIIcon);
+//------------------------------------------------------------------------------
+/**
+ * @description Change POI Size
+ * @param {number} poi_id the POI
+ * @param {number} size the new size
+ */
+function ogChangePOISize(poi_id, size)
+{
+   
+}
+goog.exportSymbol('ogChangePOISize', ogChangePOISize);
+//------------------------------------------------------------------------------
+/**
+ * @description Change POI Positions
+ * @param {number} poi_id the POI
+ * @param {number} lng Longitude
+ * @param {number} lat Latitude
+ * @param {number} elv Elevation
+ */
+function ogChangePOIPosition(poi_id, lng, lat, elv)
+{
+   
+}
+goog.exportSymbol('ogChangePOIPosition', ogChangePOIPosition);
+//------------------------------------------------------------------------------
+/**
+ * @description Hide POI
+ * @param {number} poi_id the POI
+ */
+function ogHidePOI(poi_id)
+{
+   
+}
+goog.exportSymbol('ogHidePOI', ogHidePOI);
+//------------------------------------------------------------------------------
+/**
+ * @description Show previously hidden POI
+ * @param {number} poi_id the POI
+ */
+function ogShowPOI(poi_id)
+{
+   
+}
+goog.exportSymbol('ogShowPOI', ogShowPOI);
+//------------------------------------------------------------------------------
 

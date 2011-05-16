@@ -21,9 +21,47 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
+goog.provide('owg.PoiManager');
+
+goog.require('owg.CanvasTexture');
+goog.require('owg.Poi');
+
+/**
+ * @typedef {{
+   id         : number,
+   fontString : string,  
+   backgroundColor : string,
+   fontColor : string,
+   lineWidth : number,
+   strokeStyle : string,
+   textAlign: string, 
+   fontSize : number,
+   shadowOffsetX : number,
+   shadowOffsetY : number,
+   shadowBlur : number,
+   shadowColor : string
+ * }}
+ */
+var PoiTextStyle;
+
+
+/** @typedef {{
+ * iconWidth : number,
+   iconHeight : number,
+   border : number,
+   backgroundColor : string,
+   shadowOffsetX : number,
+   shadowOffsetY : number,
+   shadowBlur : number,
+   shadowColor : string
+ * }}
+ */
+var PoiIconStyle;
+
+
 /** 
  * @class PoiManager
- * {@link http://www.openwebglobe.org} 
+ * @constructor
  * 
  * @description Handles the poi-mesh creation. If a Poi-mesh already exists,
  * the mesh will be copied not new loaded.
@@ -34,6 +72,7 @@
  */
 function PoiManager(engine)
 {
+   /** @type engine3d */
    this.engine = engine;
    /** @type Array.<Mesh>*/
    this.poiMeshes = new Array();
@@ -52,22 +91,22 @@ function PoiManager(engine)
  * @description Creates a new Poi.
  * @param {string} text the poi text
  * @param {PoiTextStyle} style the text style definition object.
- * @param {string} imgurl 
- * @param {PoiIconStyle} iconstyle the poi icon style definition.
+ * @param {string=} imgurl 
+ * @param {PoiIconStyle=} iconstyle the poi icon style definition.
  */
 PoiManager.prototype.CreatePoi = function(text,style,imgurl,iconstyle)
 {
    var poi = new Poi(this.engine);
    
-   poi.imgurl = imgurl;
    poi.textStyle = style;
    poi.text = text;
-   poi.iconStyle = iconstyle;
    
   
-  if(imgurl)
+  if(imgurl && iconstyle)
   {
-   poi.iconMesh = this.CreateIconMesh(imgurl,iconstyle); 
+   poi.imgurl = imgurl;
+   poi.iconStyle = iconstyle;
+   poi.iconMesh = this.CreateIconMesh(imgurl,poi.iconStyle); 
   }
   if(text)
   {
@@ -91,7 +130,7 @@ PoiManager.prototype.DestroyPoi = function(poi)
    }
    if(poi.textMesh)
    {
-      this.DestroyTextMesh(poi.text,poi.style);
+      this.DestroyTextMesh(poi.text,poi.textStyle);
    }
    poi = null; 
 }
@@ -100,7 +139,7 @@ PoiManager.prototype.DestroyPoi = function(poi)
 
 /**
  * @description Returns a Mesh with the specific icon as texture.
- * @param {url} url the icon url.
+ * @param {string} url the icon url.
  * @param {PoiIconStyle} iconstyle 
  */
 PoiManager.prototype.CreateIconMesh = function(url,iconstyle)
@@ -130,7 +169,7 @@ PoiManager.prototype.CreateIconMesh = function(url,iconstyle)
 
 /**
  * @description Free memory
- * @param {url} url the icon url.
+ * @param {string} url the icon url.
  */
 PoiManager.prototype.DestroyIconMesh = function(url)
 {   
@@ -156,7 +195,7 @@ PoiManager.prototype.DestroyIconMesh = function(url)
  */
 PoiManager.prototype.CreateTextMesh = function(text,style)
 {
-   console.log(text+style.id);
+   //console.log(text+style.id);
    var r = this.poiTextMeshes[text+style.id];
    if(r)
    {
@@ -229,12 +268,10 @@ PoiManager.prototype.ChangePoiText = function(poi,text,style)
 }
 
 
+//------------------------------------------------------------------------------
 
+goog.exportSymbol('PoiManager', PoiManager);
+goog.exportProperty(PoiManager.prototype, 'CreatePoi',PoiManager.prototype.CreatePoi);
 
-
-
-
-
-
-
+//------------------------------------------------------------------------------
 

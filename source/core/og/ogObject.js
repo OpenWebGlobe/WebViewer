@@ -45,7 +45,7 @@ function _UnregisterObject(objid)
    {
       if (_g_objects[i].id == objid)
       {
-         _g_objects[i].Destroy();
+         _g_objects[i]._OnDestroy();
          _g_objects.splice(i,1);
          return;
       }
@@ -129,7 +129,7 @@ function ogObject()
 
 //------------------------------------------------------------------------------
 
-ogObject.prototype.Destroy = function()
+ogObject.prototype._OnDestroy = function()
 {
    // called when object is destroyed   
 }

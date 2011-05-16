@@ -56,9 +56,8 @@ function CanvasTexture(engine)
 
 /**
  * @description Generates a mesh with a canvas2d as texture. The mesh size depends on the text length and style.
- * @param {string}  text the poi text.
- * @param {string} string to set predefined style e.g. "RB","WB" or "Symbol".
- * @param {string} imgurl url for poi icon.
+ * @param {string} text the poi text.
+ * @param {PoiTextStyle} style POI text style
  * @return {Mesh}
  */
 CanvasTexture.prototype.CreateTextMesh =  function(text,style)
@@ -76,7 +75,7 @@ CanvasTexture.prototype.CreateTextMesh =  function(text,style)
    this.DrawToCanvas(text,style); 
 
    //create mesh
-   this.mesh = new Mesh(engine);
+   this.mesh = new Mesh(this.engine);
    this.mesh.SetTexture(this.tex);
 
    var vert = new Array();
@@ -100,9 +99,8 @@ CanvasTexture.prototype.CreateTextMesh =  function(text,style)
 
 /**
  * @description Generates a mesh with a canvas2d as texture. The mesh size depends on the text length and style.
- * @param {string}  text the poi text.
- * @param {string} string to set predefined style e.g. "RB","WB" or "Symbol".
- * @param {string} imgurl url for poi icon.
+ * @param {string} url the icon
+ * @param {PoiIconStyle} iconstyle 
  * @return {Mesh}
  */
 CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
@@ -119,7 +117,7 @@ CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
    this.DrawIconToCanvas(url,iconstyle); 
 
    //create mesh
-   this.mesh = new Mesh(engine);
+   this.mesh = new Mesh(this.engine);
    this.mesh.SetTexture(this.tex);
 
    var vert = new Array();
@@ -139,14 +137,10 @@ CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
    return this.mesh;
 }
 
-
-
-
 /**
  * Draws the canvas 2d.
  * @param {string} text the poi text.
- * @param {string} styleObject style definition.
- * @param {string} imgurl url for poi icon.
+ * @param {Object} styleObject style definition.
  */
 CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
 {           
@@ -163,8 +157,8 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
             this.ctx.restore();
 
 
-            this.meshWidth = textWidth+2*parseInt(styleObject.lineWidth)+Math.abs(styleObject.shadowOffsetX)+Math.abs(styleObject.shadowOffsetY)+styleObject.shadowBlur;
-            this.meshHeight = parseInt(styleObject.fontSize)+2*parseInt(styleObject.lineWidth)+Math.abs(styleObject.shadowOffsetY)+styleObject.shadowBlur;      
+            this.meshWidth = textWidth+2*parseInt(styleObject.lineWidth, 10)+Math.abs(styleObject.shadowOffsetX)+Math.abs(styleObject.shadowOffsetY)+styleObject.shadowBlur;
+            this.meshHeight = parseInt(styleObject.fontSize, 10)+2*parseInt(styleObject.lineWidth, 10)+Math.abs(styleObject.shadowOffsetY)+styleObject.shadowBlur;      
             
             
             //get next power of two    
@@ -211,9 +205,8 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
 
 /**
  * Draws the canvas 2d.
- * @param {string} text the poi text.
- * @param {string} styleObject style definition.
  * @param {string} imgurl url for poi icon.
+ * @param {PoiIconStyle} iconstyle style definition for icon.
  */
 CanvasTexture.prototype.DrawIconToCanvas = function(imgurl,iconstyle)
 {           
@@ -282,8 +275,8 @@ CanvasTexture.prototype.ToGPU = function()
 {
      this.gl.enable(this.gl.TEXTURE_2D);
      this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex.texture); 
-     this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, false);
-     this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA,engine.gl.RGBA,this.gl.UNSIGNED_BYTE, this.texCanvas);
+     this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, 0);
+     this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.engine.gl.RGBA,this.gl.UNSIGNED_BYTE, this.texCanvas);
      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
@@ -309,7 +302,7 @@ CanvasTexture.prototype.ToGPU = function()
  */ 
 CanvasTexture.prototype.GetPoleMesh = function(x,y,z,x2,y2,z2)
 {
-   this.poleMesh = new Mesh(engine);
+   this.poleMesh = new Mesh(this.engine);
 
    var vert = new Array();
 
@@ -335,7 +328,7 @@ CanvasTexture.prototype.Destroy = function()
 {
    if(this.mesh)
    {
-      mesh.Destroy();
+      this.mesh.Destroy();
       this.mesh = null;
    }
    
@@ -440,7 +433,7 @@ CanvasTexture.prototype.GenerateVideoPoi = function(url)
 
 
 
-goog.exportSymbol('CanvasTexture', CanvasTexture);
-goog.exportProperty(CanvasTexture.prototype, 'SetCanvasContent', CanvasTexture.prototype.SetCanvasContent);
-goog.exportProperty(CanvasTexture.prototype, 'DrawToCanvas2D', CanvasTexture.prototype.DrawToCanvas2D);
-goog.exportProperty(CanvasTexture.prototype, 'GenerateText', CanvasTexture.prototype.GenerateText);
+//goog.exportSymbol('CanvasTexture', CanvasTexture);
+//goog.exportProperty(CanvasTexture.prototype, 'SetCanvasContent', CanvasTexture.prototype.SetCanvasContent);
+//goog.exportProperty(CanvasTexture.prototype, 'DrawToCanvas2D', CanvasTexture.prototype.DrawToCanvas2D);
+//goog.exportProperty(CanvasTexture.prototype, 'GenerateText', CanvasTexture.prototype.GenerateText);

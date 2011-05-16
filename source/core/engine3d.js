@@ -33,6 +33,7 @@ goog.require('owg.Texture');
 goog.require('owg.TraversalState');
 goog.require('owg.mat4');
 goog.require('owg.vec3');
+goog.require('owg.PoiManager');
 
 /** 
  * 
@@ -309,6 +310,10 @@ function engine3d()
    this.nodata = null;
    
    this.worldtype = 1; // 0: custom, 1: wgs84, 2: flat, 3: 2D
+   
+   // POI Manager
+   /** @type PoiManager */
+   this.poimanager = null;
       
 }
 
@@ -378,6 +383,9 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    // Create Nodata texture
    this.nodata = new Texture(this);
    this.nodata.LoadNoDataTexture();
+   
+   // Create Poi Manager
+   this.poimanager = new PoiManager(this);
    
    // call init callback
 	if (this.cbfInit)

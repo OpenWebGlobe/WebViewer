@@ -32,14 +32,13 @@ goog.require('owg.Texture');
 
 /** 
  * @class poi
- * {@link http://www.openwebglobe.org} 
+ * @constructor
  * 
  * @description A "Point Of Interest" Class.
  * 
  * @author Benjamin Loesch benjamin.loesch@fhnw.ch
  * 
  * @param {engine3d} engine
- * @param {poiManager} poiManager a PoiManager Object.
  */
  function Poi(engine)
  {
@@ -47,63 +46,90 @@ goog.require('owg.Texture');
    this.engine = engine;
    /** @type WebGLRenderingContext */
    this.gl = engine.gl;
-   /** @type number*/
+   /** @type number */
    this.lat = 0.0;
-   /** @type number*/
+   /** @type number */
    this.lng = 0.0;
-   /** @type number*/
+   /** @type number */
    this.elv = 0.0;
-   /** @type number*/
+   /** @type number */
    this.signElv = 0.0;
-   /** @type boolean*/
+   /** @type boolean */
    this.pole = false;
-   /** @type mesh*/
+   /** @type Mesh */
    this.poleMesh = null;
-   /** @type mesh*/
+   /** @type Mesh */
    this.iconMesh = null;
-   /** @type mesh*/
+   /** @type Mesh */
    this.textMesh = null;
-   /** @type number*/
+   /** @type number */
    this.scale = 20;
-   /** @type string*/
+   /** @type string */
    this.imgurl = "";
-   /** @type string*/
-   this.style = "";
-   /** @type string*/
+   /** @type string */
    this.text = "";
-   /** @type CanvasTexture*/
+   /** @type CanvasTexture */
    this.canvasTexture = new CanvasTexture(engine);
-   /** @type number*/
+   /** @type number */
    this.poiWidth = 0;
-   /** @type number*/
+   /** @type number */
    this.poiHeight = 0;
-   /** @type poiTextStyle*/
-   this.textStyle = null;
-   /** @type poiIconStyle*/
-   this.iconStyle = null;
+   
+   /** @type PoiIconStyle */
+   this.iconStyle = {
+      "iconWidth" : 64,
+      "iconHeight" : 64,
+      "border" : 0,
+      "backgroundColor" : 'rgba(0, 255, 0, 0)',
+      "shadowOffsetX" : 0,
+      "shadowOffsetY" : 0,
+      "shadowBlur" : 0,
+      "shadowColor" : 'rgba(255, 0, 0,0)'
+      };
+
+   /** @type PoiTextStyle */
+   this.textStyle = {
+      "id"         : 1,
+      "fontString" : 'bold 48px Arial',  
+      "backgroundColor" : 'rgba(255,255,255,0.5)',
+      "fontColor" : 'rgba(255,0,0,1.0)',
+      "lineWidth" : 3,
+      "strokeStyle" : 'rgba(0,0,0,1.0)',
+      "textAlign" : 'left', 
+      "fontSize" : 48,
+      "shadowOffsetX" : 2,
+      "shadowOffsetY" : 2,
+      "shadowBlur" : 5,
+      "shadowColor" : 'rgba(0, 255, 0, 1.0)'
+      };
  }
  
  
  /**
  * @description Set the poi content. If no text is desired just use "" for as text argument.
  * @param {string} text the poi text.
- * @param {string} string to set predefined style.
- *                   RB : Red text, black text border.
- *                   WB : White text, black text border.
- *                   BB : White text, black text border, yellow semi-transparent background.
- * @param {string=} url poi icon url.
+ * @param {PoiTextStyle} textStyle
+ * @param {string=} timgurl poi icon url.
+ * @param {PoiIconStyle=} iconStyle icon style
  */ 
- Poi.prototype.SetContent = function(text,textStyle,imgurl,iconStyle)
+ Poi.prototype.SetContent = function(text,textStyle,timgurl,iconStyle)
  {
-  this.imgurl = imgurl;
+   if (timgurl)
+   {
+      this.imgurl = timgurl;
+   }
+   else
+   {
+      this.imgurl = "";
+   }
+  
   this.textStyle = textStyle;
   this.text = text;
-  this.iconStyle = iconStyle;
   
-  
-  if(imgurl)
+  if(timgurl && iconStyle)
   {
-    this.iconMesh = this.canvasTexture.CreateIconMesh(imgurl,iconStyle); 
+    this.iconStyle = iconStyle;
+    this.iconMesh = this.canvasTexture.CreateIconMesh(this.imgurl,iconStyle); 
   }
   this.canvasTexture = new CanvasTexture(this.engine);
   if(text)
@@ -191,7 +217,7 @@ goog.require('owg.Texture');
     }
 
     
-    engine.PushMatrices();
+    this.engine.PushMatrices();
     var mmat = new mat4();
     mmat.Scale(CARTESIAN_SCALE_INV*this.scale,CARTESIAN_SCALE_INV*this.scale,1)
     this.engine.SetModelMatrix(mmat);
@@ -205,7 +231,7 @@ goog.require('owg.Texture');
     {
       this.textMesh.Draw();
     }
-    engine.PopMatrices();
+    this.engine.PopMatrices();
     this.engine.gl.disable(this.engine.gl.BLEND);
  }
  
@@ -244,7 +270,7 @@ goog.require('owg.Texture');
       this.poleMesh.Destroy();
    }
    
-   this.pole = null;
+   this.pole = false;
    this.poleMesh = null;
    this.scale = 0;
    

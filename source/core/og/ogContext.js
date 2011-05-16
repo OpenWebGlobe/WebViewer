@@ -232,6 +232,7 @@ ogContext.prototype = new ogObject();
 //------------------------------------------------------------------------------
 /**
  * @description Returns the width of the context
+ * @returns {number} the width of the context
  */
 ogContext.prototype.GetWidth = function()
 {
@@ -244,6 +245,7 @@ ogContext.prototype.GetWidth = function()
 //------------------------------------------------------------------------------
 /**
  * @description Returns the height of the context
+ * @returns {number} the height of the context
  */
 ogContext.prototype.GetHeight = function()
 {
@@ -257,6 +259,7 @@ ogContext.prototype.GetHeight = function()
 //------------------------------------------------------------------------------
 /**
  * @description Parse options for context
+ * @param {Object} options the options for context creation
  */
 ogContext.prototype.ParseOptions = function(options)
 {
@@ -297,6 +300,10 @@ ogContext.prototype.ParseOptions = function(options)
 //------------------------------------------------------------------------------
 /**
  * @description Set background color (clear color)
+ * @param {number} r red component in range [0, 1]
+ * @param {number} g green component in range [0, 1]
+ * @param {number} b blue component in range [0, 1]
+ * @param {number} a blue component in range [0, 1]. In most cases this should be set to 1.
  */
 ogContext.prototype.SetBackgroundColor = function(r,g,b,a)
 {
@@ -309,6 +316,9 @@ ogContext.prototype.SetBackgroundColor = function(r,g,b,a)
 //------------------------------------------------------------------------------
 /**
  * @description Set text color
+ * @param {number} r red component in range [0, 1]
+ * @param {number} g green component in range [0, 1]
+ * @param {number} b blue component in range [0, 1]
  */
 ogContext.prototype.SetTextColor = function(r,g,b)
 {
@@ -317,7 +327,10 @@ ogContext.prototype.SetTextColor = function(r,g,b)
 
 //------------------------------------------------------------------------------
 /**
- * @description Draw text 
+ * @description Draw text
+ * @param {string} text the text to draw
+ * @param {number} x x-coordinate
+ * @param {number} y y-coordinate
  */
 ogContext.prototype.DrawText = function(text, x, y)
 {
@@ -329,6 +342,7 @@ ogContext.prototype.DrawText = function(text, x, y)
 //------------------------------------------------------------------------------
 /**
  * @description Get text size
+ * @param {string} text the text
  */
 ogContext.prototype.GetTextSize = function(text)
 {
@@ -339,3 +353,13 @@ ogContext.prototype.GetTextSize = function(text)
    
    return null;
 }
+//------------------------------------------------------------------------------
+/**
+ * @description Get text size
+ */
+ogContext.prototype._OnDestroy = function()
+{
+   // #todo 
+}
+//------------------------------------------------------------------------------
+
