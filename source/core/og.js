@@ -819,7 +819,6 @@ function ogLoadTextureAsync(scene_id, url)
       var texture = _CreateObject(OG_OBJECT_TEXTURE, scene, textureoptions);
       return texture.id;
    }
-   
    return -1;
 }
 goog.exportSymbol('ogLoadTextureAsync', ogLoadTextureAsync);

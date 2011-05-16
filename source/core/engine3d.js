@@ -34,6 +34,7 @@ goog.require('owg.TraversalState');
 goog.require('owg.mat4');
 goog.require('owg.vec3');
 goog.require('owg.PoiManager');
+goog.require('owg.TextureManager');
 
 /** 
  * 
@@ -314,6 +315,9 @@ function engine3d()
    // POI Manager
    /** @type PoiManager */
    this.poimanager = null;
+   
+   /** @type TextureManager */
+   this.texturemanager = null;
       
 }
 
@@ -386,6 +390,9 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    
    // Create Poi Manager
    this.poimanager = new PoiManager(this);
+   
+   //Create TextureManager
+   this.texturemanager = new TextureManager(this);
    
    // call init callback
 	if (this.cbfInit)
