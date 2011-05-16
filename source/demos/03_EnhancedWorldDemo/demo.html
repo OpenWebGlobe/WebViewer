@@ -10,18 +10,20 @@
          <script type="text/javascript" src="../../../compiled/deps.js"></script>
          <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
          -->
-         <script type="text/javascript" src="openwebglobe.js"></script>
+         
          <script type="text/javascript" src="jquery-1.5.2.min.js"></script>
+         <script type="text/javascript" src="openwebglobe.js"></script>
          <script type="text/javascript" src="tools/toolbox.js"></script>
          <script type="text/javascript" src="tools/pickcoordinates.js"></script>
          <script type="text/javascript" src="tools/tool.js"></script>
          <script type="text/javascript" src="tools/coordinates.js"></script>
          <link rel="stylesheet" type="text/css" href="tools/toolstyle.css">
          <link rel="stylesheet" type="text/css" href="styles.css">
+            
 <style type="text/css">        
 </style>
 <script type="text/javascript">
-         
+               
          var g_context = -1;
       
       
@@ -98,28 +100,28 @@
          
          
          
-         $(document).ready(function() {
+         jQuery(document).ready(function() {
           
          /*
           *   Top-Row..............................................................
           */
          
             var topRowHandling = function(){
-              if ( parseInt($('#divTopRow').css("top")) > -80 )
+              if ( parseInt(jQuery('#divTopRow').css("top")) > -80 )
               {
                //scroll up
-               $('#divTopRow').animate({top:'-500'},1000,function(){$('#divTopRowTitle').toggle();});
-               $('#canvas').unbind('click');
+               jQuery('#divTopRow').animate({top:'-500'},1000,function(){jQuery('#divTopRowTitle').toggle();});
+               jQuery('#canvas').unbind('click');
               }
               else
               {
                //scroll down
-               $('#divTopRowTitle').toggle();
-               $('#divTopRow').animate({top:'0'},1000,function(){});
-               $('#canvas').click(topRowHandling);
+               jQuery('#divTopRowTitle').toggle();
+               jQuery('#divTopRow').animate({top:'0'},1000,function(){});
+               jQuery('#canvas').click(topRowHandling);
               }
              };
-            $('#divTopRow,#canvas').click(topRowHandling);
+            jQuery('#divTopRow,#canvas').click(topRowHandling);
                                           
             
        
@@ -128,22 +130,22 @@
           /*
            *   FHNW Logo..............................................................
            */ 
-            $('#divFhnwLogo').click(function(){ window.open("http://www.fhnw.ch/homepage");});
-            $('#divCampToCamp').click(function(){ window.open("http://www.camptocamp.com");});               
+            jQuery('#divFhnwLogo').click(function(){ window.open("http://www.fhnw.ch/homepage");});
+            jQuery('#divCampToCamp').click(function(){ window.open("http://www.camptocamp.com");});               
          
          
           /*
            *   Fly to feature..............................................................
            */
           
-            $('#divFlyToPullBtn').click(function(){
-              if ( parseInt($('#divFlyTo').css("left")) > -1 )
+            jQuery('#divFlyToPullBtn').click(function(){
+              if ( parseInt(jQuery('#divFlyTo').css("left")) > -1 )
               {
-                  $('#divFlyTo').animate({left:'-300'},1000,function(){});
+                  jQuery('#divFlyTo').animate({left:'-300'},1000,function(){});
               }
               else
               {
-                 $('#divFlyTo').animate({left:'0'},1000,function(){});
+                 jQuery('#divFlyTo').animate({left:'0'},1000,function(){});
               }
              });            
                
@@ -162,14 +164,14 @@
           /*
            *   Credits..................................
            */
-           $('#divCreditsBtn').click(function(){
-              if ( parseInt($('#divCredits').css("bottom")) > -1 )
+           jQuery('#divCreditsBtn').click(function(){
+              if ( parseInt(jQuery('#divCredits').css("bottom")) > -1 )
               {
-                  $('#divCredits').animate({bottom:'-250'},1000,function(){});
+                  jQuery('#divCredits').animate({bottom:'-250'},1000,function(){});
               }
               else
               {
-                 $('#divCredits').animate({bottom:'6px'},1000,function(){});
+                 jQuery('#divCredits').animate({bottom:'6px'},1000,function(){});
               }
              });
          
@@ -181,12 +183,12 @@
           /*
            *   Handle visibility on start-up..................................
            */      
-         $('#divFhnwLogo').show("slow");
-         $('#divCampToCamp').show("slow");
-         $('#divFlyTo').slideToggle("slow");
-         $('#divLikeButtons').slideToggle("slow");
-          //$('#divStats').slideToggle("slow");
-         $('#divCredits').slideToggle("slow");
+         jQuery('#divFhnwLogo').show("slow");
+         jQuery('#divCampToCamp').show("slow");
+         jQuery('#divFlyTo').slideToggle("slow");
+         jQuery('#divLikeButtons').slideToggle("slow");
+          //jQuery('#divStats').slideToggle("slow");
+         jQuery('#divCredits').slideToggle("slow");
          
   
          /*
@@ -202,13 +204,13 @@
           */
          function getPlaceSearchResults()
          {
-            var textInput = $('#placeSearchTb').val();
+            var textInput = jQuery('#placeSearchTb').val();
             while(textInput.indexOf(' ')!=-1)textInput = textInput.replace(' ','+'); //replace spaces with '+'
 
             //alert(textInput);
              queryUrl = "http://open.mapquestapi.com/nominatim/v1/search?"
  
-               $.getJSON(queryUrl,{ format:"json",
+               jQuery.getJSON(queryUrl,{ format:"json",
                                     q:textInput
                                     },
                                     _cbfAjaxQuery
@@ -220,16 +222,16 @@
           */
          function _cbfAjaxQuery(result)
          {
-             $("#placeList").empty();
+             jQuery("#placeList").empty();
             if(result.length>0)
             {
-            $.each(result,
+            jQuery.each(result,
                   function(index,content)
                   {
                      if(index<10)
                      {                         
-                        $("#placeList")
-                        .append($("<li>")
+                        jQuery("#placeList")
+                        .append(jQuery("<li>")
                         .addClass("placeSearchResult")
                         .text(content.display_name)
                         .attr("lat",content.lat)
@@ -241,8 +243,8 @@
             }
             else
             {
-               $("#placeList")
-                        .append($("<li>")
+               jQuery("#placeList")
+                        .append(jQuery("<li>")
                         .addClass("placeSearchResult")
                         .text("No place found..."));
             }
@@ -254,7 +256,7 @@
          function flyTo(lat,lon)
          {
             //engine.
-            $('#divFlyTo').animate({left:'-300'},1000,function(){}); //pull in menu
+            jQuery('#divFlyTo').animate({left:'-300'},1000,function(){}); //pull in menu
          }
         
          
