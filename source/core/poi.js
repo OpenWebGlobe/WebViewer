@@ -71,12 +71,16 @@ goog.require('owg.Texture');
    this.style = "";
    /** @type string*/
    this.text = "";
-   
-   this.canvasText = new CanvasTexture(engine);
+   /** @type CanvasTexture*/
+   this.canvasTexture = new CanvasTexture(engine);
+   /** @type number*/
    this.poiWidth = 0;
+   /** @type number*/
    this.poiHeight = 0;
-   
-   
+   /** @type poiTextStyle*/
+   this.textStyle = null;
+   /** @type poiIconStyle*/
+   this.iconStyle = null;
  }
  
  
@@ -89,19 +93,22 @@ goog.require('owg.Texture');
  *                   BB : White text, black text border, yellow semi-transparent background.
  * @param {string=} url poi icon url.
  */ 
- Poi.prototype.SetContent = function(text,style,imgurl)
+ Poi.prototype.SetContent = function(text,textStyle,imgurl,iconStyle)
  {
   this.imgurl = imgurl;
-  this.style = style;
+  this.textStyle = textStyle;
   this.text = text;
+  this.iconStyle = iconStyle;
+  
   
   if(imgurl)
   {
-  // this.iconMesh = this.poiManager.CreateIconMesh(imgurl); 
+    this.iconMesh = this.canvasTexture.CreateIconMesh(imgurl,iconStyle); 
   }
+  this.canvasTexture = new CanvasTexture(this.engine);
   if(text)
   {
-   //this.textMesh = this.poiManager.CreateTextMesh(text,style);
+    this.textMesh = this.canvasTexture.CreateTextMesh(text,textStyle);
   }
  }
 
@@ -155,7 +162,7 @@ goog.require('owg.Texture');
        var cart2 = new Array(3);
        this.geoCoord2.ToCartesian(cart2);
        this.pole = true;
-       this.poleMesh = this.canvasText.GetPoleMesh(cart[0],cart[1],cart[2],cart2[0],cart2[1],cart2[2]);
+       this.poleMesh = this.canvasTexture.GetPoleMesh(cart[0],cart[1],cart[2],cart2[0],cart2[1],cart2[2]);
      }
  }
  
@@ -219,13 +226,11 @@ goog.require('owg.Texture');
  */
  Poi.prototype.Destroy = function()
  {  
-   //this.canvasText.Destroy();
-   //this.canvasText = null;
+   this.canvasTexture = null;
    this.lat = 0;
    this.lng = 0;
    this.elv = 0;
-   this.poiManager.DestroyIconMesh(this.imgurl);
-   this.poiManager.DestroyTextMesh(this.text,this.style);
+
    if(this.iconMesh)
    {
       this.iconMesh.Destroy();
@@ -234,11 +239,15 @@ goog.require('owg.Texture');
    {
       this.textMesh.Destroy();
    }
-   /*
+   if(this.poleMesh)
+   {
+      this.poleMesh.Destroy();
+   }
+   
    this.pole = null;
    this.poleMesh = null;
    this.scale = 0;
-   */
+   
  }
  
 goog.exportSymbol('Poi', Poi); 
