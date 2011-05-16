@@ -66,12 +66,14 @@ function _fncKeyDown(evt)
    {
       var engine = _g_vInstances[i];
       engine.eventhandler.KeyDown(evt.keyCode, engine);
+      
+      if (_gcbfKeyDown)
+      {
+         _gcbfKeyDown(evt.keyCode, engine); 
+      }
    }
    
-   if (_gcbfKeyDown)
-   {
-      _gcbfKeyDown(evt.keyCode); 
-   }
+
    return;
 }
 
@@ -86,12 +88,14 @@ function _fncKeyUp(evt)
    {
       var engine = _g_vInstances[i];
       engine.eventhandler.KeyUp(evt.keyCode, engine);
+      
+      if (_gcbfKeyUp)
+      {
+      _gcbfKeyUp(evt.keyCode, engine);
+      }
    }
    
-   if (_gcbfKeyUp)
-   {
-      _gcbfKeyUp(evt.keyCode);
-   }
+
    return;
 }
 

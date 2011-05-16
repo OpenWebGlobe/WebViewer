@@ -90,18 +90,22 @@ function PoiManager(engine)
 /**
  * @description Creates a new Poi.
  * @param {string} text the poi text
- * @param {PoiTextStyle} style the text style definition object.
+ * @param {PoiTextStyle=} style the text style definition object.
  * @param {string=} imgurl 
  * @param {PoiIconStyle=} iconstyle the poi icon style definition.
+ * @returns Poi
  */
 PoiManager.prototype.CreatePoi = function(text,style,imgurl,iconstyle)
 {
    var poi = new Poi(this.engine);
    
-   poi.textStyle = style;
+   if (style)
+   {
+      poi.textStyle = style;
+   }
+   
    poi.text = text;
    
-  
   if(imgurl && iconstyle)
   {
    poi.imgurl = imgurl;
@@ -110,7 +114,7 @@ PoiManager.prototype.CreatePoi = function(text,style,imgurl,iconstyle)
   }
   if(text)
   {
-   poi.textMesh = this.CreateTextMesh(text,style);
+   poi.textMesh = this.CreateTextMesh(text, poi.textStyle);
   }
   
   return poi;

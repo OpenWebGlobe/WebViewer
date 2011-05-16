@@ -102,6 +102,9 @@ function _CreateObject(type, parent, options)
       case OG_OBJECT_TEXTURE:
          newobject = new ogTexture();
          break;
+      case OG_OBJECT_POI:
+         newobject = new ogPOI();
+         break;
       case OG_OBJECT_PIXELBUFFER:
          // not available yet...
          break;
@@ -945,13 +948,13 @@ goog.exportSymbol('ogRemoveElevationLayer', ogRemoveElevationLayer);
 /**
 * @description Create a POI
 * @param {number} scene_id
-* @param {Object} options
+* @param {PoiOptions} options
 * @returns {number} poi_id
 */
 function ogCreatePOI(scene_id, options)
 {
    // test if scene_id is a valid scene
-   var scene = _GetObjectFromId(scene_id);
+   var scene = /** @type ogScene */ _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
       var POI = _CreateObject(OG_OBJECT_POI, scene, options);
@@ -981,10 +984,15 @@ goog.exportSymbol('ogDestroyPOI', ogDestroyPOI);
 /**
  * @description Change text of POI
  * @param {number} poi_id the POI
+ * @param {string} text
  */
 function ogChangePOIText(poi_id, text)
 {
-   
+   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   if (POI && POI.type == OG_OBJECT_POI)
+   {
+      POI.ChangeText(text);
+   }
 }
 goog.exportSymbol('ogChangePOIText', ogChangePOIText);
 //------------------------------------------------------------------------------
@@ -994,7 +1002,11 @@ goog.exportSymbol('ogChangePOIText', ogChangePOIText);
  */
 function ogChangePOIIcon(poi_id, url)
 {
-   
+   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   if (POI && POI.type == OG_OBJECT_POI)
+   {
+      POI.ChangeIcon(url);
+   }
 }
 goog.exportSymbol('ogChangePOIIcon', ogChangePOIIcon);
 //------------------------------------------------------------------------------
@@ -1005,7 +1017,11 @@ goog.exportSymbol('ogChangePOIIcon', ogChangePOIIcon);
  */
 function ogChangePOISize(poi_id, size)
 {
-   
+   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   if (POI && POI.type == OG_OBJECT_POI)
+   {
+      POI.ChangeSize(size);
+   }
 }
 goog.exportSymbol('ogChangePOISize', ogChangePOISize);
 //------------------------------------------------------------------------------
@@ -1018,7 +1034,11 @@ goog.exportSymbol('ogChangePOISize', ogChangePOISize);
  */
 function ogChangePOIPosition(poi_id, lng, lat, elv)
 {
-   
+   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   if (POI && POI.type == OG_OBJECT_POI)
+   {
+      POI.ChangePosition(lng, lat, elv);
+   }
 }
 goog.exportSymbol('ogChangePOIPosition', ogChangePOIPosition);
 //------------------------------------------------------------------------------
@@ -1028,7 +1048,11 @@ goog.exportSymbol('ogChangePOIPosition', ogChangePOIPosition);
  */
 function ogHidePOI(poi_id)
 {
-   
+   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   if (POI && POI.type == OG_OBJECT_POI)
+   {
+      POI.Hide();
+   }
 }
 goog.exportSymbol('ogHidePOI', ogHidePOI);
 //------------------------------------------------------------------------------
@@ -1038,7 +1062,11 @@ goog.exportSymbol('ogHidePOI', ogHidePOI);
  */
 function ogShowPOI(poi_id)
 {
-   
+   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   if (POI && POI.type == OG_OBJECT_POI)
+   {
+      POI.Show();
+   }
 }
 goog.exportSymbol('ogShowPOI', ogShowPOI);
 //------------------------------------------------------------------------------

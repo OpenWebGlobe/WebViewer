@@ -108,7 +108,7 @@ goog.require('owg.Texture');
  /**
  * @description Set the poi content. If no text is desired just use "" for as text argument.
  * @param {string} text the poi text.
- * @param {PoiTextStyle} textStyle
+ * @param {PoiTextStyle=} textStyle
  * @param {string=} timgurl poi icon url.
  * @param {PoiIconStyle=} iconStyle icon style
  */ 
@@ -123,18 +123,25 @@ goog.require('owg.Texture');
       this.imgurl = "";
    }
   
-  this.textStyle = textStyle;
+  if (textStyle)
+  {
+   this.textStyle = textStyle;
+  }
   this.text = text;
   
-  if(timgurl && iconStyle)
+  if (iconStyle)
   {
-    this.iconStyle = iconStyle;
-    this.iconMesh = this.canvasTexture.CreateIconMesh(this.imgurl,iconStyle); 
+      this.iconStyle = iconStyle;
+  }
+  
+  if(timgurl)
+  {
+    this.iconMesh = this.canvasTexture.CreateIconMesh(this.imgurl,this.iconStyle); 
   }
   this.canvasTexture = new CanvasTexture(this.engine);
   if(text)
   {
-    this.textMesh = this.canvasTexture.CreateTextMesh(text,textStyle);
+    this.textMesh = this.canvasTexture.CreateTextMesh(text,this.textStyle);
   }
  }
 

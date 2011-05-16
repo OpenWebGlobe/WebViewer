@@ -27,6 +27,17 @@ goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
 goog.require('owg.ogScene');
 
+
+
+//------------------------------------------------------------------------------
+/** @typedef {{
+      text        : string,
+      position    : Array.<number>,
+      size        : number
+   }}
+ */
+var PoiOptions;
+
 //------------------------------------------------------------------------------
 /**
  * @constructor
@@ -41,6 +52,8 @@ function ogPOI()
    this.type = OG_OBJECT_POI;
    /** @type boolean */
    this.hide = false;  // true if poi is hidden
+   /** @type Poi */
+   this.poi = null;
 }
 //------------------------------------------------------------------------------
 ogPOI.prototype = new ogObject();
@@ -51,10 +64,36 @@ ogPOI.prototype = new ogObject();
  */
 ogPOI.prototype.ParseOptions = function(options)
 {
+   /** @type string */
+   var text = "unknown";
+   /** @type Array.<number> */
+   var position = [0,0,0];
+   /** @type number */
+   var size = 40;
+
+   
+   if (options["text"])
+   {
+      text = options["text"];
+   }
+   if (options["position"])
+   {
+      position = options["position"];
+   }
+   if (options["size"])
+   {
+      size = options["size"];
+   }
+   
    /** @type ogScene */
    var scene = this.parent;
+   /** @type ogContext */
+   var context = scene.parent;
    
-   //scene.AddPoi(this);
+   this.poi = context.engine.poimanager.CreatePoi(text);
+   this.poi.SetPosition(position[0], position[1], position[2], 0);
+   this.poi.SetSize(size);
+   
    
 }
 //------------------------------------------------------------------------------

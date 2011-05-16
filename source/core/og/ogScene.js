@@ -37,12 +37,15 @@ goog.require('owg.ogCamera');
  */
 function ogScene()
 {
+   /** @type string */
    this.name = "ogScene";
+   /** @type number */
    this.type = OG_OBJECT_SCENE;
-   //** @type ogWorld
+   /** @type ogWorld */
    this.world = null;
-   //** @type ogCamera
+   /** @type ogCamera */
    this.activecamera = null;
+   /** @type number */
    this.scenetype = OG_SCENE_3D_ELLIPSOID_WGS84;
    
 }

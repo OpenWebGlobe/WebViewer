@@ -74,7 +74,7 @@ function _GetObjectAt(index)
 //------------------------------------------------------------------------------
 /** @description return object with specified id*/
 /** @param {number} id The object id */
-/** @returns {ogObject} The object or null if not found.
+/** @returns {null|ogObject} The object or null if not found.
 /** @ignore */
 function _GetObjectFromId(id)
 {
