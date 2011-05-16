@@ -44,6 +44,11 @@ function CanvasTexture(engine)
    this.poleMesh = null;
    /** @type Mesh */
    this.videoMesh = null;
+   /** @type number*/
+   this.meshWidth = 0;
+   /** @type number*/
+   this.meshHeight = 0;
+   
 
 }
 
@@ -58,9 +63,10 @@ function CanvasTexture(engine)
  */
 CanvasTexture.prototype.CreateTextMesh =  function(text,style)
 {
+   
    this.texCanvas = document.createElement('canvas'); 
    this.ctx = this.texCanvas.getContext('2d');  
- 
+   
    //set canvas as texture
    this.tex = new Texture(this.engine);
    this.tex.texture = this.gl.createTexture();
@@ -86,6 +92,7 @@ CanvasTexture.prototype.CreateTextMesh =  function(text,style)
    
    this.mesh.meshWidth = this.meshWidth;
    this.mesh.meshHeight = this.meshHeight;
+   
    return this.mesh;
 }
 
@@ -100,9 +107,10 @@ CanvasTexture.prototype.CreateTextMesh =  function(text,style)
  */
 CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
 {
+
    this.texCanvas = document.createElement('canvas'); 
-   this.ctx = this.texCanvas.getContext('2d');  
- 
+   this.ctx = this.texCanvas.getContext('2d');
+   
    //set canvas as texture
    this.tex = new Texture(this.engine);
    this.tex.texture = this.gl.createTexture();
@@ -127,6 +135,7 @@ CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
    
    this.mesh.meshWidth = this.meshWidth;
    this.mesh.meshHeight = this.meshHeight;
+   
    return this.mesh;
 }
 
@@ -259,7 +268,7 @@ CanvasTexture.prototype.DrawIconToCanvas = function(imgurl,iconstyle)
 CanvasTexture.prototype._cbfDrawImage = function(context,image,styleObject,canvasTextureClass)
 {
      this.ctx.drawImage(image, styleObject.border, styleObject.border, styleObject.iconWidth, styleObject.iconHeight);
-     this.ToGPU();    
+     this.ToGPU();
      
 }
 

@@ -384,7 +384,24 @@ Texture.prototype.DisableRenderToTexture = function()
     this.gl.viewport(0, 0, this.engine.width, this.engine.height);
 }
 
+
+
+/**
+ * @description copies the texture
+ */
+ Texture.prototype.CopyFrom = function(texture)
+ {
+   this.texture = texture.texture;    
+   this.ready = texture.ready;
+   
+   this.failed = texture.failed;   
+   this.blitMesh = texture.blitMesh;  
+   this.width = texture.width;
+   this.height = texture.heigth; 
+ }
+ 
 goog.exportSymbol('Texture', Texture);
+goog.exportProperty(Texture.prototype, 'CopyFrom', Texture.prototype.CopyFrom);
 goog.exportProperty(Texture.prototype, 'Blit', Texture.prototype.Blit);
 goog.exportProperty(Texture.prototype, 'EnableRenderToTexture', Texture.prototype.EnableRenderToTexture);
 goog.exportProperty(Texture.prototype, 'DisableRenderToTexture', Texture.prototype.DisableRenderToTexture);

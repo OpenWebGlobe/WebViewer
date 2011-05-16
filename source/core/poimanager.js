@@ -60,8 +60,9 @@ PoiManager.prototype.CreatePoi = function(text,style,imgurl,iconstyle)
    var poi = new Poi(this.engine);
    
    poi.imgurl = imgurl;
-   poi.style = style;
+   poi.textStyle = style;
    poi.text = text;
+   poi.iconStyle = iconstyle;
    
   
   if(imgurl)
