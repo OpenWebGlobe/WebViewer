@@ -396,8 +396,8 @@ Texture.prototype.DisableRenderToTexture = function()
    
    this.failed = texture.failed;   
    this.blitMesh = texture.blitMesh;  
-   this.width = texture.width;
-   this.height = texture.heigth; 
+   this.width = texture.blitMesh;
+   this.height = texture.blitMesh; 
  }
  
 goog.exportSymbol('Texture', Texture);

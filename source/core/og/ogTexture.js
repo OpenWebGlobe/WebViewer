@@ -40,6 +40,8 @@ function ogTexture()
    this.type = OG_OBJECT_TEXTURE;
    //** @type Texture
    this.texture = null;
+   /** @type string */
+   this.textureUrl = "";
    this.status = OG_OBJECT_BUSY;
 }
 
@@ -52,12 +54,12 @@ ogTexture.prototype = new ogObject();
 * @param {Texture} texture
 * @ignore
 */
-function ogTexture_callbackfailed(texture)
+ogTexture.prototype.ogTexture_callbackfailed = function(texture)
 {
-   texture.textureobject.status = OG_OBJECT_FAILED;
-   if (texture.textureobject.cbfFailed)
+   this.status = OG_OBJECT_FAILED;
+   if (this.cbfFailed)
    {
-      texture.textureobject.cbfFailed(texture.textureobject.id);
+      this.cbfFailed(this.id);
    }
 }
 //------------------------------------------------------------------------------
@@ -66,12 +68,12 @@ function ogTexture_callbackfailed(texture)
 * @param {Texture} texture
 * @ignore
 */
-function ogTexture_callbackready(texture)
+ogTexture.prototype.ogTexture_callbackready = function(texture)
 {
-   texture.textureobject.status = OG_OBJECT_READY;
-   if (texture.textureobject.cbfReady)
+   this.status = OG_OBJECT_READY;
+   if (this.cbfReady)
    {
-      texture.textureobject.cbfReady(texture.textureobject.id);
+      this.cbfReady(this.id);
    }
 }
 //------------------------------------------------------------------------------
@@ -106,10 +108,16 @@ ogTexture.prototype.ParseOptions = function(options)
       var context = scene.parent;
       var engine = context.engine; // get engine!
       
-      this.texture = new Texture(engine);
-      this.texture.textureobject = this;
+      /*this.texture = new Texture(engine);
+      this.texture.textureobject = this; //wieso das?
    
       this.texture.loadTexture(options["url"], ogTexture_callbackready, ogTexture_callbackfailed, false);
+      */
+      var ogText = this;
+      var readycbf = function(e){ogText.ogTexture_callbackready(e);};
+      var failedcbf = function(e){ogText.ogTexture_callbackfailed(e);};
+      this.texture = engine.texturemanager.CreateTexture(options["url"], readycbf, failedcbf, false,this);
+      this.textureUrl = options["url"];
    }
 }
 
@@ -119,7 +127,14 @@ ogTexture.prototype._OnDestroy = function()
 {
    if (this.texture)
    {
+      /*
       this.texture.Destroy();
+      */
+      var scene = this.parent;
+      var context = scene.parent;
+      var engine = context.engine; // get engine!
+      
+      engine.texturemanager.DestroyTexture(this.textureUrl)
       this.texture = null;
       this.status = OG_OBJECT_FAILED;
    }

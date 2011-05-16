@@ -157,7 +157,7 @@ ogObject.prototype.RegisterObject = function()
 //------------------------------------------------------------------------------
 ogObject.prototype.UnregisterObject = function()
 {
-   _UnregisterObject(this);
+   _UnregisterObject(this.id);
 }
 
 //------------------------------------------------------------------------------
