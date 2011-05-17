@@ -30,12 +30,15 @@ goog.require('owg.ogObject');
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends {ogObject} 
  * @description Camera class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
 function ogCamera()
 {
+   /** @type string */
    this.name = "ogCamera";
+   /** @type number */
    this.type = OG_OBJECT_CAMERA;
 }
 

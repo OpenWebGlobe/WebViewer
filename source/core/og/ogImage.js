@@ -30,12 +30,15 @@ goog.require('owg.ogObject');
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends {ogObject} 
  * @description Image class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
 function ogImage()
 {
+   /** @type string */
    this.name = "ogImage";
+   /** @type number */
    this.type = OG_OBJECT_IMAGE; 
 }
 

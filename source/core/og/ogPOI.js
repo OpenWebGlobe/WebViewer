@@ -41,6 +41,7 @@ var PoiOptions;
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends {ogObject} 
  * @description POI class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
@@ -56,6 +57,7 @@ function ogPOI()
    this.poi = null;
 }
 //------------------------------------------------------------------------------
+/** @extends {ogObject} */ 
 ogPOI.prototype = new ogObject();
 //------------------------------------------------------------------------------
 /**
@@ -86,9 +88,9 @@ ogPOI.prototype.ParseOptions = function(options)
    }
    
    /** @type ogScene */
-   var scene = this.parent;
+   var scene = /** @type ogScene */this.parent;
    /** @type ogContext */
-   var context = scene.parent;
+   var context = /** @type ogContext */scene.parent;
    
    this.poi = context.engine.poimanager.CreatePoi(text);
    // todo: fix lat/lng -> lng/lat !!!
@@ -111,9 +113,9 @@ ogPOI.prototype.ParseOptions = function(options)
 ogPOI.prototype._OnDestroy = function()
 {
    /** @type ogScene */
-   var scene = this.parent;
+   var scene = /** @type ogScene */this.parent;
    /** @type ogContext */
-   var context = scene.parent;
+   var context = /** @type ogContext */scene.parent;
    
      /** @type PoiRenderer */
    var poirenderer = this._GetPoiRenderer();
@@ -192,9 +194,9 @@ ogPOI.prototype._GetPoiRenderer = function()
    /** @type PoiRenderer */
    var renderer = null;
    /** @type ogScene */
-   var scene = this.parent;
+   var scene = /** @type ogScene */this.parent;
    /** @type ogContext */
-   var context = scene.parent;
+   var context =  /** @type ogContext */scene.parent;
    // Get the engine
    /** @type engine3d */
    var engine = context.engine;

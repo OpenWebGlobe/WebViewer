@@ -42,7 +42,7 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.engine = engine;
    /** @type string */
    this.quadcode = quadcode;
-   /** @type MercatorQuadTree */
+   /** @type MercatorQuadtree */
    this.quadtree = quadtree;
    /** @type Texture */
    this.texture = null;

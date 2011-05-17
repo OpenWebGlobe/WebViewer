@@ -118,12 +118,19 @@ function _GetObjectByName(name)
  */
 function ogObject()
 {
+   /** @type ogObject */   
    this.parent = null; // no parent
+   /** @type string */
    this.name = "ogObject";
+   /** @type number */
    this.type = OG_OBJECT_INVALID;
+   /** @type number */
    this.id = -1;
+   /** @type number */
    this.status = OG_OBJECT_READY;
+   /** @type ?function(number) */
    this.cbfReady = null;
+   /** @type ?function(number) */
    this.cbfFailed = null;
 }
 

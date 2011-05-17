@@ -47,8 +47,11 @@ goog.provide('owg.vec3');
  */
 function vec3(opt_x, opt_y, opt_z)
 {
+   /** @type number*/
    var x = opt_x || 0;
+   /** @type number*/
    var y = opt_y || 0;
+   /** @type number*/
    var z = opt_z || 0;
    
    /** @type !Float32Array */

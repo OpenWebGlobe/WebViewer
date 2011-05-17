@@ -32,6 +32,7 @@ goog.require('owg.ogCamera');
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends {ogObject} 
  * @description Scene class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
@@ -80,7 +81,7 @@ ogScene.prototype.ParseOptions = function(options)
 ogScene.prototype.Pick = function(mx, my)
 {
    /** @type ogContext */
-   var context = this.parent;
+   var context = /** @type ogContext */this.parent;
    /** @type Object */
    var pickresult = {};
    context.engine.PickGlobe(mx, my, pickresult);

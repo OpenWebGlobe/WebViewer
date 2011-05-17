@@ -30,17 +30,21 @@ goog.require('owg.ogObject');
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends {ogObject}
  * @description Navigation-Controller class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
 function ogNavigationController()
 {
+   /** @type string */
    this.name = "ogNavigationController";
+   /** @type number */
    this.type = OG_OBJECT_NAVIGATIONCONTROLLER;  
    
 }
 
 
 //------------------------------------------------------------------------------
+
 ogNavigationController.prototype = new ogObject();
 

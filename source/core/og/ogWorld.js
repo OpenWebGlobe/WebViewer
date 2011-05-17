@@ -29,6 +29,7 @@ goog.require('owg.ogObject');
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends {ogObject} 
  * @description World class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
@@ -55,7 +56,7 @@ ogWorld.prototype.ParseOptions = function(options)
    {
       
       /** @type ogContext */
-      var context = this.parent.parent;
+      var context = /** @type ogContext */this.parent.parent;
       /** @type engine3d */
       var engine = context.engine;
       

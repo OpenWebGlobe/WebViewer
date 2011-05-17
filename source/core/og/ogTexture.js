@@ -30,6 +30,7 @@ goog.require('goog.debug.Logger');
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends ogObject
  * @description Texture class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
@@ -147,7 +148,7 @@ ogTexture.prototype.Blit = function(x,y,opt_options)
    if (this.status == OG_OBJECT_READY)
    {
       /** @type engine3d */
-      var engine = this.parent.parent;
+      var engine = /** @type engine3d */this.parent.parent;
       if (this.texture)
       {
          this.texture.Blit(x, y);
