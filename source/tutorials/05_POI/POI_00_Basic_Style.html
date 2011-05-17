@@ -23,6 +23,8 @@
 *******************************************************************************/
 
                       TUTORIAL 5a: Create basic POIs
+                      
+        *** WARNING ***: This is unfinished. Do not use POI like this.
 *******************************************************************************/
 -->
 <!DOCTYPE html>
@@ -59,7 +61,8 @@ function OnMouseDown(context, button, mx, my)
          size 		: 	50
       };
       
-      ogCreatePOI(scene, NewPoiDefinition);
+      var poi = ogCreatePOI(scene, NewPoiDefinition);
+      
       
    }
 }
