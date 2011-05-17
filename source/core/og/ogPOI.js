@@ -65,11 +65,13 @@ ogPOI.prototype = new ogObject();
 ogPOI.prototype.ParseOptions = function(options)
 {
    /** @type string */
-   var text = "unknown";
+   var text = "";
    /** @type Array.<number> */
    var position = [0,0,0];
    /** @type number */
    var size = 40;
+   /** @type null|string */
+   var icon = null;
 
    
    if (options["text"])
@@ -84,13 +86,17 @@ ogPOI.prototype.ParseOptions = function(options)
    {
       size = options["size"];
    }
+   if (options["icon"])
+   {
+      icon = options["icon"];
+   }
    
    /** @type ogScene */
    var scene = this.parent;
    /** @type ogContext */
    var context = scene.parent;
    
-   this.poi = context.engine.poimanager.CreatePoi(text);
+   this.poi = context.engine.poimanager.CreatePoi(text, null, icon);
    // todo: fix lat/lng -> lng/lat !!!
    this.poi.SetPosition(position[1], position[0], position[2], 0);
    this.poi.SetSize(size);
