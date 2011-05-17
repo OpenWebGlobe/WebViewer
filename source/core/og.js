@@ -66,6 +66,7 @@ function _CreateID()
  */
 function _CreateObject(type, parent, options)
 {
+   /** @type ogObject */
    var newobject = null;
    
    switch(type)
@@ -345,6 +346,10 @@ goog.exportSymbol('ogOnFailure', ogOnFailure);
 //##############################################################################
 /**
  * @description Create context
+ * @param {Object} contextoptions
+ * @param {function()} cbfInit
+ * @param {function()} cbfExit
+ * @param {function()} cbfResize
  */
 function ogCreateContext(contextoptions, cbfInit, cbfExit, cbfResize)
 {
@@ -363,6 +368,11 @@ goog.exportSymbol('ogCreateContext', ogCreateContext);
 //------------------------------------------------------------------------------
 /**
  * @description Convienience function to create context
+ * @param {number} sCanvasId
+ * @param {boolean} fullscreen
+ * @param {function()} cbfInit
+ * @param {function()} cbfExit
+ * @param {function()} cbfResize
  */
 function ogCreateContextFromCanvas(sCanvasId, fullscreen, cbfInit, cbfExit, cbfResize)
 {
@@ -536,6 +546,17 @@ function ogSetMouseDownFunction(context_id, cbfMouseDown)
 }
 goog.exportSymbol('ogSetMouseDownFunction', ogSetMouseDownFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for mouse up event
+ * @param {number} context_id id of the context
+ * @param {function(number, number, number, number)} cbfMouseUp the callback function
+ *
+ *  the callback function has the following params:
+ *    1: context_id
+ *    2: mouse button
+ *    3: mouse x-coord
+ *    4: mouse y-coord
+ */
 function ogSetMouseUpFunction(context_id, cbfMouseUp)
 {
    var obj = _GetObjectFromId(context_id);
@@ -546,6 +567,16 @@ function ogSetMouseUpFunction(context_id, cbfMouseUp)
 }
 goog.exportSymbol('ogSetMouseUpFunction', ogSetMouseUpFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for mouse move event
+ * @param {number} context_id id of the context
+ * @param {function(number, number, number)} cbfMouseMove the callback function
+ *
+ *  the callback function has the following params:
+ *    1: context_id
+ *    2: mouse x-coord
+ *    3: mouse y-coord
+ */
 function ogSetMouseMoveFunction(context_id, cbfMouseMove)
 {
    var obj = _GetObjectFromId(context_id);
@@ -556,6 +587,15 @@ function ogSetMouseMoveFunction(context_id, cbfMouseMove)
 }
 goog.exportSymbol('ogSetMouseMoveFunction', ogSetMouseMoveFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for mouse wheel event
+ * @param {number} context_id id of the context
+ * @param {function(number, number)} cbfMouseWheel the callback function
+ *
+ *  the callback function has the following params:
+ *    1: context_id
+ *    2: positive or negative value, amount depends on mouse type or settings
+ */
 function ogSetMouseWheelFunction(context_id, cbfMouseWheel)
 {
    var obj = _GetObjectFromId(context_id);
@@ -566,6 +606,15 @@ function ogSetMouseWheelFunction(context_id, cbfMouseWheel)
 }
 goog.exportSymbol('ogSetMouseWheelFunction', ogSetMouseWheelFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for key down event
+ * @param {number} context_id id of the context
+ * @param {function(number, number)} cbfKeyDown the callback function
+ *
+ *  the callback function has the following params:
+ *    1: context_id
+ *    2: the key code.
+ */
 function ogSetKeyDownFunction(context_id, cbfKeyDown)
 {
    var obj = _GetObjectFromId(context_id);
@@ -576,6 +625,15 @@ function ogSetKeyDownFunction(context_id, cbfKeyDown)
 }
 goog.exportSymbol('ogSetKeyDownFunction', ogSetKeyDownFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for key up event
+ * @param {number} context_id id of the context
+ * @param {function(number, number)} cbfKeyUp the callback function
+ *
+ *  the callback function has the following params:
+ *    1: context_id
+ *    2: the key code.
+ */
 function ogSetKeyUpFunction(context_id, cbfKeyUp)
 {
    var obj = _GetObjectFromId(context_id);
@@ -586,6 +644,16 @@ function ogSetKeyUpFunction(context_id, cbfKeyUp)
 }
 goog.exportSymbol('ogSetKeyUpFunction', ogSetKeyUpFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for the resize event
+ * @param {number} context_id id of the context
+ * @param {function(number, number, number)} cbfResize the callback function
+ *
+ *  the callback function has the following params:
+ *    1: context_id
+ *    2: width
+ *    3: height
+ */
 function ogSetResizeFunction(context_id, cbfResize)
 {
    var obj = _GetObjectFromId(context_id);
@@ -596,6 +664,14 @@ function ogSetResizeFunction(context_id, cbfResize)
 }
 goog.exportSymbol('ogSetResizeFunction', ogSetResizeFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for the render event
+ * @param {number} context_id id of the context
+ * @param {function(number)} cbfRender the callback function
+ *
+ *  the callback function has the following params:
+ *    1: context_id
+ */
 function ogSetRenderFunction(context_id, cbfRender)
 {
    var obj = _GetObjectFromId(context_id);
@@ -606,6 +682,15 @@ function ogSetRenderFunction(context_id, cbfRender)
 }
 goog.exportSymbol('ogSetRenderFunction', ogSetRenderFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for the timer event
+ * @param {number} context_id id of the context
+ * @param {function(number,number)} cbfTimer the callback function
+ *
+ *  the callback function has the following params:
+ *    1: context_id
+ *    2: delta [ms]
+ */
 function ogSetTimerFunction(context_id, cbfTimer)
 {
    var obj = _GetObjectFromId(context_id);
@@ -616,6 +701,15 @@ function ogSetTimerFunction(context_id, cbfTimer)
 }
 goog.exportSymbol('ogSetTimerFunction', ogSetTimerFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for the render geometry event
+ * @param {number} context_id id of the context
+ * @param {function(number,number)} cbfGeometry the callback function
+ *
+ *  the callback function has the following params:
+ *    1: mesh_id
+ *    2: pass the render pass.
+ */
 function ogSetRenderGeometryFunction(context_id, cbfGeometry)
 {
    var obj = _GetObjectFromId(context_id);
@@ -626,6 +720,15 @@ function ogSetRenderGeometryFunction(context_id, cbfGeometry)
 }
 goog.exportSymbol('ogSetRenderGeometryFunction', ogSetRenderGeometryFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for the begin render event
+ * @param {number} context_id id of the context
+ * @param {function(number,number)} cbfBeginRender the callback function
+ *
+ *  the callback function has the following params:
+ *    1: scene_id
+ *    2: pass - the render pass.
+ */
 function ogSetBeginRenderFunction(context_id, cbfBeginRender)
 {
    var obj = _GetObjectFromId(context_id);
@@ -636,6 +739,15 @@ function ogSetBeginRenderFunction(context_id, cbfBeginRender)
 }
 goog.exportSymbol('ogSetBeginRenderFunction', ogSetBeginRenderFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for the end render event
+ * @param {number} context_id id of the context
+ * @param {function(number,number)} cbfEndRender the callback function
+ *
+ *  the callback function has the following params:
+ *    1: scene_id
+ *    2: pass - the render pass.
+ */
 function ogSetEndRenderFunction(context_id, cbfEndRender)
 {
    var obj = _GetObjectFromId(context_id);
@@ -646,6 +758,11 @@ function ogSetEndRenderFunction(context_id, cbfEndRender)
 }
 goog.exportSymbol('ogSetEndRenderFunction', ogSetEndRenderFunction);
 //------------------------------------------------------------------------------
+/**
+ * @description Set callback function for the end render event
+ * @param {number} context_id id of the context
+ * @param {number} numPasses number of render passes
+ */
 function ogSetNumRenderPasses(context_id, numPasses)
 {
    var obj = _GetObjectFromId(context_id);

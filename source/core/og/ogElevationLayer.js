@@ -35,12 +35,15 @@ goog.require('owg.GlobeRenderer');
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends {ogObject} 
  * @description Elevation-Layer class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
 function ogElevationLayer()
 {
+   /** @type string */
    this.name = "ogElevationLayer";
+   /** @type number */
    this.type = OG_OBJECT_ELEVATIONLAYER;
    /** @type number */
    this.layerindex = -1;
@@ -60,16 +63,15 @@ ogElevationLayer.prototype.GetGlobeRenderer = function()
    var renderer = null;
          
    //parent of ogImageLayer is ogWorld
-   /** @type ogWorld */
-   var world = this.parent;
+   var world = /** @type ogWorld */ this.parent;
    
    // parent of world is scene
    /** @type ogScene */
-   var scene = world.parent;
+   var scene = /** @type ogScene */ world.parent;
    
    // parent of scene is context
-   /** @type ogContext */
-   var context = scene.parent;
+   
+   var context = /** @type ogContext */ scene.parent;
    
    // Get the engine
    /** @type engine3d */

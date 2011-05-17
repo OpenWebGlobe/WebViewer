@@ -41,20 +41,31 @@ goog.require('owg.mat4');
  */
 function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_framebufferHeight)
 {
+   /** @type engine3d */
    this.engine = engine;   // pointer to the engine
+   /** @type WebGLRenderingContext */
    this.gl = engine.gl;    // pointer to the gl
+   /** @type ?WebGLTexture */
    this.texture = null;    // the texture
+   /** @type boolean */
    this.ready = false;     // is true when texture is ready to use
+   /** @type boolean */
    this.failed = false;    // is true when texture creation / download failed
+   /** @type Mesh */
    this.blitMesh = null;   // optional mesh used for blitting
+   /** @type ?number */
    this.width = 0;
+   /** @type ?number */
    this.height = 0; 
    
+   /** @type ?WebGLFramebuffer */
    this.rttFrameBuffer = null; //used if this texture is used as a render target
+   /** @type boolean */
    this.usedAsRenderTarget = false;
      
    if(opt_useAsRenderTarget)   // texture is used as render target.
-   {       
+   {
+         /** @type WebGLFramebuffer */
         this.rttFramebuffer = this.gl.createFramebuffer();
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.rttFramebuffer);
         this.rttFramebuffer.width = opt_framebufferWidth || 0;
@@ -83,8 +94,15 @@ function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_frameb
         
         this.ready = true;
         this.usedAsRenderTarget = true;
-        this.width = opt_framebufferWidth;
-        this.height = opt_framebufferHeight;        
+        if(opt_framebufferWidth)
+        {
+         this.width = opt_framebufferWidth;
+        }
+        
+        if(opt_framebufferHeight)
+        {
+        this.height = opt_framebufferHeight;
+        }
    }
 }
 
@@ -388,6 +406,7 @@ Texture.prototype.DisableRenderToTexture = function()
 
 /**
  * @description copies the texture
+ * param {Texture} texture
  */
  Texture.prototype.CopyFrom = function(texture)
  {

@@ -100,43 +100,65 @@ example:
  */
 function Mesh(engine)
 {
+   /** @type engine3d */
    this.engine = engine;
+   /** @type WebGLRenderingContext */
    this.gl = engine.gl;
    
    /** @type {WebGLBuffer} */
    this.vbo = null;              // vertex buffer (WebGL)
    /** @type {WebGLBuffer} */
    this.ibo = null;              // index buffer  (WebGL)
+   
+   /** @type ?Texture */
    this.texture = null;          // Texture (texture class)
    
+   /** @type ?Float32Array */
    this.vertexbufferdata = null; // interleaved vertex buffer data
+   /** @type {string} */
    this.mode = "";               // vertex semantic
+   /** @type number */
    this.numvertex = 0;           // number of vertices
+   /** @type number */
    this.numindex = 0;            // number of elements of index vector
    
+   /** @type ?Uint16Array*/
    this.indexbufferdata = null;  // Uint16Array(indices)
+   /** @type ?string */
    this.indexsemantic = null;    // triangle, line, or point.
   
+   /** @type boolean */  
    this.Ready = false;           // Ready to draw
-   this.http = null; 
+   this.http = null;
+   /** @type ?string */  
    this.jsonUrl = null;
+   /** @type ?function() */  
    this.cbfJSONLoad = null;
+   
    this.defaultfontcolor = new vec4();
    this.defaultfontcolor.Set(1,1,1,1);
    this.intersector = new TriangleIntersector();
+   
+   /** @type ?Array.<number> */  
    this.bbmin = null;
+   /** @type ?Array.<number> */ 
    this.bbmax = null;
+   /** @type ?Array */ 
    this.offset = null;
+   /** @type ?number */ 
    this.curtainindex = null;
    
    
    this.aabb = new AABB();
    
-   this.modelMatrix = null; 
+   /** @type ?mat4 */ 
+   this.modelMatrix = null;
+   /** @type number */ 
    this.vertexLength = 0; //number of entries in the vertexbufferdata array per vertex
      
-   
+   /** @type number */ 
    this.numOfTriangles = 0;     //number of triangles depends on indexsemantic "TRIANGLES or TRIANGLESTRIP"
+   
    this.currentTriangle = {}; //current triangle used for intersection tests.
    this.billboardPos = new Array(3);
    this.billboardCenterTrans = new Array(3);

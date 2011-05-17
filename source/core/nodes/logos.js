@@ -34,15 +34,25 @@ goog.require('owg.Texture');
  */
 function LogosNode()
 {
+      /** @type ?Node */
       this.logo = null;
+      /** @type Texture */
       this.compassbg = null;
+      /** @type Texture */
       this.compassr = null;
+      /** @type number */
       this.mx = 0;
+      /** @type number */
       this.my = 0;
+      /** @type boolean */
       this.btn = false;
+      /** @type number */
       this.yaw = 0;
+      /** @type number */
       this.longitude = 0;
+      /** @type number */
       this.latitude = 0;
+      /** @type number */
       this.elevation = 0;
       //------------------------------------------------------------------------
       this.OnChangeState = function()

@@ -46,9 +46,13 @@ goog.provide('owg.vec4');
  */
 function vec4(opt_x,opt_y,opt_z,opt_w)
 {
+   /** @type number*/
    var x = opt_x || 0;
+   /** @type number*/
    var y = opt_y || 0;
+   /** @type number*/
    var z = opt_z || 0;
+   /** @type number*/
    var w = opt_w || 0;
    
    /** @type {!Float32Array} */

@@ -29,12 +29,15 @@ goog.require('owg.ogObject');
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends {ogObject} 
  * @description Geometry class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
 function ogGeometry()
 {
+   /** @type string */
    this.name = "ogGeometry";
+   /** @type number */
    this.type = OG_OBJECT_GEOMETRY; 
 }
 

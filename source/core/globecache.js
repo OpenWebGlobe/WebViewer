@@ -31,12 +31,21 @@ goog.require('owg.TerrainBlock');
  * @constructor
  * @description Cache Manager for virtual globe
  * @author Martin Christen, martin.christen@fhnw.ch
+ * @param {engine3d} engine
+ * @param {Array.<ImageLayer>} imagelayerlist
+ * @param {Array.<ElevationLayer>} elevationlayerlist
+ * @param {MercatorQuadtree} quadtree
+ * @param {number} cachesize
  */
 function GlobeCache(engine, imagelayerlist, elevationlayerlist, quadtree, cachesize)
 {
+   /** @type engine3d */
    this.engine = engine;
+   /** @type Array.<ImageLayer> */
    this.imagelayerlist = imagelayerlist;
+   /** @type Array.<ElevationLayer> */
    this.elevationlayerlist = elevationlayerlist;
+   /** @type MercatorQuadtree */
    this.quadtree = quadtree;
    
    this.cache = new Cache(cachesize, false);
@@ -94,6 +103,7 @@ GlobeCache.prototype.IsReady = function()
 /**
  * @description Request a new Terrainblock. This is async. 
  * Always returns a terrain block (possibly marked as not ready)
+ * @param {string} quadcode
  */
 //------------------------------------------------------------------------------
 GlobeCache.prototype.RequestBlock = function(quadcode)
@@ -114,6 +124,7 @@ GlobeCache.prototype.RequestBlock = function(quadcode)
  * @description Get an already cached block (or null if unavailable)
  * This doesn't force downloading a block if not available.
  * Returns terrain block or null.
+ * @param {string} quadcode
  */
 GlobeCache.prototype.GetCachedBlock = function(quadcode)
 {

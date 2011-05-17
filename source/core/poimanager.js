@@ -250,6 +250,9 @@ PoiManager.prototype.DestroyTextMesh = function(text,style)
 
 /**
  * @description Changes the Poi Icon.
+ * @param {Poi} poi the poi wich will be changed
+ * @param {string} url text the poi text.
+ * @param {PoiIconStyle} style 
  */
 PoiManager.prototype.ChangePoiIcon = function(poi,url,style)
 {
@@ -264,6 +267,9 @@ PoiManager.prototype.ChangePoiIcon = function(poi,url,style)
 
 /**
  * @description Changes the poi text.
+ * @param {Poi} poi the poi wich will be changed
+ * @param {string} text the poi text.
+ * @param {PoiTextStyle} style 
  */
 PoiManager.prototype.ChangePoiText = function(poi,text,style)
 {
@@ -281,6 +287,8 @@ PoiManager.prototype.ChangePoiText = function(poi,text,style)
 
 goog.exportSymbol('PoiManager', PoiManager);
 goog.exportProperty(PoiManager.prototype, 'CreatePoi',PoiManager.prototype.CreatePoi);
-
+goog.exportProperty(PoiManager.prototype, 'DestroyPoi',PoiManager.prototype.DestroyPoi);
+goog.exportProperty(PoiManager.prototype, 'ChangePoiIcon',PoiManager.prototype.ChangePoiIcon);
+goog.exportProperty(PoiManager.prototype, 'ChangePoiText',PoiManager.prototype.ChangePoiText);
 //------------------------------------------------------------------------------
 

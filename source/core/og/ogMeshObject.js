@@ -29,12 +29,15 @@ goog.require('owg.ogObject');
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends {ogObject} 
  * @description Mesh Object (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
 function ogMeshObject()
 {
+   /** @type string */
    this.name = "ogMeshObject";
+   /** @type number */
    this.type = OG_OBJECT_MESH; 
 }
 

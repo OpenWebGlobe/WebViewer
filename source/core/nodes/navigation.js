@@ -34,7 +34,9 @@ goog.require('owg.vec3');
  */
 function NavigationNode()
 {
+      /** @type number */
       this.lastkey = 0;
+      /** @type number */
       this.curtime = 0;
       this.matView = new mat4();
       
@@ -49,44 +51,81 @@ function NavigationNode()
       this._latitude = 47.472720418012834;
       this._ellipsoidHeight = 3000000;*/
       
+      /** @type number */
       this._yaw = 0;
+      /** @type number */
       this._pitch = -0.3;
+      /** @type number */
       this._roll = 0;
+      /** @type number */
       this._longitude = 7.616;
+      /** @type number */
       this._latitude = 45.9088;
+      /** @type number */
       this._ellipsoidHeight = 17228.45;
       
+      /** @type number */
       this._fYawSpeed = 0;
+      /** @type number */
       this._fSurfacePitchSpeed = 0;
+      /** @type number */
       this._fRollSpeed = 0;
+      /** @type number */
       this._fPitchSpeed = 0;
+      /** @type number */
       this._fVelocityY = 0;
+      /** @type boolean */
       this._bMatRotChanged = false;
+      /** @type number */
       this._fSurfacePitch = 0;
+      /** @type number */
       this._fLastRoll = 0;
+      /** @type number */
       this._fSpeed = 1.0;
+      /** @type number */
       this._dFlightVelocity = 1.0;
+      /** @type number */
       this._dYawVelocity = 1.0;
+      /** @type number */
       this._dPitchVelocity = 1.0;
+      /** @type number */
       this._dRollVelocity = 1.0;
+      /** @type number */
       this._dElevationVelocity = 1.0;
+      /** @type number */
       this._pitch_increase = 0;
+      /** @type number */
       this._pitch_decrease = 0;
+      /** @type number */
       this._roll_increase = 0;
+      /** @type number */
       this._roll_decrease = 0;
+      /** @type boolean */
       this._bRollAnim = false;
+      /** @type number */
       this._MinElevation = 150.0;
+      /** @type number */
       this._angle = 0.001;
+      /** @type number */
       this._dist = -0.4;
+      /** @type boolean */
       this._bPositionChanged = false;
+      /** @type number */
       this._dAccumulatedTick = 0;
       
+      /** @type number */
       this._nMouseX = 0;
+      /** @type number */
       this._nMouseY = 0;
+      /** @type boolean */
       this._btn = false;
+      
       this._vR = new vec3();
+      /** @type number */
       this._ptDragOriginX = 0;
+      /** @type number */
       this._ptDragOriginY = 0;
+      /** @type boolean */
       this._bDragging = false;
       
       this.geocoord = new Array(3);
@@ -102,6 +141,7 @@ function NavigationNode()
       this.matCami3d.Cami3d();
       
       // min altitude is currently 100 m, this can be customized in future.
+      /** @type number */
       this.minAltitude = 225; 
      
       //------------------------------------------------------------------------

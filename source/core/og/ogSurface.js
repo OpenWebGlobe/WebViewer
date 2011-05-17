@@ -29,6 +29,7 @@ goog.require('owg.ogObject');
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends {ogObject} 
  * @description Surface class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
