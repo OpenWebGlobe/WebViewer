@@ -33,13 +33,14 @@
 <script type="text/javascript">
 
 //------------------------------------------------------------------------------
-// called every frame:
+// Render-Event: called every frame:
 function OnRender(context)
 {  
    ogSetTextColor(context, 0,1,0);
-   ogDrawText(context, "Hello World", 0, 20);
+   ogDrawText(context, "Click middle mouse button to add a POI", 0, 20);
 }
 //------------------------------------------------------------------------------
+// Mouse-Down-Event: Called when a mouse button is pressed
 function OnMouseDown(context, button, mx, my)
 {
    // retrieve the scene attached to context:
@@ -47,9 +48,18 @@ function OnMouseDown(context, button, mx, my)
    
    // call the pickglobe function, this gives the result in lng, lat, elv
    var result = ogPickGlobe(scene, mx, my);
-   if (result[0])
+   if (button == 1 && result[0])
    {
       // place poi:
+      var NewPoiDefinition = 
+      {
+         icon     : "http://google-maps-icons.googlecode.com/files/cycling.png",
+         //text 		: 	"Click: (" + result[1].toFixed(3) + ", " + result[2].toFixed(3) + ", " + result[3].toFixed(0) + ")",
+         position :  [result[1], result[2], result[3]+2000],
+         size 		: 	50
+      };
+      
+      ogCreatePOI(scene, NewPoiDefinition);
       
    }
 }
@@ -91,7 +101,6 @@ function main()
    
    // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
-   
    
    // (7) POI
    // first, we need to retrieve the scene:
