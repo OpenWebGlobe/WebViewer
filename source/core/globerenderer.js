@@ -62,23 +62,34 @@ function GlobeRenderer(engine)
 {
    /** @type engine3d */
    this.engine = engine;
+   /** @type Array.<ImageLayer> */
    this.imagelayerlist = new Array();
+   /** @type Array.<ElevationLayer> */
    this.elevationlayerlist = new Array();
+
    this.quadtree = new MercatorQuadtree();
+   /** @type number */
    this.cachesize = 1000;
    /** @type GlobeCache */
    this.globecache = null;
+   /** @type Array */
    this.lstFrustum = [];
+   /** @type number */
    this.lastalt = 0;
    
+   /** @type Object */
    this.iterator = new Object();
+   /** @type number */
    this.iterator.cnt = 0;
-   this.cameraposition = null;
-   this.maxlod = 0;
    
+   this.cameraposition = null;
+   /** @type number */
+   this.maxlod = 0;
+   /** @type number */
    this.quality = 0.75; // quality parameter, reduce for lower quality
    
    // current view frustum (for view frustum culling)
+   
    this.frustum = new ViewFrustum();
    this.vDir = new Array(3);
    

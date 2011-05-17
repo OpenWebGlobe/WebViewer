@@ -38,13 +38,20 @@ goog.require('owg.vec3');
  */
 function TerrainBlock(engine, quadcode, quadtree)
 {
+   /** @type engine3d */
    this.engine = engine;
+   /** @type string */
    this.quadcode = quadcode;
+   /** @type MercatorQuadTree */
    this.quadtree = quadtree;
+   /** @type Texture */
    this.texture = null;
+   /** @type boolean */
    this.available = false;
+   /** @type Mesh */
    this.mesh = null;
    
+   /** @type Array */
    this.vOffset = []; // virtual camera offset
    this.vTilePoints = new Array(5); // corner points and mid point of tile (in cartesian coordinates)
    this.vTilePoints[0] = new vec3(); // (if a tile is loaded, this is the lower part of the bounding box!)
@@ -53,11 +60,14 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.vTilePoints[3] = new vec3();
    this.vTilePoints[4] = new vec3();
    
+   /** @type number */
    this.imagelayers = 0;
    /** @type Array.<Texture> */
    this.images = null;
+   /** @type boolean */
    this.bPostCreation = false;
    
+   /** @type number */
    this.elevationlayers = 0;
    this._vNormal = new vec3();
    
