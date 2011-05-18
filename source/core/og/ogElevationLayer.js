@@ -41,11 +41,11 @@ goog.require('owg.GlobeRenderer');
  */
 function ogElevationLayer()
 {
-   /** @type string */
+   /** @type {string} */
    this.name = "ogElevationLayer";
-   /** @type number */
+   /** @type {number} */
    this.type = OG_OBJECT_ELEVATIONLAYER;
-   /** @type number */
+   /** @type {number} */
    this.layerindex = -1;
 }
 
@@ -59,14 +59,14 @@ ogElevationLayer.prototype = new ogObject();
  */
 ogElevationLayer.prototype.GetGlobeRenderer = function()
 {
-   /** @type GlobeRenderer */
+   /** @type {GlobeRenderer} */
    var renderer = null;
          
    //parent of ogImageLayer is ogWorld
    var world = /** @type ogWorld */ this.parent;
    
    // parent of world is scene
-   /** @type ogScene */
+   /** @type {ogScene} */
    var scene = /** @type ogScene */ world.parent;
    
    // parent of scene is context
@@ -74,7 +74,7 @@ ogElevationLayer.prototype.GetGlobeRenderer = function()
    var context = /** @type ogContext */ scene.parent;
    
    // Get the engine
-   /** @type engine3d */
+   /** @type {engine3d} */
    var engine = context.engine;
    
    // test if there is a scenegraph attached
@@ -94,7 +94,7 @@ ogElevationLayer.prototype.GetGlobeRenderer = function()
  */
 ogElevationLayer.prototype.AddElevationLayer = function(options)
 {
-   /** @type GlobeRenderer */
+   /** @type {GlobeRenderer} */
    var renderer = this.GetGlobeRenderer();
    if (renderer)
    {
@@ -109,7 +109,7 @@ ogElevationLayer.prototype.AddElevationLayer = function(options)
  */
 ogElevationLayer.prototype.RemoveElevationLayer = function()
 {
-   /** @type GlobeRenderer */
+   /** @type {GlobeRenderer} */
    var renderer = this.GetGlobeRenderer();
    if (renderer && this.layerindex != -1)
    {

@@ -38,15 +38,15 @@ goog.require('owg.ogCamera');
  */
 function ogScene()
 {
-   /** @type string */
+   /** @type {string} */
    this.name = "ogScene";
-   /** @type number */
+   /** @type {number} */
    this.type = OG_OBJECT_SCENE;
-   /** @type ogWorld */
+   /** @type {ogWorld} */
    this.world = null;
-   /** @type ogCamera */
+   /** @type {ogCamera} */
    this.activecamera = null;
-   /** @type number */
+   /** @type {number} */
    this.scenetype = OG_SCENE_3D_ELLIPSOID_WGS84;
 
    
@@ -80,9 +80,9 @@ ogScene.prototype.ParseOptions = function(options)
 */
 ogScene.prototype.Pick = function(mx, my)
 {
-   /** @type ogContext */
+   /** @type {ogContext} */
    var context = /** @type ogContext */this.parent;
-   /** @type Object */
+   /** @type {Object} */
    var pickresult = {};
    context.engine.PickGlobe(mx, my, pickresult);
    

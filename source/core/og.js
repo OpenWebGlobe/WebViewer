@@ -65,7 +65,7 @@ function _CreateID()
  */
 function _CreateObject(type, parent, options)
 {
-   /** @type ogObject */
+   /** @type {ogObject} */
    var newobject = null;
    
    switch(type)
@@ -803,7 +803,7 @@ function ogCreateScene(context_id, scenetype)
           scenetype == OG_SCENE_CUSTOM
           )
       {
-         /** @type ogScene */
+         /** @type {ogScene} */
          var scene = _CreateObject(OG_OBJECT_SCENE, context, sceneoptions);
          context.scene = scene;
          return scene.id;

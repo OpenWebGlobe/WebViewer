@@ -36,9 +36,9 @@ goog.require('owg.ogObject');
  */
 function ogNavigationController()
 {
-   /** @type string */
+   /** @type {string} */
    this.name = "ogNavigationController";
-   /** @type number */
+   /** @type {number} */
    this.type = OG_OBJECT_NAVIGATIONCONTROLLER;  
    
 }

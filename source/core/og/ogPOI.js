@@ -47,13 +47,13 @@ var PoiOptions;
  */
 function ogPOI()
 {
-   /** @type string */
+   /** @type {string} */
    this.name = "ogPOI";
-   /** @type number */
+   /** @type {number} */
    this.type = OG_OBJECT_POI;
-   /** @type boolean */
+   /** @type {boolean} */
    this.hide = false;  // true if poi is hidden
-   /** @type Poi */
+   /** @type {Poi} */
    this.poi = null;
 }
 //------------------------------------------------------------------------------
@@ -66,11 +66,11 @@ ogPOI.prototype = new ogObject();
  */
 ogPOI.prototype.ParseOptions = function(options)
 {
-   /** @type string */
+   /** @type {string} */
    var text = "unknown";
-   /** @type Array.<number> */
+   /** @type {Array.<number>} */
    var position = [0,0,0];
-   /** @type number */
+   /** @type {number} */
    var size = 40;
 
    
@@ -87,9 +87,9 @@ ogPOI.prototype.ParseOptions = function(options)
       size = options["size"];
    }
    
-   /** @type ogScene */
+   /** @type {ogScene} */
    var scene = /** @type ogScene */this.parent;
-   /** @type ogContext */
+   /** @type {ogContext} */
    var context = /** @type ogContext */scene.parent;
    
    this.poi = context.engine.poimanager.CreatePoi(text);
@@ -112,19 +112,19 @@ ogPOI.prototype.ParseOptions = function(options)
  */
 ogPOI.prototype._OnDestroy = function()
 {
-   /** @type ogScene */
+   /** @type {ogScene} */
    var scene = /** @type ogScene */this.parent;
-   /** @type ogContext */
+   /** @type {ogContext} */
    var context = /** @type ogContext */scene.parent;
    
-     /** @type PoiRenderer */
+     /** @type {PoiRenderer} */
    var poirenderer = this._GetPoiRenderer();
    
    if (poirenderer)
    {
       poirenderer.RemovePoi(this.poi);
    }
-   /** @type PoiManager */
+   /** @type {PoiManager} */
    var poimgr = context.engine.poimanager;
    poimgr.DestroyPoi(this.poi);
    
@@ -191,14 +191,14 @@ ogPOI.prototype.Show = function()
  */
 ogPOI.prototype._GetPoiRenderer = function()
 {
-   /** @type PoiRenderer */
+   /** @type {PoiRenderer} */
    var renderer = null;
-   /** @type ogScene */
+   /** @type {ogScene} */
    var scene = /** @type ogScene */this.parent;
-   /** @type ogContext */
+   /** @type {ogContext} */
    var context =  /** @type ogContext */scene.parent;
    // Get the engine
-   /** @type engine3d */
+   /** @type {engine3d} */
    var engine = context.engine;
    
    // test if there is a scenegraph attached

@@ -46,57 +46,57 @@ goog.provide('owg.ShaderManager');
  */
 function ShaderManager(gl)
 {
-   /** @type WebGLRenderingContext */
+   /** @type {WebGLRenderingContext} */
    this.gl = gl;
-   /** @type boolean */
+   /** @type {boolean} */
    this.init = false;
    
    // P: Position-only shader:
-   /** @type WebGLProgram */
+   /** @type {WebGLProgram} */
    this.program_p = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.vs_p = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.fs_p = null;
    
    // PNT:
-   /** @type WebGLProgram */
+   /** @type {WebGLProgram} */
    this.program_pnt = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.vs_pnt = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.fs_pnt = null;
    
    // PC:
-   /** @type WebGLProgram */
+   /** @type {WebGLProgram} */
    this.program_pc = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.vs_pc = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.fs_pc = null;
    
    // PT:
-   /** @type WebGLProgram */
+   /** @type {WebGLProgram} */
    this.program_pt = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.vs_pt = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.fs_pt = null;
    
    // PNCT:
-   /** @type WebGLProgram */
+   /** @type {WebGLProgram} */
    this.program_pnct = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.vs_pnct = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.fs_pnct = null;  
    
    //Font
-   /** @type WebGLProgram */
+   /** @type {WebGLProgram} */
    this.program_font = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.vs_font = null;
-   /** @type WebGLShader */
+   /** @type {WebGLShader} */
    this.fs_font = null;
 }
 

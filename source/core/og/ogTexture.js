@@ -41,7 +41,7 @@ function ogTexture()
    this.type = OG_OBJECT_TEXTURE;
    //** @type Texture
    this.texture = null;
-   /** @type string */
+   /** @type {string} */
    this.textureUrl = "";
    this.status = OG_OBJECT_BUSY;
 }
@@ -147,7 +147,7 @@ ogTexture.prototype.Blit = function(x,y,opt_options)
 {
    if (this.status == OG_OBJECT_READY)
    {
-      /** @type engine3d */
+      /** @type {engine3d} */
       var engine = /** @type engine3d */this.parent.parent;
       if (this.texture)
       {

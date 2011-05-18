@@ -60,32 +60,32 @@ var ElevationLayerOptions;
  */
 function GlobeRenderer(engine)
 {
-   /** @type engine3d */
+   /** @type {engine3d} */
    this.engine = engine;
-   /** @type Array.<ImageLayer> */
+   /** @type {Array.<ImageLayer>} */
    this.imagelayerlist = new Array();
-   /** @type Array.<ElevationLayer> */
+   /** @type {Array.<ElevationLayer>} */
    this.elevationlayerlist = new Array();
 
    this.quadtree = new MercatorQuadtree();
-   /** @type number */
+   /** @type {number} */
    this.cachesize = 1000;
-   /** @type GlobeCache */
+   /** @type {GlobeCache} */
    this.globecache = null;
-   /** @type Array */
+   /** @type {Array} */
    this.lstFrustum = [];
-   /** @type number */
+   /** @type {number} */
    this.lastalt = 0;
    
-   /** @type Object */
+   /** @type {Object} */
    this.iterator = new Object();
-   /** @type number */
+   /** @type {number} */
    this.iterator.cnt = 0;
    
    this.cameraposition = null;
-   /** @type number */
+   /** @type {number} */
    this.maxlod = 0;
-   /** @type number */
+   /** @type {number} */
    this.quality = 0.75; // quality parameter, reduce for lower quality
    
    // current view frustum (for view frustum culling)
@@ -122,7 +122,7 @@ function GlobeRenderer(engine)
  */
 GlobeRenderer.prototype.AddImageLayer = function(options)
 {
-   /** @type number */
+   /** @type {number} */
    var index = -1;
    
    if (options["service"] == "i3d")
@@ -132,9 +132,9 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
       {
          if (options["url"].length>0)
          {
-            /** @type string */
+            /** @type {string} */
             var url = options["url"][0];
-            /** @type string */
+            /** @type {string} */
             var layer = options["layer"];
             
             // Create i3d layer:

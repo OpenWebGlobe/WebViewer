@@ -31,11 +31,11 @@ goog.provide('owg.ViewFrustum');
  */
 function corner()
 {
-   /** @type number */
+   /** @type {number} */
    this.x = 0;
-   /** @type number */
+   /** @type {number} */
    this.y = 0;
-   /** @type number */
+   /** @type {number} */
    this.z = 0;
 }
 

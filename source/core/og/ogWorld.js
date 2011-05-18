@@ -55,9 +55,9 @@ ogWorld.prototype.ParseOptions = function(options)
    if (options["scenetype"])
    {
       
-      /** @type ogContext */
+      /** @type {ogContext} */
       var context = /** @type ogContext */this.parent.parent;
-      /** @type engine3d */
+      /** @type {engine3d} */
       var engine = context.engine;
       
       if (options["scenetype"] == OG_SCENE_3D_ELLIPSOID_WGS84)

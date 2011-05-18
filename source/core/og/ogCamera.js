@@ -36,9 +36,9 @@ goog.require('owg.ogObject');
  */
 function ogCamera()
 {
-   /** @type string */
+   /** @type {string} */
    this.name = "ogCamera";
-   /** @type number */
+   /** @type {number} */
    this.type = OG_OBJECT_CAMERA;
 }
 

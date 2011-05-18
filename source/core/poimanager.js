@@ -72,7 +72,7 @@ var PoiIconStyle;
  */
 function PoiManager(engine)
 {
-   /** @type engine3d */
+   /** @type {engine3d} */
    this.engine = engine;
    /** @type Array.<Mesh>*/
    this.poiMeshes = new Array();

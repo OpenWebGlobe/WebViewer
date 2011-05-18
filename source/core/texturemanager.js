@@ -39,7 +39,7 @@ goog.require('owg.Texture');
  */
 function TextureManager(engine)
 {
-   /** @type engine3d */
+   /** @type {engine3d} */
    this.engine = engine;
    /** @type Array.<Texture>*/
    this.textures = new Array();
