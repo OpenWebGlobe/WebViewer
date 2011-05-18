@@ -1,11 +1,29 @@
 <!--
-      OpenWebGlobe SDK Tutorial 0:
-      Draw text on screen
-      
-      tags: create context,
-            render callback,
-            draw text
-            
+/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2010-2011 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/
+
+                      TUTORIAL 0: Draw text on screen
+*******************************************************************************/    
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -23,17 +41,18 @@ function OnRender(context)
 //------------------------------------------------------------------------------
 function main()
 {
-   // create an OpenWebGlobe context using canvas
-   // first parameter is canvas-id and second is "fullscreen"
+   // (1) Create an OpenWebGlobe context using an existing canvas.
+   // The first parameter is canvas-id and second is "fullscreen"
    var ctx = ogCreateContextFromCanvas("canvas", true);
    
-   // Set the "Render-Callback" function.
+   // (2) Set the "Render-Callback" function.
    // The callback function will be called everytime a frame is drawn.
+   // We need this to draw the text
    ogSetRenderFunction(ctx, OnRender);
    
-   // Set the background color of the OpenWebGlobe context
+   // (3) Set the background color of the OpenWebGlobe context
+   // Default would be black
    ogSetBackgroundColor(ctx, 0,0,0.5,1);
-   
 }
 //------------------------------------------------------------------------------
    

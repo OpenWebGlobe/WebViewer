@@ -200,11 +200,11 @@ function ogContext()
    this.name = "ogContext";
    this.type = OG_OBJECT_CONTEXT;
    this.fullscreen = false;
-   /** @type {engine3d} */
+   /** @type engine3d */
    this.engine = null;
-   /** @type {ogScene} */
+   /** @type ogScene */
    this.scene = null;  // scene object attached to context
-   /** @type {vec4} */
+   /** @type vec4 */
    this.fontcolor = new vec4(1,1,1,1);
    
    // number of render passes:
@@ -232,6 +232,7 @@ ogContext.prototype = new ogObject();
 //------------------------------------------------------------------------------
 /**
  * @description Returns the width of the context
+ * @returns {number} the width of the context
  */
 ogContext.prototype.GetWidth = function()
 {
@@ -244,6 +245,7 @@ ogContext.prototype.GetWidth = function()
 //------------------------------------------------------------------------------
 /**
  * @description Returns the height of the context
+ * @returns {number} the height of the context
  */
 ogContext.prototype.GetHeight = function()
 {
@@ -257,20 +259,15 @@ ogContext.prototype.GetHeight = function()
 //------------------------------------------------------------------------------
 /**
  * @description Parse options for context
+ * @param {Object} options the options for context creation
  */
 ogContext.prototype.ParseOptions = function(options)
 {
-   if (options == null)
-   {
-      goog.debug.Logger.getLogger('owg.ogContext').warning("** WARNING: no options for context creation!");
-      return;  // no options!!
-   }
+   this.cbfInit = options["cbfInit"];
+   this.cbfExit = options["cbfExit"];
+   this.cbfResize = options["cbfResize"];
    
-   this.cbfInit = options.cbfInit;
-   this.cbfExit = options.cbfExit;
-   this.cbfResize = options.cbfResize;
-   
-   if (options.fullscreen)
+   if (options["fullscreen"])
    {
       this.fullscreen = true;
    }
@@ -290,19 +287,23 @@ ogContext.prototype.ParseOptions = function(options)
    this.engine.SetKeyUpCallback(_ctx_callback_keyup);
    
    // a html5 canvasid is provided:
-   if (options.canvas)
+   if (options["canvas"])
    {
-      this.engine.InitEngine(options.canvas, true);  // (canvasid, fullscreen)
+      this.engine.InitEngine(options["canvas"], true);  // (canvasid, fullscreen)
    }
    else
    {
-      goog.debug.Logger.getLogger('owg.ogContext').error("**ERROR: auto creating canvas is not supported yet!");
+      goog.debug.Logger.getLogger('owg.ogContext').warning("**ERROR: auto creating canvas is not supported yet!");
    }
    
 }
 //------------------------------------------------------------------------------
 /**
  * @description Set background color (clear color)
+ * @param {number} r red component in range [0, 1]
+ * @param {number} g green component in range [0, 1]
+ * @param {number} b blue component in range [0, 1]
+ * @param {number} a blue component in range [0, 1]. In most cases this should be set to 1.
  */
 ogContext.prototype.SetBackgroundColor = function(r,g,b,a)
 {
@@ -315,6 +316,9 @@ ogContext.prototype.SetBackgroundColor = function(r,g,b,a)
 //------------------------------------------------------------------------------
 /**
  * @description Set text color
+ * @param {number} r red component in range [0, 1]
+ * @param {number} g green component in range [0, 1]
+ * @param {number} b blue component in range [0, 1]
  */
 ogContext.prototype.SetTextColor = function(r,g,b)
 {
@@ -323,7 +327,10 @@ ogContext.prototype.SetTextColor = function(r,g,b)
 
 //------------------------------------------------------------------------------
 /**
- * @description Draw text 
+ * @description Draw text
+ * @param {string} text the text to draw
+ * @param {number} x x-coordinate
+ * @param {number} y y-coordinate
  */
 ogContext.prototype.DrawText = function(text, x, y)
 {
@@ -335,6 +342,7 @@ ogContext.prototype.DrawText = function(text, x, y)
 //------------------------------------------------------------------------------
 /**
  * @description Get text size
+ * @param {string} text the text
  */
 ogContext.prototype.GetTextSize = function(text)
 {
@@ -345,3 +353,13 @@ ogContext.prototype.GetTextSize = function(text)
    
    return null;
 }
+//------------------------------------------------------------------------------
+/**
+ * @description Get text size
+ */
+ogContext.prototype._OnDestroy = function()
+{
+   // #todo 
+}
+//------------------------------------------------------------------------------
+

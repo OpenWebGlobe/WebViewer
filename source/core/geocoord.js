@@ -43,6 +43,9 @@ goog.require('owg.MathUtils');
  //------------------------------------------------------------------------------
  /**
  * @description Set position
+ * @param {number} longitude
+ * @param {number} latitude
+ * @param {number} elevation
  */
  GeoCoord.prototype.Set = function(longitude, latitude, elevation)
  {  
@@ -136,7 +139,10 @@ GeoCoord.prototype.GetElevation = function()
    this._wgscoords[2] = _elevation;
  }
  
-
+ //------------------------------------------------------------------------------
+ /**
+  * @description returns a string with long, lat and elv data.
+  */
  GeoCoord.prototype.ToString = function()
  {
     return " Longitude: "+this.GetLongitude().toPrecision(17)+" Latitude: "+this.GetLatitude().toPrecision(17)+" Elevation: "+this.GetElevation().toPrecision(17);

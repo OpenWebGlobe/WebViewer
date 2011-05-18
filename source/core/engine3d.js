@@ -33,6 +33,8 @@ goog.require('owg.Texture');
 goog.require('owg.TraversalState');
 goog.require('owg.mat4');
 goog.require('owg.vec3');
+goog.require('owg.PoiManager');
+goog.require('owg.TextureManager');
 
 /** 
  * 
@@ -47,16 +49,27 @@ goog.require('owg.vec3');
 // Global Variables
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-var dtEnd, dtStart = new Date();
+/** @type Date */
+var dtEnd = new Date();
+var dtStart = new Date();
+
+/** @type Array.<engine3d> */
 var _g_vInstances    = new Array();    // array of all current instances
+
+/** @type number */
 var _g_nInstanceCnt  = 0;              // total number of engine instances
+
+/** @type ?function(number, engine3d) */
 var _gcbfKeyDown     = null;           // global key down event
+
+/** @type ?function(number, engine3d) */
 var _gcbfKeyUp       = null;           // global key up event
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 /**
  * @description internal key up
+ * @param {Object} evt the event object.
  * @ignore
  */
 function _fncKeyDown(evt)
@@ -64,19 +77,22 @@ function _fncKeyDown(evt)
    for (var i=0;i<_g_vInstances.length;i++)
    {
       var engine = _g_vInstances[i];
-      engine.eventhandler.KeyDown(evt.keyCode, engine);
+      engine.eventhandler.KeyDown(evt.keyCode,engine);
+      
+      if (_gcbfKeyDown)
+      {
+         _gcbfKeyDown(evt.keyCode, engine); 
+      }
    }
    
-   if (_gcbfKeyDown)
-   {
-      _gcbfKeyDown(evt.keyCode); 
-   }
+
    return;
 }
 
 //------------------------------------------------------------------------------
 /**
  * @description internal key up
+ * @param {Object} evt the event object.
  * @ignore
  */
 function _fncKeyUp(evt)
@@ -84,19 +100,22 @@ function _fncKeyUp(evt)
    for (var i=0;i<_g_vInstances.length;i++)
    {
       var engine = _g_vInstances[i];
-      engine.eventhandler.KeyUp(evt.keyCode, engine);
+      engine.eventhandler.KeyUp(evt.keyCode,engine);
+      
+      if (_gcbfKeyUp)
+      {
+      _gcbfKeyUp(evt.keyCode, engine);
+      }
    }
    
-   if (_gcbfKeyUp)
-   {
-      _gcbfKeyUp(evt.keyCode);
-   }
+
    return;
 }
 
 //------------------------------------------------------------------------------
 /**
  * @description internal mouse up
+ * @param {Object} evt the event object.
  * @ignore
  */
 function _fncMouseUp(evt)
@@ -121,6 +140,7 @@ function _fncMouseUp(evt)
 //------------------------------------------------------------------------------
 /**
  * @description internal mousedown
+ * @param {Object} evt the event object.
  * @ignore
  */
 function _fncMouseDown(evt)
@@ -146,6 +166,7 @@ function _fncMouseDown(evt)
 //------------------------------------------------------------------------------
 /**
  * @description internal mousemove
+ * @param {Object} evt the event object.
  * @ignore
  */
 function _fncMouseMove(evt)
@@ -170,6 +191,7 @@ function _fncMouseMove(evt)
 //------------------------------------------------------------------------------
 /**
  * @description internal mousewheel
+ * @param {Object} evt the event object.
  * @ignore
  */
 function _fncMouseWheel(evt)
@@ -209,6 +231,7 @@ function _fncMouseWheel(evt)
 //------------------------------------------------------------------------------
 /**
  * @ignore
+ * @param {Object} evt the event object.
  * @description internal resize
  */
 function _fncResize(evt)
@@ -222,7 +245,7 @@ function _fncResize(evt)
          engine.context.height = window.innerHeight-20;
       }
       
-      engine._resize(engine.context.width, engine.context.height, engine);
+      engine._resize(engine.context.width, engine.context.height);
    }
 }
   
@@ -234,43 +257,69 @@ function _fncResize(evt)
  */
 function engine3d()
 {
-	// Callbacks:
-	this.cbfInit = null;
-	this.cbfTimer = null;
-	this.cbfRender = null;
-	this.cbfMouseClicked = null;
-	this.cbfMouseReleased = null;
-	this.cbfMouseMoved = null;
-	this.cbfMouseWheel = null;
-	this.cbfKeyPressed = null;
-	this.cbfKeyReleased = null;
-	this.cbfResize = null;
-	// flags
-	this.init = false;
-	this.canvasid = "";
-	this.context = null;
-	// width / height
-	this.width = 0;
-	this.height = 0;
-	
-	this.bFullscreen = false;
+   // Callbacks:
+   /** @type ?function(engine3d) */
+   this.cbfInit = null;
+   /** @type ?function(number, engine3d) */
+   this.cbfTimer = null;
+   /** @type ?function(engine3d) */
+   this.cbfRender = null;
+   /** @type ?function() */
+   this.cbfMouseClicked = null;
+   /** @type ?function() */
+   this.cbfMouseReleased = null;
+   /** @type ?function() */
+   this.cbfMouseMoved = null;
+   /** @type ?function(number, engine3d) */
+   this.cbfMouseWheel = null;
+   /** @type ?function() */
+   this.cbfKeyPressed = null;
+   /** @type ?function() */
+   this.cbfKeyReleased = null;
+   /** @type ?function(number,number,engine3d) */
+   this.cbfResize = null;
+   
+   // flags
+   /** @type boolean */
+   this.init = false;
+   /** @type string */
+   this.canvasid = "";
 
-   /** @type {WebGLRenderingContext} */
+   
+   // width / height
+   /** @type number */
+   this.width = 0;
+   /** @type number */
+   this.height = 0;
+	
+   this.bFullscreen = false;
+
+   /** @type WebGLRenderingContext */
    this.gl = null;          // opengl context
-	this.context = null;
+   
+   this.context = null;
 	
-	this.shadermanager = null;
+   /** @type ShaderManager */
+   this.shadermanager = null;
 	
-	// Default Background color
-	this.bg_r = 0;
+   // Default Background color
+   /** @type number */
+   this.bg_r = 0;
+   /** @type number */
    this.bg_g = 0;
+   /** @type number */
    this.bg_b = 0;
+   /** @type number */
    this.bg_a = 1;
    
    // Viewport
+   /** @type number */
    this.vp_x = 0;
+   /** @type number */
    this.vp_y = 0;
+   /** @type number */
    this.vp_w = 0;
+   /** @type number */
    this.vp_h = 0;
    
    // Special Offset for Fullscreen mode
@@ -278,34 +327,58 @@ function engine3d()
    this.yoffset = 0;
    
    // Model, View and Projection Matrices
+   /** @type mat4 */
    this.matModel = new mat4();
+   /** @type mat4 */
    this.matView = new mat4();
+   /** @type mat4 */
    this.matProjection = new mat4();
+   /** @type mat4 */
    this.matModelView = new mat4();
+   /** @type mat4 */
    this.matModelViewProjection = new mat4();
    
    // Engine Traversal State
+   /** @type TraversalState */
    this.TravState = new TraversalState();
    
    // Content Arrays
+   /** @type Array.<Mesh> */
    this.vecMeshes = new Array();
+   /** @type Array.<Texture> */
    this.vecTextures = new Array();
    
-	// engine instance voodoo
-	_g_vInstances[_g_nInstanceCnt] = this;
+   // engine instance voodoo
+   /** @type engine3d */
+   _g_vInstances[_g_nInstanceCnt] = this;
+   /** @type number */
    _g_nInstanceCnt++;
    
    // Event Handler
+   /** @type EventHandler */
    this.eventhandler = new EventHandler();
    
    // system font (for ASCII Text only)
+   /** @type Font */
    this.systemfont = null;
    
    // the scene
+   /** @type SceneGraph */
    this.scene = null;
    
    // an empty texture for "failed" downloads
+   /** @type Texture */
    this.nodata = null;
+   
+   /** @type number */
+   this.worldtype = 1; // 0: custom, 1: wgs84, 2: flat, 3: 2D
+   
+   // POI Manager
+   /** @type PoiManager */
+   this.poimanager = null;
+   
+   /** @type TextureManager */
+   this.texturemanager = null;
       
 }
 
@@ -375,6 +448,12 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    // Create Nodata texture
    this.nodata = new Texture(this);
    this.nodata.LoadNoDataTexture();
+   
+   // Create Poi Manager
+   this.poimanager = new PoiManager(this);
+   
+   //Create TextureManager
+   this.texturemanager = new TextureManager(this);
    
    // call init callback
 	if (this.cbfInit)
@@ -586,7 +665,24 @@ engine3d.prototype.SetOrtho2D = function()
  */
 engine3d.prototype.CreateScene = function()
 {
-   this.scene = new SceneGraph(this);
+   if (this.worldtype == 0) // custom scene
+   {
+      goog.debug.Logger.getLogger('owg.engine3d').warning("** WARNING: not implemented");
+   }
+   else if (this.worldtype == 1) // wgs84
+   {
+      this.scene = new SceneGraph(this);   
+   }
+   else if (this.worldtype == 2)
+   {
+      goog.debug.Logger.getLogger('owg.engine3d').warning("** WARNING: not implemented");
+   }
+   else if (this.worldtype == 3)
+   {
+      goog.debug.Logger.getLogger('owg.engine3d').warning("** WARNING: not implemented");   
+   }
+   
+   
 }
 
 //------------------------------------------------------------------------------
@@ -626,7 +722,10 @@ engine3d.prototype.GetTextSize = function(txt)
 }
 //------------------------------------------------------------------------------
 /**
- * @description returns the mousepos and direction vector of a mouse click on the canvas in ?? coordinates
+ * @description returns the mousepos and direction vector of a mouse click on the canvas in coordinates.
+ * @param {number} x the screen x coordinate
+ * @param {number} y the screen y coordinate
+ * @param {mat4} mvp the model-view-projection matrix.
  */
 engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
 {
@@ -728,6 +827,8 @@ function fncTimer()
 //------------------------------------------------------------------------------
 /**
  * @description internal _resize
+ * @param {number} w width
+ * @param {number} h height
  * @ignore
  */
 engine3d.prototype._resize = function(w,h)
@@ -848,16 +949,19 @@ engine3d.prototype.SetKeyUpCallback = function(f)
 }
 
 //------------------------------------------------------------------------------
-/*
+/**
  * @description PickGlobe: Retrieve clicked position on globe (high precision result)
+ * @param {number} mx
+ * @param {number} my
+ * @param {Object} pickresult
  * The result contains the following:
- *    pickresult.hit: true if there was a hit with terrain
- *    pickresult.lng: longitude at mouse position
- *    pickresult.lat: latitude at mouse position
- *    pickresult.elv: elevation at mouse position
- *    pickresult.x: geocentric cartesian x-coordinate at mouse position
- *    pickresult.y: geocentric cartesian y-coordinate at mouse position
- *    pickresult.z: geocentric cartesian z-coordinate at mouse position
+ *    pickresult["hit"]: true if there was a hit with terrain
+ *    pickresult["lng"]: longitude at mouse position
+ *    pickresult["lat"]: latitude at mouse position
+ *    pickresult["elv"]: elevation at mouse position
+ *    pickresult["x"]: geocentric cartesian x-coordinate at mouse position
+ *    pickresult["y"]: geocentric cartesian y-coordinate at mouse position
+ *    pickresult["z"]: geocentric cartesian z-coordinate at mouse position
  */
 engine3d.prototype.PickGlobe = function(mx, my, pickresult)
 {
@@ -894,7 +998,16 @@ engine3d.prototype.AltitudeAboveEllipsoid = function()
    return 0;
 }
 
- //-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {number} worldtype
+ */
+engine3d.prototype.SetWorldType = function(worldtype)
+{
+   this.worldtype = worldtype;
+}
+//------------------------------------------------------------------------------
 
 goog.exportSymbol('engine3d', engine3d);
 goog.exportProperty(engine3d.prototype, 'AltitudeAboveEllipsoid', engine3d.prototype.AltitudeAboveEllipsoid);

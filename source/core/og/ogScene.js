@@ -24,21 +24,73 @@
 goog.provide('owg.ogScene');
 
 goog.require('owg.ObjectDefs');
-goog.require('owg.ogObject');
 
+goog.require('owg.ogObject');
+goog.require('owg.ogWorld');
+goog.require('owg.ogCamera');
 
 //------------------------------------------------------------------------------
 /**
  * @constructor
+ * @extends {ogObject} 
  * @description Scene class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
 function ogScene()
 {
+   /** @type string */
    this.name = "ogScene";
-   this.type = OG_OBJECT_SCENE; 
+   /** @type number */
+   this.type = OG_OBJECT_SCENE;
+   /** @type ogWorld */
+   this.world = null;
+   /** @type ogCamera */
+   this.activecamera = null;
+   /** @type number */
+   this.scenetype = OG_SCENE_3D_ELLIPSOID_WGS84;
+
+   
 }
-
-
 //------------------------------------------------------------------------------
 ogScene.prototype = new ogObject();
+//------------------------------------------------------------------------------
+/**
+* @description parse options
+* @param {Object} options
+* @ignore
+*/
+ogScene.prototype.ParseOptions = function(options)
+{
+   if (options == null)
+   {
+      goog.debug.Logger.getLogger('owg.ogScene').warning("** ERROR: no options for scene creation!");
+      return;  // no options!!
+   }
+   
+   if (options["type"])
+   {
+      this.scenetype = options["type"];
+   }
+}
+//------------------------------------------------------------------------------
+/**
+* @description Pick globe
+* @param {number} mx x-coord of mouse
+* @param {number} my y-coord of mouse
+*/
+ogScene.prototype.Pick = function(mx, my)
+{
+   /** @type ogContext */
+   var context = /** @type ogContext */this.parent;
+   /** @type Object */
+   var pickresult = {};
+   context.engine.PickGlobe(mx, my, pickresult);
+   
+   var result = new Array(4);
+   result[0] = pickresult["hit"];
+   result[1] = pickresult["lng"];
+   result[2] = pickresult["lat"];
+   result[3] = pickresult["elv"];
+   
+   return result;
+}

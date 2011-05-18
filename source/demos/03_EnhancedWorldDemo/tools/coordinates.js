@@ -46,7 +46,7 @@ function CoordinatesTool(toolbox,sizeX,sizeY,offsetX,offsetY)
    //set up lat,long indicator
    this.display = document.createElement('div');
    this.display.id = "pickCoordinatesToolDisplayDiv";
-   this.display.style.visibility = 'none';
+   this.display.style.visibility = 'hidden';
    document.body.appendChild(this.display);
    
    
@@ -90,7 +90,6 @@ CoordinatesTool.prototype.SetActive = function()
    this.SetIconActive();
    document.getElementById(this.toolbox.canvasId).style.cursor = 'crosshair';
    document.getElementById(this.toolbox.canvasId).addEventListener("click",this.cbfClickWhenActive,false);
-   console.log("SetActive von Coordinates aufgerufen.");
      
 }
 
@@ -103,7 +102,6 @@ CoordinatesTool.prototype.SetInactive = function()
    this.SetIconInactive(); //defined in superclass
    document.getElementById(this.toolbox.canvasId).style.cursor = 'default'; 
    document.getElementById(this.toolbox.canvasId).removeEventListener("click",this.cbfClickWhenActive,false);
-   console.log("SetInactive von Coordinates aufgerufen.");
 }
 
 
@@ -123,9 +121,19 @@ CoordinatesTool.prototype.onclick = function(eventData)
    
    //here call the web globe picking method...
    //and switch off the compass!
-   var pickresult = new Object();
-   engine.PickGlobe(eventData.clientX, eventData.clientY, pickresult);
-   this.display.innerHTML = "<p class='pickCoordinatesTooldisplay'>Latitude: "+pickresult.lat+"<br><br>Longitude: "+pickresult.lng+"<br><br>Elevation: "+pickresult.elv+"</p>";    
+   //var pickresult = new Object();
+   //engine.PickGlobe(eventData.clientX, eventData.clientY, pickresult);
+   var scene = ogGetScene(g_context);
+   var result = ogPickGlobe(scene, eventData.clientX, eventData.clientY);
+   
+   if (result[0])
+   {
+      this.display.innerHTML = "<p class='pickCoordinatesTooldisplay'>Latitude: "+result[1]+"<br><br>Longitude: "+result[2]+"<br><br>Elevation: "+result[3]+"</p>";
+   }
+   else
+   {
+      this.display.innerHTML = "<p class='pickCoordinatesTooldisplay'>no pick result!</p>";
+   }
 }
 
 

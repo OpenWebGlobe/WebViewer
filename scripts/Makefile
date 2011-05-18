@@ -2,10 +2,17 @@ CLOSURE_LIBRARY=../external/closure-library
 COMPILATION_LEVEL=ADVANCED_OPTIMIZATIONS
 COMPILER_JAR=../external/closure/compiler.jar
 SOURCES=$(shell find ../source/core ../source/core/layer ../source/core/nodes -maxdepth 1 -name \*.js)
-TARGETS=../compiled/deps.js ../compiled/owg-optimized.js ../compiled/owg-optimized.map
+TARGETS=\
+	../compiled/deps.js \
+	../compiled/owg-optimized.js \
+	../compiled/owg-optimized.map \
+	../source/demos/03_EnhancedWorldDemo/openwebglobe.js
 
 .PHONY: all
 all: $(TARGETS)
+
+../source/demos/03_EnhancedWorldDemo/openwebglobe.js: ../compiled/owg-optimized.js
+	cp $< $@
 
 ../compiled/deps.js: $(SOURCES) Makefile $(COMPILER_JAR) $(CLOSURE_LIBRARY)
 	$(CLOSURE_LIBRARY)/closure/bin/build/depswriter.py \

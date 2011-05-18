@@ -21,7 +21,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/      
 
-
+//goog.provide('owg.CanvasTexture');
 /** 
  * @class ToolBox 
  * @description  Creates a Toolbox and handles the tools object activeness.
@@ -111,7 +111,6 @@ ToolBox.prototype.StopDrag = function()
     window.removeEventListener("mousemove",this.cbfDrag,false);
     this.positionX = this.newPositionX;
     this.positionY = this.newPositionY;
-    console.log("stop dragging toolbox");
 }
 
 //------------------------------------------------------------------------------
@@ -149,10 +148,12 @@ function getStyle(oElm, strCssRule){
 	return strValue;
 }
 
-
-
-
-
+/*
+goog.exportSymbol('ToolBox', ToolBox);
+goog.exportProperty(ToolBox.prototype, 'SetCanvasContent', CanvasTexture.prototype.SetCanvasContent);
+goog.exportProperty(ToolBox.prototype, 'DrawToCanvas2D', CanvasTexture.prototype.DrawToCanvas2D);
+goog.exportProperty(ToolBox.prototype, 'GenerateText', CanvasTexture.prototype.GenerateText);
+*/
 
 
 

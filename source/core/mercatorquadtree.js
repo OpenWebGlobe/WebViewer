@@ -35,7 +35,11 @@ function MercatorQuadtree()
    
 }
 //------------------------------------------------------------------------------
-
+/**
+* @description calculates a quadkey to mercator ccordiantes
+* @param {string} quadKey
+* @param {Array} coords this is a output paramter.
+*/
 MercatorQuadtree.prototype.QuadKeyToMercatorCoord = function(quadKey, coords)
 {
    this.QuadKeyToNormalizedCoord(quadKey,coords);
@@ -47,6 +51,10 @@ MercatorQuadtree.prototype.QuadKeyToMercatorCoord = function(quadKey, coords)
    
 }
 //------------------------------------------------------------------------------
+/**
+* @param {string} quadKey
+* @param {Array} coords this is a output paramter.
+*/
 MercatorQuadtree.prototype.QuadKeyToNormalizedCoord = function(quadKey, coords)
 {
    var nLevelOfDetail = quadKey.length;

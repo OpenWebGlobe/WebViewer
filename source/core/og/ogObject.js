@@ -37,7 +37,7 @@ function _RegisterObject(obj)
    _g_objects.push(obj);
 }
 //------------------------------------------------------------------------------
-/** @description unregister object*/ 
+/** @description unregister object*/
 /** @ignore */
 function _UnregisterObject(objid)
 {
@@ -45,7 +45,7 @@ function _UnregisterObject(objid)
    {
       if (_g_objects[i].id == objid)
       {
-         _g_objects[i].Destroy();
+         _g_objects[i]._OnDestroy();
          _g_objects.splice(i,1);
          return;
       }
@@ -74,7 +74,7 @@ function _GetObjectAt(index)
 //------------------------------------------------------------------------------
 /** @description return object with specified id*/
 /** @param {number} id The object id */
-/** @returns {ogObject} The object or null if not found.
+/** @returns {null|ogObject} The object or null if not found.
 /** @ignore */
 function _GetObjectFromId(id)
 {
@@ -118,16 +118,25 @@ function _GetObjectByName(name)
  */
 function ogObject()
 {
+   /** @type ogObject */   
    this.parent = null; // no parent
+   /** @type string */
    this.name = "ogObject";
+   /** @type number */
    this.type = OG_OBJECT_INVALID;
+   /** @type number */
    this.id = -1;
+   /** @type number */
    this.status = OG_OBJECT_READY;
+   /** @type ?function(number) */
+   this.cbfReady = null;
+   /** @type ?function(number) */
+   this.cbfFailed = null;
 }
 
 //------------------------------------------------------------------------------
 
-ogObject.prototype.Destroy = function()
+ogObject.prototype._OnDestroy = function()
 {
    // called when object is destroyed   
 }
@@ -150,8 +159,12 @@ ogObject.prototype.SetParent = function(parent)
 
 ogObject.prototype.RegisterObject = function()
 {
-   var obj = this;
-   _RegisterObject(obj);
+   _RegisterObject(this);
+}
+//------------------------------------------------------------------------------
+ogObject.prototype.UnregisterObject = function()
+{
+   _UnregisterObject(this.id);
 }
 
 //------------------------------------------------------------------------------
@@ -162,6 +175,8 @@ ogObject.prototype.ParseOptions = function(options)
 }
 
 //------------------------------------------------------------------------------
+
+
 
 
 

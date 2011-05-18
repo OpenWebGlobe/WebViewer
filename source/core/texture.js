@@ -41,20 +41,31 @@ goog.require('owg.mat4');
  */
 function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_framebufferHeight)
 {
+   /** @type engine3d */
    this.engine = engine;   // pointer to the engine
+   /** @type WebGLRenderingContext */
    this.gl = engine.gl;    // pointer to the gl
+   /** @type ?WebGLTexture */
    this.texture = null;    // the texture
+   /** @type boolean */
    this.ready = false;     // is true when texture is ready to use
+   /** @type boolean */
    this.failed = false;    // is true when texture creation / download failed
+   /** @type Mesh */
    this.blitMesh = null;   // optional mesh used for blitting
+   /** @type ?number */
    this.width = 0;
+   /** @type ?number */
    this.height = 0; 
    
+   /** @type ?WebGLFramebuffer */
    this.rttFrameBuffer = null; //used if this texture is used as a render target
+   /** @type boolean */
    this.usedAsRenderTarget = false;
      
    if(opt_useAsRenderTarget)   // texture is used as render target.
-   {       
+   {
+         /** @type WebGLFramebuffer */
         this.rttFramebuffer = this.gl.createFramebuffer();
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.rttFramebuffer);
         this.rttFramebuffer.width = opt_framebufferWidth || 0;
@@ -83,8 +94,15 @@ function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_frameb
         
         this.ready = true;
         this.usedAsRenderTarget = true;
-        this.width = opt_framebufferWidth;
-        this.height = opt_framebufferHeight;        
+        if(opt_framebufferWidth)
+        {
+         this.width = opt_framebufferWidth;
+        }
+        
+        if(opt_framebufferHeight)
+        {
+        this.height = opt_framebufferHeight;
+        }
    }
 }
 
@@ -195,7 +213,7 @@ Texture.prototype.Disable = function()
  */
 Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley, opt_blend, opt_invtexcoord, opt_alpha)
 {   
-   /** @type {number} */
+   /** @type number */
    var z = opt_z || 0;
    var angle = opt_angle || 0;
    var scalex = opt_scalex || 1;
@@ -306,6 +324,12 @@ Texture.prototype.Destroy = function()
       this.blitMesh.Destroy();
       this.blitMesh = null;
    }
+   
+   if (this.rttFramebuffer)
+   {
+      this.engine.gl.deleteFramebuffer(this.rttFramebuffer);
+      this.rttFramebuffer = null;
+   }
 
 }
 //------------------------------------------------------------------------------
@@ -378,7 +402,25 @@ Texture.prototype.DisableRenderToTexture = function()
     this.gl.viewport(0, 0, this.engine.width, this.engine.height);
 }
 
+
+
+/**
+ * @description copies the texture
+ * param {Texture} texture
+ */
+ Texture.prototype.CopyFrom = function(texture)
+ {
+   this.texture = texture.texture;    
+   this.ready = texture.ready;
+   
+   this.failed = texture.failed;   
+   this.blitMesh = texture.blitMesh;  
+   this.width = texture.blitMesh;
+   this.height = texture.blitMesh; 
+ }
+ 
 goog.exportSymbol('Texture', Texture);
+goog.exportProperty(Texture.prototype, 'CopyFrom', Texture.prototype.CopyFrom);
 goog.exportProperty(Texture.prototype, 'Blit', Texture.prototype.Blit);
 goog.exportProperty(Texture.prototype, 'EnableRenderToTexture', Texture.prototype.EnableRenderToTexture);
 goog.exportProperty(Texture.prototype, 'DisableRenderToTexture', Texture.prototype.DisableRenderToTexture);

@@ -42,6 +42,7 @@ goog.require('owg.mat4');
  */
 function SceneGraph(engine)
 {
+   /** @type engine3d */
    this.engine = engine;         // Render Engine
    
    // Access Nodes:

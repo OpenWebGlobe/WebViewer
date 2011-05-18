@@ -2,3 +2,15 @@
 /compiled/deps.js
 /compiled/owg-optimized.js
 /compiled/owg-optimized.map
+
+# komodo editor project:
+/OpenWebGlobe.komodoproject
+/.komodotools
+
+# build server:
+/cloc.exe
+/code_stats.bat
+
+#internal tests
+/source/tests
+

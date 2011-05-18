@@ -24,6 +24,7 @@
 goog.provide('owg.RenderObjectNode');
 
 goog.require('owg.GlobeRenderer');
+goog.require('owg.PoiRenderer')
 goog.require('owg.ScenegraphNode');
 
 /**
@@ -33,9 +34,12 @@ goog.require('owg.ScenegraphNode');
  */
 function RenderObjectNode()
 {
+      /** @type GlobeRenderer */
       this.globerenderer = null;
-      this.cube = null;
+      /** @type vec3 */
       this.camera = new vec3();
+      /** @type PoiRenderer */
+      this.poirenderer = null;
       
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -47,6 +51,7 @@ function RenderObjectNode()
       this.OnRender = function()
       {
          this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
+         this.poirenderer.Render(this.camera, this.engine.matModelViewProjection);
       }
       
       //------------------------------------------------------------------------
@@ -60,47 +65,7 @@ function RenderObjectNode()
       this.OnInit = function()
       {
             this.globerenderer = new GlobeRenderer(this.engine);
-            
-            //------------------------------------------------------------------
-            // #fixme This is temporary, in future, adding layers is done via SDK
-            // ADD IMAGE LAYERS 
-            
-            var imglayerOSM = 
-            {
-               url     : ["http://a.tile.openstreetmap.org", "http://b.tile.openstreetmap.org", "http://c.tile.openstreetmap.org" ],
-               service : "osm"
-            };
-            
-            var imglayer2 = 
-            {
-               url     : ["http://www.openwebglobe.org/data/img"],
-               layer   : "LandsatCH",
-               /*transparency : 0.5,*/
-               service : "i3d"
-            };
-            
-            var imglayer1 = 
-            {
-               url     : ["http://www.openwebglobe.org/data/img"],
-               layer   : "World500",
-               service : "i3d"
-            };
-            
-            //this.globerenderer.AddImageLayer(imglayerOSM);
-            this.globerenderer.AddImageLayer(imglayer1);
-            this.globerenderer.AddImageLayer(imglayer2);
-        
-            //------------------------------------------------------------------
-            // ADD ELEVATION LAYER 
-            var elevationlayer = 
-            {
-               url     : ["http://www.openwebglobe.org/data/elv"],
-               layer   : "SRTM",
-               service : "i3d"
-            };
-            
-            this.globerenderer.AddElevationLayer(elevationlayer);
-        
+            this.poirenderer = new PoiRenderer(this.engine);
       }
       
       //------------------------------------------------------------------------

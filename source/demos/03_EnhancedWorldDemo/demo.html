@@ -3,86 +3,36 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
-
          <!-- >
             <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
          -->
-         <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+         <!--<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
          <script type="text/javascript" src="../../../compiled/deps.js"></script>
-         <script type="text/javascript">goog.require('owg.engine3d');</script>
-         <script type="text/javascript">goog.require('owg.vec4');</script>
+         <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+         -->
+         
          <script type="text/javascript" src="jquery-1.5.2.min.js"></script>
+         <script type="text/javascript" src="openwebglobe.js"></script>
          <script type="text/javascript" src="tools/toolbox.js"></script>
          <script type="text/javascript" src="tools/pickcoordinates.js"></script>
          <script type="text/javascript" src="tools/tool.js"></script>
          <script type="text/javascript" src="tools/coordinates.js"></script>
          <link rel="stylesheet" type="text/css" href="tools/toolstyle.css">
          <link rel="stylesheet" type="text/css" href="styles.css">
-  
-<style type="text/css">
-   
-   
-
-                
-                
+            
+<style type="text/css">        
 </style>
 <script type="text/javascript">
-         
-         
-         
-         //---------------------------------------------------------------------
-         var engine = null;
-       
-         
-         //---------------------------------------------------------------------
-         function OnTimer(delta)
-         {
-         }
-         
-         //---------------------------------------------------------------------
-         
-         function OnResize(w,h)
-         {
-            width = w;
-            height = h;       
-         }
-         
-         //---------------------------------------------------------------------
-         function OnKey(key)
-         {
-         }
-         
-         //---------------------------------------------------------------------
-         function OnMouse(button,x,y)
-         {
-            var pickresult = new Object();
-            engine.PickGlobe(x, y, pickresult);
-            
-            if (pickresult.hit)
-            {
-               console.log("PICK: lng: " + pickresult.lng + ", lat: " + pickresult.lat + ", elv:" + pickresult.elv);
-               console.log("PICK: x: " + pickresult.x + ", y: " + pickresult.y + ", z:" + pickresult.z);
-            }
-         }
-         
-         
-         //---------------------------------------------------------------------
-         
-         function OnRender()
-         {  
-            var fontcolor = new vec4();
-            fontcolor.Set(1,1,0,1);
-           // engine.DrawText("OpenWebGlobe for WebGL", 0, height-32,1,fontcolor);
+               
+         var g_context = -1;
       
-            var altitude = engine.AltitudeAboveGround(); altitude = altitude.toFixed(2);
-            var elv = engine.AltitudeAboveEllipsoid(); elv = elv.toFixed(2);
-            //engine.DrawText("Altitude: "+ altitude+ " (" + elv + ")",  0, height-64,1); 
-         }
-         
+      
          //---------------------------------------------------------------------
-         
-         function OnInit()
-         { 
+      
+         function OnRender(context)
+         {
+            ogSetTextColor(context, 0,1,0);
+            ogDrawText(context, "Hello World", 0, 20);
          }
         
          //---------------------------------------------------------------------
@@ -105,69 +55,97 @@
                alert("Sorry, the alpha preview requires Firefox 4.x. Later versions will support more browsers.");
                return;
             }
+      
+            // (1) create an OpenWebGlobe context using canvas
+            g_context = ogCreateContextFromCanvas("canvas", true);
+   
+            // (2) Create a virtual globe
+            var globe = ogCreateGlobe(g_context);
             
-            engine = new engine3d();
-           
-            // Set Callbacks:
-            engine.SetInitCallback(OnInit);
-            engine.SetTimerCallback(OnTimer);
-            engine.SetRenderCallback(OnRender);
-            engine.SetResizeCallback(OnResize);
-            engine.SetKeyDownCallback(OnKey)
-            engine.SetMouseDownCallback(OnMouse);
+
+            // (3) Add image and an elevation layers
+            var imgBlueMarble500 = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "World500",
+               service : "i3d"
+            };
             
-            // Start engine...
+            var imgLandsat_CH = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "LandsatCH",
+               /*transparency : 0.5,*/
+               service : "i3d"
+            };
             
-            engine.InitEngine("canvas",true);  // (canvasid, fullscreen)
-            engine.CreateScene();               // Create Globe Scene
-            engine.SetClearColor(0.5,0.5,1,1);
+            var elvSRTM_CH = 
+            {
+               url     : ["http://www.openwebglobe.org/data/elv"],
+               layer   : "SRTM",
+               service : "i3d"
+            };
+            
+            ogAddImageLayer(globe, imgBlueMarble500);
+            ogAddImageLayer(globe, imgLandsat_CH);
+            ogAddElevationLayer(globe, elvSRTM_CH);
+         
+            // (4) Set the "Render-Callback" function.
+            // The callback function will be called everytime a frame is drawn.
+            ogSetRenderFunction(g_context, OnRender);
+            
+            // (5) Set the background color
+            ogSetBackgroundColor(g_context, 0.2,0.2,0.7,1);
          }
          
          
          
-         $(document).ready(function() {
+         jQuery(document).ready(function() {
           
          /*
           *   Top-Row..............................................................
-          */       
-            $('#divTopRow').click(function(){
-              if ( parseInt($('#divTopRow').css("top")) > -80 )
+          */
+         
+            var topRowHandling = function(){
+              if ( parseInt(jQuery('#divTopRow').css("top")) > -80 )
               {
                //scroll up
-               $('#divTopRow').animate({top:'-500'},1000,function(){$('#divTopRowTitle').toggle();});
-              // $('#canvas').unbind('click');
+               jQuery('#divTopRow').animate({top:'-500'},1000,function(){jQuery('#divTopRowTitle').toggle();});
+               jQuery('#canvas').unbind('click');
               }
               else
               {
                //scroll down
-               $('#divTopRowTitle').toggle();
-               $('#divTopRow').animate({top:'0'},1000,function(){});
-              // $('#canvas').click(function(){$('#divTopRow').animate({top:'-500'},1000,function(){$('#divTopRowTitle').toggle();});});
-               
+               jQuery('#divTopRowTitle').toggle();
+               jQuery('#divTopRow').animate({top:'0'},1000,function(){});
+               jQuery('#canvas').click(topRowHandling);
               }
-             });
-        // $('#canvas').click(function(){$('#divTopRow').animate({top:'-500'},1000);});
+             };
+            jQuery('#divTopRow,#canvas').click(topRowHandling);
+                                          
+            
+       
         
          
           /*
            *   FHNW Logo..............................................................
            */ 
-            $('#divFhnwLogo').click(function(){ window.open("http://www.fhnw.ch/homepage");});
-            $('#divCampToCamp').click(function(){ window.open("http://www.camptocamp.com");});               
+            jQuery('#divFhnwLogo').click(function(){ window.open("http://www.fhnw.ch/homepage");});
+            jQuery('#divCampToCamp').click(function(){ window.open("http://www.camptocamp.com");});               
          
          
           /*
            *   Fly to feature..............................................................
            */
           
-            $('#divFlyToPullBtn').click(function(){
-              if ( parseInt($('#divFlyTo').css("left")) > -1 )
+            jQuery('#divFlyToPullBtn').click(function(){
+              if ( parseInt(jQuery('#divFlyTo').css("left")) > -1 )
               {
-                  $('#divFlyTo').animate({left:'-300'},1000,function(){});
+                  jQuery('#divFlyTo').animate({left:'-300'},1000,function(){});
               }
               else
               {
-                 $('#divFlyTo').animate({left:'0'},1000,function(){});
+                 jQuery('#divFlyTo').animate({left:'0'},1000,function(){});
               }
              });            
                
@@ -186,14 +164,14 @@
           /*
            *   Credits..................................
            */
-           $('#divCreditsBtn').click(function(){
-              if ( parseInt($('#divCredits').css("bottom")) > -1 )
+           jQuery('#divCreditsBtn').click(function(){
+              if ( parseInt(jQuery('#divCredits').css("bottom")) > -1 )
               {
-                  $('#divCredits').animate({bottom:'-250'},1000,function(){});
+                  jQuery('#divCredits').animate({bottom:'-250'},1000,function(){});
               }
               else
               {
-                 $('#divCredits').animate({bottom:'6px'},1000,function(){});
+                 jQuery('#divCredits').animate({bottom:'6px'},1000,function(){});
               }
              });
          
@@ -205,12 +183,12 @@
           /*
            *   Handle visibility on start-up..................................
            */      
-         $('#divFhnwLogo').show("slow");
-         $('#divCampToCamp').show("slow");
-         $('#divFlyTo').slideToggle("slow");
-         $('#divLikeButtons').slideToggle("slow");
-          //$('#divStats').slideToggle("slow");
-         $('#divCredits').slideToggle("slow");
+         jQuery('#divFhnwLogo').show("slow");
+         jQuery('#divCampToCamp').show("slow");
+         jQuery('#divFlyTo').slideToggle("slow");
+         jQuery('#divLikeButtons').slideToggle("slow");
+          //jQuery('#divStats').slideToggle("slow");
+         jQuery('#divCredits').slideToggle("slow");
          
   
          /*
@@ -226,13 +204,13 @@
           */
          function getPlaceSearchResults()
          {
-            var textInput = $('#placeSearchTb').val();
+            var textInput = jQuery('#placeSearchTb').val();
             while(textInput.indexOf(' ')!=-1)textInput = textInput.replace(' ','+'); //replace spaces with '+'
 
             //alert(textInput);
              queryUrl = "http://open.mapquestapi.com/nominatim/v1/search?"
  
-               $.getJSON(queryUrl,{ format:"json",
+               jQuery.getJSON(queryUrl,{ format:"json",
                                     q:textInput
                                     },
                                     _cbfAjaxQuery
@@ -244,16 +222,16 @@
           */
          function _cbfAjaxQuery(result)
          {
-             $("#placeList").empty();
+             jQuery("#placeList").empty();
             if(result.length>0)
             {
-            $.each(result,
+            jQuery.each(result,
                   function(index,content)
                   {
                      if(index<10)
                      {                         
-                        $("#placeList")
-                        .append($("<li>")
+                        jQuery("#placeList")
+                        .append(jQuery("<li>")
                         .addClass("placeSearchResult")
                         .text(content.display_name)
                         .attr("lat",content.lat)
@@ -265,8 +243,8 @@
             }
             else
             {
-               $("#placeList")
-                        .append($("<li>")
+               jQuery("#placeList")
+                        .append(jQuery("<li>")
                         .addClass("placeSearchResult")
                         .text("No place found..."));
             }
@@ -278,7 +256,7 @@
          function flyTo(lat,lon)
          {
             //engine.
-            $('#divFlyTo').animate({left:'-300'},1000,function(){}); //pull in menu
+            jQuery('#divFlyTo').animate({left:'-300'},1000,function(){}); //pull in menu
          }
         
          
