@@ -38,8 +38,6 @@ def download(url, filename):
 #-------------------------------------------------------------------------------
 # MAIN
 #-------------------------------------------------------------------------------
-destfile = "external.tar.gz"
-
 # Download Komodo project integration (depends OS)
 url = "https://github.com/downloads/OpenWebGlobe/WebViewer/" + dest
 

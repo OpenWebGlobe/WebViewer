@@ -101,9 +101,9 @@ ogPOILayer.prototype._GetPoiRenderer = function()
    /** @type PoiRenderer */
    var renderer = null;
    /** @type ogScene */
-   var scene = this.parent;
+   var scene = /** @type ogScene */ this.parent;
    /** @type ogContext */
-   var context = scene.parent;
+   var context = /** @type ogContext */ scene.parent;
    // Get the engine
    /** @type engine3d */
    var engine = context.engine;
