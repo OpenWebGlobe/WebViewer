@@ -98,6 +98,14 @@ function ShaderManager(gl)
    this.vs_font = null;
    /** @type WebGLShader */
    this.fs_font = null;
+   
+   //Poi
+   /** @type WebGLProgram */
+   this.program_poi = null;
+   /** @type WebGLShader */
+   this.vs_poi = null;
+   /** @type WebGLShader */
+   this.fs_poi = null;
 }
 
 
@@ -181,6 +189,20 @@ ShaderManager.prototype.UseShader_Font = function(modelviewprojection, fontcolor
       this.gl.useProgram(this.program_font);
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_font, "matMVP"),false,modelviewprojection.Get());
       this.gl.uniform4fv(this.gl.getUniformLocation(this.program_font, "uColor"), fontcolor.Get());  
+   }    
+}
+
+/** 
+ * @param {mat4} modelviewprojection
+ * @param {vec4} color
+ */
+ShaderManager.prototype.UseShader_Poi = function(modelviewprojection, color)
+{
+   if (this.program_poi)
+   {
+      this.gl.useProgram(this.program_poi);
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_poi, "matMVP"),false,modelviewprojection.Get());
+      this.gl.uniform4fv(this.gl.getUniformLocation(this.program_poi, "uColor"), color.Get());  
    }    
 }
 
@@ -411,6 +433,44 @@ ShaderManager.prototype.InitShader_Font = function()
    }
 }
 
+
+/**
+ *  Initializes the font shader
+ *  internal use
+ */
+ShaderManager.prototype.InitShader_Poi = function()
+{
+   var src_vertexshader_poi= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n}\n";
+   var src_fragmentshader_poi= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\n\nuniform vec4 uColor;\nvoid main()\n{\n   if(texture2D(uTexture, vTexCoord)[3]<0.1){discard;}\n gl_FragColor = uColor*texture2D(uTexture, vTexCoord);\n}\n\n";
+ 
+   this.vs_poi = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_poi);
+   this.fs_poi = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_poi);
+   
+   if (this.vs_poi && this.fs_poi)
+   {
+      // create program object
+      this.program_poi = this.gl.createProgram();
+      
+      // attach our two shaders to the program
+      this.gl.attachShader(this.program_poi, this.vs_poi);
+      this.gl.attachShader(this.program_poi, this.fs_poi);
+      
+      // setup attributes
+      this.gl.bindAttribLocation(this.program_poi, 0, "aPosition"); 
+      this.gl.bindAttribLocation(this.program_poi, 1, "aTexCoord");
+      
+      // linking
+      this.gl.linkProgram(this.program_poi);
+      if (!this.gl.getProgramParameter(this.program_poi, this.gl.LINK_STATUS)) 
+      {
+          alert("poi shader: "+this.gl.getProgramInfoLog(this.program_poi));
+          return;
+      }
+   }
+}
+
+
+
 /**
  *  Initializes all shaders. 
  * 
@@ -425,6 +485,7 @@ ShaderManager.prototype.InitShaders = function()
    this.InitShader_PT();
    this.InitShader_PNCT();
    this.InitShader_Font();
+   this.InitShader_Poi();
 } 
 
 /**

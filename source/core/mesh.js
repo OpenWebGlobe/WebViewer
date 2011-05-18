@@ -100,8 +100,9 @@ example:
  */
 function Mesh(engine)
 {
-   /** @type engine3d */
-   this.engine = engine;
+   /** @type {engine3d} */
+   this.engine = engine; 
+   
    /** @type WebGLRenderingContext */
    this.gl = engine.gl;
    
@@ -137,6 +138,11 @@ function Mesh(engine)
    
    this.defaultfontcolor = new vec4();
    this.defaultfontcolor.Set(1,1,1,1);
+   
+   this.defaultpoicolor = new vec4();
+   this.defaultpoicolor.Set(1,1,1,1);
+   
+   
    this.intersector = new TriangleIntersector();
    
    /** @type ?Array.<number> */  
@@ -259,6 +265,20 @@ Mesh.prototype.SetBufferFont= function(fontdata)
 }
 //------------------------------------------------------------------------------
 /**
+ * @description Specify a buffer with the vertex semantic "poi"
+ * @param {Array|Float32Array} poidata the point,texture-coordinates array.
+ */
+Mesh.prototype.SetBufferPoi= function(poidata)
+{
+   if ((poidata.length % 5) == 0)
+   {
+      this.vertexbufferdata = new Float32Array(poidata);
+      this.mode = "poi";
+      this.vertexLength = 5;
+   }
+}
+//------------------------------------------------------------------------------
+/**
  * @description Specify a an index buffer with the specified index semantic
  * @param {Array} idx indices array.
  * @param {string} idxsem supports "TRIANGLES","POINTS" or "LINES".
@@ -351,8 +371,9 @@ var j=0;
  * @param {number=} opt_count
  * @param {number=} opt_offset
  * @param {vec4=} opt_fontcolor
+ * @param {vec4=} opt_poicolor
  */
-Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor)
+Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor, opt_poicolor)
 {
    if (!this.Ready)
    {
@@ -433,6 +454,18 @@ Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor)
                          opt_fontcolor = this.defaultfontcolor;
                       }
                       this.engine.shadermanager.UseShader_Font(this.engine.matModelViewProjection,opt_fontcolor);
+                      break;
+                     
+        case "poi": 
+                      this.gl.enableVertexAttribArray(0);
+                      this.gl.enableVertexAttribArray(1);
+                      this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
+                      this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
+                      if (opt_poicolor == null)
+                      {
+                         opt_poicolor = this.defaultpoicolor;
+                      }
+                      this.engine.shadermanager.UseShader_Poi(this.engine.matModelViewProjection,opt_poicolor);
                       break;
                              
              
