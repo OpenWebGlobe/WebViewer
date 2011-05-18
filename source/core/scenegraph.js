@@ -27,7 +27,7 @@ goog.require('owg.BeginRenderNode');
 goog.require('owg.CameraNode');
 goog.require('owg.EndRenderNode');
 goog.require('owg.LogosNode');
-goog.require('owg.NavigationNode');
+goog.require('owg.NavigationNode2');
 goog.require('owg.RenderObjectNode');
 goog.require('owg.RenderNode');
 goog.require('owg.TraversalState');
@@ -46,7 +46,7 @@ function SceneGraph(engine)
    this.engine = engine;         // Render Engine
    
    // Access Nodes:
-   this.nodeNavigation = new NavigationNode();     // Navigation Node (for view matrix)
+   this.nodeNavigation = new NavigationNode2();     // Navigation Node (for view matrix)
    this.nodeCamera = new CameraNode();             // Camera Node (for projection matrix)
    this.nodeBeginRender = new BeginRenderNode();   // Begin Render Node (for multipass rendering, currently unsupported)
    this.nodeRenderObject = new RenderObjectNode(); // Render Object Node (render openglobe objects, e.g. the virtual globe)
