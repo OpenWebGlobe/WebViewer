@@ -21,12 +21,12 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/      
 
-goog.provide('owg.ogPOI');
+goog.provide('owg.ogPOILayer');
 
 goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
 goog.require('owg.ogScene');
-
+goog.require('owg.ogPOI');
 
 
 //------------------------------------------------------------------------------
@@ -36,79 +36,34 @@ goog.require('owg.ogScene');
       size        : number
    }}
  */
-var PoiOptions;
-
+var PoiLayerOptions;
 //------------------------------------------------------------------------------
 /**
  * @constructor
- * @extends {ogObject} 
  * @description POI class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
-function ogPOI()
+function ogPOILayer()
 {
    /** @type string */
-   this.name = "ogPOI";
+   this.name = "ogPOILayer";
    /** @type number */
-   this.type = OG_OBJECT_POI;
+   this.type = OG_OBJECT_POILAYER;
    /** @type boolean */
-   this.hide = false;  // true if poi is hidden
-   /** @type Poi */
-   this.poi = null;
+   this.hide = false;  // true if poi layer is hidden
+   /** @type Array.<Poi> */
+   this.poiarray = null;   // array of "Poi"
 }
 //------------------------------------------------------------------------------
-/** @extends {ogObject} */ 
-ogPOI.prototype = new ogObject();
+ogPOILayer.prototype = new ogObject();
 //------------------------------------------------------------------------------
 /**
  * @description Parse Options
  * @param {Object} options
  */
-ogPOI.prototype.ParseOptions = function(options)
+ogPOILayer.prototype.ParseOptions = function(options)
 {
-   /** @type string */
-   var text = "";
-   /** @type Array.<number> */
-   var position = [0,0,0];
-   /** @type number */
-   var size = 40;
-   /** @type null|string */
-   var icon = null;
-
-   
-   if (options["text"])
-   {
-      text = options["text"];
-   }
-   if (options["position"])
-   {
-      position = options["position"];
-   }
-   if (options["size"])
-   {
-      size = options["size"];
-   }
-   if (options["icon"])
-   {
-      icon = options["icon"];
-   }
-   
-   /** @type ogScene */
-   var scene = /** @type ogScene */this.parent;
-   /** @type ogContext */
-   var context = /** @type ogContext */scene.parent;
-   
-   this.poi = context.engine.poimanager.CreatePoi(text, null, icon);
-   // todo: fix lat/lng -> lng/lat !!!
-   this.poi.SetPosition(position[1], position[0], position[2], 0);
-   this.poi.SetSize(size);
-   
-   var poirenderer = this._GetPoiRenderer();
-   
-   if (poirenderer)
-   {
-      poirenderer.AddPoi(this.poi);
-   }
+  
    
 }
 //------------------------------------------------------------------------------
@@ -116,78 +71,24 @@ ogPOI.prototype.ParseOptions = function(options)
  * @description Called when object is destroyed. Never call manually.
  * @ignore
  */
-ogPOI.prototype._OnDestroy = function()
+ogPOILayer.prototype._OnDestroy = function()
 {
-   /** @type ogScene */
-   var scene = /** @type ogScene */this.parent;
-   /** @type ogContext */
-   var context = /** @type ogContext */scene.parent;
-   
-     /** @type PoiRenderer */
-   var poirenderer = this._GetPoiRenderer();
-   
-   if (poirenderer)
-   {
-      poirenderer.RemovePoi(this.poi);
-   }
-   /** @type PoiManager */
-   var poimgr = context.engine.poimanager;
-   poimgr.DestroyPoi(this.poi);
+
    
 }
 //------------------------------------------------------------------------------
 /**
- * @description change POI text
- * @param {string} newtext the new POI text
+ * @description hide the poi layer
  */
-ogPOI.prototype.ChangeText = function(newtext)
-{
-   alert(newtext);
-}
-//------------------------------------------------------------------------------
-/**
- * @description change POI icon
- * @param {string} newicon the url to the icon
- */
-ogPOI.prototype.ChangeIcon = function(newicon)
-{
-   alert(newicon);
-}
-//------------------------------------------------------------------------------
-/**
- * @description change POI size
- * @param {number} newsize the new size of the poi (meters per pixel)
- */
-ogPOI.prototype.ChangeSize = function(newsize)
-{
-   alert(newsize);
-}
-//------------------------------------------------------------------------------
-/**
- * @description change POI location
- * @param {number} lng Lontigude
- * @param {number} lat Latitude
- * @param {number} elv elevation
- */
-ogPOI.prototype.ChangePosition = function(lng, lat, elv)
-{
-   alert(lng);
-   alert(lat);
-   alert(elv);
-}
-//------------------------------------------------------------------------------
-/**
- * @description hide the poi
- */
-ogPOI.prototype.Hide = function()
+ogPOILayer.prototype.Hide = function()
 {
    this.hide = true;
 }
 //------------------------------------------------------------------------------
 /**
- * @description show the previously hidden poi
+ * @description show the previously hidden poi layer
  */
-ogPOI.prototype.Show = function()
+ogPOILayer.prototype.Show = function()
 {
    this.hide = false;
 }
@@ -195,14 +96,14 @@ ogPOI.prototype.Show = function()
 /**
  *  @returns {PoiRenderer} the poi-renderer
  */
-ogPOI.prototype._GetPoiRenderer = function()
+ogPOILayer.prototype._GetPoiRenderer = function()
 {
    /** @type PoiRenderer */
    var renderer = null;
    /** @type ogScene */
-   var scene = /** @type ogScene */this.parent;
+   var scene = /** @type ogScene */ this.parent;
    /** @type ogContext */
-   var context =  /** @type ogContext */scene.parent;
+   var context = /** @type ogContext */ scene.parent;
    // Get the engine
    /** @type engine3d */
    var engine = context.engine;
@@ -217,4 +118,4 @@ ogPOI.prototype._GetPoiRenderer = function()
    }
    return renderer;
 }
-
+//------------------------------------------------------------------------------

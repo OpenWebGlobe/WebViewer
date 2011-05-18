@@ -6,22 +6,6 @@ import os
 import os.path
 import tarfile
 
-#-------------------------------------------------------------------------------
-# OS specific setupls
-
-if sys.platform == 'win32':
-   print "Windows detected..."
-   dest = "komodo_integration_win32.tar.gz"
-elif sys.platform == 'darwin':
-   print "MacOS X detected..."
-   dest = "komodo_integration_osx.tar.gz"
-elif 'linux' in sys.platform:
-   print "Linux detected..."
-   dest = "komodo_integration_linux.tar.gz"
-else:
-   print "unsupported system: " + sys.platform
-   print "project file will be installed, but no macros!"
-   dest = "komodo_integration.tar.gz"
 
 #-------------------------------------------------------------------------------
 # FUNCTION: DOWNLOAD FILE
@@ -48,19 +32,6 @@ else:
    # extract archive in "WebViewer/external"
    print "Extracting external files..." 
    tar = tarfile.open(destfile)
-   tar.extractall("../")
-   tar.close()
-   print "Ok."
-
-# Download Komodo project integration (depends OS)
-url = "https://github.com/downloads/OpenWebGlobe/WebViewer/" + dest
-
-if (os.path.isfile(dest)):
-   print "Komodo integration file already downloaded..."
-else:
-   download(url, dest)
-   print "Extracting komodo integration..."
-   tar = tarfile.open(dest)
    tar.extractall("../")
    tar.close()
    print "Ok."

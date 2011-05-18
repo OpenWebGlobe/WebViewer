@@ -140,25 +140,25 @@ CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
 /**
  * Draws the canvas 2d.
  * @param {string} text the poi text.
- * @param {Object} styleObject style definition.
+ * @param {PoiTextStyle} styleObject style definition.
  */
 CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
 {           
            //Determine canvas Size 
            this.ctx.save();
-              this.ctx.font = styleObject.fontString;
-              this.ctx.textAlign = styleObject.textAlign;
+              this.ctx.font = styleObject["fontString"];
+              this.ctx.textAlign = styleObject["textAlign"];
               this.ctx.textBaseline = 'top';
-              this.ctx.lineWidth = styleObject.lineWidth;
-              this.ctx.strokeStyle = styleObject.strokeStyle; 
+              this.ctx.lineWidth = styleObject["lineWidth"];
+              this.ctx.strokeStyle = styleObject["strokeStyle"]; 
               var dim = this.ctx.measureText(this.text);
               var textWidth = Math.round(dim.width);
-              var textHeight = styleObject.fontSize+styleObject.border;   
+              var textHeight = styleObject["fontSize"]+styleObject["border"];   
             this.ctx.restore();
 
 
-            this.meshWidth = textWidth+2*parseInt(styleObject.lineWidth, 10)+Math.abs(styleObject.shadowOffsetX)+Math.abs(styleObject.shadowOffsetY)+styleObject.shadowBlur;
-            this.meshHeight = parseInt(styleObject.fontSize, 10)+2*parseInt(styleObject.lineWidth, 10)+Math.abs(styleObject.shadowOffsetY)+styleObject.shadowBlur;      
+            this.meshWidth = textWidth+2*parseInt(styleObject["lineWidth"], 10)+Math.abs(styleObject["shadowOffsetX"])+Math.abs(styleObject["shadowOffsetY"])+styleObject["shadowBlur"];
+            this.meshHeight = parseInt(styleObject["fontSize"], 10)+2*parseInt(styleObject.lineWidth, 10)+Math.abs(styleObject["shadowOffsetY"])+styleObject["shadowBlur"];      
             
             
             //get next power of two    
@@ -172,29 +172,29 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
 
                      
            //draw background
-           this.ctx.fillStyle = styleObject.backgroundColor;
+           this.ctx.fillStyle = styleObject["backgroundColor"];
            this.ctx.fillRect(0, 0, this.meshWidth, this.meshHeight);
            
 
            //shadow
-           this.ctx.shadowOffsetX = styleObject.shadowOffsetX;
-           this.ctx.shadowOffsetY = styleObject.shadowOffsetY;
-           this.ctx.shadowBlur    = styleObject.shadowBlur;
-           this.ctx.shadowColor   = styleObject.shadowColor;
+           this.ctx.shadowOffsetX = styleObject["shadowOffsetX"];
+           this.ctx.shadowOffsetY = styleObject["shadowOffsetY"];
+           this.ctx.shadowBlur    = styleObject["shadowBlur"];
+           this.ctx.shadowColor   = styleObject["shadowColor"];
 
            
            //write text
-           this.ctx.fillStyle = styleObject.fontColor; 
-           this.ctx.font = styleObject.fontString;
-           this.ctx.textAlign = styleObject.textAlign;
+           this.ctx.fillStyle = styleObject["fontColor"]; 
+           this.ctx.font = styleObject["fontString"];
+           this.ctx.textAlign = styleObject["textAlign"];
            this.ctx.textBaseline = 'middle';
-           this.ctx.lineWidth = styleObject.lineWidth;
-           this.ctx.strokeStyle = styleObject.strokeStyle;
+           this.ctx.lineWidth = styleObject["lineWidth"];
+           this.ctx.strokeStyle = styleObject["strokeStyle"];
             
 
             //draw text
-            this.ctx.strokeText(text,styleObject.lineWidth,this.meshHeight/2);
-            this.ctx.fillText(text,styleObject.lineWidth,this.meshHeight/2);
+            this.ctx.strokeText(text,styleObject["lineWidth"],this.meshHeight/2);
+            this.ctx.fillText(text,styleObject["lineWidth"],this.meshHeight/2);
 
            this.ToGPU();          
 }
@@ -211,8 +211,8 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
 CanvasTexture.prototype.DrawIconToCanvas = function(imgurl,iconstyle)
 {           
  
-      this.meshWidth = iconstyle.iconWidth+2*iconstyle.border+Math.abs(iconstyle.shadowOffsetX)+Math.abs(iconstyle.shadowOffsetY)+iconstyle.shadowBlur;           
-      this.meshHeight = iconstyle.iconHeight+2*iconstyle.border+Math.abs(iconstyle.shadowOffsetX)+Math.abs(iconstyle.shadowOffsetY)+iconstyle.shadowBlur; 
+      this.meshWidth = iconstyle["iconWidth"]+2*iconstyle["border"]+Math.abs(iconstyle["shadowOffsetX"])+Math.abs(iconstyle["shadowOffsetY"])+iconstyle["shadowBlur"];           
+      this.meshHeight = iconstyle["iconHeight"]+2*iconstyle["border"]+Math.abs(iconstyle["shadowOffsetX"])+Math.abs(iconstyle["shadowOffsetY"])+iconstyle["shadowBlur"]; 
             
 
       //get next power of two    
@@ -227,16 +227,16 @@ CanvasTexture.prototype.DrawIconToCanvas = function(imgurl,iconstyle)
             
 
       //draw background
-      this.ctx.fillStyle = iconstyle.backgroundColor;
+      this.ctx.fillStyle = iconstyle["backgroundColor"];
       this.ctx.fillRect(0, 0, this.meshWidth, this.meshHeight);
            
 
       //shadow
           
-      this.ctx.shadowOffsetX = iconstyle.shadowOffsetX;
-      this.ctx.shadowOffsetY = iconstyle.shadowOffsetY;
-      this.ctx.shadowBlur    = iconstyle.shadowBlur;
-      this.ctx.shadowColor   = iconstyle.shadowColor;
+      this.ctx.shadowOffsetX = iconstyle["shadowOffsetX"];
+      this.ctx.shadowOffsetY = iconstyle["shadowOffsetY"];
+      this.ctx.shadowBlur    = iconstyle["shadowBlur"];
+      this.ctx.shadowColor   = iconstyle["shadowColor"];
       
           
               
@@ -260,7 +260,7 @@ CanvasTexture.prototype.DrawIconToCanvas = function(imgurl,iconstyle)
  */
 CanvasTexture.prototype._cbfDrawImage = function(context,image,styleObject,canvasTextureClass)
 {
-     this.ctx.drawImage(image, styleObject.border, styleObject.border, styleObject.iconWidth, styleObject.iconHeight);
+     this.ctx.drawImage(image, styleObject["border"], styleObject["border"], styleObject["iconWidth"], styleObject["iconHeight"]);
      this.ToGPU();
      
 }
