@@ -92,13 +92,17 @@ function main()
    ogAddImageLayer(globe, imgLandsat_CH);
    ogAddElevationLayer(globe, elvSRTM_CH);
 	
-	//------------ Add POI with default style -----------------------------------
+	//------------ Create a POI with default style -----------------------------------
 	var scene = ogGetScene(ctx);
-	var options = {};
-	options.text = "Hello World! 世界你好";
-	options.position = [7.66, 46.13, 6000];
-	options.size = 50;
-	var poi = ogCreatePOI(scene, options);
+	
+	var PoiDefinition = 
+	{
+		text 		: 	"Hello World! 世界你好",
+		position :  [7.66, 46.13, 6000],
+		size 		: 	50
+	};
+	
+	var poi = ogCreatePOI(scene, PoiDefinition);
 	//---------------------------------------------------------------------------
 
    // (4) Set the "Render-Callback" function.

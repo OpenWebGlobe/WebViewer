@@ -38,6 +38,7 @@ goog.require('owg.ogMeshObject');
 goog.require('owg.ogPOI');
 goog.require('owg.ogSurface');
 goog.require('owg.ogTexture');
+goog.require('owg.ogPOILayer');
 
 goog.require('goog.debug.Logger');
 
@@ -89,7 +90,7 @@ function _CreateObject(type, parent, options)
          // not available yet...
          break;
       case OG_OBJECT_POILAYER:
-         // not available yet...
+         newobject = new ogPOILayer();
          break;
       case OG_OBJECT_GEOMETRYLAYER:
          // not available yet...

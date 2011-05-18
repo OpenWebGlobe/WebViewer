@@ -37,12 +37,15 @@ Windows, Linux, MacOS X
 -----------------------
 
 1) Install Python (2.6 or 2.7) if you don't have it already. You can get python at http://www.python.org/
+You also need Java installed for the closure compiler. 
+On windows you may have to adjust the Python Path in "scripts/setup.bat".
 
 2) Go into the scripts directory and start 
 "download_external.py". This will download all required external files.
 
-It will also download a project file and some integration macros for the "Komodo Editor or IDE".
-You can get Komodo editor here: http://www.activestate.com/komodo-edit
+3) If you are using the Komodo Editor or IDE, you can download the Komodo integration.
+Go into the scripts directory and start "download_komodo_integration.py". This works for Windows/Linux and MacOS X.
+You can get Komodo editor here: [Komodo Editor](http://www.activestate.com/komodo-edit)
 
 
 License
