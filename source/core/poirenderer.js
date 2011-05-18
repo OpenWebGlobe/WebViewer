@@ -34,10 +34,10 @@ goog.provide('owg.PoiRenderer');
  */
 function PoiRenderer(engine)
 {
-   /** @type engine3d */
+   /** @type {engine3d} */
    this.engine = engine;
    
-   /** @type Array.<Poi> */
+   /** @type {Array.<Poi>} */
    this.poiarray = [];
 }
 

@@ -54,7 +54,7 @@ function vec3(opt_x, opt_y, opt_z)
    /** @type number*/
    var z = opt_z || 0;
    
-   /** @type !Float32Array */
+   /** @type {!Float32Array} */
    this._values = new Float32Array([x, y, z]);
 }
 

@@ -42,11 +42,11 @@ goog.require('owg.GlobeRenderer');
  */
 function ogImageLayer()
 {
-   /** @type string */
+   /** @type {string} */
    this.name = "ogImageLayer";
-   /** @type number */
+   /** @type {number} */
    this.type = OG_OBJECT_IMAGELAYER;
-   /** @type number */
+   /** @type {number} */
    this.layerindex = -1;
 }
 
@@ -60,11 +60,11 @@ ogImageLayer.prototype = new ogObject();
  */
 ogImageLayer.prototype.GetGlobeRenderer = function()
 {
-   /** @type GlobeRenderer */
+   /** @type {GlobeRenderer} */
    var renderer = null;
          
    //parent of ogImageLayer is ogWorld
-   /** @type ogWorld */
+   /** @type {ogWorld} */
    var world = /** @type ogWorld */this.parent;
    
    // parent of world is scene
@@ -72,11 +72,11 @@ ogImageLayer.prototype.GetGlobeRenderer = function()
    var scene = /** @type ogScene */world.parent;
    
    // parent of scene is context
-   /** @type ogContext */
+   /** @type {ogContext} */
    var context = /** @type ogContext */scene.parent;
    
    // Get the engine
-   /** @type engine3d */
+   /** @type {engine3d} */
    var engine = context.engine;
    
    // test if there is a scenegraph attached
@@ -96,7 +96,7 @@ ogImageLayer.prototype.GetGlobeRenderer = function()
  */
 ogImageLayer.prototype.AddImageLayer = function(options)
 {
-   /** @type GlobeRenderer */
+   /** @type {GlobeRenderer} */
    var renderer = this.GetGlobeRenderer();
    if (renderer)
    {
@@ -109,7 +109,7 @@ ogImageLayer.prototype.AddImageLayer = function(options)
  */
 ogImageLayer.prototype.RemoveImageLayer = function()
 {
-   /** @type GlobeRenderer */
+   /** @type {GlobeRenderer} */
    var renderer = this.GetGlobeRenderer();
    if (renderer && this.layerindex != -1)
    {

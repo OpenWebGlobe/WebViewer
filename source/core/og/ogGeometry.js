@@ -35,9 +35,9 @@ goog.require('owg.ogObject');
  */
 function ogGeometry()
 {
-   /** @type string */
+   /** @type {string} */
    this.name = "ogGeometry";
-   /** @type number */
+   /** @type {number} */
    this.type = OG_OBJECT_GEOMETRY; 
 }
 

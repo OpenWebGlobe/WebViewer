@@ -34,11 +34,11 @@ goog.require('owg.ScenegraphNode');
  */
 function RenderObjectNode()
 {
-      /** @type GlobeRenderer */
+      /** @type {GlobeRenderer} */
       this.globerenderer = null;
-      /** @type vec3 */
+      /** @type {vec3} */
       this.camera = new vec3();
-      /** @type PoiRenderer */
+      /** @type {PoiRenderer} */
       this.poirenderer = null;
       
       //------------------------------------------------------------------------

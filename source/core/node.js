@@ -37,25 +37,25 @@ var _g_id = 0;
  */
 function ScenegraphNode()
 {
-   /** @type number */
+   /** @type {number} */
    this.Id = _g_id; //_generateId();
    _g_id++;
    
-   /** @type function() */
+   /** @type {function()} */
    this.OnRender = function(){};
-   /** @type function(TraversalState) */
+   /** @type {function(TraversalState)} */
    this.OnTraverse = function(TraversalState){};
-   /** @type function() */
+   /** @type {function()} */
    this.OnChangeState = function(){};
-   /** @type function() */
+   /** @type {function()} */
    this.OnInit = function(){};
-   /** @type function() */
+   /** @type {function()} */
    this.OnExit = function(){};
-   /** @type function() */
+   /** @type {function()} */
    this.OnRegisterEvents = function(){}; // function that is called to register events (mouse/key/...)
-   /** @type engine3d */
+   /** @type {engine3d} */
    this.engine = null;
-   /** @type Object|number */
+   /** @type {Object|number} */
    this.ParentNode = null;    // Parent node or 0 if root
    this.vecChildren = new Array();  // Child Nodes. Empty if there are none.
 }

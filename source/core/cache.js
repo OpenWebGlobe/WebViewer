@@ -64,21 +64,21 @@ var CachePriority =
  */
 function Cache(maxSize, debug) 
 {
-    /** @type number */
+    /** @type {number} */
     this.maxSize_ = maxSize || -1;
-    /** @type boolean */
+    /** @type {boolean} */
     this.debug_ = debug || false;
-    /** @type Object */
+    /** @type {Object} */
     this.items_ = {};
-    /** @type number */
+    /** @type {number} */
     this.count_ = 0;
 
-    /** @type number */
+    /** @type {number} */
     var fillFactor = .75;
-    /** @type number */
+    /** @type {number} */
     this.purgeSize_ = Math.round(this.maxSize_ * fillFactor);
 
-    /** @type Object */
+    /** @type {Object} */
     this.stats_ = {};
     this.stats_['hits'] = 0;
     this.stats_['misses'] = 0;

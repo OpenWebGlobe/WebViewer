@@ -35,9 +35,9 @@ goog.require('owg.ogObject');
  */
 function ogMeshObject()
 {
-   /** @type string */
+   /** @type {string} */
    this.name = "ogMeshObject";
-   /** @type number */
+   /** @type {number} */
    this.type = OG_OBJECT_MESH; 
 }
 

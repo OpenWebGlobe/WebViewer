@@ -38,47 +38,47 @@ goog.provide('owg.TriangleIntersector');
  
  function TriangleIntersector()
  {
-    /** @type Object */
+    /** @type {Object} */
     this.result = {},
     this.result.t = 0.0;
     this.result.u = 0.0;
     this.result.v = 0.0;
     
-    /** @type Object */
+    /** @type {Object} */
     this.edge1 = {};
     this.edge1.x = 0.0;
     this.edge1.y = 0.0;
     this.edge1.z = 0.0;
     
-    /** @type Object */
+    /** @type {Object} */
     this.edge2 = {};
     this.edge2.x = 0.0;
     this.edge2.y = 0.0;
     this.edge2.z = 0.0;
     
-    /** @type Object */
+    /** @type {Object} */
     this.tvec = {};
     this.tvec.x = 0.0;
     this.tvec.y = 0.0;
     this.tvec.z = 0.0;
     
-    /** @type Object */
+    /** @type {Object} */
     this.pvec = {};
     this.pvec.x = 0.0;
     this.pvec.y = 0.0;
     this.pvec.z = 0.0;
     
-    /** @type Object */
+    /** @type {Object} */
     this.qvec = {};
     this.qvec.x = 0.0;
     this.qvec.y = 0.0;
     this.qvec.z = 0.0;
     
-    /** @type number */
+    /** @type {number} */
     this.det = 0.0;
-    /** @type number */
+    /** @type {number} */
     this.invdet = 0.0;
-    /** @type number */
+    /** @type {number} */
     this.EPSILON = 2.2204460492503131e-016;
  }
  //-----------------------------------------------------------------------------
@@ -89,16 +89,16 @@ goog.provide('owg.TriangleIntersector');
   * 
   *               Based on: Tomas Möller, Ben Trumbore, "Fast, Minimum Storage Ray / Triangle Intersection"
   * 
-  * @param  origx: x coordinate of ray origin
-  * @param  origy: y coordinate of ray origin
-  * @param  origz: z coordinate of ray origin
-  * @param  dirx: x coordinate of ray direction (normalized)
-  * @param  dirx: y coordinate of ray direction (normalized)
-  * @param  dirx: z coordinate of ray direction (normalized)
-  * @param  vert0x: x of the first triangle corner
-  * @param  vert0y: y of the first triangle corner
-  * @param  vert0z: z of the first triangle corner
-  * @param  vert1z: x of the second triangle corner
+  * @param {number} origx x coordinate of ray origin
+  * @param {number} origy y coordinate of ray origin
+  * @param {number} origz z coordinate of ray origin
+  * @param {number} dirx x coordinate of ray direction (normalized)
+  * @param {number} dirx y coordinate of ray direction (normalized)
+  * @param {number} dirx z coordinate of ray direction (normalized)
+  * @param {number} vert0x x of the first triangle corner
+  * @param {number} vert0y y of the first triangle corner
+  * @param {number} vert0z z of the first triangle corner
+  * @param {number} vert1z x of the second triangle corner
   * ...
   * 
   */
