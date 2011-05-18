@@ -521,10 +521,10 @@ engine3d.prototype.Clear = function()
 //------------------------------------------------------------------------------
 /**
  * @description Set Viewport
- * @param x x-Screen-Position
- * @param y y-Screen-Position
- * @param w Screen width
- * @param h Screen height
+ * @param {number} x x-Screen-Position
+ * @param {number} y y-Screen-Position
+ * @param {number} w Screen width
+ * @param {number} h Screen height
  */
 engine3d.prototype.SetViewport = function(x,y,w,h)
 {

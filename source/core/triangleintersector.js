@@ -89,16 +89,16 @@ goog.provide('owg.TriangleIntersector');
   * 
   *               Based on: Tomas Möller, Ben Trumbore, "Fast, Minimum Storage Ray / Triangle Intersection"
   * 
-  * @param  origx: x coordinate of ray origin
-  * @param  origy: y coordinate of ray origin
-  * @param  origz: z coordinate of ray origin
-  * @param  dirx: x coordinate of ray direction (normalized)
-  * @param  dirx: y coordinate of ray direction (normalized)
-  * @param  dirx: z coordinate of ray direction (normalized)
-  * @param  vert0x: x of the first triangle corner
-  * @param  vert0y: y of the first triangle corner
-  * @param  vert0z: z of the first triangle corner
-  * @param  vert1z: x of the second triangle corner
+  * @param {number} origx x coordinate of ray origin
+  * @param {number} origy y coordinate of ray origin
+  * @param {number} origz z coordinate of ray origin
+  * @param {number} dirx x coordinate of ray direction (normalized)
+  * @param {number} dirx y coordinate of ray direction (normalized)
+  * @param {number} dirx z coordinate of ray direction (normalized)
+  * @param {number} vert0x x of the first triangle corner
+  * @param {number} vert0y y of the first triangle corner
+  * @param {number} vert0z z of the first triangle corner
+  * @param {number} vert1z x of the second triangle corner
   * ...
   * 
   */
