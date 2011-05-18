@@ -80,27 +80,27 @@ goog.require('owg.Texture');
       "iconWidth" : 64,
       "iconHeight" : 64,
       "border" : 0,
-      "backgroundColor" : 'rgba(0, 255, 0, 0)',
+      "backgroundColor" : 'rgba(255, 255, 255, 0)',
       "shadowOffsetX" : 0,
       "shadowOffsetY" : 0,
       "shadowBlur" : 0,
-      "shadowColor" : 'rgba(255, 0, 0,0)'
+      "shadowColor" : 'rgba(0, 0, 0,0)'
       };
 
    /** @type PoiTextStyle */
    this.textStyle = {
       "id"         : 1,
       "fontString" : 'bold 48px Arial',  
-      "backgroundColor" : 'rgba(255,255,255,0.5)',
-      "fontColor" : 'rgba(255,0,0,1.0)',
-      "lineWidth" : 3,
+      "backgroundColor" : 'rgba(0,0,0,0)',
+      "fontColor" : 'rgba(255,255,255,1.0)',
+      "lineWidth" : 8,
       "strokeStyle" : 'rgba(0,0,0,1.0)',
       "textAlign" : 'left', 
       "fontSize" : 48,
-      "shadowOffsetX" : 2,
-      "shadowOffsetY" : 2,
-      "shadowBlur" : 5,
-      "shadowColor" : 'rgba(0, 255, 0, 1.0)'
+      "shadowOffsetX" : 0,
+      "shadowOffsetY" : 0,
+      "shadowBlur" : 0,
+      "shadowColor" : 'rgba(0, 0, 0, 1.0)'
       };
  }
  
