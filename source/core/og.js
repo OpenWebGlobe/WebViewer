@@ -828,11 +828,11 @@ goog.exportSymbol('ogCreateScene', ogCreateScene);
 */
 function ogGetContext(scene_id)
 {
-   //** @type ogScene
+   /** @type {ogScene} */
    var scene = _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
-      //** @type ogContext
+      /** @type {ogContext} */
       var context = scene.parent;
       if (context)
       {
@@ -850,11 +850,11 @@ goog.exportSymbol('ogGetContext', ogGetContext);
 */
 function ogGetWorld(scene_id)
 {
-   //** @type ogScene
+   /* @type {ogScene} */
    var scene = _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
-      //** @type ogWorld
+      /** @type {ogWorld} */
       var world = scene.world;
       if (world)
       {
@@ -874,7 +874,7 @@ goog.exportSymbol('ogGetWorld', ogGetWorld);
 */
 function ogPickGlobe(scene_id, mx, my)
 {
-   //** @type ogScene
+   /* @type {ogScene} */
    var scene = _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
    {
@@ -894,7 +894,7 @@ goog.exportSymbol('ogPickGlobe', ogPickGlobe);
 */
 function ogCreateWorld(scene_id)
 {
-   //** @type ogScene
+   /* @type {ogScene} */
    var scene = _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
@@ -931,7 +931,7 @@ goog.exportSymbol('ogCreateGlobe', ogCreateGlobe);
 */
 function ogLoadTextureAsync(scene_id, url)
 {
-   //** @type ogScene
+   /* @type {ogScene} */
    var scene = _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
@@ -950,7 +950,7 @@ goog.exportSymbol('ogLoadTextureAsync', ogLoadTextureAsync);
 */
 function ogDestroyTexture(texture_id)
 {
-   //** @type ogTexture
+   /* @type {ogTexture} */
    var texture = _GetObjectFromId(texture_id);
    if (texture && texture.type == OG_OBJECT_TEXTURE)
    {
