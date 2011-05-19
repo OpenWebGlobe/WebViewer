@@ -829,11 +829,11 @@ goog.exportSymbol('ogCreateScene', ogCreateScene);
 function ogGetContext(scene_id)
 {
    /** @type {ogScene} */
-   var scene = _GetObjectFromId(scene_id);
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
       /** @type {ogContext} */
-      var context = scene.parent;
+      var context = /** @type {ogContext} */ scene.parent;
       if (context)
       {
          return context.id;
@@ -850,8 +850,8 @@ goog.exportSymbol('ogGetContext', ogGetContext);
 */
 function ogGetWorld(scene_id)
 {
-   /* @type {ogScene} */
-   var scene = _GetObjectFromId(scene_id);
+   /** @type {ogScene} */
+   var scene =  /** @type {ogScene} */ _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
       /** @type {ogWorld} */
@@ -874,8 +874,8 @@ goog.exportSymbol('ogGetWorld', ogGetWorld);
 */
 function ogPickGlobe(scene_id, mx, my)
 {
-   /* @type {ogScene} */
-   var scene = _GetObjectFromId(scene_id);
+   /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
    {
       return scene.Pick(mx, my);
@@ -894,8 +894,8 @@ goog.exportSymbol('ogPickGlobe', ogPickGlobe);
 */
 function ogCreateWorld(scene_id)
 {
-   /* @type {ogScene} */
-   var scene = _GetObjectFromId(scene_id);
+   /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
       var worldoptions = {};
@@ -931,8 +931,8 @@ goog.exportSymbol('ogCreateGlobe', ogCreateGlobe);
 */
 function ogLoadTextureAsync(scene_id, url)
 {
-   /* @type {ogScene} */
-   var scene = _GetObjectFromId(scene_id);
+   /** @type {ogScene} */
+   var scene =  /** @type {ogScene} */ _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
       var textureoptions = {};
@@ -950,8 +950,8 @@ goog.exportSymbol('ogLoadTextureAsync', ogLoadTextureAsync);
 */
 function ogDestroyTexture(texture_id)
 {
-   /* @type {ogTexture} */
-   var texture = _GetObjectFromId(texture_id);
+   /** @type {ogTexture} */
+   var texture = /** @type {ogTexture} */ _GetObjectFromId(texture_id);
    if (texture && texture.type == OG_OBJECT_TEXTURE)
    {
       texture.UnregisterObject();
@@ -968,7 +968,7 @@ goog.exportSymbol('ogDestroyTexture', ogDestroyTexture);
  */
 function ogBlitTexture(texture_id, x, y, opt_options)
 {
-   //** @type ogTexture
+   //** @type {ogTexture}
    var texture = _GetObjectFromId(texture_id);
    
    if (texture && texture.type == OG_OBJECT_TEXTURE)
@@ -1008,7 +1008,7 @@ goog.exportSymbol('ogAddImageLayer', ogAddImageLayer);
 function ogRemoveImageLayer(layer_id)
 {
    // test if context_id is a valid image layer
-   // @type ogImageLayer
+   // @type {ogImageLayer}
    var layer = _GetObjectFromId(layer_id);
    if (layer && layer.type == OG_OBJECT_IMAGELAYER)
    {
@@ -1048,7 +1048,7 @@ goog.exportSymbol('ogAddElevationLayer', ogAddElevationLayer);
 function ogRemoveElevationLayer(layer_id)
 {
    // test if context_id is a valid elevation layer
-   // @type ogElevationLayer
+   // @type {ogElevationLayer}
    var layer = _GetObjectFromId(layer_id);
    if (layer && layer.type == OG_OBJECT_ELEVATIONLAYER)
    {
@@ -1071,7 +1071,7 @@ goog.exportSymbol('ogRemoveElevationLayer', ogRemoveElevationLayer);
 function ogCreatePOI(scene_id, options)
 {
    // test if scene_id is a valid scene
-   var scene = /** @type ogScene */ _GetObjectFromId(scene_id);
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
       var POI = _CreateObject(OG_OBJECT_POI, scene, options);
@@ -1105,7 +1105,7 @@ goog.exportSymbol('ogDestroyPOI', ogDestroyPOI);
  */
 function ogChangePOIText(poi_id, text)
 {
-   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   var POI = /** @type {ogPOI} */ _GetObjectFromId(poi_id);
    if (POI && POI.type == OG_OBJECT_POI)
    {
       POI.ChangeText(text);
@@ -1119,7 +1119,7 @@ goog.exportSymbol('ogChangePOIText', ogChangePOIText);
  */
 function ogChangePOIIcon(poi_id, url)
 {
-   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   var POI = /** @type {ogPOI} */ _GetObjectFromId(poi_id);
    if (POI && POI.type == OG_OBJECT_POI)
    {
       POI.ChangeIcon(url);
@@ -1134,7 +1134,7 @@ goog.exportSymbol('ogChangePOIIcon', ogChangePOIIcon);
  */
 function ogChangePOISize(poi_id, size)
 {
-   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   var POI = /** @type {ogPOI} */ _GetObjectFromId(poi_id);
    if (POI && POI.type == OG_OBJECT_POI)
    {
       POI.ChangeSize(size);
@@ -1151,7 +1151,7 @@ goog.exportSymbol('ogChangePOISize', ogChangePOISize);
  */
 function ogChangePOIPosition(poi_id, lng, lat, elv)
 {
-   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   var POI = /** @type {ogPOI} */ _GetObjectFromId(poi_id);
    if (POI && POI.type == OG_OBJECT_POI)
    {
       POI.ChangePosition(lng, lat, elv);
@@ -1179,7 +1179,7 @@ goog.exportSymbol('ogHidePOI', ogHidePOI);
  */
 function ogShowPOI(poi_id)
 {
-   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   var POI = /** @type {ogPOI} */ _GetObjectFromId(poi_id);
    if (POI && POI.type == OG_OBJECT_POI)
    {
       POI.Show();
@@ -1197,7 +1197,7 @@ goog.exportSymbol('ogShowPOI', ogShowPOI);
  */
 function ogSetPOIActiveColor(poi_id,r,g,b,a)
 {
-   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   var POI = /** @type {ogPOI} */ _GetObjectFromId(poi_id);
    if (POI && POI.type == OG_OBJECT_POI)
    {
       POI.SetActiveColor(r,g,b,a);

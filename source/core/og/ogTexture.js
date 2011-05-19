@@ -36,12 +36,12 @@ goog.require('goog.debug.Logger');
  */
 function ogTexture()
 {
-   /* @type {string} */
+   /** @type {string} */
    this.name = "ogTexture";
    this.type = OG_OBJECT_TEXTURE;
-   /* @type {Texture} */
+   /** @type {Texture} */
    this.texture = null;
-   /* @type {string} */
+   /** @type {string} */
    this.textureUrl = "";
    this.status = OG_OBJECT_BUSY;
 }
