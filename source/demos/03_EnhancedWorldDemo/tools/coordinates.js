@@ -128,7 +128,7 @@ CoordinatesTool.prototype.onclick = function(eventData)
    
    if (result[0])
    {
-      this.display.innerHTML = "<p class='pickCoordinatesTooldisplay'>Latitude: "+result[1]+"<br><br>Longitude: "+result[2]+"<br><br>Elevation: "+result[3]+"</p>";
+      this.display.innerHTML = "<p class='pickCoordinatesTooldisplay'>Latitude: "+result[1].toPrecision(5)+"<br><br>Longitude: "+result[2].toPrecision(6)+"<br><br>Elevation: "+result[3].toPrecision(4)+"</p>";
    }
    else
    {
