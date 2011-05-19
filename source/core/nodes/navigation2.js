@@ -381,6 +381,76 @@ function NavigationNode2()
       // EVENT: OnTick
       this.OnTick = function(sender, dTick)
       {
+         if (sender._inputs & NavigationNode2.INPUTS.KEY_ALL)
+         {
+            if ((sender._inputs & NavigationNode2.INPUTS.MODIFIER_ALL) == 0)
+            {
+               var dX = 0;
+               if (sender._inputs & NavigationNode2.INPUTS.KEY_UP)
+               {
+                  dX += 1;
+               }
+               if (sender._inputs & NavigationNode2.INPUTS.KEY_DOWN)
+               {
+                  dX -= 1;
+               }
+               var dY = 0;
+               if (sender._inputs & NavigationNode2.INPUTS.KEY_LEFT)
+               {
+                  dY -= 1;
+               }
+               if (sender._inputs & NavigationNode2.INPUTS.KEY_RIGHT)
+               {
+                  dY += 1;
+               }
+               var deltaYaw = Math.atan2(dY, dX);
+               var p = (sender._ellipsoidHeight / 500000.0) * (sender._ellipsoidHeight / 500000.0);
+               if (p>10)
+               {
+                  p=10;
+               }
+               else if (p<0.001)
+               {
+                  p=0.001;
+               }
+               var deltaSurface = p * dTick / 250;
+               // navigate along geodetic line
+               var lat_rad = Math.PI * sender._latitude / 180; // deg2rad
+               var lng_rad = Math.PI * sender._longitude / 180; // deg2rad
+               var sinlat = Math.sin(lat_rad);
+               var coslat = Math.cos(lat_rad);
+               var A1 = sender._yaw + deltaYaw;
+               var B1 = lat_rad;
+               var L1 = lng_rad;
+               var Rn = WGS84_a / Math.sqrt(1.0 - WGS84_E_SQUARED * sinlat * sinlat);
+               var Rm = Rn / (1 + WGS84_E_SQUARED2 * coslat * coslat);
+               var deltaB = (WGS84_a / Rm) * deltaSurface * Math.cos(A1);
+               var deltaL = (WGS84_a / Rn) * deltaSurface * Math.sin(A1) / Math.cos(B1);
+               var A2, B2, L2;
+               B2 = deltaB + B1;
+               L2 = deltaL + L1;
+
+               sender._longitude = 180 * L2 / Math.PI;
+               sender._latitude = 180 * B2 / Math.PI;
+
+               while (sender._longitude > 180)
+               {
+                  sender._longitude -= 180;
+               }
+               while (sender._longitude < -180)
+               {
+                  sender._longitude += 180;
+               }
+               while (sender._latitude > 90)
+               {
+                  sender._latitude -= 180;
+               }
+               while (sender._latitude < -90)
+               {
+                  sender._latitude += 180;
+               }
+            }
+         }
          return;
          var deltaPitch = sender._fPitchSpeed*dTick/500.0;
          var deltaRoll = sender._fRollSpeed*dTick/500.0;
