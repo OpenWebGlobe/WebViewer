@@ -217,4 +217,17 @@ ogPOI.prototype._GetPoiRenderer = function()
    }
    return renderer;
 }
+//------------------------------------------------------------------------------
+/**
+ * @description
+ * @param {number} r the red value
+ * @param {number} g the red value
+ * @param {number} b the red value
+ * @param {number} a the red value
+ */
+ogPOI.prototype.SetActiveColor = function(r,g,b,a)
+{
+   var col = new vec4(r,g,b,a);
+   this.poi.poiActiveColor=col;
+}
 
