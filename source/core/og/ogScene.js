@@ -94,3 +94,25 @@ ogScene.prototype.Pick = function(mx, my)
    
    return result;
 }
+//------------------------------------------------------------------------------
+/**
+* @description Pick poi's
+* @param {number} mx x-coord of mouse
+* @param {number} my y-coord of mouse
+*/
+ogScene.prototype.PickPOI = function(mx, my)
+{
+   /** @type {ogContext} */
+   var context = /** @type ogContext */this.parent;
+   /** @type {Poi} */
+   var poi = context.engine.PickPOI(mx, my);
+   
+   if (poi)
+   {
+      return poi.ogpoi.id;
+   }
+   
+   return -1;
+   
+
+}

@@ -970,6 +970,21 @@ engine3d.prototype.PickGlobe = function(mx, my, pickresult)
       this.scene.nodeRenderObject.globerenderer.PickGlobe(mx,my,pickresult);
    }
 }
+
+//------------------------------------------------------------------------------
+/**
+ * @description PickPoi: Retrieve poi id of clicked poi
+ * @param {number} mx
+ * @param {number} my
+ */
+engine3d.prototype.PickPOI = function(mx, my)
+{
+   if (this.scene)
+   {
+      return this.scene.nodeRenderObject.poirenderer.PickPOI(mx,my);
+   }
+}
+
  //-----------------------------------------------------------------------------
  /**
  * @description Returns the altitude above ground [m]

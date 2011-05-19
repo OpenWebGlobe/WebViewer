@@ -103,6 +103,8 @@ ogPOI.prototype.ParseOptions = function(options)
    this.poi.SetPosition(position[1], position[0], position[2], 0);
    this.poi.SetSize(size);
    
+   this.poi.ogpoi = this;
+   
    var poirenderer = this._GetPoiRenderer();
    
    if (poirenderer)

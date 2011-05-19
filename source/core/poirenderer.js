@@ -82,5 +82,25 @@ PoiRenderer.prototype.RemovePoi = function(poi)
       }
    }
 }
+//------------------------------------------------------------------------------
+/**
+ * @description returns the picked Poi id.
+ * @param {number} mx mouse x coordinate
+ * @param {number} my mouse y coordinate
+ * @returns {?Poi}
+ */
+PoiRenderer.prototype.PickPOI = function(mx,my)
+{
+   for (var i=0;i<this.poiarray.length;i++)
+   {
+      if(this.poiarray[i].Pick(mx,my))
+      {
+       return this.poiarray[i];  
+      }
+      
+   }
+   
+   return null;
+}
 
 

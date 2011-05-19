@@ -129,7 +129,10 @@ CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
   
                  
    this.mesh.SetBufferPoi(vert);
-   this.mesh.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");  
+   this.mesh.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");
+   
+   this.mesh.bbmin = [-this.meshWidth/2,-this.meshHeight/2,0] 
+   this.mesh.bbmax = [this.meshWidth/2,this.meshHeight/2,0]
    
    this.mesh.meshWidth = this.meshWidth;
    this.mesh.meshHeight = this.meshHeight;

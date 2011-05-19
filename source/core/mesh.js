@@ -168,6 +168,8 @@ function Mesh(engine)
    this.billboardPos = new Array(3);
    this.billboardCenterTrans = new Array(3);
    this.newModelMatrix = new mat4();
+   
+   this.lastDrawnMatrix = new mat4();
 
    
 }
@@ -512,6 +514,7 @@ Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor,
                            alert("unknown indexsemantic");
       }
       
+
       if(this.modelMatrix)
       {     
          this.engine.PopMatrices();   
@@ -680,43 +683,38 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
          continue; 
       }
   
-        /* 
+         
       //not tested...yet !!!!        
       if(this.modelMatrix)
-      {
+      { 
          var invModelMatrix = new mat4();
-         invModelMatrix.Inverse(this.modelMatrix); 
-              
-         v1 = new vec3();
-         v1.Set(v1x,v1y,v1z);
-              
-         v2 = new vec3();
-         v2.Set(v2x,v2y,v2z);
-              
-         v3 = new vec3();
-         v3.Set(v3x,v3y,v3z);
-              
-             
-         vec = invModelMatrix.MultiplyVec3(v1);
-         v1x = vec.Get()[0];
-         v1y = vec.Get()[1];
-         v1z = vec.Get()[2];
-              
-         vec = invModelMatrix.MultiplyVec3(v2);
-         v2x = vec.Get()[0];
-         v2y = vec.Get()[1];
-         v2z = vec.Get()[2];
-              
-         vec = invModelMatrix.MultiplyVec3(v3);
-         v3x = vec.Get()[0];
-         v3y = vec.Get()[1];
-         v3z = vec.Get()[2];
+         invModelMatrix.CopyFrom(this.newModelMatrix);
          
-       }  
-       */
-        
-      var result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,this.currentTriangle.v1x,this.currentTriangle.v1y,this.currentTriangle.v1z,this.currentTriangle.v2x,this.currentTriangle.v2y,this.currentTriangle.v2z,this.currentTriangle.v3x,this.currentTriangle.v3y,this.currentTriangle.v3z);      
+         var v1 = new vec3();
+         v1.Set(this.currentTriangle.v1x,this.currentTriangle.v1y,this.currentTriangle.v1z);
+              
+         var v2 = new vec3();
+         v2.Set(this.currentTriangle.v2x,this.currentTriangle.v2y,this.currentTriangle.v2z);
+              
+         var v3 = new vec3();
+         v3.Set(this.currentTriangle.v3x,this.currentTriangle.v3y,this.currentTriangle.v3z);
+              
              
+         var vector = invModelMatrix.MultiplyVec3(v1);
+         
+         var vector2 = invModelMatrix.MultiplyVec3(v2);
+          
+         var vector3 = invModelMatrix.MultiplyVec3(v3);
+
+         
+         var result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,vector.Get()[0],vector.Get()[1],vector.Get()[2],vector2.Get()[0],vector2.Get()[1],vector2.Get()[2],vector3.Get()[0],vector3.Get()[1],vector3.Get()[2]);        
+
+       }  
+       else
+       {
+         var result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,this.currentTriangle.v1x,this.currentTriangle.v1y,this.currentTriangle.v1z,this.currentTriangle.v2x,this.currentTriangle.v2y,this.currentTriangle.v2z,this.currentTriangle.v3x,this.currentTriangle.v3y,this.currentTriangle.v3z);        
+       }
+                  
       if(result)
       {
          hit = true;  
@@ -900,10 +898,11 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
    var result;
   
    //not tested...yet !!!!        
-   if(this.modelMatrix)
-   {       
+   if(this.newModelMatrix)
+   {
       var invModelMatrix = new mat4();
-      invModelMatrix.Inverse(this.modelMatrix); 
+      invModelMatrix.CopyFrom(this.newModelMatrix); 
+
               
       var v1 = new vec3();
       v1.Set(this.bbmin[0],this.bbmin[1],this.bbmin[2]);
@@ -916,7 +915,7 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
       var v1y = vec.Get()[1];
       var v1z = vec.Get()[2];
               
-          vec = invModelMatrix.MultiplyVec3(v2);
+      vec = invModelMatrix.MultiplyVec3(v2);
       var v2x = vec.Get()[0];
       var v2y = vec.Get()[1];
       var v2z = vec.Get()[2];
@@ -951,8 +950,7 @@ Mesh.prototype.SetAsBillboard= function(x,y,z,translationX,translationY,translat
    transMat.Translation(this.billboardCenterTrans[0],this.billboardCenterTrans[1],this.billboardCenterTrans[2]);
    var newBbmat = new mat4();
    newBbmat.Multiply(bbmat,transMat);
-      
-  
+
    this.modelMatrix = newBbmat;
 }
 

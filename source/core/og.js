@@ -874,7 +874,7 @@ goog.exportSymbol('ogGetWorld', ogGetWorld);
 */
 function ogPickGlobe(scene_id, mx, my)
 {
-   //** @type ogScene
+   //** @type {ogScene}
    var scene = _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
    {
@@ -894,7 +894,7 @@ goog.exportSymbol('ogPickGlobe', ogPickGlobe);
 */
 function ogCreateWorld(scene_id)
 {
-   //** @type ogScene
+   //** @type {ogScene}
    var scene = _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
@@ -1205,4 +1205,20 @@ function ogSetPOIActiveColor(poi_id,r,g,b,a)
 }
 goog.exportSymbol('ogSetPOIActiveColor', ogSetPOIActiveColor);
 //------------------------------------------------------------------------------
-
+/** @description Pick poi. 
+*   @param {number} scene_id the scene
+*   @param {number} mx x-coord of mouse
+*   @param {number} my y-coord of mouse
+*   @returns {number} poi_id or -1 if no pick.
+*/
+function ogPickPOI(scene_id, mx, my)
+{
+    //** @type {ogScene} */
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+      return scene.PickPOI(mx, my);
+   }
+   return -1;
+}
+goog.exportSymbol('ogPickPOI', ogPickPOI);
