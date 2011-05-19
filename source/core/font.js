@@ -43,16 +43,16 @@ var fontwidth = new Array(14,28,14,14,14,14,14,14,14,96,0,14,14,0,14,14,14,14,14
  */
 function Font(engine)
 {
-   /** @type engine3d */
+   /** @type {engine3d} */
    this.engine = engine;
-   /** @type WebGLRenderingContext */
+   /** @type {WebGLRenderingContext} */
    this.gl = engine.gl;
    
    this.GenerateFontMesh();
    
-   /** @type mat4 */  
+   /** @type {mat4} */
    this.model = new mat4();
-   /** @type number */ 
+   /** @type {number} */
    this.strLengthInPixel=0;
 }
 

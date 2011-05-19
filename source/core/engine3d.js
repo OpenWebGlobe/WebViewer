@@ -49,20 +49,20 @@ goog.require('owg.TextureManager');
 // Global Variables
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-/** @type Date */
+/** @type {Date} */
 var dtEnd = new Date();
 var dtStart = new Date();
 
-/** @type Array.<engine3d> */
+/** @type {Array.<engine3d>} */
 var _g_vInstances    = new Array();    // array of all current instances
 
-/** @type number */
+/** @type {number} */
 var _g_nInstanceCnt  = 0;              // total number of engine instances
 
-/** @type ?function(number, engine3d) */
+/** @type {?function(number, engine3d)} */
 var _gcbfKeyDown     = null;           // global key down event
 
-/** @type ?function(number, engine3d) */
+/** @type {?function(number, engine3d)} */
 var _gcbfKeyUp       = null;           // global key up event
 //------------------------------------------------------------------------------
 
@@ -258,68 +258,68 @@ function _fncResize(evt)
 function engine3d()
 {
    // Callbacks:
-   /** @type ?function(engine3d) */
+   /** @type {?function(engine3d)} */
    this.cbfInit = null;
-   /** @type ?function(number, engine3d) */
+   /** @type {?function(number, engine3d)} */
    this.cbfTimer = null;
-   /** @type ?function(engine3d) */
+   /** @type {?function(engine3d)} */
    this.cbfRender = null;
-   /** @type ?function() */
+   /** @type {?function()} */
    this.cbfMouseClicked = null;
-   /** @type ?function() */
+   /** @type {?function()} */
    this.cbfMouseReleased = null;
-   /** @type ?function() */
+   /** @type {?function()} */
    this.cbfMouseMoved = null;
-   /** @type ?function(number, engine3d) */
+   /** @type {?function(number, engine3d)} */
    this.cbfMouseWheel = null;
-   /** @type ?function() */
+   /** @type {?function()} */
    this.cbfKeyPressed = null;
-   /** @type ?function() */
+   /** @type {?function()} */
    this.cbfKeyReleased = null;
-   /** @type ?function(number,number,engine3d) */
+   /** @type {?function(number,number,engine3d)} */
    this.cbfResize = null;
    
    // flags
-   /** @type boolean */
+   /** @type {boolean} */
    this.init = false;
-   /** @type string */
+   /** @type {string} */
    this.canvasid = "";
 
    
    // width / height
-   /** @type number */
+   /** @type {number} */
    this.width = 0;
-   /** @type number */
+   /** @type {number} */
    this.height = 0;
 	
    this.bFullscreen = false;
 
-   /** @type WebGLRenderingContext */
+   /** @type {WebGLRenderingContext} */
    this.gl = null;          // opengl context
    
    this.context = null;
 	
-   /** @type ShaderManager */
+   /** @type {ShaderManager} */
    this.shadermanager = null;
 	
    // Default Background color
-   /** @type number */
+   /** @type {number} */
    this.bg_r = 0;
-   /** @type number */
+   /** @type {number} */
    this.bg_g = 0;
-   /** @type number */
+   /** @type {number} */
    this.bg_b = 0;
-   /** @type number */
+   /** @type {number} */
    this.bg_a = 1;
    
    // Viewport
-   /** @type number */
+   /** @type {number} */
    this.vp_x = 0;
-   /** @type number */
+   /** @type {number} */
    this.vp_y = 0;
-   /** @type number */
+   /** @type {number} */
    this.vp_w = 0;
-   /** @type number */
+   /** @type {number} */
    this.vp_h = 0;
    
    // Special Offset for Fullscreen mode
@@ -327,57 +327,57 @@ function engine3d()
    this.yoffset = 0;
    
    // Model, View and Projection Matrices
-   /** @type mat4 */
+   /** @type {mat4} */
    this.matModel = new mat4();
-   /** @type mat4 */
+   /** @type {mat4} */
    this.matView = new mat4();
-   /** @type mat4 */
+   /** @type {mat4} */
    this.matProjection = new mat4();
-   /** @type mat4 */
+   /** @type {mat4} */
    this.matModelView = new mat4();
-   /** @type mat4 */
+   /** @type {mat4} */
    this.matModelViewProjection = new mat4();
    
    // Engine Traversal State
-   /** @type TraversalState */
+   /** @type {TraversalState} */
    this.TravState = new TraversalState();
    
    // Content Arrays
-   /** @type Array.<Mesh> */
+   /** @type {Array.<Mesh>} */
    this.vecMeshes = new Array();
-   /** @type Array.<Texture> */
+   /** @type {Array.<Texture>} */
    this.vecTextures = new Array();
    
    // engine instance voodoo
-   /** @type engine3d */
+   /** @type {engine3d} */
    _g_vInstances[_g_nInstanceCnt] = this;
-   /** @type number */
+   /** @type {number} */
    _g_nInstanceCnt++;
    
    // Event Handler
-   /** @type EventHandler */
+   /** @type {EventHandler} */
    this.eventhandler = new EventHandler();
    
    // system font (for ASCII Text only)
-   /** @type Font */
+   /** @type {Font} */
    this.systemfont = null;
    
    // the scene
-   /** @type SceneGraph */
+   /** @type {SceneGraph} */
    this.scene = null;
    
    // an empty texture for "failed" downloads
-   /** @type Texture */
+   /** @type {Texture} */
    this.nodata = null;
    
-   /** @type number */
+   /** @type {number} */
    this.worldtype = 1; // 0: custom, 1: wgs84, 2: flat, 3: 2D
    
    // POI Manager
-   /** @type PoiManager */
+   /** @type {PoiManager} */
    this.poimanager = null;
    
-   /** @type TextureManager */
+   /** @type {TextureManager} */
    this.texturemanager = null;
       
 }
@@ -521,10 +521,10 @@ engine3d.prototype.Clear = function()
 //------------------------------------------------------------------------------
 /**
  * @description Set Viewport
- * @param x x-Screen-Position
- * @param y y-Screen-Position
- * @param w Screen width
- * @param h Screen height
+ * @param {number} x x-Screen-Position
+ * @param {number} y y-Screen-Position
+ * @param {number} w Screen width
+ * @param {number} h Screen height
  */
 engine3d.prototype.SetViewport = function(x,y,w,h)
 {

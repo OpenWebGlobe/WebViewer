@@ -39,13 +39,13 @@ goog.require('owg.TerrainBlock');
  */
 function GlobeCache(engine, imagelayerlist, elevationlayerlist, quadtree, cachesize)
 {
-   /** @type engine3d */
+   /** @type {engine3d} */
    this.engine = engine;
-   /** @type Array.<ImageLayer> */
+   /** @type {Array.<ImageLayer>} */
    this.imagelayerlist = imagelayerlist;
-   /** @type Array.<ElevationLayer> */
+   /** @type {Array.<ElevationLayer>} */
    this.elevationlayerlist = elevationlayerlist;
-   /** @type MercatorQuadtree */
+   /** @type {MercatorQuadtree} */
    this.quadtree = quadtree;
    
    this.cache = new Cache(cachesize, false);

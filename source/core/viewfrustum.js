@@ -31,11 +31,11 @@ goog.provide('owg.ViewFrustum');
  */
 function corner()
 {
-   /** @type number */
+   /** @type {number} */
    this.x = 0;
-   /** @type number */
+   /** @type {number} */
    this.y = 0;
-   /** @type number */
+   /** @type {number} */
    this.z = 0;
 }
 
@@ -110,12 +110,12 @@ function SideOfPlane(plane, px, py, pz)
 //------------------------------------------------------------------------------
 /** 
  * @description ViewFrustum: function to test if a Box (defined by min_x,min_y,min_z and max_x,max_y,max_z) is inside or outside the view frustum. 
- * @param min_x   min_x x coordinate of front-left-bottom box corner. 
- * @param min_y   min_y y coordinate of front-left-bottom box corner. 
- * @param min_z   min_z z coordinate of front-left-bottom box corner. 
- * @param max_x   max_x x coordinate of rear-right-top box corner. 
- * @param max_y   max_y y coordinate of rear-right-top box corner. 
- * @param max_z   max_z z coordinate of rear-right-top box corner. 
+ * @param {number} min_x x coordinate of front-left-bottom box corner.
+ * @param {number} min_y y coordinate of front-left-bottom box corner.
+ * @param {number} min_z z coordinate of front-left-bottom box corner.
+ * @param {number} max_x x coordinate of rear-right-top box corner.
+ * @param {number} max_y y coordinate of rear-right-top box corner.
+ * @param {number} max_z z coordinate of rear-right-top box corner.
  */
 ViewFrustum.prototype.TestBox = function(min_x, min_y, min_z, max_x, max_y, max_z)
 {
@@ -154,7 +154,7 @@ ViewFrustum.prototype.TestBox = function(min_x, min_y, min_z, max_x, max_y, max_
 //------------------------------------------------------------------------------
 /** 
  * @description Updates the object with a new mvpMatrix
- * @param mvpMatrix model-view-projection matrix.
+ * @param {mat4} mvpMatrix model-view-projection matrix.
  */
  ViewFrustum.prototype.Update = function(mvpMatrix)
  {

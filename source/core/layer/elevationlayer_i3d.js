@@ -38,9 +38,9 @@ goog.require('owg.Mesh');
 function i3dElevationLayer()
 {
    this.dsi = new DatasetInfo();  // dataset info
-   /** @type ?string */
+   /** @type {?string} */
    this.server = null;
-   /** @type ?string */
+   /** @type {?string} */
    this.layer = null;
    this.quadtree = new MercatorQuadtree();
    this.coords = new Array(4);

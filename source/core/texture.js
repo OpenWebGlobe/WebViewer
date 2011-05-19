@@ -41,31 +41,31 @@ goog.require('owg.mat4');
  */
 function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_framebufferHeight)
 {
-   /** @type engine3d */
+   /** @type {engine3d} */
    this.engine = engine;   // pointer to the engine
-   /** @type WebGLRenderingContext */
+   /** @type {WebGLRenderingContext} */
    this.gl = engine.gl;    // pointer to the gl
-   /** @type ?WebGLTexture */
+   /** @type {?WebGLTexture} */
    this.texture = null;    // the texture
-   /** @type boolean */
+   /** @type {boolean} */
    this.ready = false;     // is true when texture is ready to use
-   /** @type boolean */
+   /** @type {boolean} */
    this.failed = false;    // is true when texture creation / download failed
-   /** @type Mesh */
+   /** @type {Mesh} */
    this.blitMesh = null;   // optional mesh used for blitting
-   /** @type ?number */
+   /** @type {?number} */
    this.width = 0;
-   /** @type ?number */
+   /** @type {?number} */
    this.height = 0; 
    
-   /** @type ?WebGLFramebuffer */
+   /** @type {?WebGLFramebuffer} */
    this.rttFrameBuffer = null; //used if this texture is used as a render target
-   /** @type boolean */
+   /** @type {boolean} */
    this.usedAsRenderTarget = false;
      
    if(opt_useAsRenderTarget)   // texture is used as render target.
    {
-         /** @type WebGLFramebuffer */
+         /** @type {WebGLFramebuffer} */
         this.rttFramebuffer = this.gl.createFramebuffer();
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.rttFramebuffer);
         this.rttFramebuffer.width = opt_framebufferWidth || 0;
@@ -213,7 +213,7 @@ Texture.prototype.Disable = function()
  */
 Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley, opt_blend, opt_invtexcoord, opt_alpha)
 {   
-   /** @type number */
+   /** @type {number} */
    var z = opt_z || 0;
    var angle = opt_angle || 0;
    var scalex = opt_scalex || 1;

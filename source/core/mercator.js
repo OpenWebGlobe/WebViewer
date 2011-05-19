@@ -39,9 +39,9 @@ goog.require('owg.MathUtils');
 /**
  * @description Transforms WGS84 lat & lng in Mercator ELLIPSOID coordinates.
  * 
- * @param longitude the wgs84 longitude
- * @param latitude the wgs84 latitude
- * @param result Array for result values (length 2).
+ * @param {number} longitude the wgs84 longitude
+ * @param {number} latitude the wgs84 latitude
+ * @param {Array} result Array for result values (length 2).
  */
 Mercator.WGS84ToMercatorE = function(longitude, latitude, result)
 {
@@ -58,9 +58,9 @@ Mercator.WGS84ToMercatorE = function(longitude, latitude, result)
 /**
  * @description Transforms x and y Mercator ELLIPSOID coordinates in WGS84 lat, lng coordinates.
  * 
- * @param x x values of Mercator ELLIPSOID Coordinates
- * @param y y values of Mercator ELLIPSOID Coordinates
- * @param result Array for result values. (length 2)
+ * @param {number} x x values of Mercator ELLIPSOID Coordinates
+ * @param {number} y y values of Mercator ELLIPSOID Coordinates
+ * @param {Array} result Array for result values. (length 2)
  */
 Mercator.MercatorEToWGS84 = function(x, y, result)
 {
@@ -107,9 +107,9 @@ Mercator.MercatorEToWGS84 = function(x, y, result)
 /**
  * @description Transforms WGS84 lng & lat in Mercator SPHERE coordinates.
  * 
- * @param longitude the wgs84 longitude
- * @param latitude the wgs84 latitude
- * @param result Array for result values (length 2)
+ * @param {number} longitude the wgs84 longitude
+ * @param {number} latitude the wgs84 latitude
+ * @param {Array} result Array for result values (length 2)
  */
 Mercator.WGS84ToMercator = function(longitude, latitude, result)
 {
@@ -130,9 +130,9 @@ Mercator.WGS84ToMercator = function(longitude, latitude, result)
 /**
  * @description Transforms x and y Mercator SPHERE coordinates in WGS84 lat, lng coordinates.
  * 
- * @param x x values of Mercator SPHERE Coordinates
- * @param y y values of Mercator SPHERE Coordinates
- * @param result Array for result values (length 2)
+ * @param {number} x x values of Mercator SPHERE Coordinates
+ * @param {number} y y values of Mercator SPHERE Coordinates
+ * @param {Array} result Array for result values (length 2)
  */
 Mercator.MercatorToWGS84 = function(x, y, result)
 {

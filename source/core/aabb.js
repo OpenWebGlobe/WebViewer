@@ -41,15 +41,15 @@ var AABBResult;
  
 function AABB()
 {
-   /** @type number */
+   /** @type {number} */
    this.tymin = 0.0;
-   /** @type number */
+   /** @type {number} */
    this.tymax = 0.0;
-   /** @type number */
+   /** @type {number} */
    this.tzmin = 0.0;
-   /** @type number */
+   /** @type {number} */
    this.tzmax = 0.0;
-   /** @type number */
+   /** @type {number} */
    this.flag = 1.0;
    
    /** @type {AABBResult} */

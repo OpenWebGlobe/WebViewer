@@ -101,9 +101,8 @@ example:
 function Mesh(engine)
 {
    /** @type {engine3d} */
-   this.engine = engine; 
-   
-   /** @type WebGLRenderingContext */
+   this.engine = engine;
+   /** @type {WebGLRenderingContext} */
    this.gl = engine.gl;
    
    /** @type {WebGLBuffer} */
@@ -111,29 +110,29 @@ function Mesh(engine)
    /** @type {WebGLBuffer} */
    this.ibo = null;              // index buffer  (WebGL)
    
-   /** @type ?Texture */
+   /** @type {?Texture} */
    this.texture = null;          // Texture (texture class)
    
-   /** @type ?Float32Array */
+   /** @type {?Float32Array} */
    this.vertexbufferdata = null; // interleaved vertex buffer data
    /** @type {string} */
    this.mode = "";               // vertex semantic
-   /** @type number */
+   /** @type {number} */
    this.numvertex = 0;           // number of vertices
-   /** @type number */
+   /** @type {number} */
    this.numindex = 0;            // number of elements of index vector
    
    /** @type ?Uint16Array*/
    this.indexbufferdata = null;  // Uint16Array(indices)
-   /** @type ?string */
+   /** @type {?string} */
    this.indexsemantic = null;    // triangle, line, or point.
   
-   /** @type boolean */  
+   /** @type {boolean} */
    this.Ready = false;           // Ready to draw
    this.http = null;
-   /** @type ?string */  
+   /** @type {?string} */
    this.jsonUrl = null;
-   /** @type ?function() */  
+   /** @type {?function()} */
    this.cbfJSONLoad = null;
    
    this.defaultfontcolor = new vec4();
@@ -145,24 +144,24 @@ function Mesh(engine)
    
    this.intersector = new TriangleIntersector();
    
-   /** @type ?Array.<number> */  
+   /** @type {?Array.<number>} */
    this.bbmin = null;
-   /** @type ?Array.<number> */ 
+   /** @type {?Array.<number>} */
    this.bbmax = null;
-   /** @type ?Array */ 
+   /** @type {?Array} */
    this.offset = null;
-   /** @type ?number */ 
+   /** @type {?number} */
    this.curtainindex = null;
    
    
    this.aabb = new AABB();
    
-   /** @type ?mat4 */ 
+   /** @type {?mat4} */
    this.modelMatrix = null;
-   /** @type number */ 
+   /** @type {number} */
    this.vertexLength = 0; //number of entries in the vertexbufferdata array per vertex
      
-   /** @type number */ 
+   /** @type {number} */
    this.numOfTriangles = 0;     //number of triangles depends on indexsemantic "TRIANGLES or TRIANGLESTRIP"
    
    this.currentTriangle = {}; //current triangle used for intersection tests.

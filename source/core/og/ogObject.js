@@ -118,19 +118,19 @@ function _GetObjectByName(name)
  */
 function ogObject()
 {
-   /** @type ogObject */   
+   /** @type {ogObject} */
    this.parent = null; // no parent
-   /** @type string */
+   /** @type {string} */
    this.name = "ogObject";
-   /** @type number */
+   /** @type {number} */
    this.type = OG_OBJECT_INVALID;
-   /** @type number */
+   /** @type {number} */
    this.id = -1;
-   /** @type number */
+   /** @type {number} */
    this.status = OG_OBJECT_READY;
-   /** @type ?function(number) */
+   /** @type {?function(number)} */
    this.cbfReady = null;
-   /** @type ?function(number) */
+   /** @type {?function(number)} */
    this.cbfFailed = null;
 }
 

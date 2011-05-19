@@ -38,11 +38,11 @@ function TraversalState()
    this.MatrixStackProjection = new Array();
    
    this.camera = new Object();
-   /** @type number */
+   /** @type {number} */
    this.camera.x = 0;
-   /** @type number */
+   /** @type {number} */
    this.camera.y = 0;
-   /** @type number */
+   /** @type {number} */
    this.camera.z = 0;
    
    this.geoposition = new Object();

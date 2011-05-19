@@ -36,9 +36,9 @@ goog.require('owg.ogObject');
  */
 function ogImage()
 {
-   /** @type string */
+   /** @type {string} */
    this.name = "ogImage";
-   /** @type number */
+   /** @type {number} */
    this.type = OG_OBJECT_IMAGE; 
 }
 

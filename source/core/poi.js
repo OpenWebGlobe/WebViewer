@@ -42,42 +42,43 @@ goog.require('owg.Texture');
  */
  function Poi(engine)
  {
-   /** @type engine3d */
+   /** @type {engine3d} */
    this.engine = engine;
-   /** @type WebGLRenderingContext */
+   /** @type {WebGLRenderingContext} */
    this.gl = engine.gl;
-   /** @type number */
+   /** @type {number} */
    this.lat = 0.0;
-   /** @type number */
+   /** @type {number} */
    this.lng = 0.0;
-   /** @type number */
+   /** @type {number} */
    this.elv = 0.0;
-   /** @type number */
+   /** @type {number} */
    this.signElv = 0.0;
-   /** @type boolean */
+   /** @type {boolean} */
    this.pole = false;
-   /** @type Mesh */
+   /** @type {Mesh} */
    this.poleMesh = null;
-   /** @type Mesh */
+   /** @type {Mesh} */
    this.iconMesh = null;
-   /** @type Mesh */
+   /** @type {Mesh} */
    this.textMesh = null;
-   /** @type number */
+   /** @type {number} */
    this.scale = 20;
-   /** @type string */
+   /** @type {string} */
    this.imgurl = "";
-   /** @type string */
+   /** @type {string} */
    this.text = "";
-   /** @type CanvasTexture */
+   /** @type {CanvasTexture} */
    this.canvasTexture = new CanvasTexture(engine);
-   /** @type number */
+   /** @type {number} */
    this.poiWidth = 0;
-   /** @type number */
+   /** @type {number} */
    this.poiHeight = 0;
    
    this.poiActiveColor = new vec4(1,1,1,1);
    
    /** @type PoiIconStyle */
+   /** @type {PoiIconStyle} */
    this.iconStyle = {
       "iconWidth" : 64,
       "iconHeight" : 64,
@@ -89,7 +90,7 @@ goog.require('owg.Texture');
       "shadowColor" : 'rgba(0, 0, 0,0)'
       };
 
-   /** @type PoiTextStyle */
+   /** @type {PoiTextStyle} */
    this.textStyle = {
       "id"         : 1,
       "fontString" : 'bold 48px Arial',  
