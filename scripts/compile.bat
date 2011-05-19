@@ -16,6 +16,7 @@ if not exist ..\compiled mkdir ..\compiled
 %PYTHON% %CLOSURE_LIBRARY%\closure\bin\build\closurebuilder.py ^
  --compiler_flags=--compilation_level=%COMPILATION_LEVEL% ^
  --compiler_flags=--create_source_map=..\compiled\owg-optimized.map ^
+ --compiler_flags=--externs=..\source\externs\webgl_fixes.js ^
  --compiler_flags=--warning_level=VERBOSE ^
  --compiler_jar=%COMPILER_JAR% ^
  --namespace=owg.OpenWebGlobe ^

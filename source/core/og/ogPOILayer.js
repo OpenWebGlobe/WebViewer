@@ -45,13 +45,13 @@ var PoiLayerOptions;
  */
 function ogPOILayer()
 {
-   /** @type string */
+   /** @type {string} */
    this.name = "ogPOILayer";
-   /** @type number */
+   /** @type {number} */
    this.type = OG_OBJECT_POILAYER;
-   /** @type boolean */
+   /** @type {boolean} */
    this.hide = false;  // true if poi layer is hidden
-   /** @type Array.<Poi> */
+   /** @type {Array.<Poi>} */
    this.poiarray = null;   // array of "Poi"
 }
 //------------------------------------------------------------------------------
