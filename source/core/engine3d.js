@@ -473,7 +473,7 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    
    
    dtStart = new Date(); // setup main timer...
-   window.requestAnimFrame(fncTimer); // request first frame
+   window.requestAnimFrame(fncTimer, this.context); // request first frame
   
 }
 
@@ -836,9 +836,11 @@ function fncTimer()
       {
          engine.cbfRender(engine); // call  draw callback function
       }
+
+      window.requestAnimFrame(fncTimer, engine.context);
+
    }
 
-   window.requestAnimFrame(fncTimer);
 }
 
 //------------------------------------------------------------------------------
