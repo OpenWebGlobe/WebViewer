@@ -162,7 +162,7 @@ ogPOI.prototype.ChangeIcon = function(newicon)
  */
 ogPOI.prototype.ChangeSize = function(newsize)
 {
-   alert(newsize);
+   this.poi.SetSize(newsize);
 }
 //------------------------------------------------------------------------------
 /**
