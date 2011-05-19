@@ -472,9 +472,8 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    window.addEventListener("keyup", _fncKeyUp, false);
    
    
-   // draw scene every 30 milliseconds
    dtStart = new Date(); // setup main timer...
-   setInterval(fncTimer, 30);
+   window.requestAnimFrame(fncTimer); // request first frame
   
 }
 
@@ -778,6 +777,24 @@ engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
    
    return pointAndDir; 
 }
+
+/**
+ * @description Request an animation frame compatibility wrapper.
+ * @see http://www.khronos.org/webgl/wiki/FAQ#What_is_the_recommended_way_to_implement_a_rendering_loop.3F
+ * @param {function()} callback
+ * @param {Element=} opt_element
+ */
+window.requestAnimFrame = (function() {
+   return window.requestAnimationFrame ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame ||
+          window.oRequestAnimationFrame ||
+          window.msRequestAnimationFrame ||
+          function(callback, element) {
+             window.setTimeout(callback, 30);
+          };
+})();
+
 //------------------------------------------------------------------------------
 // MAIN TIMER FUNCTION
 //------------------------------------------------------------------------------
@@ -820,6 +837,8 @@ function fncTimer()
          engine.cbfRender(engine); // call  draw callback function
       }
    }
+
+   window.requestAnimFrame(fncTimer);
 }
 
 //------------------------------------------------------------------------------
