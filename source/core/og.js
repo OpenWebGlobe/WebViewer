@@ -1187,4 +1187,22 @@ function ogShowPOI(poi_id)
 }
 goog.exportSymbol('ogShowPOI', ogShowPOI);
 //------------------------------------------------------------------------------
+/**
+ * @description Show previously hidden POI
+ * @param {number} poi_id the POI
+ * @param {number} r active color red value
+ * @param {number} g active color blue value
+ * @param {number} b active color green value
+ * @param {number} a active color alpha value
+ */
+function ogSetPOIActiveColor(poi_id,r,g,b,a)
+{
+   var POI = /** @type ogPOI */ _GetObjectFromId(poi_id);
+   if (POI && POI.type == OG_OBJECT_POI)
+   {
+      POI.SetActiveColor(r,g,b,a);
+   }
+}
+goog.exportSymbol('ogSetPOIActiveColor', ogSetPOIActiveColor);
+//------------------------------------------------------------------------------
 

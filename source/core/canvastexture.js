@@ -86,7 +86,7 @@ CanvasTexture.prototype.CreateTextMesh =  function(text,style)
    vert.push(this.meshWidth/2,this.meshHeight/2,0,(1/this.textureWidth*this.meshWidth),0);  
   
                  
-   this.mesh.SetBufferFont(vert);
+   this.mesh.SetBufferPoi(vert);
    this.mesh.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");  
    
    this.mesh.meshWidth = this.meshWidth;
@@ -128,7 +128,7 @@ CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
    vert.push(this.meshWidth/2,this.meshHeight/2,0,(1/this.textureWidth*this.meshWidth),0);  
   
                  
-   this.mesh.SetBufferFont(vert);
+   this.mesh.SetBufferPoi(vert);
    this.mesh.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");  
    
    this.mesh.meshWidth = this.meshWidth;

@@ -75,6 +75,9 @@ goog.require('owg.Texture');
    /** @type {number} */
    this.poiHeight = 0;
    
+   this.poiActiveColor = new vec4(1,1,1,1);
+   
+   /** @type PoiIconStyle */
    /** @type {PoiIconStyle} */
    this.iconStyle = {
       "iconWidth" : 64,
@@ -102,6 +105,8 @@ goog.require('owg.Texture');
       "shadowBlur" : 0,
       "shadowColor" : 'rgba(0, 0, 0, 1.0)'
       };
+      
+      
  }
  
  
@@ -231,12 +236,11 @@ goog.require('owg.Texture');
     
     if(this.iconMesh)
     {
-      this.iconMesh.Draw();
+       this.iconMesh.Draw(false,0,0,null,this.poiActiveColor);
     }
-    
     if(this.textMesh)
     {
-      this.textMesh.Draw();
+      this.textMesh.Draw(false,0,0,null,this.poiActiveColor);
     }
     this.engine.PopMatrices();
     this.engine.gl.disable(this.engine.gl.BLEND);
