@@ -61,10 +61,10 @@ var _g_vInstances    = new Array();    // array of all current instances
 /** @type {number} */
 var _g_nInstanceCnt  = 0;              // total number of engine instances
 
-/** @type {?function(number, engine3d)} */
+/** @type {?number} */
 var _gcbfKeyDown     = null;           // global key down event
 
-/** @type {?function(number, engine3d)} */
+/** @type {?number} */
 var _gcbfKeyUp       = null;           // global key up event
 //------------------------------------------------------------------------------
 
@@ -80,11 +80,6 @@ function _fncKeyDown(evt)
    {
       var engine = _g_vInstances[i];
       engine.eventhandler.KeyDown(evt.keyCode,engine);
-      
-      if (_gcbfKeyDown)
-      {
-         _gcbfKeyDown(evt.keyCode, engine); 
-      }
    }
    
 
@@ -103,11 +98,6 @@ function _fncKeyUp(evt)
    {
       var engine = _g_vInstances[i];
       engine.eventhandler.KeyUp(evt.keyCode,engine);
-      
-      if (_gcbfKeyUp)
-      {
-      _gcbfKeyUp(evt.keyCode, engine);
-      }
    }
    
 
@@ -954,22 +944,38 @@ engine3d.prototype.SetResizeCallback = function(f)
 /**
  * @description sets the keydown callback function
  *
- * @param {function()} f keydown callback handler.
+ * @param {?function(number, engine3d)} opt_f keydown callback handler.
  */
-engine3d.prototype.SetKeyDownCallback = function(f)
+engine3d.prototype.SetKeyDownCallback = function(opt_f)
 {
-   _gcbfKeyDown = f;
-}
+   if (_gcbfKeyDown)
+   {
+      goog.events.unlistenByKey(_gcbfKeyDown);
+      _gcbfKeyDown = null;
+   }
+   if (opt_f)
+   {
+      _gcbfKeyDown = goog.events.listen(window, goog.events.EventType.KEYDOWN, function(e) { opt_f(e.keyCode, this); });
+   }
+};
 //------------------------------------------------------------------------------
 /**
  * @description sets the keyup callback function
  *
- * @param {function()} f keyup callback handler.
+ * @param {?function(number, engine3d)} opt_f keyup callback handler.
  */
-engine3d.prototype.SetKeyUpCallback = function(f)
+engine3d.prototype.SetKeyUpCallback = function(opt_f)
 {
-   _gcbfKeyUp = f;
-}
+   if (_gcbfKeyUp)
+   {
+      goog.events.unlistenByKey(_gcbfKeyUp);
+      _gcbfKeyUp = null;
+   }
+   if (opt_f)
+   {
+      _gcbfKeyUp = goog.events.listen(window, goog.events.EventType.KEYUP, function(e) { opt_f(e.keyCode, this); });
+   }
+};
 
 //------------------------------------------------------------------------------
 /**
