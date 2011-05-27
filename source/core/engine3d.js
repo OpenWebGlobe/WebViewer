@@ -95,45 +95,6 @@ function _fncMouseMove(evt)
 }
 //------------------------------------------------------------------------------
 /**
- * @description internal mousewheel
- * @param {Object} evt the event object.
- * @ignore
- */
-function _fncMouseWheel(evt)
-{
-   if(evt.preventDefault) 
-   { 
-      evt.preventDefault();  // seems to work for: Chrome, Safari, Firefox
-   } 
-   
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      var delta = 0; 
-      
-      if ( evt.wheelDelta ) 
-      { 
-         delta= -evt.wheelDelta;
-         if (window.opera) 
-         {
-            delta= -delta;
-         }
-      }
-      else if (evt.detail)  // Firefox
-      { 
-         delta = evt.detail/3;
-      }
-      
-         
-      if (engine.cbfMouseWheel)
-      {
-        engine.cbfMouseWheel(delta, engine);
-      }
-   }
-}
-
-//------------------------------------------------------------------------------
-/**
  * @ignore
  * @param {Object} evt the event object.
  * @description internal resize
@@ -174,7 +135,7 @@ function engine3d()
    this.cbfMouseReleased = null;
    /** @type {?function()} */
    this.cbfMouseMoved = null;
-   /** @type {?function(number, engine3d)} */
+   /** @type {?number} */
    this.cbfMouseWheel = null;
    /** @type {?function()} */
    this.cbfKeyPressed = null;
@@ -362,8 +323,6 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
 		this.cbfInit(engine);
 	}
    
-   window.addEventListener("DOMMouseScroll", _fncMouseWheel, false);
-   canvas.addEventListener('mousewheel', _fncMouseWheel, false); // for Chrome
    goog.events.listen(window, goog.events.EventType.RESIZE, _fncResize, false, this);
    
    
@@ -863,12 +822,25 @@ engine3d.prototype.SetMouseMoveCallback = function(opt_f)
 /**
  * @description sets the mousewheel callback function
  *
- * @param {function()} f mousewhell callback handler.
+ * @param {?function(number, engine3d)} opt_f mousewhell callback handler.
  */
-engine3d.prototype.SetMouseWheelCallback = function(f)
+engine3d.prototype.SetMouseWheelCallback = function(opt_f)
 {
-   this.cbfMouseWheel = f;
-}
+   if (this.cbfMouseWheel)
+   {
+      goog.events.unlistenByKey(this.cbfMouseWheel);
+      this.cbfMouseWheel = null;
+   }
+   if (opt_f)
+   {
+      var mouseWheelHandler = new goog.events.MouseWheelHandler(this.context);
+      this.cbfMouseWheel = goog.events.listen(mouseWheelHandler, goog.events.EventType.MOUSEMOVE, function(e) {
+            e.preventDefault();
+            opt_f(e.deltaY, this);
+         }, false, this);
+   }
+};
+
 //------------------------------------------------------------------------------
 /**
  * @description sets the resize callback function
