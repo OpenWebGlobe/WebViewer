@@ -23,6 +23,12 @@
 
 goog.provide('owg.LogosNode');
 
+goog.require('goog.debug.ErrorHandler');
+goog.require('goog.events.EventHandler');
+goog.require('goog.events.EventTarget');
+goog.require('goog.events');
+goog.require('goog.events.BrowserEvent');
+goog.require('goog.events.EventType');
 goog.require('owg.ScenegraphNode');
 goog.require('owg.Texture');
 
@@ -110,26 +116,26 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.OnRegisterEvents = function(context)
       {
-         this.engine.eventhandler.AddMouseDownCallback(this, this.OnMouseDown);
-         this.engine.eventhandler.AddMouseUpCallback(this, this.OnMouseUp);
+         goog.events.listen(context, goog.events.EventType.MOUSEDOWN, this.OnMouseDown, false, this);
+         goog.events.listen(context, goog.events.EventType.MOUSEUP, this.OnMouseUp, false, this);
       }
       //------------------------------------------------------------------------
       
-      this.OnMouseDown = function(sender, button, x, y)
+      this.OnMouseDown = function(e)
       {
-         if (button == 0)
+         if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
-            sender.mx = x;
-            sender.my = sender.engine.height-y-1;
-            sender.btn = true;
+            this.mx = e.offsetX;
+            this.my = this.engine.height-e.offsetY-1;
+            this.btn = true;
          }
       }
       
-      this.OnMouseUp = function(sender, button, x, y)
+      this.OnMouseUp = function(e)
       {
-         if (button == 0)
+         if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
-            sender.btn = false;
+            this.btn = false;
          }
       }
 }
