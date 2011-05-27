@@ -24,6 +24,8 @@
 goog.provide('owg.engine3d');
 
 goog.require('goog.debug.Logger');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('owg.EventHandler');
 goog.require('owg.Font');
 goog.require('owg.Mesh');
@@ -467,7 +469,7 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    canvas.addEventListener("mousemove", _fncMouseMove, false);
    window.addEventListener("DOMMouseScroll", _fncMouseWheel, false);
    canvas.addEventListener('mousewheel', _fncMouseWheel, false); // for Chrome
-   window.addEventListener("resize", _fncResize, false);
+   goog.events.listen(window, goog.events.EventType.RESIZE, _fncResize, false, this);
    window.addEventListener("keydown", _fncKeyDown, false);
    window.addEventListener("keyup", _fncKeyUp, false);
    
