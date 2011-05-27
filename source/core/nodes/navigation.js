@@ -22,6 +22,10 @@
 *******************************************************************************/
 
 goog.provide('owg.NavigationNode');
+
+goog.require('goog.events');
+goog.require('goog.events.EventType');
+goog.require('goog.events.MouseWheelHandler');
 goog.require('owg.ScenegraphNode');
 goog.require('owg.GeoCoord');
 goog.require('owg.mat4');
@@ -187,161 +191,162 @@ function NavigationNode()
       //------------------------------------------------------------------------
       this.OnRegisterEvents = function(context)
       {
-         this.engine.eventhandler.AddKeyDownCallback(this, this.OnKeyDown);
-         this.engine.eventhandler.AddKeyUpCallback(this, this.OnKeyUp);
-         this.engine.eventhandler.AddMouseDownCallback(this, this.OnMouseDown);
-         this.engine.eventhandler.AddMouseUpCallback(this, this.OnMouseUp);
-         this.engine.eventhandler.AddMouseMoveCallback(this, this.OnMouseMove);
+         goog.events.listen(window, goog.events.EventType.KEYDOWN, this.OnKeyDown, false, this);
+         goog.events.listen(window, goog.events.EventType.KEYUP, this.OnKeyUp, false, this);
+         goog.events.listen(context, goog.events.EventType.MOUSEDOWN, this.OnMouseDown, false, this);
+         goog.events.listen(context, goog.events.EventType.MOUSEUP, this.OnMouseUp, false, this);
+         goog.events.listen(context, goog.events.EventType.MOUSEMOVE, this.OnMouseMove, false, this);
+         var mouseWheelHandler = new goog.events.MouseWheelHandler(context);
+         goog.events.listen(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.OnMouseWheel, false, this);
          this.engine.eventhandler.AddTimerCallback(this, this.OnTick);
-         this.engine.eventhandler.AddMouseWheelCallback(this, this.OnMouseWheel);
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseWheel
-      this.OnMouseWheel = function(sender, delta)
+      this.OnMouseWheel = function(e)
       {
-         if (delta>0)
+         if (e.deltaY>0)
          {
-            if (sender._pitch_decrease > 0)
+            if (this._pitch_decrease > 0)
             {
-               sender._pitch_decrease = 0;
-               sender._pitch_increase = 0;
+               this._pitch_decrease = 0;
+               this._pitch_increase = 0;
             }
             else
             {
-               sender._pitch_increase += 0.05;
+               this._pitch_increase += 0.05;
             }
          }
          else
          {
-            if (sender._pitch_increase > 0)
+            if (this._pitch_increase > 0)
             {
-               sender._pitch_increase = 0;
-               sender._pitch_decrease = 0;
+               this._pitch_increase = 0;
+               this._pitch_decrease = 0;
             }
             else
             {
-               sender._pitch_decrease += 0.05;
+               this._pitch_decrease += 0.05;
             }
          }
       }
       //------------------------------------------------------------------------
       // EVENT: OnKeyDown
-      this.OnKeyDown = function(sender, key)
+      this.OnKeyDown = function(e)
       {
-         if (key == 81) // 'Q'
+         if (e.keyCode == 81) // 'Q'
          {
-            sender._fVelocityY = sender._fSpeed*sender._dElevationVelocity;
+            this._fVelocityY = this._fSpeed*this._dElevationVelocity;
          }
-         else if (key == 65) // 'A'
+         else if (e.keyCode == 65) // 'A'
          {
-            sender._fVelocityY = -sender._fSpeed*sender._dElevationVelocity;
+            this._fVelocityY = -this._fSpeed*this._dElevationVelocity;
          }
-         else if (key == 83) // 'S'
+         else if (e.keyCode == 83) // 'S'
          {
-            sender._fPitchSpeed = 0.5*sender._dPitchVelocity;
+            this._fPitchSpeed = 0.5*this._dPitchVelocity;
          }
-         else if (key == 88) // 'X'
+         else if (e.keyCode == 88) // 'X'
          {
-            sender._fPitchSpeed = -0.5*sender._dPitchVelocity;  
+            this._fPitchSpeed = -0.5*this._dPitchVelocity;
          }
-         
-         sender.lastkey = key;
-         sender._bPositionChanged = true;
+
+         this.lastkey = e.keyCode;
+         this._bPositionChanged = true;
       }
       //------------------------------------------------------------------------
       // EVENT: OnKeyUp
-      this.OnKeyUp = function(sender, key)
+      this.OnKeyUp = function(e)
       {
-         if (key == 81) // 'Q'
+         if (e.keyCode == 81) // 'Q'
          {
-            sender._fVelocityY = 0;
+            this._fVelocityY = 0;
          }
-         else if (key == 65) // 'A'
+         else if (e.keyCode == 65) // 'A'
          {
-            sender._fVelocityY = 0;
+            this._fVelocityY = 0;
          }
-         else if (key == 83) // 'S'
+         else if (e.keyCode == 83) // 'S'
          {
-            sender._fPitchSpeed = 0;
+            this._fPitchSpeed = 0;
          }
-         else if (key == 88) // 'X'
+         else if (e.keyCode == 88) // 'X'
          {
-            sender._fPitchSpeed = 0;  
+            this._fPitchSpeed = 0;
          }
-         
-         sender.lastkey = 0;
-         sender._bPositionChanged = true;
+
+         this.lastkey = 0;
+         this._bPositionChanged = true;
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseDown
-      this.OnMouseDown = function(sender, button, x, y)
+      this.OnMouseDown = function(e)
       {
-         if (button == 0)
+         if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
-            sender._dSpeed = 0.0;
-            sender._vR.Set(0,0,0);
-            sender._ptDragOriginX = x;
-            sender._ptDragOriginY = y;
-            sender._bDragging = true;
-            sender._btn = true;
+            this._dSpeed = 0.0;
+            this._vR.Set(0,0,0);
+            this._ptDragOriginX = e.offsetX;
+            this._ptDragOriginY = e.offsetY;
+            this._bDragging = true;
+            this._btn = true;
          }
-         
-         sender._nMouseX = x;
-         sender._nMouseY = y;
-         sender._bPositionChanged = true;
+
+         this._nMouseX = e.offsetX;
+         this._nMouseY = e.offsetY;
+         this._bPositionChanged = true;
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseUp
-      this.OnMouseUp = function(sender, button, x, y)
+      this.OnMouseUp = function(e)
       {
-         if (button == 0)
+         if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
-            sender._btn = false;
-            sender._bDragging = false;
+            this._btn = false;
+            this._bDragging = false;
          }
-         
-         sender._nMouseX = x;
-         sender._nMouseY = y;
-         sender._dSpeed = 0.0;
-         sender._fSurfacePitchSpeed = 0;
-         sender._fYawSpeed = 0;
+
+         this._nMouseX = e.offsetX;
+         this._nMouseY = e.offsetY;
+         this._dSpeed = 0.0;
+         this._fSurfacePitchSpeed = 0;
+         this._fYawSpeed = 0;
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseMove
-      this.OnMouseMove = function(sender, x, y)
+      this.OnMouseMove = function(e)
       {
-         sender._nMouseX = x;
-         sender._nMouseY = y;
-         
-         if (sender._bDragging)
+         this._nMouseX = e.offsetX;
+         this._nMouseY = e.offsetY;
+
+         if (this._bDragging)
          {
-            var dX = (sender._ptDragOriginX-x)/sender.engine.width;
-            var dY = (sender._ptDragOriginY-y)/sender.engine.height;
+            var dX = (this._ptDragOriginX-e.offsetX)/this.engine.width;
+            var dY = (this._ptDragOriginY-e.offsetY)/this.engine.height;
             dX *= dX;
             dY *= dY;
-            sender._dSpeed = Math.sqrt(dX + dY);
-   
-            var mx = sender._ptDragOriginX;
-            var my = sender.engine.height-1-sender._ptDragOriginY;
-   
-            var cx = x;
-            var cy = sender.engine.height-1 - y;
-   
-            sender._vR.Set(cx - mx, cy - my, 0);
-            sender._vR.Normalize();
-            
-            var vrx = sender._vR.Get()[0];
-            var vry = sender._vR.Get()[1];
+            this._dSpeed = Math.sqrt(dX + dY);
+
+            var mx = this._ptDragOriginX;
+            var my = this.engine.height-1-this._ptDragOriginY;
+
+            var cx = e.offsetX;
+            var cy = this.engine.height-1 - e.offsetY;
+
+            this._vR.Set(cx - mx, cy - my, 0);
+            this._vR.Normalize();
+
+            var vrx = this._vR.Get()[0];
+            var vry = this._vR.Get()[1];
             var sgnX = 0, sgnY = 0;
             if (vrx>0){ sgnX = 1;}
             else if (vrx<0){ sgnX =-1; }
             if (vry>0) { sgnY = 1;}
             else if (vry<0){ sgnY =-1; }
-               
-            sender._fSurfacePitchSpeed = sender._fSpeed*sender._dFlightVelocity*dY*sgnY;
-            sender._fYawSpeed = sender._dYawVelocity*dX*sgnX;
+
+            this._fSurfacePitchSpeed = this._fSpeed*this._dFlightVelocity*dY*sgnY;
+            this._fYawSpeed = this._dYawVelocity*dX*sgnX;
          }
-         
+
       }
       //------------------------------------------------------------------------
       // EVENT: OnTick
