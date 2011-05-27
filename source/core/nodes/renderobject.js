@@ -77,12 +77,6 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.OnRegisterEvents = function()
       {
-         this.engine.eventhandler.AddKeyDownCallback(this, this.OnKeyDown);
-      }
-      //------------------------------------------------------------------------
-      this.OnKeyDown = function(sender, key)
-      {
-         sender.globerenderer.OnKey(key);
       }
       //------------------------------------------------------------------------
 }

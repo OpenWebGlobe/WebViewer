@@ -471,20 +471,6 @@ GlobeRenderer.prototype._Optimize = function()
       }
    }
 }
-//------------------------------------------------------------------------------
-/**
- * @description Key Event for debugging purposes.
- * @ignore
- */
-GlobeRenderer.prototype.OnKey = function(key)
-{
-   if (key == 66)
-   {
-      goog.debug.Logger.getLogger('owg.GlobeRenderer').info("-------------------------");
-      goog.debug.Logger.getLogger('owg.GlobeRenderer').info("Frustum size: " + this.lstFrustum.length);
-      goog.debug.Logger.getLogger('owg.GlobeRenderer').info("-------------------------");
-   }
-}
 
 //------------------------------------------------------------------------------
 /**
