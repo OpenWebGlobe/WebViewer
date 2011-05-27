@@ -53,6 +53,8 @@ function ScenegraphNode()
    this.OnExit = function(){};
    /** @type {function(Node)} */
    this.OnRegisterEvents = function(node){}; // function that is called to register events (mouse/key/...)
+   /** @type {function(number)} */
+   this.OnTick = function(n){};
    /** @type {engine3d} */
    this.engine = null;
    /** @type {Object|number} */

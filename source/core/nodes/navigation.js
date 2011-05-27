@@ -198,7 +198,6 @@ function NavigationNode()
          goog.events.listen(context, goog.events.EventType.MOUSEMOVE, this.OnMouseMove, false, this);
          var mouseWheelHandler = new goog.events.MouseWheelHandler(context);
          goog.events.listen(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.OnMouseWheel, false, this);
-         this.engine.eventhandler.AddTimerCallback(this, this.OnTick);
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseWheel
@@ -350,17 +349,17 @@ function NavigationNode()
       }
       //------------------------------------------------------------------------
       // EVENT: OnTick
-      this.OnTick = function(sender, dTick)
+      this.OnTick = function(dTick)
       {
-         var deltaPitch = sender._fPitchSpeed*dTick/500.0;
-         var deltaRoll = sender._fRollSpeed*dTick/500.0;
-         var deltaYaw = sender._fYawSpeed*dTick/500;
-         var deltaH = sender._fVelocityY*dTick;
+         var deltaPitch = this._fPitchSpeed*dTick/500.0;
+         var deltaRoll = this._fRollSpeed*dTick/500.0;
+         var deltaYaw = this._fYawSpeed*dTick/500;
+         var deltaH = this._fVelocityY*dTick;
          var currentAltitudeG = 0;   // altitude over ground
-         var currentAltitudeE = sender._ellipsoidHeight;   // altitude over ellipsoid
+         var currentAltitudeE = this._ellipsoidHeight;   // altitude over ellipsoid
          var newAltitudeG = 0;   // new altitude over ground
          
-         var p = (sender._ellipsoidHeight / 500000.0 ) * (sender._ellipsoidHeight / 500000.0 );
+         var p = (this._ellipsoidHeight / 500000.0 ) * (this._ellipsoidHeight / 500000.0 );
          if (p>10) 
          {
             p=10;
@@ -370,35 +369,35 @@ function NavigationNode()
             p=0.001;
          }
          
-         var deltaSurface = (p*sender._fSurfacePitchSpeed*dTick)/250;
+         var deltaSurface = (p*this._fSurfacePitchSpeed*dTick)/250;
          var bChanged = false;
          
          
-         if (sender._pitch_increase>0)
+         if (this._pitch_increase>0)
          {
-            var dp = 0.5*sender._dPitchVelocity*dTick/1000.0;
+            var dp = 0.5*this._dPitchVelocity*dTick/1000.0;
       
-            sender._pitch = sender._pitch + dp;
-            sender._pitch_increase -= dp;
-            if (sender._pitch_increase<0)
+            this._pitch = this._pitch + dp;
+            this._pitch_increase -= dp;
+            if (this._pitch_increase<0)
             {
-               sender._pitch = sender._pitch + sender._pitch_increase;
-               sender._pitch_increase = 0;
+               this._pitch = this._pitch + this._pitch_increase;
+               this._pitch_increase = 0;
             }
       
             bChanged = true;
          }
       
-         if (sender._pitch_decrease>0)
+         if (this._pitch_decrease>0)
          {
-            var dp = 0.5*sender._dPitchVelocity*dTick/1000.0;
+            var dp = 0.5*this._dPitchVelocity*dTick/1000.0;
       
-            sender._pitch = sender._pitch - dp;
-            sender._pitch_decrease -= dp;
-            if (sender._pitch_decrease<0)
+            this._pitch = this._pitch - dp;
+            this._pitch_decrease -= dp;
+            if (this._pitch_decrease<0)
             {
-               sender._pitch = sender._pitch - sender._pitch_decrease;
-               sender._pitch_decrease = 0;
+               this._pitch = this._pitch - this._pitch_decrease;
+               this._pitch_decrease = 0;
             }
       
             bChanged = true;
@@ -406,21 +405,21 @@ function NavigationNode()
          
          if (deltaPitch)
          {
-            sender._pitch += deltaPitch;
+            this._pitch += deltaPitch;
             bChanged = true;
          }
          
          if (deltaYaw)
          {
-            sender._yaw += deltaYaw;
+            this._yaw += deltaYaw;
 
-            if (sender._yaw>2.0*Math.PI)
+            if (this._yaw>2.0*Math.PI)
             {
-               sender._yaw = sender._yaw-2.0*Math.PI;
+               this._yaw = this._yaw-2.0*Math.PI;
             }
-            if (sender._yaw<0)
+            if (this._yaw<0)
             {
-               sender._yaw = 2.0*Math.PI - sender._yaw;
+               this._yaw = 2.0*Math.PI - this._yaw;
             }
             bChanged = true;
          }
@@ -429,10 +428,10 @@ function NavigationNode()
          
          //if (deltaH || deltaSurface)
          //{
-            currentAltitudeG = sender.engine.AltitudeAboveGround();
+            currentAltitudeG = this.engine.AltitudeAboveGround();
             if (isNaN(currentAltitudeG))
             {
-               currentAltitudeG = sender.minAltitude;
+               currentAltitudeG = this.minAltitude;
             }
             
             newAltitudeG = currentAltitudeG;
@@ -441,24 +440,24 @@ function NavigationNode()
          if (deltaH)
          {
             var diff = 1000*deltaH*p;
-            sender._ellipsoidHeight += diff;
+            this._ellipsoidHeight += diff;
             newAltitudeG += diff;
                         
             // limit maximum elevation
-            if (sender._ellipsoidHeight>7000000)
+            if (this._ellipsoidHeight>7000000)
             { 
-               sender._ellipsoidHeight = 7000000;
+               this._ellipsoidHeight = 7000000;
             }
          }
          
          if (deltaSurface)
          {
             // navigate along geodetic line
-            var lat_rad = sender._latitude*0.017453292519943295769236907684886; // deg2rad
-            var lng_rad = sender._longitude*0.017453292519943295769236907684886; // deg2rad
+            var lat_rad = this._latitude*0.017453292519943295769236907684886; // deg2rad
+            var lng_rad = this._longitude*0.017453292519943295769236907684886; // deg2rad
             var sinlat = Math.sin(lat_rad);
             var coslat = Math.cos(lat_rad);
-            var A1 = sender._yaw;
+            var A1 = this._yaw;
             var B1 = lat_rad;
             var L1 = lng_rad;
             var Rn = WGS84_a / Math.sqrt(1.0-WGS84_E_SQUARED*sinlat*sinlat);
@@ -471,15 +470,15 @@ function NavigationNode()
             B2 = deltaB + B1;
             L2 = deltaL + L1;
         
-            sender._longitude = 57.295779513082320876798154814105*L2; // rad2deg
-            sender._latitude = 57.295779513082320876798154814105*B2; // rad2deg
-            sender._yaw = A2;
+            this._longitude = 57.295779513082320876798154814105*L2; // rad2deg
+            this._latitude = 57.295779513082320876798154814105*B2; // rad2deg
+            this._yaw = A2;
             
             
-            while (sender._longitude>180) {sender._longitude -=180;}
-            while (sender._longitude<-180) { sender._longitude +=180; }
-            while (sender._latitude>90) { sender._latitude-=180;}
-            while (sender._latitude<-90) { sender._latitude+=180;}
+            while (this._longitude>180) {this._longitude -=180;}
+            while (this._longitude<-180) { this._longitude +=180; }
+            while (this._latitude>90) { this._latitude-=180;}
+            while (this._latitude<-90) { this._latitude+=180;}
 
             bChanged = true;
          }
@@ -489,10 +488,10 @@ function NavigationNode()
          // this means we managed to get underground and have to fix it
          //if (deltaH || deltaSurface)
          //{
-            if (newAltitudeG < sender.minAltitude) 
+            if (newAltitudeG < this.minAltitude) 
             {
-               var cor = sender.minAltitude - newAltitudeG;
-               sender._ellipsoidHeight += cor;             
+               var cor = this.minAltitude - newAltitudeG;
+               this._ellipsoidHeight += cor;             
             }
          //}
          

@@ -815,7 +815,7 @@ function fncTimer()
    {
       var engine = _g_vInstances[i];
       // (1) Call Timer Event
-      engine.eventhandler.Timer(nMSeconds);
+      engine.scene.Tick(nMSeconds);
       
       if (engine.cbfTimer)
       {
