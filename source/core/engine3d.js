@@ -67,54 +67,7 @@ var _gcbfKeyDown     = null;           // global key down event
 var _gcbfKeyUp       = null;           // global key up event
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-/**
- * @description internal mouse up
- * @param {Object} evt the event object.
- * @ignore
- */
-function _fncMouseUp(evt)
-{
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      if (evt.currentTarget == engine.context)
-      {
-         var x = evt.clientX-engine.xoffset/2;
-         var y = evt.clientY-engine.yoffset/2;
-         if (engine.cbfMouseUp)
-         {
-            engine.cbfMouseUp(evt.button, x, y, engine); // call mouse up callback function
-         }
-         return;
-      }
-   }
-}
 
-//------------------------------------------------------------------------------
-/**
- * @description internal mousedown
- * @param {Object} evt the event object.
- * @ignore
- */
-function _fncMouseDown(evt)
-{
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      if (evt.currentTarget == engine.context)
-      {
-         var x = evt.clientX-engine.xoffset/2;
-         var y = evt.clientY-engine.yoffset/2;
-         
-         if (_g_vInstances[i].cbfMouseDown)
-         {
-            _g_vInstances[i].cbfMouseDown(evt.button,x,y, engine); // call mouse down callback function
-         }
-         return;
-      }
-   }
-}
 
 //------------------------------------------------------------------------------
 /**
@@ -409,9 +362,6 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
 		this.cbfInit(engine);
 	}
    
-   canvas.addEventListener("mousedown", _fncMouseDown, false);
-   canvas.addEventListener("mouseup", _fncMouseUp, false);
-   canvas.addEventListener("mousemove", _fncMouseMove, false);
    window.addEventListener("DOMMouseScroll", _fncMouseWheel, false);
    canvas.addEventListener('mousewheel', _fncMouseWheel, false); // for Chrome
    goog.events.listen(window, goog.events.EventType.RESIZE, _fncResize, false, this);
@@ -844,34 +794,71 @@ engine3d.prototype.SetRenderCallback = function(f)
 /**
  * @description sets the mousedown callback function
  *
- * @param {function()} f mousedown callback handler.
+ * @param {?function(number, number, number, engine3d)} opt_f mousedown callback handler.
  */
-engine3d.prototype.SetMouseDownCallback = function(f)
+engine3d.prototype.SetMouseDownCallback = function(opt_f)
 {
-   this.cbfMouseDown = f;
-}
+   if (this.cbfMouseDown)
+   {
+      goog.events.unlistenByKey(this.cbfMouseDown);
+      this.cbfMouseDown = null;
+   }
+   if (opt_f)
+   {
+      this.cbfMouseDown = goog.events.listen(this.context, goog.events.EventType.MOUSEDOWN, function(e) {
+            var x = e.clientX - this.xoffset / 2;
+            var y = e.clientY - this.yoffset / 2;
+            opt_f(e.button, x, y, this);
+         }, false, this);
+   }
+};
 
 //------------------------------------------------------------------------------
 /**
  * @description sets the mouseup callback function
  *
- * @param {function()} f mouseup callback handler.
+ * @param {?function(number, number, number, engine3d)} opt_f mouseup callback handler.
  */
-engine3d.prototype.SetMouseUpCallback = function(f)
+engine3d.prototype.SetMouseUpCallback = function(opt_f)
 {
-   this.cbfMouseUp = f;
-}
+   if (this.cbfMouseUp)
+   {
+      goog.events.unlistenByKey(this.cbfMouseUp);
+      this.cbfMouseUp = null;
+   }
+   if (opt_f)
+   {
+      this.cbfMouseUp = goog.events.listen(this.context, goog.events.EventType.MOUSEUP, function(e) {
+            var x = e.clientX - this.xoffset / 2;
+            var y = e.clientY - this.yoffset / 2;
+            opt_f(e.button, x, y, this);
+         }, false, this);
+   }
+};
 
 //------------------------------------------------------------------------------
 /**
  * @description sets the mousemoveup callback function
  *
- * @param {function()} f mousemove callback handler.
+ * @param {?function(number, number, engine3d)} opt_f mousemove callback handler.
  */
-engine3d.prototype.SetMouseMoveCallback = function(f)
+engine3d.prototype.SetMouseMoveCallback = function(opt_f)
 {
-   this.cbfMouseMove = f;
-}
+   if (this.cbfMouseMove)
+   {
+      goog.events.unlistenByKey(this.cbfMouseMove);
+      this.cbfMouseMove = null;
+   }
+   if (opt_f)
+   {
+      this.cbfMouseMove = goog.events.listen(this.context, goog.events.EventType.MOUSEMOVE, function(e) {
+            var x = e.clientX - this.xoffset / 2;
+            var y = e.clientY - this.yoffset / 2;
+            opt_f(x, y, this);
+         }, false, this);
+   }
+};
+
 //------------------------------------------------------------------------------
 /**
  * @description sets the mousewheel callback function
