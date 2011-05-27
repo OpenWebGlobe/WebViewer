@@ -63,7 +63,7 @@ function BeginRenderNode()
       }
       
       //------------------------------------------------------------------------
-      this.OnRegisterEvents = function()
+      this.OnRegisterEvents = function(context)
       {
          
       }

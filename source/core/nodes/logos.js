@@ -108,7 +108,7 @@ function LogosNode()
       }
       
       //------------------------------------------------------------------------
-      this.OnRegisterEvents = function()
+      this.OnRegisterEvents = function(context)
       {
          this.engine.eventhandler.AddMouseDownCallback(this, this.OnMouseDown);
          this.engine.eventhandler.AddMouseUpCallback(this, this.OnMouseUp);

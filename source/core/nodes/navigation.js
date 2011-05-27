@@ -185,7 +185,7 @@ function NavigationNode()
          //   
       }
       //------------------------------------------------------------------------
-      this.OnRegisterEvents = function()
+      this.OnRegisterEvents = function(context)
       {
          this.engine.eventhandler.AddKeyDownCallback(this, this.OnKeyDown);
          this.engine.eventhandler.AddKeyUpCallback(this, this.OnKeyUp);

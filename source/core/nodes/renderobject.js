@@ -75,7 +75,7 @@ function RenderObjectNode()
       }
       
       //------------------------------------------------------------------------
-      this.OnRegisterEvents = function()
+      this.OnRegisterEvents = function(context)
       {
       }
       //------------------------------------------------------------------------
