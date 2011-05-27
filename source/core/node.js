@@ -51,8 +51,10 @@ function ScenegraphNode()
    this.OnInit = function(){};
    /** @type {function()} */
    this.OnExit = function(){};
-   /** @type {function()} */
-   this.OnRegisterEvents = function(){}; // function that is called to register events (mouse/key/...)
+   /** @type {function(Node)} */
+   this.OnRegisterEvents = function(node){}; // function that is called to register events (mouse/key/...)
+   /** @type {function(number)} */
+   this.OnTick = function(n){};
    /** @type {engine3d} */
    this.engine = null;
    /** @type {Object|number} */
@@ -78,7 +80,7 @@ ScenegraphNode.prototype.SetEngine = function(e)
  */
 ScenegraphNode.prototype.InitNode = function()
 {
-   this.OnRegisterEvents();
+   this.OnRegisterEvents(this.engine.context);
    this.OnInit();
 }
 
