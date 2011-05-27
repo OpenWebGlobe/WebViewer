@@ -6,7 +6,10 @@ import os.path
 import tarfile
 import re
 
-filename = 'teapot.obj'
+pause
+filename = sys.argv[1]
+
+print filename
 color = ",1,0,0,1" #set color
 
 
@@ -36,8 +39,8 @@ test3 = re.search("\nf \d* ",wholefile) # 1 -> p
 if test3:
     vertexsemantic = "p"
 
-#vertexsemantic is now defined.
-print vertexsemantic
+#vertexsemantic is now defined. ------------------------------------------------
+print "vertexsemantic found: "+vertexsemantic
 
 f.seek(0); #sets the file cursor back
 

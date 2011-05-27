@@ -28,6 +28,17 @@ goog.require('owg.ogObject');
 
 //------------------------------------------------------------------------------
 /**
+ * @typedef {{
+ *     url     : Array.<string>,
+ *     layer   : string,
+ *     service : string,
+ *     transparency : number,
+ *     maxlod : number
+ * }}
+ */
+var GeometryOptions;
+//------------------------------------------------------------------------------
+/**
  * @constructor
  * @extends {ogObject} 
  * @description Geometry class (OpenWebGlobe object)

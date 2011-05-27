@@ -39,7 +39,6 @@ goog.require('owg.ogPOI');
 goog.require('owg.ogSurface');
 goog.require('owg.ogTexture');
 goog.require('owg.ogPOILayer');
-
 goog.require('goog.debug.Logger');
 
 //------------------------------------------------------------------------------
@@ -117,7 +116,7 @@ function _CreateObject(type, parent, options)
          // not available yet...
          break;
       case OG_OBJECT_SURFACE:
-         // not available yet...
+         newobject = new ogSurface();
          break;
       case OG_OBJECT_CAMERA:
           newobject = new ogCamera();
@@ -1079,7 +1078,6 @@ function ogCreatePOI(scene_id, options)
    }
    
    return -1;
-
 }
 goog.exportSymbol('ogCreatePOI', ogCreatePOI);
 //------------------------------------------------------------------------------
@@ -1222,3 +1220,54 @@ function ogPickPOI(scene_id, mx, my)
    return -1;
 }
 goog.exportSymbol('ogPickPOI', ogPickPOI);
+//------------------------------------------------------------------------------
+//##############################################################################
+// ** SURFACE OBJECT **
+//##############################################################################
+/** @description Create a Surface
+*   @param {number} scene_id the scene
+*   @param {SurfaceOptions} options surface options
+*/
+function ogCreateSurface(scene_id, options)
+{
+   // test if scene_id is a valid scene
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+
+      var surface = _CreateObject(OG_OBJECT_SURFACE, scene, options);
+      return surface.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogCreateSurface', ogCreateSurface);
+//------------------------------------------------------------------------------
+/** @description Draw a Surface
+*   @param {number} surface_id
+*/
+function ogDrawSurface(context,surface_id)
+{
+   /** @type {ogSurface} */
+   var surface = /** @type {ogSurface} */ _GetObjectFromId(surface_id);
+   if (surface && surface.type == OG_OBJECT_SURFACE)
+   {
+      surface.Draw();
+   }
+   return -1;
+}
+goog.exportSymbol('ogDrawSurface', ogDrawSurface);
+//------------------------------------------------------------------------------
+/** @description Draw a Surface
+*   @param {number} surface_id
+*/
+function ogDestroySurface(context,surface_id)
+{
+   /** @type {ogSurface} */
+   var surface = /** @type {ogSurface} */ _GetObjectFromId(surface_id);
+   if (surface && surface.type == OG_OBJECT_SURFACE)
+   {
+      surface._OnDestroy();
+   }
+   return -1;
+}
+goog.exportSymbol('ogDestroySurface', ogDestroySurface);
