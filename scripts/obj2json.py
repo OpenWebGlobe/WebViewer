@@ -6,9 +6,8 @@ import os.path
 import tarfile
 import re
 
-pause
-filename = sys.argv[1]
 
+filename = sys.argv[1]
 print filename
 color = ",1,0,0,1" #set color
 
@@ -55,7 +54,10 @@ p = []
 pt = []
 pnt = []
 idx = []
-ilb = [] #interleaved buffer
+ilb = []
+for i in range(0,65000):
+    ilb.append(" ") #interleaved buffer
+
 
 for line in lines:
     if line[0:2] == "v ":
@@ -75,33 +77,45 @@ for line in lines:
         for vert in vertices:
             
             if vertexsemantic == "p":
-                ilb.append(v[int(vert)-1]+color)
+                ilb[int(a[0])-1] = (v[int(vert)-1]+color)
                 idx.append(vert)
                 
             elif vertexsemantic == "pt": #this means f 1/2    
                 a = vert.split('/')
-                ilb.append(v[int(a[0])-1]+","+(vt[int(a[1])-1]))
+                ilb[int(a[0])-1] = (v[int(a[0])-1]+","+(vt[int(a[1])-1]))
                 idx.append(a[0])
+                
             elif vertexsemantic == "pnt": #this means f 1/2/2    
                 a = vert.split('/')
-                ilb.append(v[int(a[0])-1]+","+(vt[int(a[1])-1])+","+(vt[int(a[2])-1]))
+                ilb[int(a[0])-1] = (v[int(a[0])-1]+","+(vt[int(a[1])-1])+","+(vt[int(a[2])-1]))
                 idx.append(a[0])
                 
 f.close();
 
+id = input("type a unique model-id: ")
+lng = input("center longitude: ")
+lat = input("center latitude: ")
+elv = input("center elevation: ")
+texture = raw_input("texture url: ")
+
 
 #write to json format
-g = open('test.json',"w")
-g.write("{\n\"VertexSemantic\"  :  \""+vertexsemantic+"\",\n\"Vertices\"  :  [")
+name = filename.split('.')
+g = open(name[0]+'.json',"w")
+g.write("{\n\"id\"  :  \""+str(id)+"\",")
+g.write("\n\"Center\"  :  ["+str(lng)+","+str(lat)+","+str(elv)+"],")
+g.write("\n\"DiffuseMap\"  :  \""+str(texture)+"\",")
+g.write("\n\"VertexSemantic\"  :  \""+vertexsemantic+"\",\n\"Vertices\"  :  [")
 for x in ilb:
-    g.write("\t"+x+",\n")
-    g.write("\t\t\t\t")
+    if(x != " "):
+        g.write("\t"+x+",\n")
+        g.write("\t\t\t\t")
 g.seek(-7,1) #set cursor pos back to remove last ','
 g.write("],\n\"IndexSemantic\"  :  \"TRIANGLES\",\n\"Indices\"  :  [\t")
 i=0
 for x in idx:
     i+=1
-    g.write(x+",")
+    g.write(str(int(x)-1)+",")
     if i%3==0:
         g.write("\n\t\t\t\t")
 g.seek(-7,1) #set cursor pos back to remove last ','

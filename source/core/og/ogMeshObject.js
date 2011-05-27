@@ -38,8 +38,37 @@ function ogMeshObject()
    /** @type {string} */
    this.name = "ogMeshObject";
    /** @type {number} */
-   this.type = OG_OBJECT_MESH; 
+   this.type = OG_OBJECT_MESH;
+   this.surfaces = [];
 }
 
 //------------------------------------------------------------------------------
 ogMeshObject.prototype = new ogObject();
+
+
+//------------------------------------------------------------------------------
+/**
+* @description parse options
+* @param {GeometryOptions} options
+* @ignore
+*/
+ogMeshObject.prototype.ParseOptions = function(options)
+{   
+      var scene = this.parent;
+      var ogsurf = _CreateObject(OG_OBJECT_SURFACE, scene, options);
+      this.surfaces.push(ogsurf);
+}
+
+
+//------------------------------------------------------------------------------
+/**
+ * will be called from geometryrenderer. to discuss.
+ *
+ */
+ogMeshObject.prototype.Draw = function()
+{
+   for (var i=0;i<this.surfaces.length;i++)
+   {
+      this.surfaces[i].Draw();
+   }
+}

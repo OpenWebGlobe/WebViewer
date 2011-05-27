@@ -53,6 +53,7 @@ function ogSurface()
    this.longitude = 0.0;
    this.latitude = 0.0;
    this.elevation = 0.0;
+   this.status = OG_OBJECT_BUSY;
 
 }
 //------------------------------------------------------------------------------

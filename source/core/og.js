@@ -110,10 +110,10 @@ function _CreateObject(type, parent, options)
          // not available yet...
          break;
       case OG_OBJECT_GEOMETRY:
-         // not available yet...
+         newobject = new ogGeometry();
          break;
       case OG_OBJECT_MESH:
-         // not available yet...
+         newobject = new ogMeshObject();
          break;
       case OG_OBJECT_SURFACE:
          newobject = new ogSurface();
@@ -1271,3 +1271,54 @@ function ogDestroySurface(context,surface_id)
    return -1;
 }
 goog.exportSymbol('ogDestroySurface', ogDestroySurface);
+//##############################################################################
+// ** GEOMETRY OBJECT **
+//##############################################################################
+/** @description Create a Geometry Object
+*   @param {number} scene_id the scene
+*   @param {SurfaceOptions} options surface options
+*/
+function ogCreateGeometry(scene_id, options)
+{
+   // test if scene_id is a valid scene
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+
+      var geometry = _CreateObject(OG_OBJECT_GEOMETRY, scene, options);
+      return geometry.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogCreateGeometry', ogCreateGeometry);
+//------------------------------------------------------------------------------
+/** @description Draw a Geometry
+*   @param {number} geometry_id
+*/
+function ogDestroyGeometry(context,geometry_id)
+{
+   /** @type {ogGeometry} */
+   var geometry = /** @type {ogGeometry} */ _GetObjectFromId(geometry_id);
+   if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
+   {
+      geometry._OnDestroy();
+   }
+   return -1;
+}
+goog.exportSymbol('ogDestroyGeomentry', ogDestroyGeometry);
+//------------------------------------------------------------------------------
+/** @description Adds a Mesh to a geomertry
+*   @param {number} geometry_id 
+*   @param {GeometryOptions} options 
+*/
+function ogAddToGeometry(geometry_id, options)
+{
+   /** @type {ogGeometry} */
+   var geometry = /** @type {ogGeometry} */ _GetObjectFromId(geometry_id);
+   if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
+   {
+     geometry.Add(options);
+   }
+   return -1;
+}
+goog.exportSymbol('ogAddToGeometry', ogAddToGeometry);

@@ -34,7 +34,7 @@
 <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
-<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>
+<!--<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>-->
 
 
 
@@ -50,7 +50,7 @@ function OnRender(context)
    ogSetTextColor(context, 0,1,0);
    
    //draw the surface
-   ogDrawSurface(context,surface);
+  // ogDrawSurface(context,surface);
 }
 //------------------------------------------------------------------------------
 // Mouse-Down-Event: Called when a mouse button is pressed
@@ -121,12 +121,26 @@ function main()
    var geometryOptions = {
                            "url" : "landscape.json",
                            "longitude" : 7.438637, //optional if not defined, the coordinates from json file will be used.
-                           "latitude" : 46.951081,//optional if not defined, the coordinates from json file will be used.
-                           "elevation" : 22200,//optional if not defined, the coordinates from json file will be used.
+                           "latitude" : 46.951081, //optional if not defined, the coordinates from json file will be used.
+                           "elevation" : 22200,  //optional if not defined, the coordinates from json file will be used.
+                           "type" : "MESH" //to discuss define a constant...
                            };
+                           
+
    
    //create the surface                        
-   surface = ogCreateSurface(scene,geometryOptions);
+   geometry = ogCreateGeometry(scene, geometryOptions);
+   
+       // definition of geometry options.
+   var geometryOptions2 = {
+                           "url" : "torus.json",
+                           "longitude" : 7.438637, //optional if not defined, the coordinates from json file will be used.
+                           "latitude" : 46.951081, //optional if not defined, the coordinates from json file will be used.
+                           "elevation" : 2200,  //optional if not defined, the coordinates from json file will be used.
+                           "type" : "MESH" //to discuss define a constant...
+                           };
+
+   ogAddToGeometry(geometry,geometryOptions2);
    
 
 }
