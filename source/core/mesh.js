@@ -169,7 +169,7 @@ function Mesh(engine)
    this.billboardCenterTrans = new Array(3);
    this.newModelMatrix = new mat4();
    
-   this.lastDrawnMatrix = new mat4();
+   this.manageTexture = false; // is set to true if the destrox function has to destroy this texture.
 
    
 }
@@ -353,8 +353,15 @@ Mesh.prototype.Destroy = function()
       this.gl.deleteBuffer(this.ibo);
       this.ibo = null;
    }
-      
-   this.texture = null;          
+   
+   if(this.manageTexture)
+   {
+      this.texture.Destroy();
+   }
+   else
+   {
+      this.texture = null;   
+   }  
    this.vertexbufferdata = null; 
    this.mode = ""; 
    this.numvertex = 0;         
@@ -567,6 +574,21 @@ function _cbfjsondownload(mesh)
             mesh.curtainindex = jsonobject['CurtainIndex'];
          }
          
+         if (jsonobject['DiffuseMap'])
+         {
+            mesh.texture = new Texture(mesh.engine);
+            
+            var cbr = function(){mesh.cbfTextureLoadCallback_ready()};
+            var cbf = function(){mesh.cbfTextureLoadCallback_failed()};
+            mesh.texture.loadTexture(jsonobject['DiffuseMap'],cbr,cbf,true);
+            mesh.manageTexture = true;
+         }
+         
+         if(jsonobject['Center'])
+         {
+            mesh.SetAsNavigationFrame(jsonobject['Center'][0],jsonobject['Center'][1],jsonobject['Center'][2]);
+         }
+         
          switch(jsonobject['VertexSemantic'])
          {
             case "p":      mesh.numvertex = jsonobject['Vertices'].length/3;
@@ -603,20 +625,52 @@ function _cbfjsondownload(mesh)
          
          
          mesh.numindex = jsonobject['Indices'].length;         // number of elements of index vector
-         mesh.Ready = true; 
+         if(!mesh.manageTexture) //if there is a async texture load started set the ready flag in texture callback
+         {
+            mesh.ready =true;  
+         }
          
          if(mesh.cbfJSONLoad)
          {
             mesh.cbfJSONLoad(mesh);
          }
          
-         if (mesh.cbr)
+         if (mesh.cbr && !mesh.manageTexture)
          {
             mesh.cbr(mesh);
          }
       }     
    }    
 }
+
+
+/**
+ * @description called when the texture is completely loaded.
+ *
+ */
+Mesh.prototype.cbfTextureLoadCallback_ready = function()
+{
+   this.ready = true;
+   if (this.cbr)
+   {
+      this.cbr(this);
+   }
+   
+}
+
+
+/**
+ * @description called when the texture download fails.
+ */
+Mesh.prototype.cbfTextureLoadCallback_failed = function()
+{
+   goog.debug.Logger.getLogger('owg.Mesh').warning("Downloading Error: Texture not found...");
+   if (this.cbf)
+   {
+      this.cbf(this);
+   }
+}
+
 
 //------------------------------------------------------------------------------
 /**
@@ -655,6 +709,11 @@ Mesh.prototype.SetJSONLoadCallback = function(f)
 {
    this.cbfJSONLoad = f;
 }
+
+
+
+
+
 
 
 
@@ -958,6 +1017,62 @@ Mesh.prototype.SetAsBillboard= function(x,y,z,translationX,translationY,translat
 Mesh.prototype.UpdateBillboardMatrix = function()
 {
    this.SetAsBillboard(this.billboardPos[0],this.billboardPos[1],this.billboardPos[2],this.billboardCenterTrans[0],this.billboardCenterTrans[1],this.billboardCenterTrans[2]);
+}
+
+/**
+ * @description 
+ * @param {number} lng the longitude coordinate
+ * @param {number} lat the latitude coordinate
+ * @param {number} elv the elevation 
+ */
+Mesh.prototype.SetAsNavigationFrame = function(lng,lat,elv)
+{
+   var coords = new GeoCoord(lng, lat,elv);
+   var cartesianCoordinates = new Array(3);
+   coords.ToCartesian(cartesianCoordinates);
+   
+   var matTrans = new mat4();
+   matTrans.Translation(cartesianCoordinates[0],cartesianCoordinates[1],cartesianCoordinates[2]);
+     
+   var mat = new mat4();
+   mat.CalcNavigationFrame(lng,lat);
+   
+   var a = new Float32Array(16);
+   var mmatvals = mat.Get();
+   a[0] = mmatvals[0];
+   a[1] = mmatvals[1];
+   a[2] = mmatvals[2];
+   a[3] = mmatvals[3];
+   a[4] = mmatvals[4];
+   a[5] = mmatvals[5];
+   a[6] = mmatvals[6];
+   a[7] = mmatvals[7];
+   a[8] = mmatvals[8];
+   a[9] = mmatvals[9];
+   a[10] = mmatvals[10];
+   a[11] = mmatvals[11];
+   a[12] = cartesianCoordinates[0];
+   a[13] = cartesianCoordinates[1];
+   a[14] = cartesianCoordinates[2];
+   a[15] = 1;
+   
+   var navMat = new mat4();
+   navMat.Set(a);
+   
+   //scaling because the units of a 3d models are meters
+   var scaleMat = new mat4();
+   scaleMat.Scale(CARTESIAN_SCALE_INV,CARTESIAN_SCALE_INV,CARTESIAN_SCALE_INV)
+   
+   var scaledNavMat = new mat4();
+   scaledNavMat.Multiply(navMat,scaleMat);
+   
+   var rotatedMat = new mat4();
+   rotatedMat.RotationX(-1.57079633);
+   
+   var scaledRotNavMat = new mat4();
+   scaledRotNavMat.Multiply(scaledNavMat,rotatedMat);
+   
+   this.modelMatrix = scaledRotNavMat;
 }
 
 

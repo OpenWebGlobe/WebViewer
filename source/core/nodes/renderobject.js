@@ -24,7 +24,8 @@
 goog.provide('owg.RenderObjectNode');
 
 goog.require('owg.GlobeRenderer');
-goog.require('owg.PoiRenderer')
+goog.require('owg.PoiRenderer');
+goog.require('owg.GeometryRenderer');
 goog.require('owg.ScenegraphNode');
 
 /**
@@ -41,6 +42,9 @@ function RenderObjectNode()
       /** @type {PoiRenderer} */
       this.poirenderer = null;
       
+      /** @type {GeometryRenderer} */
+      this.geometryrenderer = null;
+      
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {
@@ -52,6 +56,7 @@ function RenderObjectNode()
       {
          this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.poirenderer.Render(this.camera, this.engine.matModelViewProjection);
+         this.geometryrenderer.Render(this.camera, this.engine.matModelViewProjection);
       }
       
       //------------------------------------------------------------------------
@@ -66,6 +71,7 @@ function RenderObjectNode()
       {
             this.globerenderer = new GlobeRenderer(this.engine);
             this.poirenderer = new PoiRenderer(this.engine);
+            this.geometryrenderer = new GeometryRenderer(this.engine);
       }
       
       //------------------------------------------------------------------------
