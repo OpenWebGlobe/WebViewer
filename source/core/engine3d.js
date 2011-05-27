@@ -26,7 +26,6 @@ goog.provide('owg.engine3d');
 goog.require('goog.debug.Logger');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('owg.EventHandler');
 goog.require('owg.Font');
 goog.require('owg.Mesh');
 goog.require('owg.SceneGraph');
@@ -70,42 +69,6 @@ var _gcbfKeyUp       = null;           // global key up event
 
 //------------------------------------------------------------------------------
 /**
- * @description internal key up
- * @param {Object} evt the event object.
- * @ignore
- */
-function _fncKeyDown(evt)
-{
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      engine.eventhandler.KeyDown(evt.keyCode,engine);
-   }
-   
-
-   return;
-}
-
-//------------------------------------------------------------------------------
-/**
- * @description internal key up
- * @param {Object} evt the event object.
- * @ignore
- */
-function _fncKeyUp(evt)
-{
-   for (var i=0;i<_g_vInstances.length;i++)
-   {
-      var engine = _g_vInstances[i];
-      engine.eventhandler.KeyUp(evt.keyCode,engine);
-   }
-   
-
-   return;
-}
-
-//------------------------------------------------------------------------------
-/**
  * @description internal mouse up
  * @param {Object} evt the event object.
  * @ignore
@@ -119,7 +82,6 @@ function _fncMouseUp(evt)
       {
          var x = evt.clientX-engine.xoffset/2;
          var y = evt.clientY-engine.yoffset/2;
-         engine.eventhandler.MouseUp(evt.button,x,y);
          if (engine.cbfMouseUp)
          {
             engine.cbfMouseUp(evt.button, x, y, engine); // call mouse up callback function
@@ -144,7 +106,6 @@ function _fncMouseDown(evt)
       {
          var x = evt.clientX-engine.xoffset/2;
          var y = evt.clientY-engine.yoffset/2;
-         engine.eventhandler.MouseDown(evt.button,x,y);
          
          if (_g_vInstances[i].cbfMouseDown)
          {
@@ -170,7 +131,6 @@ function _fncMouseMove(evt)
       {
          var x = evt.clientX-engine.xoffset/2;
          var y = evt.clientY-engine.yoffset/2;
-         engine.eventhandler.MouseMove(x,y);
          
          if (engine.cbfMouseMove)
          {
@@ -211,7 +171,6 @@ function _fncMouseWheel(evt)
          delta = evt.detail/3;
       }
       
-      engine.eventhandler.MouseWheel(delta);
          
       if (engine.cbfMouseWheel)
       {
@@ -346,10 +305,6 @@ function engine3d()
    /** @type {number} */
    _g_nInstanceCnt++;
    
-   // Event Handler
-   /** @type {EventHandler} */
-   this.eventhandler = new EventHandler();
-   
    // system font (for ASCII Text only)
    /** @type {Font} */
    this.systemfont = null;
@@ -460,8 +415,6 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    window.addEventListener("DOMMouseScroll", _fncMouseWheel, false);
    canvas.addEventListener('mousewheel', _fncMouseWheel, false); // for Chrome
    goog.events.listen(window, goog.events.EventType.RESIZE, _fncResize, false, this);
-   window.addEventListener("keydown", _fncKeyDown, false);
-   window.addEventListener("keyup", _fncKeyUp, false);
    
    
    dtStart = new Date(); // setup main timer...
