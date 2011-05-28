@@ -275,6 +275,16 @@ ogContext.prototype.ParseOptions = function(options)
    this.engine = new engine3d();
    this.engine.owg = this;
    
+   // a html5 canvasid is provided:
+   if (options["canvas"])
+   {
+      this.engine.InitEngine(options["canvas"], true);  // (canvasid, fullscreen)
+   }
+   else
+   {
+      goog.debug.Logger.getLogger('owg.ogContext').warning("**ERROR: auto creating canvas is not supported yet!");
+   }
+
    this.engine.SetInitCallback(_ctx_callback_init);
    this.engine.SetTimerCallback(_ctx_callback_timer);
    this.engine.SetRenderCallback(_ctx_callback_render);
@@ -285,17 +295,7 @@ ogContext.prototype.ParseOptions = function(options)
    this.engine.SetResizeCallback(_ctx_callback_resize);
    this.engine.SetKeyDownCallback(_ctx_callback_keydown);
    this.engine.SetKeyUpCallback(_ctx_callback_keyup);
-   
-   // a html5 canvasid is provided:
-   if (options["canvas"])
-   {
-      this.engine.InitEngine(options["canvas"], true);  // (canvasid, fullscreen)
-   }
-   else
-   {
-      goog.debug.Logger.getLogger('owg.ogContext').warning("**ERROR: auto creating canvas is not supported yet!");
-   }
-   
+
 }
 //------------------------------------------------------------------------------
 /**

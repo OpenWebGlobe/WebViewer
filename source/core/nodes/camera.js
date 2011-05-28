@@ -67,7 +67,7 @@ function CameraNode()
       }
       
       //------------------------------------------------------------------------
-      this.OnRegisterEvents = function()
+      this.OnRegisterEvents = function(context)
       {
          
       }

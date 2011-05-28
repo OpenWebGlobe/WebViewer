@@ -22,6 +22,10 @@
 *******************************************************************************/
 
 goog.provide('owg.NavigationNode');
+
+goog.require('goog.events');
+goog.require('goog.events.EventType');
+goog.require('goog.events.MouseWheelHandler');
 goog.require('owg.ScenegraphNode');
 goog.require('owg.GeoCoord');
 goog.require('owg.mat4');
@@ -185,177 +189,177 @@ function NavigationNode()
          //   
       }
       //------------------------------------------------------------------------
-      this.OnRegisterEvents = function()
+      this.OnRegisterEvents = function(context)
       {
-         this.engine.eventhandler.AddKeyDownCallback(this, this.OnKeyDown);
-         this.engine.eventhandler.AddKeyUpCallback(this, this.OnKeyUp);
-         this.engine.eventhandler.AddMouseDownCallback(this, this.OnMouseDown);
-         this.engine.eventhandler.AddMouseUpCallback(this, this.OnMouseUp);
-         this.engine.eventhandler.AddMouseMoveCallback(this, this.OnMouseMove);
-         this.engine.eventhandler.AddTimerCallback(this, this.OnTick);
-         this.engine.eventhandler.AddMouseWheelCallback(this, this.OnMouseWheel);
+         goog.events.listen(window, goog.events.EventType.KEYDOWN, this.OnKeyDown, false, this);
+         goog.events.listen(window, goog.events.EventType.KEYUP, this.OnKeyUp, false, this);
+         goog.events.listen(context, goog.events.EventType.MOUSEDOWN, this.OnMouseDown, false, this);
+         goog.events.listen(context, goog.events.EventType.MOUSEUP, this.OnMouseUp, false, this);
+         goog.events.listen(context, goog.events.EventType.MOUSEMOVE, this.OnMouseMove, false, this);
+         var mouseWheelHandler = new goog.events.MouseWheelHandler(context);
+         goog.events.listen(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.OnMouseWheel, false, this);
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseWheel
-      this.OnMouseWheel = function(sender, delta)
+      this.OnMouseWheel = function(e)
       {
-         if (delta>0)
+         if (e.deltaY>0)
          {
-            if (sender._pitch_decrease > 0)
+            if (this._pitch_decrease > 0)
             {
-               sender._pitch_decrease = 0;
-               sender._pitch_increase = 0;
+               this._pitch_decrease = 0;
+               this._pitch_increase = 0;
             }
             else
             {
-               sender._pitch_increase += 0.05;
+               this._pitch_increase += 0.05;
             }
          }
          else
          {
-            if (sender._pitch_increase > 0)
+            if (this._pitch_increase > 0)
             {
-               sender._pitch_increase = 0;
-               sender._pitch_decrease = 0;
+               this._pitch_increase = 0;
+               this._pitch_decrease = 0;
             }
             else
             {
-               sender._pitch_decrease += 0.05;
+               this._pitch_decrease += 0.05;
             }
          }
       }
       //------------------------------------------------------------------------
       // EVENT: OnKeyDown
-      this.OnKeyDown = function(sender, key)
+      this.OnKeyDown = function(e)
       {
-         if (key == 81) // 'Q'
+         if (e.keyCode == 81) // 'Q'
          {
-            sender._fVelocityY = sender._fSpeed*sender._dElevationVelocity;
+            this._fVelocityY = this._fSpeed*this._dElevationVelocity;
          }
-         else if (key == 65) // 'A'
+         else if (e.keyCode == 65) // 'A'
          {
-            sender._fVelocityY = -sender._fSpeed*sender._dElevationVelocity;
+            this._fVelocityY = -this._fSpeed*this._dElevationVelocity;
          }
-         else if (key == 83) // 'S'
+         else if (e.keyCode == 83) // 'S'
          {
-            sender._fPitchSpeed = 0.5*sender._dPitchVelocity;
+            this._fPitchSpeed = 0.5*this._dPitchVelocity;
          }
-         else if (key == 88) // 'X'
+         else if (e.keyCode == 88) // 'X'
          {
-            sender._fPitchSpeed = -0.5*sender._dPitchVelocity;  
+            this._fPitchSpeed = -0.5*this._dPitchVelocity;
          }
-         
-         sender.lastkey = key;
-         sender._bPositionChanged = true;
+
+         this.lastkey = e.keyCode;
+         this._bPositionChanged = true;
       }
       //------------------------------------------------------------------------
       // EVENT: OnKeyUp
-      this.OnKeyUp = function(sender, key)
+      this.OnKeyUp = function(e)
       {
-         if (key == 81) // 'Q'
+         if (e.keyCode == 81) // 'Q'
          {
-            sender._fVelocityY = 0;
+            this._fVelocityY = 0;
          }
-         else if (key == 65) // 'A'
+         else if (e.keyCode == 65) // 'A'
          {
-            sender._fVelocityY = 0;
+            this._fVelocityY = 0;
          }
-         else if (key == 83) // 'S'
+         else if (e.keyCode == 83) // 'S'
          {
-            sender._fPitchSpeed = 0;
+            this._fPitchSpeed = 0;
          }
-         else if (key == 88) // 'X'
+         else if (e.keyCode == 88) // 'X'
          {
-            sender._fPitchSpeed = 0;  
+            this._fPitchSpeed = 0;
          }
-         
-         sender.lastkey = 0;
-         sender._bPositionChanged = true;
+
+         this.lastkey = 0;
+         this._bPositionChanged = true;
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseDown
-      this.OnMouseDown = function(sender, button, x, y)
+      this.OnMouseDown = function(e)
       {
-         if (button == 0)
+         if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
-            sender._dSpeed = 0.0;
-            sender._vR.Set(0,0,0);
-            sender._ptDragOriginX = x;
-            sender._ptDragOriginY = y;
-            sender._bDragging = true;
-            sender._btn = true;
+            this._dSpeed = 0.0;
+            this._vR.Set(0,0,0);
+            this._ptDragOriginX = e.offsetX;
+            this._ptDragOriginY = e.offsetY;
+            this._bDragging = true;
+            this._btn = true;
          }
-         
-         sender._nMouseX = x;
-         sender._nMouseY = y;
-         sender._bPositionChanged = true;
+
+         this._nMouseX = e.offsetX;
+         this._nMouseY = e.offsetY;
+         this._bPositionChanged = true;
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseUp
-      this.OnMouseUp = function(sender, button, x, y)
+      this.OnMouseUp = function(e)
       {
-         if (button == 0)
+         if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
-            sender._btn = false;
-            sender._bDragging = false;
+            this._btn = false;
+            this._bDragging = false;
          }
-         
-         sender._nMouseX = x;
-         sender._nMouseY = y;
-         sender._dSpeed = 0.0;
-         sender._fSurfacePitchSpeed = 0;
-         sender._fYawSpeed = 0;
+
+         this._nMouseX = e.offsetX;
+         this._nMouseY = e.offsetY;
+         this._dSpeed = 0.0;
+         this._fSurfacePitchSpeed = 0;
+         this._fYawSpeed = 0;
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseMove
-      this.OnMouseMove = function(sender, x, y)
+      this.OnMouseMove = function(e)
       {
-         sender._nMouseX = x;
-         sender._nMouseY = y;
-         
-         if (sender._bDragging)
+         this._nMouseX = e.offsetX;
+         this._nMouseY = e.offsetY;
+
+         if (this._bDragging)
          {
-            var dX = (sender._ptDragOriginX-x)/sender.engine.width;
-            var dY = (sender._ptDragOriginY-y)/sender.engine.height;
+            var dX = (this._ptDragOriginX-e.offsetX)/this.engine.width;
+            var dY = (this._ptDragOriginY-e.offsetY)/this.engine.height;
             dX *= dX;
             dY *= dY;
-            sender._dSpeed = Math.sqrt(dX + dY);
-   
-            var mx = sender._ptDragOriginX;
-            var my = sender.engine.height-1-sender._ptDragOriginY;
-   
-            var cx = x;
-            var cy = sender.engine.height-1 - y;
-   
-            sender._vR.Set(cx - mx, cy - my, 0);
-            sender._vR.Normalize();
-            
-            var vrx = sender._vR.Get()[0];
-            var vry = sender._vR.Get()[1];
+            this._dSpeed = Math.sqrt(dX + dY);
+
+            var mx = this._ptDragOriginX;
+            var my = this.engine.height-1-this._ptDragOriginY;
+
+            var cx = e.offsetX;
+            var cy = this.engine.height-1 - e.offsetY;
+
+            this._vR.Set(cx - mx, cy - my, 0);
+            this._vR.Normalize();
+
+            var vrx = this._vR.Get()[0];
+            var vry = this._vR.Get()[1];
             var sgnX = 0, sgnY = 0;
             if (vrx>0){ sgnX = 1;}
             else if (vrx<0){ sgnX =-1; }
             if (vry>0) { sgnY = 1;}
             else if (vry<0){ sgnY =-1; }
-               
-            sender._fSurfacePitchSpeed = sender._fSpeed*sender._dFlightVelocity*dY*sgnY;
-            sender._fYawSpeed = sender._dYawVelocity*dX*sgnX;
+
+            this._fSurfacePitchSpeed = this._fSpeed*this._dFlightVelocity*dY*sgnY;
+            this._fYawSpeed = this._dYawVelocity*dX*sgnX;
          }
-         
+
       }
       //------------------------------------------------------------------------
       // EVENT: OnTick
-      this.OnTick = function(sender, dTick)
+      this.OnTick = function(dTick)
       {
-         var deltaPitch = sender._fPitchSpeed*dTick/500.0;
-         var deltaRoll = sender._fRollSpeed*dTick/500.0;
-         var deltaYaw = sender._fYawSpeed*dTick/500;
-         var deltaH = sender._fVelocityY*dTick;
+         var deltaPitch = this._fPitchSpeed*dTick/500.0;
+         var deltaRoll = this._fRollSpeed*dTick/500.0;
+         var deltaYaw = this._fYawSpeed*dTick/500;
+         var deltaH = this._fVelocityY*dTick;
          var currentAltitudeG = 0;   // altitude over ground
-         var currentAltitudeE = sender._ellipsoidHeight;   // altitude over ellipsoid
+         var currentAltitudeE = this._ellipsoidHeight;   // altitude over ellipsoid
          var newAltitudeG = 0;   // new altitude over ground
          
-         var p = (sender._ellipsoidHeight / 500000.0 ) * (sender._ellipsoidHeight / 500000.0 );
+         var p = (this._ellipsoidHeight / 500000.0 ) * (this._ellipsoidHeight / 500000.0 );
          if (p>10) 
          {
             p=10;
@@ -365,35 +369,35 @@ function NavigationNode()
             p=0.001;
          }
          
-         var deltaSurface = (p*sender._fSurfacePitchSpeed*dTick)/250;
+         var deltaSurface = (p*this._fSurfacePitchSpeed*dTick)/250;
          var bChanged = false;
          
          
-         if (sender._pitch_increase>0)
+         if (this._pitch_increase>0)
          {
-            var dp = 0.5*sender._dPitchVelocity*dTick/1000.0;
+            var dp = 0.5*this._dPitchVelocity*dTick/1000.0;
       
-            sender._pitch = sender._pitch + dp;
-            sender._pitch_increase -= dp;
-            if (sender._pitch_increase<0)
+            this._pitch = this._pitch + dp;
+            this._pitch_increase -= dp;
+            if (this._pitch_increase<0)
             {
-               sender._pitch = sender._pitch + sender._pitch_increase;
-               sender._pitch_increase = 0;
+               this._pitch = this._pitch + this._pitch_increase;
+               this._pitch_increase = 0;
             }
       
             bChanged = true;
          }
       
-         if (sender._pitch_decrease>0)
+         if (this._pitch_decrease>0)
          {
-            var dp = 0.5*sender._dPitchVelocity*dTick/1000.0;
+            var dp = 0.5*this._dPitchVelocity*dTick/1000.0;
       
-            sender._pitch = sender._pitch - dp;
-            sender._pitch_decrease -= dp;
-            if (sender._pitch_decrease<0)
+            this._pitch = this._pitch - dp;
+            this._pitch_decrease -= dp;
+            if (this._pitch_decrease<0)
             {
-               sender._pitch = sender._pitch - sender._pitch_decrease;
-               sender._pitch_decrease = 0;
+               this._pitch = this._pitch - this._pitch_decrease;
+               this._pitch_decrease = 0;
             }
       
             bChanged = true;
@@ -401,21 +405,21 @@ function NavigationNode()
          
          if (deltaPitch)
          {
-            sender._pitch += deltaPitch;
+            this._pitch += deltaPitch;
             bChanged = true;
          }
          
          if (deltaYaw)
          {
-            sender._yaw += deltaYaw;
+            this._yaw += deltaYaw;
 
-            if (sender._yaw>2.0*Math.PI)
+            if (this._yaw>2.0*Math.PI)
             {
-               sender._yaw = sender._yaw-2.0*Math.PI;
+               this._yaw = this._yaw-2.0*Math.PI;
             }
-            if (sender._yaw<0)
+            if (this._yaw<0)
             {
-               sender._yaw = 2.0*Math.PI - sender._yaw;
+               this._yaw = 2.0*Math.PI - this._yaw;
             }
             bChanged = true;
          }
@@ -424,10 +428,10 @@ function NavigationNode()
          
          //if (deltaH || deltaSurface)
          //{
-            currentAltitudeG = sender.engine.AltitudeAboveGround();
+            currentAltitudeG = this.engine.AltitudeAboveGround();
             if (isNaN(currentAltitudeG))
             {
-               currentAltitudeG = sender.minAltitude;
+               currentAltitudeG = this.minAltitude;
             }
             
             newAltitudeG = currentAltitudeG;
@@ -436,24 +440,24 @@ function NavigationNode()
          if (deltaH)
          {
             var diff = 1000*deltaH*p;
-            sender._ellipsoidHeight += diff;
+            this._ellipsoidHeight += diff;
             newAltitudeG += diff;
                         
             // limit maximum elevation
-            if (sender._ellipsoidHeight>7000000)
+            if (this._ellipsoidHeight>7000000)
             { 
-               sender._ellipsoidHeight = 7000000;
+               this._ellipsoidHeight = 7000000;
             }
          }
          
          if (deltaSurface)
          {
             // navigate along geodetic line
-            var lat_rad = sender._latitude*0.017453292519943295769236907684886; // deg2rad
-            var lng_rad = sender._longitude*0.017453292519943295769236907684886; // deg2rad
+            var lat_rad = this._latitude*0.017453292519943295769236907684886; // deg2rad
+            var lng_rad = this._longitude*0.017453292519943295769236907684886; // deg2rad
             var sinlat = Math.sin(lat_rad);
             var coslat = Math.cos(lat_rad);
-            var A1 = sender._yaw;
+            var A1 = this._yaw;
             var B1 = lat_rad;
             var L1 = lng_rad;
             var Rn = WGS84_a / Math.sqrt(1.0-WGS84_E_SQUARED*sinlat*sinlat);
@@ -466,15 +470,15 @@ function NavigationNode()
             B2 = deltaB + B1;
             L2 = deltaL + L1;
         
-            sender._longitude = 57.295779513082320876798154814105*L2; // rad2deg
-            sender._latitude = 57.295779513082320876798154814105*B2; // rad2deg
-            sender._yaw = A2;
+            this._longitude = 57.295779513082320876798154814105*L2; // rad2deg
+            this._latitude = 57.295779513082320876798154814105*B2; // rad2deg
+            this._yaw = A2;
             
             
-            while (sender._longitude>180) {sender._longitude -=180;}
-            while (sender._longitude<-180) { sender._longitude +=180; }
-            while (sender._latitude>90) { sender._latitude-=180;}
-            while (sender._latitude<-90) { sender._latitude+=180;}
+            while (this._longitude>180) {this._longitude -=180;}
+            while (this._longitude<-180) { this._longitude +=180; }
+            while (this._latitude>90) { this._latitude-=180;}
+            while (this._latitude<-90) { this._latitude+=180;}
 
             bChanged = true;
          }
@@ -484,10 +488,10 @@ function NavigationNode()
          // this means we managed to get underground and have to fix it
          //if (deltaH || deltaSurface)
          //{
-            if (newAltitudeG < sender.minAltitude) 
+            if (newAltitudeG < this.minAltitude) 
             {
-               var cor = sender.minAltitude - newAltitudeG;
-               sender._ellipsoidHeight += cor;             
+               var cor = this.minAltitude - newAltitudeG;
+               this._ellipsoidHeight += cor;             
             }
          //}
          

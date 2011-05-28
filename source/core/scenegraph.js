@@ -85,6 +85,21 @@ function SceneGraph(engine)
 } 
 //------------------------------------------------------------------------------
 /**
+ * Update Scenegraph
+ * @param {number} nMSeconds
+ */
+SceneGraph.prototype.Tick = function(nMSeconds)
+{
+   this.nodeNavigation.OnTick(nMSeconds);
+   this.nodeCamera.OnTick(nMSeconds);
+   this.nodeBeginRender.OnTick(nMSeconds);
+   this.nodeRenderObject.OnTick(nMSeconds);
+   this.nodeRender.OnTick(nMSeconds);
+   this.nodeEndRender.OnTick(nMSeconds);
+   this.nodeLogos.OnTick(nMSeconds);
+};
+//------------------------------------------------------------------------------
+/**
  * Traverse Scenegraph 
  */
 SceneGraph.prototype.Traverse = function()
