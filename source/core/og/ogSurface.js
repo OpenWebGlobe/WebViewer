@@ -54,6 +54,9 @@ function ogSurface()
    this.latitude = 0.0;
    this.elevation = 0.0;
    this.status = OG_OBJECT_BUSY;
+   
+   /** @type {Mesh} */ 
+   this.surface = null;
 
 }
 //------------------------------------------------------------------------------
@@ -112,7 +115,7 @@ ogSurface.prototype.ParseOptions = function(options)
       return;
    }
    
-   if (this.parent.type != OG_OBJECT_SCENE)
+   if (this.parent.type != OG_OBJECT_MESH)
    {
       goog.debug.Logger.getLogger('owg.ogTexture').warning("** ERROR: parent is not scene!");
       return;
@@ -120,11 +123,14 @@ ogSurface.prototype.ParseOptions = function(options)
    
    if (options["url"])
    {
-      var scene = this.parent;
+      var mesh = this.parent;
+      var geometry = mesh.parent;
+      var scene = geometry.parent;
       var context = scene.parent;
       var engine = context.engine; // get engine!
      
       this.surface = new Mesh(engine);
+      this.surface.hide = false; //appended property.
      
       var ogSurface = this;
       var readycbf = function(e){ogSurface.ogSurface_callbackready(e);};
@@ -139,6 +145,15 @@ ogSurface.prototype.ParseOptions = function(options)
       this.elevation = options["elevation"];
    }
   
+}
+//------------------------------------------------------------------------------
+/**
+* @description todo
+* @ignore
+*/
+ogSurface.prototype.GetSurface = function()
+{
+   return this.surface; 
 }
 
 //------------------------------------------------------------------------------
@@ -158,15 +173,30 @@ ogSurface.prototype._OnDestroy = function()
 
 //------------------------------------------------------------------------------
 /**
-* @description draws the surface
+* @description Show the surface
 * @ignore
 */
-ogSurface.prototype.Draw = function()
+ogSurface.prototype.Show = function()
 {
-   if (this.status == OG_OBJECT_READY)
+   if (this.surface)
    {
-      this.surface.Draw();
+      this.surface.hide = false;
    }
 }
+
+
+//------------------------------------------------------------------------------
+/**
+* @description hide the surface
+* @ignore
+*/
+ogSurface.prototype.Hide = function()
+{
+   if (this.surface)
+   {
+      this.surface.hide = true;
+   }
+}
+
 
 

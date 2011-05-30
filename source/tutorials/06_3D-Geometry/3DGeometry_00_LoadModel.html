@@ -41,7 +41,7 @@
 <!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
 <script type="text/javascript">
 
-var surface = null;
+var geometry = null;
 
 //------------------------------------------------------------------------------
 // Render-Event: called every frame:
@@ -49,8 +49,6 @@ function OnRender(context)
 {  
    ogSetTextColor(context, 0,1,0);
    
-   //draw the surface
-  // ogDrawSurface(context,surface);
 }
 //------------------------------------------------------------------------------
 // Mouse-Down-Event: Called when a mouse button is pressed
@@ -60,9 +58,21 @@ function OnMouseDown(context, button, mx, my)
    var scene = ogGetScene(context);
    if(button == 2)
    {
-      ogDestroySurface(context,surface);
+      //ogHideGeometry(geometry);
+  
+         mesh = ogGetMeshAt(geometry,1);
+         surf = ogGetSurfaceAt(mesh,0);
+         ogHideSurface(surf);
+      
+      //ogDestroyGeometry(context,geometry);
+      //var geometry_id = ogPickGeometry(mx,my);
    }
-   
+   else
+   {
+         mesh = ogGetMeshAt(geometry,1);
+         surf = ogGetSurfaceAt(mesh,0);
+         ogShowSurface(surf);   
+   }
 
 }
 //------------------------------------------------------------------------------
@@ -119,10 +129,10 @@ function main()
 	
    // definition of geometry options.
    var geometryOptions = {
-                           "url" : "landscape.json",
+                           "url" : "test.json",
                            "longitude" : 7.438637, //optional if not defined, the coordinates from json file will be used.
                            "latitude" : 46.951081, //optional if not defined, the coordinates from json file will be used.
-                           "elevation" : 22200,  //optional if not defined, the coordinates from json file will be used.
+                           "elevation" : 2200,  //optional if not defined, the coordinates from json file will be used.
                            "type" : "MESH" //to discuss define a constant...
                            };
                            

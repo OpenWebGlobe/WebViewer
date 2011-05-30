@@ -1220,57 +1220,7 @@ function ogPickPOI(scene_id, mx, my)
    return -1;
 }
 goog.exportSymbol('ogPickPOI', ogPickPOI);
-//------------------------------------------------------------------------------
-//##############################################################################
-// ** SURFACE OBJECT **
-//##############################################################################
-/** @description Create a Surface
-*   @param {number} scene_id the scene
-*   @param {SurfaceOptions} options surface options
-*/
-function ogCreateSurface(scene_id, options)
-{
-   // test if scene_id is a valid scene
-   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
-   if (scene && scene.type == OG_OBJECT_SCENE)
-   {
 
-      var surface = _CreateObject(OG_OBJECT_SURFACE, scene, options);
-      return surface.id;
-   }
-   return -1;
-}
-goog.exportSymbol('ogCreateSurface', ogCreateSurface);
-//------------------------------------------------------------------------------
-/** @description Draw a Surface
-*   @param {number} surface_id
-*/
-function ogDrawSurface(context,surface_id)
-{
-   /** @type {ogSurface} */
-   var surface = /** @type {ogSurface} */ _GetObjectFromId(surface_id);
-   if (surface && surface.type == OG_OBJECT_SURFACE)
-   {
-      surface.Draw();
-   }
-   return -1;
-}
-goog.exportSymbol('ogDrawSurface', ogDrawSurface);
-//------------------------------------------------------------------------------
-/** @description Draw a Surface
-*   @param {number} surface_id
-*/
-function ogDestroySurface(context,surface_id)
-{
-   /** @type {ogSurface} */
-   var surface = /** @type {ogSurface} */ _GetObjectFromId(surface_id);
-   if (surface && surface.type == OG_OBJECT_SURFACE)
-   {
-      surface._OnDestroy();
-   }
-   return -1;
-}
-goog.exportSymbol('ogDestroySurface', ogDestroySurface);
 //##############################################################################
 // ** GEOMETRY OBJECT **
 //##############################################################################
@@ -1322,3 +1272,168 @@ function ogAddToGeometry(geometry_id, options)
    return -1;
 }
 goog.exportSymbol('ogAddToGeometry', ogAddToGeometry);
+//------------------------------------------------------------------------------
+/** @description Pick geometry. 
+*   @param {number} scene_id the scene
+*   @param {number} mx x-coord of mouse
+*   @param {number} my y-coord of mouse
+*   @returns {number} poi_id or -1 if no pick.
+*/
+function ogPickGeometry(scene_id, mx, my)
+{
+/*    //** @type {ogScene} 
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+     return scene.PickGeometry(mx, my);
+   }
+   return -1;
+       */
+}
+goog.exportSymbol('ogPickGeometry', ogPickGeometry);
+
+//------------------------------------------------------------------------------
+/** @description gets the number of meshObjects in a geometry. 
+*   @param {number} geometry_id
+*   @returns {number} poi_id or -1 if no pick.
+*/
+function ogGetNumMeshes(geometry_id)
+{
+    /** @type {ogGeometry} */
+   var geometry = _GetObjectFromId(geometry_id);
+   if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
+   {
+     return geometry.GetNumMeshes();
+   }
+   return -1;
+       
+}
+goog.exportSymbol('ogGetNumMeshes', ogGetNumMeshes);
+
+//------------------------------------------------------------------------------
+/** @description gets the mesh id of a mesh at index in a geometry
+*   @param {number} geometry_id
+*   @returns {number} index
+*/
+function ogGetMeshAt(geometry_id, index)
+{
+   /** @type {ogGeometry} */
+   var geometry = _GetObjectFromId(geometry_id);
+   if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
+   {
+     return geometry.GetMeshAt(index);
+   }
+   return -1;
+       
+}
+goog.exportSymbol('ogGetMeshAt', ogGetMeshAt);
+
+//------------------------------------------------------------------------------
+/** @description gets the mesh id of a mesh at index in a geometry
+*   @param {number} geometry_id
+*   @returns {number} index
+*/
+function ogGetSurfaceAt(mesh_id, index)
+{
+   /** @type {ogGeometry} */
+   var mesh = _GetObjectFromId(mesh_id);
+   if (mesh && mesh.type == OG_OBJECT_MESH)
+   {
+     return mesh.GetSurfaceAt(index);
+   }
+   return -1; 
+}
+goog.exportSymbol('ogGetSurfaceAt', ogGetSurfaceAt);
+
+//------------------------------------------------------------------------------
+/** @description Hide a Geometry
+*   @param {number} geometry_id
+*/
+function ogHideGeometry(geometry_id)
+{
+   /** @type {ogGeometry} */
+   var geometry = _GetObjectFromId(geometry_id);
+   if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
+   {
+     geometry.Hide();
+   }  
+}
+goog.exportSymbol('ogHideGeometry', ogHideGeometry);
+
+//------------------------------------------------------------------------------
+/** @description Show a hidden geometry
+*   @param {number} geometry_id
+*/
+function ogShowGeometry(geometry_id)
+{
+    /** @type {ogGeometry} */
+   var geometry = _GetObjectFromId(geometry_id);
+   if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
+   {
+     geometry.Show();
+   }
+       
+}
+goog.exportSymbol('ogShowGeometry', ogShowGeometry);
+
+//------------------------------------------------------------------------------
+/** @description Hide a Mesh
+*   @param {number} mesh_id
+*/
+function ogHideMesh(mesh_id)
+{
+   /** @type {ogGeometry} */
+   var mesh = _GetObjectFromId(mesh_id);
+   if (mesh && mesh.type == OG_OBJECT_MESH)
+   {
+     mesh.Hide();
+   }
+       
+}
+goog.exportSymbol('ogHideMesh', ogHideMesh);
+
+//------------------------------------------------------------------------------
+/** @description Show a hidden Mesh
+*   @param {number} mesh_id
+*/
+function ogShowMesh(mesh_id)
+{
+   /** @type {ogGeometry} */
+   var mesh = _GetObjectFromId(mesh_id);
+   if (mesh && mesh.type == OG_OBJECT_MESH)
+   {
+     mesh.Show();
+   }
+       
+}
+goog.exportSymbol('ogShowMesh', ogShowMesh);
+//------------------------------------------------------------------------------
+/** @description Hide a Mesh
+*   @param {number} mesh_id
+*/
+function ogHideSurface(surface_id)
+{
+   /** @type {ogSurface} */
+   var surf = _GetObjectFromId(surface_id);
+   if (surf && surf.type == OG_OBJECT_SURFACE)
+   {
+     surf.Hide();
+   }
+       
+}
+goog.exportSymbol('ogHideSurface', ogHideSurface);
+//------------------------------------------------------------------------------
+/** @description Show a hidden Mesh
+*   @param {number} mesh_id
+*/
+function ogShowSurface(surface_id)
+{
+   /** @type {ogSurface} */
+   var surf = _GetObjectFromId(surface_id);
+   if (surf && surf.type == OG_OBJECT_SURFACE)
+   {
+     surf.Show();
+   }
+       
+}
+goog.exportSymbol('ogShowSurface', ogShowSurface);

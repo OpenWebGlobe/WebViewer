@@ -924,8 +924,24 @@ engine3d.prototype.PickPOI = function(mx, my)
    {
       return this.scene.nodeRenderObject.poirenderer.PickPOI(mx,my);
    }
+   return null;
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description PickGeometry: Retrieve geometry id of clicked poi
+ * @param {number} mx
+ * @param {number} my
+ *
+engine3d.prototype.PickGeometry = function(mx, my)
+{
+   if (this.scene)
+   {
+      return this.scene.nodeRenderObject.geometryrenderer.PickGeometry(mx,my);
+   }
+   return null;
+}
+ */
  //-----------------------------------------------------------------------------
  /**
  * @description Returns the altitude above ground [m]

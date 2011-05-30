@@ -825,9 +825,7 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
       case "TRIANGLESTRIP":
       
                         if(triangleNumber%2 == 0) //even
-                        {  
-                           
-                                    
+                        {    
                           this.currentTriangle.v1x = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength];
                           this.currentTriangle.v1y = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength+1];
                           this.currentTriangle.v1z = this.vertexbufferdata[this.indexbufferdata[triangleNumber]*this.vertexLength+2];

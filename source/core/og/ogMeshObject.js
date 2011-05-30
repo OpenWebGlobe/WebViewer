@@ -39,6 +39,9 @@ function ogMeshObject()
    this.name = "ogMeshObject";
    /** @type {number} */
    this.type = OG_OBJECT_MESH;
+   /** @type {Array.<{ogSurface}>} */
+   this.surfaces_og = [];
+   /** @type {Array.<Mesh>} */
    this.surfaces = [];
 }
 
@@ -54,21 +57,59 @@ ogMeshObject.prototype = new ogObject();
 */
 ogMeshObject.prototype.ParseOptions = function(options)
 {   
-      var scene = this.parent;
-      var ogsurf = _CreateObject(OG_OBJECT_SURFACE, scene, options);
-      this.surfaces.push(ogsurf);
+     // var scene = this.parent;
+      var ogsurf = _CreateObject(OG_OBJECT_SURFACE, this, options);
+      this.surfaces_og.push(ogsurf);
+      this.surfaces.push(ogsurf.GetSurface());
 }
 
 
 //------------------------------------------------------------------------------
 /**
- * will be called from geometryrenderer. to discuss.
- *
+ * @description gets the an array of all contained surfaces -> not ogSurfaces!
+ * 
  */
-ogMeshObject.prototype.Draw = function()
+ogMeshObject.prototype.GetSurfaceArray = function()
+{   
+      return this.surfaces;     
+}
+
+
+//------------------------------------------------------------------------------
+/**
+* @description gets the number of meshes
+* @returns {number}
+*/
+ogMeshObject.prototype.GetSurfaceAt = function(index)
 {
-   for (var i=0;i<this.surfaces.length;i++)
+   return this.surfaces_og[index].id;
+}
+
+/**
+ * @description hides the mesh
+ * 
+ */
+ogMeshObject.prototype.Hide = function()
+{
+   for(var k=0; k<this.surfaces_og.length;k++)
    {
-      this.surfaces[i].Draw();
-   }
+      /** @type {ogSurface} */
+      var surf = /** @type {ogSurface} */this.surfaces_og[k];
+      surf.Hide();
+   }   
+}
+
+
+/**
+ * @description shows the mesh
+ * 
+ */
+ogMeshObject.prototype.Show = function()
+{
+   for(var k=0; k<this.surfaces_og.length;k++)
+   {
+      /** @type {ogSurface} */
+      var surf = /** @type {ogSurface} */this.surfaces_og[k];
+      surf.Show();
+   } 
 }

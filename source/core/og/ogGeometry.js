@@ -50,7 +50,15 @@ function ogGeometry()
    this.name = "ogGeometry";
    /** @type {number} */
    this.type = OG_OBJECT_GEOMETRY;
+   /** @type {?Array.<{ogMeshObject}>}*/
+   this.meshes_og = [];
+   /** @type {?Array.<Array.<{Mesh}>>}*/
    this.meshes = [];
+   /**@type {number} */
+   this.indexInRendererArray = -1;
+   
+   /** @type {boolean} */
+   this.hide = false;
 }
 //------------------------------------------------------------------------------
 /** @extends {ogObject} */
@@ -67,13 +75,15 @@ ogGeometry.prototype.ParseOptions = function(options)
    if(options["type"] == "MESH")
    {
       var scene = this.parent;
-      var ogMesh = _CreateObject(OG_OBJECT_MESH, scene, options); //to discuss: müssen diese objecte auch über diese globale CreateObject funktion erzeugt werden?
-      this.meshes.push(ogMesh)
+      var mesh = _CreateObject(OG_OBJECT_MESH, this, options); 
+      this.meshes_og.push(mesh)
+      this.meshes.push(mesh.GetSurfaceArray());
    }
    
    //add to geometry renderer...
    var renderer = this._GetGeometryRenderer();
-   renderer.AddGeometry(this); 
+   this.indexInRendererArray = renderer.AddGeometry(this.meshes);
+   
 }
 
 //------------------------------------------------------------------------------
@@ -87,23 +97,12 @@ ogGeometry.prototype.Add= function(options)
    if(options["type"] == "MESH")
    {
       var scene = this.parent;
-      var ogMesh = _CreateObject(OG_OBJECT_MESH, scene, options); //to discuss: müssen diese objecte auch über diese globale CreateObject funktion erzeugt werden?
-      this.meshes.push(ogMesh)
+      var mesh = _CreateObject(OG_OBJECT_MESH, this, options); 
+      this.meshes_og.push(mesh)
+      this.meshes.push(mesh.GetSurfaceArray());
    }
 }
 
-//------------------------------------------------------------------------------
-/**
- * will be called from geometryrenderer. to discuss.
- *
- */
-ogGeometry.prototype.Draw = function()
-{
-   for (var i=0;i<this.meshes.length;i++)
-   {
-      this.meshes[i].Draw();
-   }
-}
 
 
 //------------------------------------------------------------------------------
@@ -113,8 +112,20 @@ ogGeometry.prototype.Draw = function()
  */
 ogGeometry.prototype._OnDestroy = function()
 {
-   
-   //free all memory
+   var renderer = this._GetGeometryRenderer();
+   renderer.RemoveGeometry(this.indexInRendererArray);
+
+   for(var j=0;j<this.meshes.length;j++)
+   {
+      var surfaces = this.meshes[j];
+      for(var k=0; k<surfaces.length;k++)
+      {
+         /**@type {Mesh} */
+         var surface = /**@type {Mesh}*/surfaces[k];
+         surface.Destroy();
+      } 
+   }
+   this.geometryarray = null;   
 }
 
 
@@ -144,8 +155,73 @@ ogGeometry.prototype._GetGeometryRenderer = function()
    }
    return renderer;
 }
+//------------------------------------------------------------------------------
+/**
+* @description gets the number of meshes
+* @returns {number}
+*/
+ogGeometry.prototype.GetNumMeshes = function()
+{
+   return this.meshes_og.length;
+}
 
 
+//------------------------------------------------------------------------------
+/**
+* @description gets the number of meshes
+* @returns {number}
+*/
+ogGeometry.prototype.GetMeshAt = function(index)
+{
+   return this.meshes_og[index].id;
+}
+
+/**
+ * @description hides the geometry
+ */
+ogGeometry.prototype.Hide = function()
+{
+   for(var j=0;j<this.meshes_og.length;j++)
+   {
+      /**@type {ogMeshObject} */
+      var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+      mesh.Hide();
+   }
+
+}
+
+
+/**
+ * @description shows the geometry
+ */
+ogGeometry.prototype.Show = function()
+{
+   for(var j=0;j<this.meshes_og.length;j++)
+   {
+      /**@type {ogMeshObject} */
+      var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+      mesh.Show();
+   }
+}
+
+
+
+
+
+//------------------------------------------------------------------------------
+/**
+* @description 
+* @param {number} mx the canvas x coordinate
+* @param {number} my the canvas y coordinate
+*
+ogGeometry.prototype.PickGeometry= function(mx,my) //to discuss: wird wie draw() vom renderer aufgerufen.
+{
+   for (var i=0;i<this.meshes_og.length;i++)
+   {
+      this.meshes_og[i].Pick(mx,my);
+   }
+}
+*/
 
 
 
