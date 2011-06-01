@@ -39,13 +39,34 @@ var geometry = null;
 function OnRender(context)
 {  
    ogSetTextColor(context, 0,1,0);
-   
+   ogDrawText(context,"Click on a geometry to hide it.",0,50);
+   ogDrawText(context,"Right click to show all geometries again.",0,20);
 }
 //------------------------------------------------------------------------------
 // Mouse-Down-Event: Called when a mouse button is pressed
 function OnMouseDown(context, button, mx, my)
 {
-  
+   // retrieve the scene attached to context:
+   var scene = ogGetScene(context);
+   
+   if(button == 0)
+   {
+      var mesh_id = ogPickMesh(scene,mx,my);
+      if(mesh_id != -1)
+      {
+         ogHideMesh(mesh_id);  //hide the clicked mesh
+      }
+   }
+   
+   if(button > 0)
+   {
+      for(var i = 0; i<ogGetNumMeshes(geometry);i++) //iterate over all meshes in this geometry
+      {
+         var mesh_id = ogGetMeshAt(geometry,i);
+         ogShowMesh(mesh_id); //show all meshes.
+      }   
+   }
+   
 }
 //------------------------------------------------------------------------------
 function main()

@@ -88,8 +88,10 @@ ogSurface.prototype.ogSurface_callbackready = function(surface)
    if(this.longitude != 0.0 && this.latitude != 0.0)
    {
       this.surface.SetAsNavigationFrame(this.longitude,this.latitude, this.elevation);
+      
    }
    this.status = OG_OBJECT_READY;
+
    if (this.cbfReady)
    {
       this.cbfReady(this.id);
@@ -131,6 +133,8 @@ ogSurface.prototype.ParseOptions = function(options)
      
       this.surface = new Mesh(engine);
       this.surface.hide = false; //appended property.
+      this.surface.ogid = this.id; //appended property.
+
      
       var ogSurface = this;
       var readycbf = function(e){ogSurface.ogSurface_callbackready(e);};

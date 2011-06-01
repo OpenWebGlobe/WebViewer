@@ -574,21 +574,6 @@ function _cbfjsondownload(mesh)
             mesh.curtainindex = jsonobject['CurtainIndex'];
          }
          
-         if (jsonobject['DiffuseMap'])
-         {
-            mesh.texture = new Texture(mesh.engine);
-            
-            var cbr = function(){mesh.cbfTextureLoadCallback_ready()};
-            var cbf = function(){mesh.cbfTextureLoadCallback_failed()};
-            mesh.texture.loadTexture(jsonobject['DiffuseMap'],cbr,cbf,true);
-            mesh.manageTexture = true;
-         }
-         
-         if(jsonobject['Center'])
-         {
-            mesh.SetAsNavigationFrame(jsonobject['Center'][0],jsonobject['Center'][1],jsonobject['Center'][2]);
-         }
-         
          switch(jsonobject['VertexSemantic'])
          {
             case "p":      mesh.numvertex = jsonobject['Vertices'].length/3;
@@ -622,6 +607,21 @@ function _cbfjsondownload(mesh)
                            alert("unknown mesh mode!!");
          }      
          mesh.SetIndexBuffer(jsonobject['Indices'],jsonobject['IndexSemantic']);
+         
+         if (jsonobject['DiffuseMap'])
+         {
+            mesh.texture = new Texture(mesh.engine);
+            
+            var cbr = function(){mesh.cbfTextureLoadCallback_ready()};
+            var cbf = function(){mesh.cbfTextureLoadCallback_failed()};
+            mesh.texture.loadTexture(jsonobject['DiffuseMap'],cbr,cbf,true);
+            mesh.manageTexture = true;
+         }
+         
+         if(jsonobject['Center'])
+         {
+            mesh.SetAsNavigationFrame(jsonobject['Center'][0],jsonobject['Center'][1],jsonobject['Center'][2]);
+         }
          
          
          mesh.numindex = jsonobject['Indices'].length;         // number of elements of index vector
@@ -741,9 +741,7 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
       {
          continue; 
       }
-  
          
-      //not tested...yet !!!!        
       if(this.modelMatrix)
       { 
          var invModelMatrix = new mat4();
@@ -777,8 +775,8 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
       if(result)
       {
          hit = true;  
-
-         if(result.t < t)
+         
+         if(result.t < t && result.t>0)
          {
             t = result.t;
             u = result.u;
@@ -901,6 +899,7 @@ Mesh.prototype.UpdateAABB = function()
       vx = this.vertexbufferdata[i*this.vertexLength];
       vy = this.vertexbufferdata[i*this.vertexLength+1];
       vz = this.vertexbufferdata[i*this.vertexLength+2];
+      
    
       if (vx>maxx) { maxx = vx;}
       if (vy>maxy) { maxy = vy;}
@@ -908,6 +907,48 @@ Mesh.prototype.UpdateAABB = function()
       if (vx<minx) { minx = vx;}
       if (vy<miny) { miny = vy;}
       if (vz<minz) { minz = vz;}
+   }
+   
+   
+   if(this.modelMatrix)
+   {
+      var p1 = new vec3(minx,miny,minz);
+      var p2 = new vec3(maxx,miny,minz);
+      var p3 = new vec3(maxx,maxy,minz);
+      var p4 = new vec3(minx,maxy,minz);
+      var p5 = new vec3(minx,miny,maxz);
+      var p6 = new vec3(minx,maxy,maxz);
+      var p7 = new vec3(maxx,maxy,maxz);
+      var p8 = new vec3(minx,maxy,maxz);
+      
+      //transform
+      var p1t = this.modelMatrix.MultiplyVec3(p1);
+      var p2t = this.modelMatrix.MultiplyVec3(p2);
+      var p3t = this.modelMatrix.MultiplyVec3(p3);
+      var p4t = this.modelMatrix.MultiplyVec3(p4);
+      var p5t = this.modelMatrix.MultiplyVec3(p5);
+      var p6t = this.modelMatrix.MultiplyVec3(p6); 
+      var p7t = this.modelMatrix.MultiplyVec3(p7);
+      var p8t = this.modelMatrix.MultiplyVec3(p8);
+
+      //sort all
+      var px = new Array(p1t.Get()[0],p2t.Get()[0],p3t.Get()[0],p4t.Get()[0],p5t.Get()[0],p6t.Get()[0],p7t.Get()[0],p8t.Get()[0]);
+      var py = new Array(p1t.Get()[1],p2t.Get()[1],p3t.Get()[1],p4t.Get()[1],p5t.Get()[1],p6t.Get()[1],p7t.Get()[1],p8t.Get()[1]);
+      var pz = new Array(p1t.Get()[2],p2t.Get()[2],p3t.Get()[2],p4t.Get()[2],p5t.Get()[2],p6t.Get()[2],p7t.Get()[2],p8t.Get()[2]);
+      
+      px.sort();
+      py.sort();
+      pz.sort();
+      
+      minx = px[0];
+      maxx = px[px.length-1];
+      
+      miny = py[0];
+      maxy = py[py.length-1];
+      
+      minz = pz[0];
+      maxz = pz[pz.length-1];
+      
    }
    
    // if this node has a high precision virtual camera offset, add it to the vertices.
@@ -952,37 +993,7 @@ Mesh.prototype.UpdateAABB = function()
  */
 Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
 {
-   var result;
-  
-   //not tested...yet !!!!        
-   if(this.newModelMatrix)
-   {
-      var invModelMatrix = new mat4();
-      invModelMatrix.CopyFrom(this.newModelMatrix); 
-
-              
-      var v1 = new vec3();
-      v1.Set(this.bbmin[0],this.bbmin[1],this.bbmin[2]);
-              
-      var v2 = new vec3();
-      v2.Set(this.bbmax[0],this.bbmax[1],this.bbmax[2]);
-             
-      var vec = invModelMatrix.MultiplyVec3(v1);
-      var v1x = vec.Get()[0];
-      var v1y = vec.Get()[1];
-      var v1z = vec.Get()[2];
-              
-      vec = invModelMatrix.MultiplyVec3(v2);
-      var v2x = vec.Get()[0];
-      var v2y = vec.Get()[1];
-      var v2z = vec.Get()[2];
-      
-      result = this.aabb.HitBox(x,y,z,dirx,diry,dirz,v1x,v1y,v1z,v2x,v2y,v2z); 
-   } 
-   else
-   {
-      result = this.aabb.HitBox(x,y,z,dirx,diry,dirz,this.bbmin[0],this.bbmin[1],this.bbmin[2],this.bbmax[0],this.bbmax[1],this.bbmax[2]);   
-   }      
+   var result = this.aabb.HitBox(x,y,z,dirx,diry,dirz,this.bbmin[0],this.bbmin[1],this.bbmin[2],this.bbmax[0],this.bbmax[1],this.bbmax[2]);         
 
    return result;  //if result = null -> no hit!
 }
@@ -1011,7 +1022,10 @@ Mesh.prototype.SetAsBillboard= function(x,y,z,translationX,translationY,translat
    this.modelMatrix = newBbmat;
 }
 
-
+/**
+ * @description updates the billboard matrix
+ * @ignore
+ */
 Mesh.prototype.UpdateBillboardMatrix = function()
 {
    this.SetAsBillboard(this.billboardPos[0],this.billboardPos[1],this.billboardPos[2],this.billboardCenterTrans[0],this.billboardCenterTrans[1],this.billboardCenterTrans[2]);
@@ -1071,6 +1085,7 @@ Mesh.prototype.SetAsNavigationFrame = function(lng,lat,elv)
    scaledRotNavMat.Multiply(scaledNavMat,rotatedMat);
    
    this.modelMatrix = scaledRotNavMat;
+   this.UpdateAABB();
 }
 
 

@@ -1272,25 +1272,6 @@ function ogAddToGeometry(geometry_id, options)
    return -1;
 }
 goog.exportSymbol('ogAddToGeometry', ogAddToGeometry);
-//------------------------------------------------------------------------------
-/** @description Pick geometry. 
-*   @param {number} scene_id the scene
-*   @param {number} mx x-coord of mouse
-*   @param {number} my y-coord of mouse
-*   @returns {number} poi_id or -1 if no pick.
-*/
-function ogPickGeometry(scene_id, mx, my)
-{
-/*    //** @type {ogScene} 
-   var scene = _GetObjectFromId(scene_id);
-   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
-   {
-     return scene.PickGeometry(mx, my);
-   }
-   return -1;
-       */
-}
-goog.exportSymbol('ogPickGeometry', ogPickGeometry);
 
 //------------------------------------------------------------------------------
 /** @description gets the number of meshObjects in a geometry. 
@@ -1300,7 +1281,7 @@ goog.exportSymbol('ogPickGeometry', ogPickGeometry);
 function ogGetNumMeshes(geometry_id)
 {
     /** @type {ogGeometry} */
-   var geometry = _GetObjectFromId(geometry_id);
+   var geometry = /** @type {ogGeometry} */_GetObjectFromId(geometry_id);
    if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
    {
      return geometry.GetNumMeshes();
@@ -1318,7 +1299,7 @@ goog.exportSymbol('ogGetNumMeshes', ogGetNumMeshes);
 function ogGetMeshAt(geometry_id, index)
 {
    /** @type {ogGeometry} */
-   var geometry = _GetObjectFromId(geometry_id);
+   var geometry = /** @type {ogGeometry} */_GetObjectFromId(geometry_id);
    if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
    {
      return geometry.GetMeshAt(index);
@@ -1330,13 +1311,13 @@ goog.exportSymbol('ogGetMeshAt', ogGetMeshAt);
 
 //------------------------------------------------------------------------------
 /** @description gets the mesh id of a mesh at index in a geometry
-*   @param {number} geometry_id
+*   @param {number} mesh_id
 *   @returns {number} index
 */
 function ogGetSurfaceAt(mesh_id, index)
 {
-   /** @type {ogGeometry} */
-   var mesh = _GetObjectFromId(mesh_id);
+   /** @type {ogMeshObject} */
+   var mesh = /** @type {ogMeshObject} */_GetObjectFromId(mesh_id);
    if (mesh && mesh.type == OG_OBJECT_MESH)
    {
      return mesh.GetSurfaceAt(index);
@@ -1352,7 +1333,7 @@ goog.exportSymbol('ogGetSurfaceAt', ogGetSurfaceAt);
 function ogHideGeometry(geometry_id)
 {
    /** @type {ogGeometry} */
-   var geometry = _GetObjectFromId(geometry_id);
+   var geometry = /** @type {ogGeometry} */_GetObjectFromId(geometry_id);
    if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
    {
      geometry.Hide();
@@ -1367,7 +1348,7 @@ goog.exportSymbol('ogHideGeometry', ogHideGeometry);
 function ogShowGeometry(geometry_id)
 {
     /** @type {ogGeometry} */
-   var geometry = _GetObjectFromId(geometry_id);
+   var geometry = /** @type {ogGeometry} */_GetObjectFromId(geometry_id);
    if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
    {
      geometry.Show();
@@ -1382,8 +1363,8 @@ goog.exportSymbol('ogShowGeometry', ogShowGeometry);
 */
 function ogHideMesh(mesh_id)
 {
-   /** @type {ogGeometry} */
-   var mesh = _GetObjectFromId(mesh_id);
+   /** @type {ogMeshObject} */
+   var mesh = /** @type {ogMeshObject} */_GetObjectFromId(mesh_id);
    if (mesh && mesh.type == OG_OBJECT_MESH)
    {
      mesh.Hide();
@@ -1398,8 +1379,8 @@ goog.exportSymbol('ogHideMesh', ogHideMesh);
 */
 function ogShowMesh(mesh_id)
 {
-   /** @type {ogGeometry} */
-   var mesh = _GetObjectFromId(mesh_id);
+   /** @type {ogMeshObject} */
+   var mesh = /** @type {ogMeshObject} */_GetObjectFromId(mesh_id);
    if (mesh && mesh.type == OG_OBJECT_MESH)
    {
      mesh.Show();
@@ -1409,12 +1390,12 @@ function ogShowMesh(mesh_id)
 goog.exportSymbol('ogShowMesh', ogShowMesh);
 //------------------------------------------------------------------------------
 /** @description Hide a Mesh
-*   @param {number} mesh_id
+*   @param {number} surface_id
 */
 function ogHideSurface(surface_id)
 {
    /** @type {ogSurface} */
-   var surf = _GetObjectFromId(surface_id);
+   var surf = /** @type {ogSurface} */_GetObjectFromId(surface_id);
    if (surf && surf.type == OG_OBJECT_SURFACE)
    {
      surf.Hide();
@@ -1424,12 +1405,12 @@ function ogHideSurface(surface_id)
 goog.exportSymbol('ogHideSurface', ogHideSurface);
 //------------------------------------------------------------------------------
 /** @description Show a hidden Mesh
-*   @param {number} mesh_id
+*   @param {number} surface_id
 */
 function ogShowSurface(surface_id)
 {
    /** @type {ogSurface} */
-   var surf = _GetObjectFromId(surface_id);
+   var surf = /** @type {ogSurface} */_GetObjectFromId(surface_id);
    if (surf && surf.type == OG_OBJECT_SURFACE)
    {
      surf.Show();
@@ -1437,3 +1418,67 @@ function ogShowSurface(surface_id)
        
 }
 goog.exportSymbol('ogShowSurface', ogShowSurface);
+//------------------------------------------------------------------------------
+/** @description Returns the id of a picked surface or -1
+ *  @param {number} scene_id 
+ *  @param {number} mx the mouse x coordinate
+ *  @param {number} my the mouse y coordinate
+ *  @returns {number} the surface_id
+ */
+function ogPickSurface(scene_id,mx,my)
+{
+   /** @type {ogScene} */
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+      return scene.PickSurface(mx, my);
+   }
+   return -1;     
+}
+goog.exportSymbol('ogPickSurface', ogPickSurface);
+//------------------------------------------------------------------------------
+/** @description Returns the id of a picked mesh or -1
+ *  @param {number} scene_id 
+ *  @param {number} mx the mouse x coordinate
+ *  @param {number} my the mouse y coordinate
+ *  @returns {number} the mesh_id
+ */
+function ogPickMesh(scene_id,mx,my)
+{
+   /** @type {ogScene} */
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+      var surf_id = scene.PickSurface(mx, my);
+      var surface_og = /** @type {ogSurface} */_GetObjectFromId(surf_id);
+      if(surface_og)
+      {
+         return surface_og.parent.id;
+      }
+   }
+   return -1;     
+}
+goog.exportSymbol('ogPickMesh', ogPickMesh);
+//------------------------------------------------------------------------------
+/** @description Returns the id of a picked geometry or -1
+ *  @param {number} scene_id 
+ *  @param {number} mx the mouse x coordinate
+ *  @param {number} my the mouse y coordinate
+ *  @returns {number} the geometry_id
+ */
+function ogPickGeometry(scene_id,mx,my)
+{
+   /** @type {ogScene} */
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+      var surf_id = scene.PickSurface(mx, my);
+      var surface_og = /** @type {ogSurface} */_GetObjectFromId(surf_id);
+      if(surface_og)
+      {
+         return surface_og.parent.parent.id;
+      }
+   }
+   return -1;     
+}
+goog.exportSymbol('ogPickGeometry', ogPickGeometry);

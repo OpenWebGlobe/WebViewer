@@ -119,19 +119,14 @@ ogScene.prototype.PickPOI = function(mx, my)
 * @description Pick surfaces
 * @param {number} mx x-coord of mouse
 * @param {number} my y-coord of mouse
-*
+*/
 ogScene.prototype.PickSurface = function(mx, my)
 {
-   /** @type {ogContext} */
-//   var context = /** @type ogContext */this.parent;
-   /** @type {Mesh} */
- //  var surface = context.engine.PickSurface(mx, my);
-  /* 
-   if (surface)
-   {
-      return surface.ogsurface.id;
-   }
+  /** @type {ogContext} */
+   var context = /** @type ogContext */this.parent;
    
-   return -1;
+   return context.engine.PickSurface(mx, my); //returns the surface id.
+   
+
 }
-*/
+
