@@ -31,9 +31,14 @@ goog.require('owg.ogScene');
 
 //------------------------------------------------------------------------------
 /** @typedef {{
-      text        : string,
-      position    : Array.<number>,
-      size        : number
+      text: string,
+      icon: string,
+      position: Array.<number>,
+      flagpole: boolean,
+      flagpoleColor: Array.<number>,
+      visibilityRange: Array.<number>,
+      mode:	string,
+      size: number
    }}
  */
 var PoiOptions;
@@ -72,8 +77,12 @@ ogPOI.prototype.ParseOptions = function(options)
    var position = [0,0,0];
    /** @type {number} */
    var size = 40;
-   /** @type null|string */
+   /** @type {?string} */
    var icon = null;
+   /** @type {?ogPoiTextStyle}*/
+   var textstyle = null;
+   /** @type {?ogPoiIconStyle} */
+   var iconstyle = null;
 
    
    if (options["text"])
@@ -92,13 +101,21 @@ ogPOI.prototype.ParseOptions = function(options)
    {
       icon = options["icon"];
    }
-   
+   if (options["textstyle"])
+   {
+      textstyle = options["textstyle"];
+   }
+   if (options["iconstyle"])
+   {
+      iconstyle = options["iconstyle"];
+   }
    /** @type {ogScene} */
    var scene = /** @type ogScene */this.parent;
    /** @type {ogContext} */
    var context = /** @type ogContext */scene.parent;
    
-   this.poi = context.engine.poimanager.CreatePoi(text, null, icon);
+   this.poi = context.engine.poimanager.CreatePoi(text, textstyle, icon, iconstyle);
+   this.poi.hide = false; //appended property
    // todo: fix lat/lng -> lng/lat !!!
    this.poi.SetPosition(position[1], position[0], position[2], 0);
    this.poi.SetSize(size);
@@ -184,6 +201,7 @@ ogPOI.prototype.ChangePosition = function(lng, lat, elv)
 ogPOI.prototype.Hide = function()
 {
    this.hide = true;
+   this.poi.hide = true; //appended property
 }
 //------------------------------------------------------------------------------
 /**
@@ -192,6 +210,7 @@ ogPOI.prototype.Hide = function()
 ogPOI.prototype.Show = function()
 {
    this.hide = false;
+   this.poi.hide = false; //appended property
 }
 //------------------------------------------------------------------------------
 /**

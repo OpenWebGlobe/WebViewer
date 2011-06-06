@@ -42,7 +42,7 @@ goog.require('owg.Poi');
    shadowColor : string
  * }}
  */
-var PoiTextStyle;
+var ogPoiTextStyle;
 
 
 /** @typedef {{
@@ -56,7 +56,7 @@ var PoiTextStyle;
    shadowColor : string
  * }}
  */
-var PoiIconStyle;
+var ogPoiIconStyle;
 
 
 /** 
@@ -90,9 +90,9 @@ function PoiManager(engine)
 /**
  * @description Creates a new Poi.
  * @param {string} text the poi text
- * @param {null|PoiTextStyle=} style the text style definition object.
+ * @param {?ogPoiTextStyle=} style the text style definition object.
  * @param {string=} imgurl 
- * @param {PoiIconStyle=} iconstyle the poi icon style definition.
+ * @param {?ogPoiIconStyle=} iconstyle the poi icon style definition.
  * @returns Poi
  */
 PoiManager.prototype.CreatePoi = function(text,style,imgurl,iconstyle)
@@ -149,7 +149,7 @@ PoiManager.prototype.DestroyPoi = function(poi)
 /**
  * @description Returns a Mesh with the specific icon as texture.
  * @param {string} url the icon url.
- * @param {PoiIconStyle} iconstyle 
+ * @param {ogPoiIconStyle} iconstyle 
  */
 PoiManager.prototype.CreateIconMesh = function(url,iconstyle)
 {
@@ -200,7 +200,7 @@ PoiManager.prototype.DestroyIconMesh = function(url)
 /**
  * @description Returns a Mesh with the text in specific style as texture.
  * @param {string} text the poi text.
- * @param {PoiTextStyle} style 
+ * @param {ogPoiTextStyle} style 
  */
 PoiManager.prototype.CreateTextMesh = function(text,style)
 {
@@ -231,7 +231,7 @@ PoiManager.prototype.CreateTextMesh = function(text,style)
 /**
  * @description Free memory.
  * @param {string} text the poi text.
- * @param {PoiTextStyle} style 
+ * @param {ogPoiTextStyle} style 
  */
 PoiManager.prototype.DestroyTextMesh = function(text,style)
 {   
@@ -252,7 +252,7 @@ PoiManager.prototype.DestroyTextMesh = function(text,style)
  * @description Changes the Poi Icon.
  * @param {Poi} poi the poi wich will be changed
  * @param {string} url text the poi text.
- * @param {PoiIconStyle} style 
+ * @param {ogPoiIconStyle} style 
  */
 PoiManager.prototype.ChangePoiIcon = function(poi,url,style)
 {
@@ -269,7 +269,7 @@ PoiManager.prototype.ChangePoiIcon = function(poi,url,style)
  * @description Changes the poi text.
  * @param {Poi} poi the poi wich will be changed
  * @param {string} text the poi text.
- * @param {PoiTextStyle} style 
+ * @param {ogPoiTextStyle} style 
  */
 PoiManager.prototype.ChangePoiText = function(poi,text,style)
 {

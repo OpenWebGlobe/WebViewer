@@ -77,7 +77,7 @@ function Poi(engine)
   
   this.poiActiveColor = new vec4(1,1,1,1);
   
-  /** @type {PoiIconStyle} */
+  /** @type {ogPoiIconStyle} */
   this.iconStyle = {
      "iconWidth" : 64,
      "iconHeight" : 64,
@@ -89,7 +89,7 @@ function Poi(engine)
      "shadowColor" : 'rgba(0, 0, 0,0)'
      };
 
-  /** @type {PoiTextStyle} */
+  /** @type {ogPoiTextStyle} */
   this.textStyle = {
      "id"         : 1,
      "fontString" : 'bold 48px Arial',  
@@ -110,9 +110,9 @@ function Poi(engine)
 /**
 * @description Set the poi content. If no text is desired just use "" for as text argument.
 * @param {string} text the poi text.
-* @param {PoiTextStyle=} textStyle
+* @param {ogPoiTextStyle=} textStyle
 * @param {string=} timgurl poi icon url.
-* @param {PoiIconStyle=} iconStyle icon style
+* @param {ogPoiIconStyle=} iconStyle icon style
 */ 
 Poi.prototype.SetContent = function(text,textStyle,timgurl,iconStyle)
 {
@@ -125,11 +125,11 @@ Poi.prototype.SetContent = function(text,textStyle,timgurl,iconStyle)
      this.imgurl = "";
   }
  
- if (textStyle)
- {
-  this.textStyle = textStyle;
- }
- this.text = text;
+  if (textStyle)
+  {
+   this.textStyle = textStyle;
+  }
+  this.text = text;
  
  if (iconStyle)
  {

@@ -1064,17 +1064,19 @@ goog.exportSymbol('ogRemoveElevationLayer', ogRemoveElevationLayer);
 /**
 * @description Create a POI
 * @param {number} scene_id
+* @param {number} poilayer_id 
 * @param {PoiOptions} options
 * @returns {number} poi_id
 */
-function ogCreatePOI(scene_id, options)
+function ogCreatePOI(scene_id,poilayer_id,options)
 {
    // test if scene_id is a valid scene
    var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
-      var POI = _CreateObject(OG_OBJECT_POI, scene, options);
-      return POI.id;
+      var poilayer = /** @type {ogPOILayer} */ _GetObjectFromId(poilayer_id);
+      var poi = poilayer.CreatePOI(options);
+      return poi.id;
    }
    
    return -1;
@@ -1220,6 +1222,80 @@ function ogPickPOI(scene_id, mx, my)
    return -1;
 }
 goog.exportSymbol('ogPickPOI', ogPickPOI);
+//------------------------------------------------------------------------------
+/** @description Creates a POI Layer 
+*   @param {number} scene_id the scene
+*   @param {string} layername 
+*   @param {Object} textstyle 
+*   @param {Object} iconstyle
+*   @returns number
+*/
+function ogCreatePOILayer(scene_id,layername,textstyle,iconstyle)
+{
+   var options = {};
+   options["name"] = layername;
+   options["textstyle"] = textstyle;
+   options["iconstyle"] = iconstyle;
+   
+   //** @type {ogScene} */
+   var scene = _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+      var poiLayer = _CreateObject(OG_OBJECT_POILAYER, scene, options);
+      return poiLayer.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogCreatePOILayer', ogCreatePOILayer);
+//------------------------------------------------------------------------------
+/** @description Removes a POI Layer
+*   @param {number} poilayer_id 
+*/
+function ogRemovePOILayer(poilayer_id)
+{
+   // @type {ogImageLayer}
+   var layer = _GetObjectFromId(poilayer_id);
+   if (layer && layer.type == OG_OBJECT_POILAYER)
+   {
+      alert("implement remove poi layer");
+      /*layer.RemovePoiLayer();
+      layer.UnregisterObject();*/
+   }
+   return -1;
+}
+goog.exportSymbol('ogRemovePOILayer', ogRemovePOILayer);
+//------------------------------------------------------------------------------
+/** @description Hides a POI Layer
+*   @param {number} poilayer_id 
+*/
+function ogHidePOILayer(poilayer_id)
+{
+   //** @type {ogPOILayer} */
+   var poilayer = /** @type {ogPOILayer} */_GetObjectFromId(poilayer_id);
+   if (poilayer && poilayer.type == OG_OBJECT_POILAYER)
+   {
+      poilayer.Hide();
+      
+   }
+   return -1;
+}
+goog.exportSymbol('ogHidePOILayer', ogHidePOILayer);
+//------------------------------------------------------------------------------
+/** @description Shows a POI Layer
+*   @param {number} poilayer_id 
+*/
+function ogShowPOILayer(poilayer_id)
+{
+   //** @type {ogPOILayer} */
+   var poilayer = /** @type {ogPOILayer} */_GetObjectFromId(poilayer_id);
+   if (poilayer && poilayer.type == OG_OBJECT_POILAYER)
+   {
+      poilayer.Show(); 
+   }
+   return -1;
+}
+goog.exportSymbol('ogShowPOILayer', ogShowPOILayer);
+
 
 //##############################################################################
 // ** GEOMETRY OBJECT **

@@ -57,7 +57,7 @@ function CanvasTexture(engine)
 /**
  * @description Generates a mesh with a canvas2d as texture. The mesh size depends on the text length and style.
  * @param {string} text the poi text.
- * @param {PoiTextStyle} style POI text style
+ * @param {ogPoiTextStyle} style POI text style
  * @return {Mesh}
  */
 CanvasTexture.prototype.CreateTextMesh =  function(text,style)
@@ -100,7 +100,7 @@ CanvasTexture.prototype.CreateTextMesh =  function(text,style)
 /**
  * @description Generates a mesh with a canvas2d as texture. The mesh size depends on the text length and style.
  * @param {string} url the icon
- * @param {PoiIconStyle} iconstyle 
+ * @param {ogPoiIconStyle} iconstyle 
  * @return {Mesh}
  */
 CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
@@ -143,7 +143,7 @@ CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
 /**
  * Draws the canvas 2d.
  * @param {string} text the poi text.
- * @param {PoiTextStyle} styleObject style definition.
+ * @param {ogPoiTextStyle} styleObject style definition.
  */
 CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
 {           
@@ -209,7 +209,7 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
 /**
  * Draws the canvas 2d.
  * @param {string} imgurl url for poi icon.
- * @param {PoiIconStyle} iconstyle style definition for icon.
+ * @param {ogPoiIconStyle} iconstyle style definition for icon.
  */
 CanvasTexture.prototype.DrawIconToCanvas = function(imgurl,iconstyle)
 {           

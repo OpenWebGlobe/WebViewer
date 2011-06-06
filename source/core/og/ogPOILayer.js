@@ -40,7 +40,7 @@ var PoiLayerOptions;
 //------------------------------------------------------------------------------
 /**
  * @constructor
- * @description POI class (OpenWebGlobe object)
+ * @description POI Layer class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
  */
 function ogPOILayer()
@@ -51,9 +51,42 @@ function ogPOILayer()
    this.type = OG_OBJECT_POILAYER;
    /** @type {boolean} */
    this.hide = false;  // true if poi layer is hidden
-   /** @type {Array.<Poi>} */
-   this.poiarray = null;   // array of "Poi"
+   /** @type {Array.<ogPOI>} */
+   this.poiarray = [];   // array of "Poi"
+   
+   /** @type {string} */
+   this.layername = "";
+   this.textstyle = null;
+   this.iconstyle = null;
+   
+   this.defaultTextstyle =
+   {
+      "font" 	: 'SansSerif', 
+      "fontSize" 		: 48,
+      "backgroundColor" 	: 'rgba(0, 0, 0, 0)',
+      "fontColor" 		: 'rgba(255, 255, 255, 1.0)',
+      "lineWidth" 		: 3,
+      "strokeColor" 		: 'rgba(0, 0, 0, 1.0)',
+      "textAlign" 		: 'left', 
+      "shadowOffsetX" 	: 2,
+      "shadowOffsetY" 	: 2,
+      "shadowBlur" 	: 5,
+      "shadowColor"  	: 'rgba(0, 0, 0, 0.0)'
+   }
+
+   this.defaultIconstyle = 
+   {
+      "iconWidth" 		: 64,
+      "iconHeight" 		: 64,
+      "border" 		: 10,
+      "backgroundColor" 	: 'rgba(0, 0, 0, 0.0)',
+      "shadowOffsetX" 	: 0,
+      "shadowOffsetY" 	: 0,
+      "shadowBlur" 	: 0,
+      "shadowColor" 	: 'rgba(0, 0, 0, 0.6)'
+   };
 }
+
 //------------------------------------------------------------------------------
 ogPOILayer.prototype = new ogObject();
 //------------------------------------------------------------------------------
@@ -63,8 +96,27 @@ ogPOILayer.prototype = new ogObject();
  */
 ogPOILayer.prototype.ParseOptions = function(options)
 {
-  
+   if(options["Layername"])
+   {
+      this.layername = options["Layername"];
+   }
+   if(options["Textstyle"])
+   {
+      this.textstyle = options["Textstyle"];
+   }
+   else
+   {
+      this.textstyle = this.defaultTextstyle;
+   }
    
+   if(options["Iconstyle"])
+   {
+      this.iconstyle = options["Iconstyle"];
+   }
+   else
+   {
+      this.iconstyle = this.defaultIconstyle;
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -83,6 +135,10 @@ ogPOILayer.prototype._OnDestroy = function()
 ogPOILayer.prototype.Hide = function()
 {
    this.hide = true;
+   for(var i= 0; i < this.poiarray.length; i++)
+   {
+      this.poiarray[i].Hide();
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -91,31 +147,29 @@ ogPOILayer.prototype.Hide = function()
 ogPOILayer.prototype.Show = function()
 {
    this.hide = false;
+      for(var i= 0; i < this.poiarray.length; i++)
+   {
+      this.poiarray[i].Show();
+   }
+}
+
+//------------------------------------------------------------------------------
+/**
+ *  @description removes all pois from the layer
+ */
+ogPOILayer.prototype.RemovePOILayer = function()
+{
+   alert("ToDo: implement ogPOILayer remove method");
 }
 //------------------------------------------------------------------------------
 /**
- *  @returns {PoiRenderer} the poi-renderer
+ *  @description removes all pois from the layer
  */
-ogPOILayer.prototype._GetPoiRenderer = function()
+ogPOILayer.prototype.CreatePOI = function(options)
 {
-   /** @type PoiRenderer */
-   var renderer = null;
-   /** @type ogScene */
-   var scene = /** @type ogScene */ this.parent;
-   /** @type ogContext */
-   var context = /** @type ogContext */ scene.parent;
-   // Get the engine
-   /** @type engine3d */
-   var engine = context.engine;
-   
-   // test if there is a scenegraph attached
-   if (engine.scene)
-   {
-      if (engine.scene.nodeRenderObject)
-      {
-         renderer = engine.scene.nodeRenderObject.poirenderer;  
-      }
-   }
-   return renderer;
+   options.textstyle = this.textstyle; //append the poi_layer styles..
+   options.iconstyle = this.iconstyle;
+   var poi = _CreateObject(OG_OBJECT_POI,this.parent,options);
+   this.poiarray.push(poi);
+   return poi;
 }
-//------------------------------------------------------------------------------
