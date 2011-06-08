@@ -74,6 +74,22 @@ function Poi(engine)
   this.poiWidth = 0;
   /** @type {number} */
   this.poiHeight = 0;
+  /** @type {number} */
+  this.poleR = 1;
+  /** @type {number} */
+  this.poleG = 1;
+  /** @type {number} */
+  this.poleB = 0;
+  /** @type {number} */
+  this.poleA = 1;
+  /** @type {number} */ //the cartesian x position
+  this.posX;
+  /** @type {number} */ //the cartesian x position
+  this.posY;
+  /** @type {number} */ //the cartesian x position
+  this.posZ;
+   /** @type {number} */ //the cartesian visibility distance.
+  this.visibilityDistance = Infinity; //
   
   this.poiActiveColor = new vec4(1,1,1,1);
   
@@ -86,7 +102,7 @@ function Poi(engine)
      "shadowOffsetX" : 0,
      "shadowOffsetY" : 0,
      "shadowBlur" : 0,
-     "shadowColor" : 'rgba(0, 0, 0,0)'
+     "shadowColor" : 'rgba(0, 0, 0, 0)'
      };
 
   /** @type {ogPoiTextStyle} */
@@ -96,8 +112,7 @@ function Poi(engine)
      "backgroundColor" : 'rgba(0,0,0,0)',
      "fontColor" : 'rgba(255,255,255,1.0)',
      "lineWidth" : 8,
-     "strokeStyle" : 'rgba(0,0,0,1.0)',
-     "textAlign" : 'left', 
+     "strokeStyle" : 'rgba(0,0,0,1.0)', 
      "fontSize" : 48,
      "shadowOffsetX" : 0,
      "shadowOffsetY" : 0,
@@ -108,7 +123,7 @@ function Poi(engine)
 }
 //------------------------------------------------------------------------------
 /**
-* @description Set the poi content. If no text is desired just use "" for as text argument.
+* @description Set the poi content. If no text is desired just use "" as text argument.
 * @param {string} text the poi text.
 * @param {ogPoiTextStyle=} textStyle
 * @param {string=} timgurl poi icon url.
@@ -190,6 +205,9 @@ Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
     {
      this.textMesh.SetAsBillboard(cart[0],cart[1],cart[2],((this.textMesh.meshWidth/2)+(this.poiWidth/2-this.textMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);  
     }
+    this.posX = cart[0];
+    this.posY = cart[1];
+    this.posZ = cart[2];
     
     if(signElv!=null)
     {
@@ -197,9 +215,33 @@ Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
       var cart2 = new Array(3);
       this.geoCoord2.ToCartesian(cart2);
       this.pole = true;
-      this.poleMesh = this.canvasTexture.GetPoleMesh(cart[0],cart[1],cart[2],cart2[0],cart2[1],cart2[2]);
+      this.poleMesh = this.canvasTexture.GetPoleMesh(cart[0],cart[1],cart[2],cart2[0],cart2[1],cart2[2],this.poleR,this.poleG,this.poleB,this.poleA);
     }
 }
+//------------------------------------------------------------------------------
+/**
+*@description sets the flagpole color
+*@param {Array.<number>} color
+*
+*/
+Poi.prototype.SetFlagpoleColor = function(color)
+{
+   this.poleR = color[0];
+   this.poleG = color[1];
+   this.poleB = color[2];
+   this.poleA = color[3];
+}
+//------------------------------------------------------------------------------
+/**
+*@description sets the flagpole color
+*@param {Array.<number>} color
+*
+*/
+Poi.prototype.SetVisibilityDistance = function(dist)
+{
+   this.visibilityDistance = dist * CARTESIAN_SCALE_INV;
+}
+
 //------------------------------------------------------------------------------
 /**
 * @description Draws the poi.

@@ -34,7 +34,6 @@ goog.require('owg.Poi');
    fontColor : string,
    lineWidth : number,
    strokeStyle : string,
-   textAlign: string, 
    fontSize : number,
    shadowOffsetX : number,
    shadowOffsetY : number,
@@ -255,13 +254,11 @@ PoiManager.prototype.DestroyTextMesh = function(text,style)
  * @param {ogPoiIconStyle} style 
  */
 PoiManager.prototype.ChangePoiIcon = function(poi,url,style)
-{
-   
+{ 
    poi.iconMesh = this.CreateIconMesh(url,style);
    poi.SetPosition(poi.lat,poi.lng,poi.elv,poi.signElv);
    this.DestroyIconMesh(poi.imgurl); 
    poi.imgurl = url;
-   
 }
 
 
@@ -273,13 +270,10 @@ PoiManager.prototype.ChangePoiIcon = function(poi,url,style)
  */
 PoiManager.prototype.ChangePoiText = function(poi,text,style)
 {
-   
    poi.textMesh = this.CreateTextMesh(text,style);
    poi.SetPosition(poi.lat,poi.lng,poi.elv,poi.signElv);
    this.DestroyTextMesh(poi.text,style);
-   poi.text = text;
-   
-   
+   poi.text = text;  
 }
 
 

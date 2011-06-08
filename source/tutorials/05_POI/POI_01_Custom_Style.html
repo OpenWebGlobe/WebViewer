@@ -74,7 +74,11 @@ function OnMouseDown(context, button, mx, my)
          text 		: 	"Click: (" + result[1].toFixed(3) + ", " + result[2].toFixed(3) + ", " + result[3].toFixed(0) + ")",
          position :  [result[1], result[2], result[3]+2000],
          size 		: 	50,
-         flagpole : true
+         flagpole : true,
+         flagpoleColor: [0,0,1,1],  //	optional, default is [0,0,0,1] [r,g,b,a]
+         visibilityRange: [0, 1000],//	optional, default is [0,∞]
+         mode: "absolute",	         //optional, default is "absolute"
+         size: 50	               //optional, default is 40
       };
       
       var poi = ogCreatePOI(scene,poilayer,NewPoiDefinition);
@@ -86,20 +90,18 @@ function OnMouseDown(context, button, mx, my)
 
 function OnKeyDown(ctx,key)
 {
-      if(button == 2)
+
+   if(!hidden)
    {
-      if(!hidden)
-      {
-         hidden = true;
-         //ogHidePOILayer(poilayer);
-         ogRemovePOILayer(poilayer);
-      }
-      else
-      {
-         hidden = false;
-         ogShowPOILayer(poilayer);
-      }
+      hidden = true;
+      ogHidePOILayer(poilayer);
    }
+   else
+   {
+      hidden = false;
+      ogShowPOILayer(poilayer);
+   }
+
 }
 //------------------------------------------------------------------------------
 function main()
@@ -150,28 +152,30 @@ function main()
 
    var customTextstyle =
    {
-      "fontString" 	: '48px sans-serif', 
-      "backgroundColor" : 'rgba(0, 0, 0, 0)',
-      "fontColor" 		: 'rgba(255, 0, 0, 1.0)',
+      "font" 	: 'arial', 
+      "fontSize" 		: 32,
+      "backgroundColor" 	: [0,0,0,0],
+      "fontColor" 		: [1,0,0,1],
       "lineWidth" 		: 3,
-      "strokeStyle" 		: 'rgba(0, 0, 0, 1.0)',
+      "strokeColor" 		: [0,0,0,1],
       "textAlign" 		: 'left', 
       "shadowOffsetX" 	: 0,
       "shadowOffsetY" 	: 0,
-      "shadowBlur" 	   : 0,
-      "shadowColor"  	: 'rgba(0, 0, 0, 0.0)'
-   }
+      "shadowBlur" 	: 0,
+      "shadowColor"  	: [0,0,0,0]
+   };
+
 
    var customIconstyle = 
    {
-      "iconWidth" 		: 32,
-      "iconHeight" 		: 32,
-      "border" 		: 5,
-      "backgroundColor" 	: 'rgba(0, 0, 0, 0.0)',
+      "width" 		: 32,
+      "height" 	: 32,
+      "border" 	: 0,
+      "backgroundColor" : [0,0,0,0],
       "shadowOffsetX" 	: 0,
       "shadowOffsetY" 	: 0,
       "shadowBlur" 	: 0,
-      "shadowColor" 	: 'rgba(0, 0, 0, 0.6)'
+      "shadowColor" 	: [0,0,0,0]
    };
    poilayer = ogCreatePOILayer(scene,"bicycle",customTextstyle,customIconstyle);
            

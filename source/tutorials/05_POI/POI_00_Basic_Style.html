@@ -63,7 +63,8 @@ function OnMouseDown(context, button, mx, my)
          icon     : "http://google-maps-icons.googlecode.com/files/cycling.png",
          text 		: 	"Position: (" + result[1].toFixed(3) + ", " + result[2].toFixed(3) + ", " + result[3].toFixed(0) + ")",
          position :  [result[1], result[2], result[3]+2000],
-         size 		: 	20
+         size 		: 	20,
+         flagpole : true
       };
       
       var poi = ogCreatePOI(scene,bycicleLayer,NewPoiDefinition);

@@ -66,7 +66,6 @@ function ogPOILayer()
       "fontColor" 		: "rgba(255, 255, 255, 1.0)",
       "lineWidth" 		: 3,
       "strokeStyle" 		: "rgba(0, 0, 0, 1.0)",
-      "textAlign" 		: "left", 
       "shadowOffsetX" 	: 0,
       "shadowOffsetY" 	: 0,
       "shadowBlur" 	   : 0,
@@ -85,10 +84,37 @@ function ogPOILayer()
       "shadowColor" 	: 'rgba(0, 0, 0, 0.6)'
    };
 }
-
 //------------------------------------------------------------------------------
 ogPOILayer.prototype = new ogObject();
 //------------------------------------------------------------------------------
+
+
+ogPOILayer.prototype.convertStyle = function(style)
+{
+      if(style["font"] && style["fontSize"]) style.fontString = style.fontSize+"px"+" "+style.font;
+      if(style["backgroundColor"])
+      {
+        var tmp = style.backgroundColor;
+        style.backgroundColor = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
+      } 
+      if(style["fontColor"])
+      {
+        var tmp = style.fontColor;
+        style.fontColor = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
+      }
+      if(style["strokeColor"])
+      {
+        var tmp = style.strokeColor;
+        style.strokeStyle = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
+      }
+      if(style["shadowColor"])
+      {
+        var tmp = style.shadowColor;
+        style.shadowColor = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
+      }
+      if(style.width) style.iconWidth = style.width;
+      if(style.height) style.iconHeight = style.height;
+}
 /**
  * @description Parse Options
  * @param {Object} options
@@ -101,6 +127,7 @@ ogPOILayer.prototype.ParseOptions = function(options)
    }
    if(options["textstyle"])
    {
+      this.convertStyle(options["textstyle"]);
       this.textstyle = options["textstyle"];
    }
    else
@@ -110,6 +137,7 @@ ogPOILayer.prototype.ParseOptions = function(options)
    
    if(options["iconstyle"])
    {
+      this.convertStyle(options["iconstyle"]);
       this.iconstyle = options["iconstyle"];
    }
    else
@@ -166,7 +194,7 @@ ogPOILayer.prototype.RemovePOILayer = function()
 }
 //------------------------------------------------------------------------------
 /**
- *  @description removes all pois from the layer
+ *  @description creates a poi using the layer styles.
  */
 ogPOILayer.prototype.CreatePOI = function(options)
 {

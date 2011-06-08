@@ -150,7 +150,7 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
            //Determine canvas Size 
            this.ctx.save();
               this.ctx.font = styleObject["fontString"];
-              this.ctx.textAlign = styleObject["textAlign"];
+              this.ctx.textAlign = 'left';
               this.ctx.textBaseline = 'top';
               this.ctx.lineWidth = styleObject["lineWidth"];
               this.ctx.strokeStyle = styleObject["strokeStyle"]; 
@@ -189,7 +189,7 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
            //write text
            this.ctx.fillStyle = styleObject["fontColor"]; 
            this.ctx.font = styleObject["fontString"];
-           this.ctx.textAlign = styleObject["textAlign"];
+           this.ctx.textAlign = 'left';
            this.ctx.textBaseline = 'middle';
            this.ctx.lineWidth = styleObject["lineWidth"];
            this.ctx.strokeStyle = styleObject["strokeStyle"];
@@ -303,15 +303,15 @@ CanvasTexture.prototype.ToGPU = function()
  * @param {number} z2 z2 cartesian pole end coordinate
  * @return {Mesh}
  */ 
-CanvasTexture.prototype.GetPoleMesh = function(x,y,z,x2,y2,z2)
+CanvasTexture.prototype.GetPoleMesh = function(x,y,z,x2,y2,z2,r,g,b,a)
 {
    this.poleMesh = new Mesh(this.engine);
 
    var vert = new Array();
 
      
-   vert.push(x,y,z,1,1,0,1);
-   vert.push(x2,y2,z2,1,1,0,1);
+   vert.push(x,y,z,r,g,b,a);
+   vert.push(x2,y2,z2,r,g,b,a);
                  
    this.poleMesh.SetBufferPC(vert);
    this.poleMesh.SetIndexBuffer([0,1],"LINES");  

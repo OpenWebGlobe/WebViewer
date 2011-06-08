@@ -60,6 +60,10 @@ function ogPOI()
    this.hide = false;  // true if poi is hidden
    /** @type {Poi} */
    this.poi = null;
+   /** @type {ogPoiIconStyle}*/
+   this.iconstyle;
+   /** @type {ogPoiTextStyle} */
+   this.textstyle;
 }
 //------------------------------------------------------------------------------
 /** @extends {ogObject} */ 
@@ -79,10 +83,6 @@ ogPOI.prototype.ParseOptions = function(options)
    var size = 40;
    /** @type {?string} */
    var icon = null;
-   /** @type {?ogPoiTextStyle}*/
-   var textstyle = null;
-   /** @type {?ogPoiIconStyle} */
-   var iconstyle = null;
 
    
    if (options["text"])
@@ -103,19 +103,25 @@ ogPOI.prototype.ParseOptions = function(options)
    }
    if (options["textstyle"])
    {
-      textstyle = options["textstyle"];
+      this.textstyle = options["textstyle"];
    }
    if (options["iconstyle"])
    {
-      iconstyle = options["iconstyle"];
+      this.iconstyle = options["iconstyle"];
    }
+
    /** @type {ogScene} */
    var scene = /** @type ogScene */this.parent;
    /** @type {ogContext} */
    var context = /** @type ogContext */scene.parent;
    
-   this.poi = context.engine.poimanager.CreatePoi(text, textstyle, icon, iconstyle);
+   this.poi = context.engine.poimanager.CreatePoi(text, this.textstyle, icon, this.iconstyle);
    this.poi.hide = false; //appended property
+   
+   if(options["flagpoleColor"])
+   {
+      this.poi.SetFlagpoleColor(options["flagpoleColor"]);
+   }
    // todo: fix lat/lng -> lng/lat !!!
    if(options["flagpole"] == true)
    {
@@ -135,6 +141,11 @@ ogPOI.prototype.ParseOptions = function(options)
    if (poirenderer)
    {
       poirenderer.AddPoi(this.poi);
+   }
+   
+   if(options["visibilityDistance"])
+   {
+      this.poi.SetVisibilityDistance(options["visibilityDistance"]);
    }
    
 }
@@ -169,7 +180,16 @@ ogPOI.prototype._OnDestroy = function()
  */
 ogPOI.prototype.ChangeText = function(newtext)
 {
-   alert(newtext);
+   /** @type {ogScene} */
+   var scene = /** @type ogScene */this.parent;
+   /** @type {ogContext} */
+   var context = /** @type ogContext */scene.parent;
+   
+   if(this.textstyle)
+   {
+      context.engine.poimanager.ChangePoiText(this.poi,newtext,this.textstyle); 
+   }
+
 }
 //------------------------------------------------------------------------------
 /**
@@ -178,7 +198,16 @@ ogPOI.prototype.ChangeText = function(newtext)
  */
 ogPOI.prototype.ChangeIcon = function(newicon)
 {
-   alert(newicon);
+   /** @type {ogScene} */
+   var scene = /** @type ogScene */this.parent;
+   /** @type {ogContext} */
+   var context = /** @type ogContext */scene.parent;
+   
+   if(this.iconstyle)
+   {
+      context.engine.poimanager.ChangePoiIcon(this.poi,newicon,this.iconstyle);
+   }
+   
 }
 //------------------------------------------------------------------------------
 /**

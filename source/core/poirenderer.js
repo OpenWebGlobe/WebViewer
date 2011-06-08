@@ -52,9 +52,18 @@ PoiRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
    // todo: frustum culling etc.
    for (var i=0;i<this.poiarray.length;i++)
    {
-      if(!this.poiarray[i].hide)
+      var poi = this.poiarray[i];
+      if(!poi.hide)
       {
-         this.poiarray[i].Draw();
+         var x = vCameraPosition.Get()[0];
+         var y = vCameraPosition.Get()[1];
+         var z = vCameraPosition.Get()[2];
+         var dis = Math.sqrt(Math.pow(poi.posX-x,2)+ Math.pow(poi.posY-y,2) + Math.pow(poi.posZ-z,2));
+         var disLimit = poi.visibilityDistance; 
+         if(disLimit>dis)
+         {
+            poi.Draw();
+         }
       }
       
    }
