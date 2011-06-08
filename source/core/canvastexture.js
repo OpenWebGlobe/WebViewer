@@ -156,12 +156,12 @@ CanvasTexture.prototype.DrawToCanvas = function(text,styleObject)
               this.ctx.strokeStyle = styleObject["strokeStyle"]; 
               var dim = this.ctx.measureText(this.text);
               var textWidth = Math.round(dim.width);
-              var textHeight = styleObject["fontSize"]+styleObject["border"];   
+              var textHeight = parseInt(styleObject["fontString"],10)+styleObject["border"];   
             this.ctx.restore();
 
 
             this.meshWidth = textWidth+2*parseInt(styleObject["lineWidth"], 10)+Math.abs(styleObject["shadowOffsetX"])+Math.abs(styleObject["shadowOffsetY"])+styleObject["shadowBlur"];
-            this.meshHeight = parseInt(styleObject["fontSize"], 10)+2*parseInt(styleObject.lineWidth, 10)+Math.abs(styleObject["shadowOffsetY"])+styleObject["shadowBlur"];      
+            this.meshHeight = parseInt(styleObject["fontString"], 10)+2*parseInt(styleObject["lineWidth"], 10)+Math.abs(styleObject["shadowOffsetY"])+styleObject["shadowBlur"];      
             
             
             //get next power of two    

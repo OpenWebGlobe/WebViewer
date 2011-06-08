@@ -36,6 +36,7 @@
 var poi=null;
 var lastpoi=-1;
 var timeaccumulator=0;
+var poilayer = null;
 //------------------------------------------------------------------------------
 // Render-Event: called every frame:
 function OnRender(context)
@@ -81,17 +82,16 @@ function OnMouseDown(context, button, mx, my)
          icon     : "http://google-maps-icons.googlecode.com/files/cycling.png",
          //text 		: 	"Click: (" + result[1].toFixed(3) + ", " + result[2].toFixed(3) + ", " + result[3].toFixed(0) + ")",
          position :  [result[1], result[2], result[3]+2000],
-         size 		: 	50
+         size 		: 	50,
+         flagpole : true
       };
       
       //create poi:
-      poi = ogCreatePOI(scene, NewPoiDefinition);
+      poi = ogCreatePOI(scene, poilayer, NewPoiDefinition);
       
       //set the lastpoi active for color change in OnTimer Callback
       lastpoi = poi;
    }
-   
-   
 }
 //------------------------------------------------------------------------------
 function main()
@@ -133,34 +133,12 @@ function main()
    // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
    
-   // (7) POI
+   // (7) POI Layer
    // first, we need to retrieve the scene:
    var scene = ogGetScene(ctx);
 	
-   // (7.1) let's define a poi with text:
-	var PoiDefinition = 
-	{
-		text 		: 	"Hello World! 世界你好",
-		position :  [7.66, 46.13, 6000],
-		size 		: 	50
-	};
-	
-   // (7.2) then create the POI and add to the scene:
-	var poi = ogCreatePOI(scene, PoiDefinition);
-   
-   // (7.3) let's create a poi with text and and icon. (text is optional)
-   var PoiDefinitionWithIcon =
-   {
-      text     :  "Airport",
-      icon     :  "http://google-maps-icons.googlecode.com/files/airport.png",
-		position :  [7.72, 46.71, 7000],
-		size 		: 	80
-   }
-   
-   // (7.4) then create and add it to the scene
-   ogCreatePOI(scene, PoiDefinitionWithIcon);
-
-
+   poilayer = ogCreatePOILayer(scene,"bycicles");
+ 
 }
 //------------------------------------------------------------------------------
    

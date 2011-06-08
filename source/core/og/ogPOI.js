@@ -117,7 +117,15 @@ ogPOI.prototype.ParseOptions = function(options)
    this.poi = context.engine.poimanager.CreatePoi(text, textstyle, icon, iconstyle);
    this.poi.hide = false; //appended property
    // todo: fix lat/lng -> lng/lat !!!
-   this.poi.SetPosition(position[1], position[0], position[2], 0);
+   if(options["flagpole"] == true)
+   {
+      this.poi.SetPosition(position[1], position[0], position[2], 0);
+   }
+   else
+   {
+      this.poi.SetPosition(position[1], position[0], position[2]);
+   }
+   
    this.poi.SetSize(size);
    
    this.poi.ogpoi = this;
@@ -142,7 +150,7 @@ ogPOI.prototype._OnDestroy = function()
    /** @type {ogContext} */
    var context = /** @type ogContext */scene.parent;
    
-     /** @type {PoiRenderer} */
+   /** @type {PoiRenderer} */
    var poirenderer = this._GetPoiRenderer();
    
    if (poirenderer)

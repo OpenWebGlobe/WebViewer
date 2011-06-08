@@ -35,11 +35,16 @@
 <script type="text/javascript">
 
 //------------------------------------------------------------------------------
+var bycicleLayer;
+
+//------------------------------------------------------------------------------
 // Render-Event: called every frame:
 function OnRender(context)
 {  
    ogSetTextColor(context, 0,1,0);
-   ogDrawText(context, "Click middle mouse button to add a POI", 0, 20);
+   ogDrawText(context, "Click middle mouse button to add a POI", 0, 80);
+   ogDrawText(context, "Press '1' to hide the new POIs",0,50);
+   ogDrawText(context, "Press '2' to show the hidden POIs",0,20);
 }
 //------------------------------------------------------------------------------
 // Mouse-Down-Event: Called when a mouse button is pressed
@@ -56,14 +61,29 @@ function OnMouseDown(context, button, mx, my)
       var NewPoiDefinition = 
       {
          icon     : "http://google-maps-icons.googlecode.com/files/cycling.png",
-         //text 		: 	"Click: (" + result[1].toFixed(3) + ", " + result[2].toFixed(3) + ", " + result[3].toFixed(0) + ")",
+         text 		: 	"Position: (" + result[1].toFixed(3) + ", " + result[2].toFixed(3) + ", " + result[3].toFixed(0) + ")",
          position :  [result[1], result[2], result[3]+2000],
-         size 		: 	50
+         size 		: 	20
       };
       
-      var poi = ogCreatePOI(scene, NewPoiDefinition);
-
+      var poi = ogCreatePOI(scene,bycicleLayer,NewPoiDefinition);
    }
+}
+//------------------------------------------------------------------------------
+// Key down callback function.
+function OnKeyDown(ctx, keycode)
+{
+   if ( keycode == 49) // '1' was pressed
+   {
+      //hide the bycicle poi layer
+      ogHidePOILayer(bycicleLayer);
+   }
+   if ( keycode == 50) // '2' was pressed
+   {
+      //show the bycicle poi layer
+      ogShowPOILayer(bycicleLayer);
+   }
+   
 }
 //------------------------------------------------------------------------------
 function main()
@@ -101,35 +121,46 @@ function main()
    // (5) Set the mouse down function. We need this for picking!
    ogSetMouseDownFunction(ctx, OnMouseDown);
    
-   // (6) Set the background color
+   // (6) Set the key down callback function
+   ogSetKeyDownFunction(ctx, OnKeyDown);
+   
+   // (7) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
    
-   // (7) POI
+   // (8) Create a POI-Layer
    // first, we need to retrieve the scene:
    var scene = ogGetScene(ctx);
 	
-   // (7.1) let's define a poi with text:
+   // Create the poi layer
+   var airportLayer = ogCreatePOILayer(scene,"airports");
+   
+   // (8.1) let's define a poi with text:
 	var PoiDefinition = 
 	{
 		text 		: 	"Hello World! 世界你好",
 		position :  [7.66, 46.13, 6000],
-		size 		: 	50
+		size 		: 	50,
+      flagpole :  true
 	};
 	
-   // (7.2) then create the POI and add to the scene:
-	var poi = ogCreatePOI(scene, PoiDefinition);
+   // (8.2) then create the POI and add to the scene:
+	var poi = ogCreatePOI(scene, airportLayer, PoiDefinition);
    
-   // (7.3) let's create a poi with text and and icon. (text is optional)
+   // (8.3) let's create a poi with text and and icon. (text is optional)
    var PoiDefinitionWithIcon =
    {
       text     :  "Airport",
       icon     :  "http://google-maps-icons.googlecode.com/files/airport.png",
 		position :  [7.72, 46.71, 7000],
-		size 		: 	80
+		size 		: 	80,
+      flagpole :  false
    }
    
-   // (7.4) then create and add it to the scene
-   ogCreatePOI(scene, PoiDefinitionWithIcon);
+   // (8.4) then create and add it to the scene
+   ogCreatePOI(scene, airportLayer, PoiDefinitionWithIcon);
+   
+   // Create another poi layer to place poi's interactive
+   bycicleLayer = ogCreatePOILayer(scene,"byciclelayer");
 
 
 }

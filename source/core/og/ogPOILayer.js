@@ -61,24 +61,23 @@ function ogPOILayer()
    
    this.defaultTextstyle =
    {
-      "font" 	: 'SansSerif', 
-      "fontSize" 		: 48,
-      "backgroundColor" 	: 'rgba(0, 0, 0, 0)',
-      "fontColor" 		: 'rgba(255, 255, 255, 1.0)',
+      "fontString" 	   : "48px Arial", 
+      "backgroundColor" : "rgba(0, 0, 0, 0)",
+      "fontColor" 		: "rgba(255, 255, 255, 1.0)",
       "lineWidth" 		: 3,
-      "strokeColor" 		: 'rgba(0, 0, 0, 1.0)',
-      "textAlign" 		: 'left', 
-      "shadowOffsetX" 	: 2,
-      "shadowOffsetY" 	: 2,
-      "shadowBlur" 	: 5,
-      "shadowColor"  	: 'rgba(0, 0, 0, 0.0)'
+      "strokeStyle" 		: "rgba(0, 0, 0, 1.0)",
+      "textAlign" 		: "left", 
+      "shadowOffsetX" 	: 0,
+      "shadowOffsetY" 	: 0,
+      "shadowBlur" 	   : 0,
+      "shadowColor"  	: "rgba(0, 0, 0, 0.0)"
    }
 
    this.defaultIconstyle = 
    {
       "iconWidth" 		: 64,
       "iconHeight" 		: 64,
-      "border" 		: 10,
+      "border" 		: 5,
       "backgroundColor" 	: 'rgba(0, 0, 0, 0.0)',
       "shadowOffsetX" 	: 0,
       "shadowOffsetY" 	: 0,
@@ -96,22 +95,22 @@ ogPOILayer.prototype = new ogObject();
  */
 ogPOILayer.prototype.ParseOptions = function(options)
 {
-   if(options["Layername"])
+   if(options["name"])
    {
-      this.layername = options["Layername"];
+      this.layername = options["name"];
    }
-   if(options["Textstyle"])
+   if(options["textstyle"])
    {
-      this.textstyle = options["Textstyle"];
+      this.textstyle = options["textstyle"];
    }
    else
    {
       this.textstyle = this.defaultTextstyle;
    }
    
-   if(options["Iconstyle"])
+   if(options["iconstyle"])
    {
-      this.iconstyle = options["Iconstyle"];
+      this.iconstyle = options["iconstyle"];
    }
    else
    {
@@ -147,7 +146,7 @@ ogPOILayer.prototype.Hide = function()
 ogPOILayer.prototype.Show = function()
 {
    this.hide = false;
-      for(var i= 0; i < this.poiarray.length; i++)
+   for(var i= 0; i < this.poiarray.length; i++)
    {
       this.poiarray[i].Show();
    }
@@ -159,7 +158,11 @@ ogPOILayer.prototype.Show = function()
  */
 ogPOILayer.prototype.RemovePOILayer = function()
 {
-   alert("ToDo: implement ogPOILayer remove method");
+   for(var i= 0; i < this.poiarray.length; i++)
+   {
+      this.poiarray[i]._OnDestroy();
+   }
+   
 }
 //------------------------------------------------------------------------------
 /**

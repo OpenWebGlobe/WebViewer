@@ -92,7 +92,7 @@ function Poi(engine)
   /** @type {ogPoiTextStyle} */
   this.textStyle = {
      "id"         : 1,
-     "fontString" : 'bold 48px Arial',  
+     "fontString" : '48px bold Arial',  
      "backgroundColor" : 'rgba(0,0,0,0)',
      "fontColor" : 'rgba(255,255,255,1.0)',
      "lineWidth" : 8,

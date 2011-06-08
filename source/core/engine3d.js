@@ -867,7 +867,7 @@ engine3d.prototype.SetKeyDownCallback = function(opt_f)
    }
    if (opt_f)
    {
-      _gcbfKeyDown = goog.events.listen(window, goog.events.EventType.KEYDOWN, function(e) { opt_f(e.keyCode, this); });
+      _gcbfKeyDown = goog.events.listen(window, goog.events.EventType.KEYDOWN, function(e) { opt_f(e.keyCode, this); },false,this);
    }
 };
 //------------------------------------------------------------------------------

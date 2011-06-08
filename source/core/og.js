@@ -1257,9 +1257,8 @@ function ogRemovePOILayer(poilayer_id)
    var layer = _GetObjectFromId(poilayer_id);
    if (layer && layer.type == OG_OBJECT_POILAYER)
    {
-      alert("implement remove poi layer");
-      /*layer.RemovePoiLayer();
-      layer.UnregisterObject();*/
+      layer.RemovePOILayer();
+      layer.UnregisterObject();
    }
    return -1;
 }
