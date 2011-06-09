@@ -55,7 +55,7 @@ PoiRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
       var poi = this.poiarray[i];
       if(!poi.hide)
       {
-         var x = vCameraPosition.Get()[0];
+         var x = vCameraPosition.Get()[0]; //ToDo: Expensive implementation !
          var y = vCameraPosition.Get()[1];
          var z = vCameraPosition.Get()[2];
          var dis = Math.sqrt(Math.pow(poi.posX-x,2)+ Math.pow(poi.posY-y,2) + Math.pow(poi.posZ-z,2));

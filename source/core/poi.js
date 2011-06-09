@@ -234,12 +234,11 @@ Poi.prototype.SetFlagpoleColor = function(color)
 //------------------------------------------------------------------------------
 /**
 *@description sets the flagpole color
-*@param {Array.<number>} color
-*
+*@param {number} dist visibility distance in km!
 */
 Poi.prototype.SetVisibilityDistance = function(dist)
 {
-   this.visibilityDistance = dist * CARTESIAN_SCALE_INV;
+   this.visibilityDistance = dist*1000*CARTESIAN_SCALE_INV;
 }
 
 //------------------------------------------------------------------------------
