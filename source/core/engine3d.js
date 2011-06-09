@@ -27,7 +27,7 @@ goog.require('goog.debug.Logger');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('owg.Font');
-goog.require('owg.Mesh');
+goog.require('owg.Surface');
 goog.require('owg.SceneGraph');
 goog.require('owg.ShaderManager');
 goog.require('owg.Texture');
@@ -208,7 +208,7 @@ function engine3d()
    this.TravState = new TraversalState();
    
    // Content Arrays
-   /** @type {Array.<Mesh>} */
+   /** @type {Array.<Surface>} */
    this.vecMeshes = new Array();
    /** @type {Array.<Texture>} */
    this.vecTextures = new Array();
@@ -460,7 +460,7 @@ engine3d.prototype.LoadTexture = function(url)
  */
 engine3d.prototype.LoadMesh = function(url)
 {
-   var m = new Mesh(this);
+   var m = new Surface(this);
    m.loadFromJSON(url);
    this.vecMeshes.push(m);
    

@@ -120,8 +120,8 @@ ogGeometry.prototype._OnDestroy = function()
       var surfaces = this.meshes[j];
       for(var k=0; k<surfaces.length;k++)
       {
-         /**@type {Mesh} */
-         var surface = /**@type {Mesh}*/surfaces[k];
+         /**@type {Surface} */
+         var surface = /**@type {Surface}*/surfaces[k];
          surface.Destroy();
       } 
    }

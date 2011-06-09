@@ -21,7 +21,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-goog.provide('owg.Mesh');
+goog.provide('owg.Surface');
 
 goog.require('goog.debug.Logger');
 goog.require('goog.json');
@@ -46,8 +46,8 @@ var ObjectJSON;
 
 //------------------------------------------------------------------------------
 /** 
- * @class mesh 
- * Represents a Mesh Object.
+ * @class surface 
+ * Represents a Surface Object.
  * 
  * {@link http://www.openwebglobe.org} 
  *
@@ -56,7 +56,7 @@ var ObjectJSON;
  */
 //------------------------------------------------------------------------------
 /*
- One Mesh supports one vertex buffer, one index buffer and one texture
+ One Surface supports one vertex buffer, one index buffer and one texture
  The following semanic is used for vertices:
  
  P: Position
@@ -79,26 +79,26 @@ var ObjectJSON;
 
 example:
 
- // Example 1: manual generation of a mesh
+ // Example 1: manual generation of a Surface
 
- myMesh = new Mesh(engine);
- myMesh.SetBufferP([0,0,0,   1,0,0,   1,1,0,]);
- myMesh.SetIndexBuffer([0,1,2], "TRIANGLES");
+ mySurface = new Surface(engine);
+ mySurface.SetBufferP([0,0,0,   1,0,0,   1,1,0,]);
+ mySurface.SetIndexBuffer([0,1,2], "TRIANGLES");
  
  // Example 2: load from JSON
  
- myMesh = new Mesh(engine);
- myMesh.loadFromJSON("myGeometry.json");
+ mySurface = new Surface(engine);
+ mySurface.loadFromJSON("myGeometry.json");
  
 */
 //------------------------------------------------------------------------------
 /**
- * Create a new Mesh Object
- * This is the mesh class
+ * Create a new Surface Object
+ * This is the Surface class
  * @param {engine3d} engine the 3d engine. 
  * @constructor
  */
-function Mesh(engine)
+function Surface(engine)
 {
    /** @type {engine3d} */
    this.engine = engine;
@@ -180,7 +180,7 @@ function Mesh(engine)
  * @description Specify a buffer with the vertex semantic "p"
  * @param {Array|Float32Array} p the points.
  */
-Mesh.prototype.SetBufferP = function(p)
+Surface.prototype.SetBufferP = function(p)
 {
    if ((p.length % 3) == 0)
    {
@@ -195,7 +195,7 @@ Mesh.prototype.SetBufferP = function(p)
  * @description Specify a buffer with the vertex semantic "pnt"
  * @param {Array|Float32Array} pnt the point,normal,texture-coordinates array.
  */
-Mesh.prototype.SetBufferPNT = function(pnt)
+Surface.prototype.SetBufferPNT = function(pnt)
 {
    if ((pnt.length % 8) == 0)
    {
@@ -210,7 +210,7 @@ Mesh.prototype.SetBufferPNT = function(pnt)
  * @description Specify a buffer with the vertex semantic "pc"
  * @param {Array|Float32Array} pc the point,color array.
  */
-Mesh.prototype.SetBufferPC = function(pc)
+Surface.prototype.SetBufferPC = function(pc)
 {
    if ((pc.length % 7) == 0)
    {
@@ -225,7 +225,7 @@ Mesh.prototype.SetBufferPC = function(pc)
  * @description Specify a buffer with the vertex semantic "pt"
  * @param {Array|Float32Array} pt the point,texture-coordinates array.
  */
-Mesh.prototype.SetBufferPT = function(pt)
+Surface.prototype.SetBufferPT = function(pt)
 {
    if ((pt.length % 5) == 0)
    {
@@ -240,7 +240,7 @@ Mesh.prototype.SetBufferPT = function(pt)
  * @description Specify a buffer with the vertex semantic "pnct"
  * @param {Array|Float32Array} pnct the point,normal,color texture-coordinates array.
  */
-Mesh.prototype.SetBufferPNCT = function(pnct)
+Surface.prototype.SetBufferPNCT = function(pnct)
 {
    if ((pnct.length % 12) == 0)
    {
@@ -255,7 +255,7 @@ Mesh.prototype.SetBufferPNCT = function(pnct)
  * @description Specify a buffer with the vertex semantic "pt"
  * @param {Array|Float32Array} fontdata the point,texture-coordinates array.
  */
-Mesh.prototype.SetBufferFont= function(fontdata)
+Surface.prototype.SetBufferFont= function(fontdata)
 {
    if ((fontdata.length % 5) == 0)
    {
@@ -269,7 +269,7 @@ Mesh.prototype.SetBufferFont= function(fontdata)
  * @description Specify a buffer with the vertex semantic "poi"
  * @param {Array|Float32Array} poidata the point,texture-coordinates array.
  */
-Mesh.prototype.SetBufferPoi= function(poidata)
+Surface.prototype.SetBufferPoi= function(poidata)
 {
    if ((poidata.length % 5) == 0)
    {
@@ -284,7 +284,7 @@ Mesh.prototype.SetBufferPoi= function(poidata)
  * @param {Array} idx indices array.
  * @param {string} idxsem supports "TRIANGLES","POINTS" or "LINES".
  */
-Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
+Surface.prototype.SetIndexBuffer = function(idx,idxsem)
 {
    this.indexbufferdata = new Uint16Array(idx); 
    this.indexsemantic = idxsem;
@@ -310,7 +310,7 @@ Mesh.prototype.SetIndexBuffer = function(idx,idxsem)
  * @description Set Texture for this mesh
  * @param {Texture} tex This is the texture to set.
  */
-Mesh.prototype.SetTexture = function(tex)
+Surface.prototype.SetTexture = function(tex)
 {
    this.texture = tex; 
 }
@@ -319,7 +319,7 @@ Mesh.prototype.SetTexture = function(tex)
  * @description Create Buffers on GPU
  * @ignore
  */
-Mesh.prototype._ToGPU = function()
+Surface.prototype._ToGPU = function()
 {
    //test vertexbufferdata ungleich null
    // Create VB
@@ -340,7 +340,7 @@ Mesh.prototype._ToGPU = function()
  * @description Free all memory, especially the GPU buffers.
  * @ignore
  */
-Mesh.prototype.Destroy = function()
+Surface.prototype.Destroy = function()
 {
    if (this.vbo)
    {
@@ -372,7 +372,7 @@ Mesh.prototype.Destroy = function()
 var j=0;
 //------------------------------------------------------------------------------
 /**
- * @description Draws the mesh element. Ensure that "toGPU" is called before calling this method.
+ * @description Draws the Surface element. Ensure that "toGPU" is called before calling this method.
  * note: this method still needs some optimization
  * note: ranged draw must be supported soon
  * @param {boolean=} opt_ranged
@@ -381,7 +381,7 @@ var j=0;
  * @param {vec4=} opt_fontcolor
  * @param {vec4=} opt_poicolor
  */
-Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor, opt_poicolor)
+Surface.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor, opt_poicolor)
 {
    if (!this.Ready)
    {
@@ -478,7 +478,7 @@ Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor,
                              
              
         default:       
-                      alert("unknown mesh mode!!");
+                      alert("unknown surface mode!!");
          
       }
   
@@ -542,102 +542,102 @@ Mesh.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor,
  * @description download callback
  * @ignore
  */
-function _cbfjsondownload(mesh)
+function _cbfjsondownload(surface)
 {
-   if (mesh.http.readyState==4)
+   if (surface.http.readyState==4)
    {
-      if(mesh.http.status==404)
+      if(surface.http.status==404)
       {
-         if (mesh.cbf)
+         if (surface.cbf)
          {
-            mesh.cbf(mesh);
+            surface.cbf(surface);
          }
       }
       else
       {
-         var data=mesh.http.responseText;      
+         var data=surface.http.responseText;      
          var jsonobject=/** @type {ObjectJSON} */ goog.json.parse(data);
          
          if (jsonobject['BoundingBox'])
          {
-            mesh.bbmin = jsonobject['BoundingBox'][0];
-            mesh.bbmax = jsonobject['BoundingBox'][1];
+            surface.bbmin = jsonobject['BoundingBox'][0];
+            surface.bbmax = jsonobject['BoundingBox'][1];
          }
          
          if (jsonobject['Offset'])
          {
-            mesh.offset = jsonobject['Offset'];
+            surface.offset = jsonobject['Offset'];
          }
          
          if (jsonobject['CurtainIndex'])
          {
-            mesh.curtainindex = jsonobject['CurtainIndex'];
+            surface.curtainindex = jsonobject['CurtainIndex'];
          }
          
          switch(jsonobject['VertexSemantic'])
          {
-            case "p":      mesh.numvertex = jsonobject['Vertices'].length/3;
-                           mesh.SetBufferP(jsonobject['Vertices']);
-                           mesh.mode = "p";
+            case "p":      surface.numvertex = jsonobject['Vertices'].length/3;
+                           surface.SetBufferP(jsonobject['Vertices']);
+                           surface.mode = "p";
                                 
                            break;
                             
-            case "pnt":    mesh.numvertex = jsonobject['Vertices'].length/8;
-                           mesh.SetBufferPNT(jsonobject['Vertices']);
-                           mesh.mode = "pnt";
+            case "pnt":    surface.numvertex = jsonobject['Vertices'].length/8;
+                           surface.SetBufferPNT(jsonobject['Vertices']);
+                           surface.mode = "pnt";
                            
                            break;
                            
-            case "pc":     mesh.numvertex = jsonobject['Vertices'].length/7; 
-                           mesh.mode = "pc";
-                           mesh.SetBufferPC(jsonobject['Vertices']); 
+            case "pc":     surface.numvertex = jsonobject['Vertices'].length/7; 
+                           surface.mode = "pc";
+                           surface.SetBufferPC(jsonobject['Vertices']); 
                            break;
                            
-            case "pt":     mesh.numvertex = jsonobject['Vertices'].length/5; 
-                           mesh.mode = "pt";   
-                           mesh.SetBufferPT(jsonobject['Vertices']);
+            case "pt":     surface.numvertex = jsonobject['Vertices'].length/5; 
+                           surface.mode = "pt";   
+                           surface.SetBufferPT(jsonobject['Vertices']);
                            break;
                            
-            case "pnct":   mesh.numvertex = jsonobject['Vertices'].length/12;
-                           mesh.mode = "p";
-                           mesh.SetBufferPNCT(jsonobject['Vertices']);
+            case "pnct":   surface.numvertex = jsonobject['Vertices'].length/12;
+                           surface.mode = "p";
+                           surface.SetBufferPNCT(jsonobject['Vertices']);
                            break;
         
             default:       
-                           alert("unknown mesh mode!!");
+                           alert("unknown surface mode!!");
          }      
-         mesh.SetIndexBuffer(jsonobject['Indices'],jsonobject['IndexSemantic']);
+         surface.SetIndexBuffer(jsonobject['Indices'],jsonobject['IndexSemantic']);
          
          if (jsonobject['DiffuseMap'])
          {
-            mesh.texture = new Texture(mesh.engine);
+            surface.texture = new Texture(surface.engine);
             
-            var cbr = function(){mesh.cbfTextureLoadCallback_ready()};
-            var cbf = function(){mesh.cbfTextureLoadCallback_failed()};
-            mesh.texture.loadTexture(jsonobject['DiffuseMap'],cbr,cbf,true);
-            mesh.manageTexture = true;
+            var cbr = function(){surface.cbfTextureLoadCallback_ready()};
+            var cbf = function(){surface.cbfTextureLoadCallback_failed()};
+            surface.texture.loadTexture(jsonobject['DiffuseMap'],cbr,cbf,true);
+            surface.manageTexture = true;
          }
          
          if(jsonobject['Center'])
          {
-            mesh.SetAsNavigationFrame(jsonobject['Center'][0],jsonobject['Center'][1],jsonobject['Center'][2]);
+            surface.SetAsNavigationFrame(jsonobject['Center'][0],jsonobject['Center'][1],jsonobject['Center'][2]);
          }
          
          
-         mesh.numindex = jsonobject['Indices'].length;         // number of elements of index vector
-         if(!mesh.manageTexture) //if there is a async texture load started set the ready flag in texture callback
+         surface.numindex = jsonobject['Indices'].length;         // number of elements of index vector
+         if(!surface.manageTexture) //if there is a async texture load started set the ready flag in texture callback
          {
-            mesh.ready =true;  
+            surface.ready =true;  
          }
          
-         if(mesh.cbfJSONLoad)
+         if(surface.cbfJSONLoad)
          {
-            mesh.cbfJSONLoad(mesh);
+            surface.cbfJSONLoad(surface);
          }
          
-         if (mesh.cbr && !mesh.manageTexture)
+         if (surface.cbr && !surface.manageTexture)
          {
-            mesh.cbr(mesh);
+            surface.cbr(surface);
          }
       }     
    }    
@@ -648,7 +648,7 @@ function _cbfjsondownload(mesh)
  * @description called when the texture is completely loaded.
  *
  */
-Mesh.prototype.cbfTextureLoadCallback_ready = function()
+Surface.prototype.cbfTextureLoadCallback_ready = function()
 {
    this.ready = true;
    if (this.cbr)
@@ -662,7 +662,7 @@ Mesh.prototype.cbfTextureLoadCallback_ready = function()
 /**
  * @description called when the texture download fails.
  */
-Mesh.prototype.cbfTextureLoadCallback_failed = function()
+Surface.prototype.cbfTextureLoadCallback_failed = function()
 {
    goog.debug.Logger.getLogger('owg.Mesh').warning("Downloading Error: Texture not found...");
    if (this.cbf)
@@ -674,12 +674,12 @@ Mesh.prototype.cbfTextureLoadCallback_failed = function()
 
 //------------------------------------------------------------------------------
 /**
- * @description Load mesh-data from a JSON file.
+ * @description Load surface-data from a JSON file.
  * @param {string} url the url to the JSON file.
- * @param {function()=} opt_callbackready optional function called when mesh finished download
- * @param {function()=} opt_callbackfailed optional function called when mesh failed download
+ * @param {function()=} opt_callbackready optional function called when surface finished download
+ * @param {function()=} opt_callbackfailed optional function called when surface failed download
  */
-Mesh.prototype.loadFromJSON = function(url, opt_callbackready, opt_callbackfailed)
+Surface.prototype.loadFromJSON = function(url, opt_callbackready, opt_callbackfailed)
 {
    if(url == null) 
    {
@@ -703,9 +703,9 @@ Mesh.prototype.loadFromJSON = function(url, opt_callbackready, opt_callbackfaile
 //------------------------------------------------------------------------------
 /**
  * @description Specify the function called as soon as the JSON File is fully loaded. This is optional.
- * @param {function()} f Callback Function which has "mesh" as param.
+ * @param {function()} f Callback Function which has "surface" as param.
  * */
-Mesh.prototype.SetJSONLoadCallback = function(f)
+Surface.prototype.SetJSONLoadCallback = function(f)
 {
    this.cbfJSONLoad = f;
 }
@@ -718,7 +718,7 @@ Mesh.prototype.SetJSONLoadCallback = function(f)
 
 
 /**
- * @description   Test for ray mesh intersection iterates through all triangles.
+ * @description   Test for ray Surface intersection iterates through all triangles.
  * @param {number} x x ray startpoint x coordinate
  * @param {number} y y ray startpoint y coordinate
  * @param {number} z z ray startpoint z coordinate
@@ -726,7 +726,7 @@ Mesh.prototype.SetJSONLoadCallback = function(f)
  * @param {number} diry normalized direction y coordinate
  * @param {number} dirz normalized direction z coordinate
  */
-Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
+Surface.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
 {
    var hit = false;
    var u,v,t;
@@ -802,7 +802,7 @@ Mesh.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
  * @ignore
  * @description Reads a Triangle from the current vertexBuffer using the correct mode and sets the value to this.currentTriangle.v...values
  */
-Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
+Surface.prototype.SetCurrentTriangle = function(triangleNumber)
 {
    switch(this.indexsemantic)
    {
@@ -854,7 +854,7 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
                         break;
                         
       default: 
-                        goog.debug.Logger.getLogger('owg.Mesh').warning("This indexsemantic is not supported for function: Mesh.ReadTriangleFromBuffer() ");
+                        goog.debug.Logger.getLogger('owg.Surface').warning("This indexsemantic is not supported for function: Surface.ReadTriangleFromBuffer() ");
                         break;
       
    }
@@ -880,10 +880,10 @@ Mesh.prototype.SetCurrentTriangle = function(triangleNumber)
 
 //------------------------------------------------------------------------------
 /**
- * @description Updates the bounding box of the mesh
+ * @description Updates the bounding box of the Surface
  * (Warning: currently ignoring mesh model matrix)
  */
-Mesh.prototype.UpdateAABB = function()
+Surface.prototype.UpdateAABB = function()
 {
    var minx = 1e20;
    var miny = 1e20;
@@ -991,7 +991,7 @@ Mesh.prototype.UpdateAABB = function()
  * @param {number} diry normalized direction y coordinate
  * @param {number} dirz normalized direction z coordinate
  */
-Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
+Surface.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
 {
    var result = this.aabb.HitBox(x,y,z,dirx,diry,dirz,this.bbmin[0],this.bbmin[1],this.bbmin[2],this.bbmax[0],this.bbmax[1],this.bbmax[2]);         
 
@@ -1000,9 +1000,9 @@ Mesh.prototype.TestBoundingBoxIntersection = function(x,y,z,dirx,diry,dirz)
 
 
 /**
- * @description fills the modelmatrix to use this mesh as billboard.
+ * @description fills the modelmatrix to use this Surface as billboard.
  */
-Mesh.prototype.SetAsBillboard= function(x,y,z,translationX,translationY,translationZ)
+Surface.prototype.SetAsBillboard= function(x,y,z,translationX,translationY,translationZ)
 {
    var view = this.engine.matView.Get();
    var bbmat = new mat4();
@@ -1026,7 +1026,7 @@ Mesh.prototype.SetAsBillboard= function(x,y,z,translationX,translationY,translat
  * @description updates the billboard matrix
  * @ignore
  */
-Mesh.prototype.UpdateBillboardMatrix = function()
+Surface.prototype.UpdateBillboardMatrix = function()
 {
    this.SetAsBillboard(this.billboardPos[0],this.billboardPos[1],this.billboardPos[2],this.billboardCenterTrans[0],this.billboardCenterTrans[1],this.billboardCenterTrans[2]);
 }
@@ -1037,7 +1037,7 @@ Mesh.prototype.UpdateBillboardMatrix = function()
  * @param {number} lat the latitude coordinate
  * @param {number} elv the elevation 
  */
-Mesh.prototype.SetAsNavigationFrame = function(lng,lat,elv)
+Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv)
 {
    var coords = new GeoCoord(lng, lat,elv);
    var cartesianCoordinates = new Array(3);
@@ -1091,19 +1091,19 @@ Mesh.prototype.SetAsNavigationFrame = function(lng,lat,elv)
 
 /**
  * @description copies data from another meshclass into this mesh-class. e.g. used for icon-pois
- * @param {Mesh} mesh the mesh object from wich the data will be copied.
+ * @param {Surface} surface the mesh object from wich the data will be copied.
  */
-Mesh.prototype.CopyFrom = function(mesh)
+Surface.prototype.CopyFrom = function(surface)
 {
-   this.SetTexture(mesh.texture);               
-   this.vertexbufferdata = mesh.vertexbufferdata;
-   this.mode = mesh.mode;
-   this.vertexLength = mesh.vertexLength;
-   this.indexbufferdata = mesh.indexbufferdata;
-   this.indexsemantic = mesh.indexsemantic
-   this.numindex = mesh.numindex
-   this.Ready = mesh.Ready;
-   this.numOfTriangles = mesh.numOfTriangles;
+   this.SetTexture(surface.texture);               
+   this.vertexbufferdata = surface.vertexbufferdata;
+   this.mode = surface.mode;
+   this.vertexLength = surface.vertexLength;
+   this.indexbufferdata = surface.indexbufferdata;
+   this.indexsemantic = surface.indexsemantic
+   this.numindex = surface.numindex
+   this.Ready = surface.Ready;
+   this.numOfTriangles = surface.numOfTriangles;
 }
 
 
@@ -1173,10 +1173,10 @@ Mesh.prototype.SetAsBillboard = function(camX,camY,camZ,objX,objY,objZ)
 
 
 
-goog.exportSymbol('Mesh', Mesh);
-goog.exportProperty(Mesh.prototype, 'Draw', Mesh.prototype.Draw);
-goog.exportProperty(Mesh.prototype, 'CopyFrom', Mesh.prototype.CopyFrom);
-goog.exportProperty(Mesh.prototype, 'SetAsBillboard', Mesh.prototype.SetAsBillboard);
-goog.exportProperty(Mesh.prototype, 'SetTexture', Mesh.prototype.SetTexture);
-goog.exportProperty(Mesh.prototype, 'TestBoundingBoxIntersection', Mesh.prototype.TestBoundingBoxIntersection);
-goog.exportProperty(Mesh.prototype, 'TestRayIntersection', Mesh.prototype.TestRayIntersection);
+goog.exportSymbol('Surface', Surface);
+goog.exportProperty(Surface.prototype, 'Draw', Surface.prototype.Draw);
+goog.exportProperty(Surface.prototype, 'CopyFrom', Surface.prototype.CopyFrom);
+goog.exportProperty(Surface.prototype, 'SetAsBillboard', Surface.prototype.SetAsBillboard);
+goog.exportProperty(Surface.prototype, 'SetTexture', Surface.prototype.SetTexture);
+goog.exportProperty(Surface.prototype, 'TestBoundingBoxIntersection', Surface.prototype.TestBoundingBoxIntersection);
+goog.exportProperty(Surface.prototype, 'TestRayIntersection', Surface.prototype.TestRayIntersection);

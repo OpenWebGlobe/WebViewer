@@ -73,13 +73,13 @@ function PoiManager(engine)
 {
    /** @type {engine3d} */
    this.engine = engine;
-   /** @type Array.<Mesh>*/
+   /** @type Array.<Surface>*/
    this.poiMeshes = new Array();
    /** @type Array.<number>*/
    this.refCounts = new Array();
    /** @type CanvasTexture*/
    this.canvastexture = null;
-   /** @type Array.<Mesh>*/
+   /** @type Array.<Surface>*/
    this.poiTextMeshes = new Array();
    /** @type Array.<number>*/
    this.refTextCounts = new Array();
@@ -156,7 +156,7 @@ PoiManager.prototype.CreateIconMesh = function(url,iconstyle)
    if(r)
    {
       this.refCounts[url] = this.refCounts[url]+1;      
-      var r_new = new Mesh(this.engine);
+      var r_new = new Surface(this.engine);
       r_new.CopyFrom(r);
       r_new.meshWidth = r.meshWidth; //appended attributes, they will not copyed by mesh's copy function.
       r_new.meshHeight = r.meshHeight;
@@ -208,7 +208,7 @@ PoiManager.prototype.CreateTextMesh = function(text,style)
    if(r)
    {
       this.refTextCounts[text+style.id] = this.refTextCounts[text+style.id]+1;      
-      var r_new = new Mesh(this.engine);
+      var r_new = new Surface(this.engine);
       r_new.CopyFrom(r);
       r_new.meshWidth = r.meshWidth; //appended attributes, thy will not copyed by mesh's copy function.
       r_new.meshHeight = r.meshHeight;

@@ -27,7 +27,7 @@ goog.require('owg.DatasetInfo');
 goog.require('owg.ElevationLayer');
 goog.require('owg.GlobeUtils');
 goog.require('owg.MercatorQuadtree');
-goog.require('owg.Mesh');
+goog.require('owg.Surface');
 
 //------------------------------------------------------------------------------
 /**
@@ -78,7 +78,7 @@ function i3dElevationLayer()
                       sQCH;
                                 
       // create mesh    
-      var ElevationMesh = new Mesh(engine);   
+      var ElevationMesh = new Surface(engine);   
       ElevationMesh.quadcode = quadcode;   // store quadcode in texture object
       ElevationMesh.layer = layer;
       ElevationMesh.cbfReady = cbfReady;   // store the ready callback in mesh object

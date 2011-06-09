@@ -23,7 +23,7 @@
 
 goog.provide('owg.Font');
 
-goog.require('owg.Mesh');
+goog.require('owg.Surface');
 goog.require('owg.Texture');
 goog.require('owg.mat4');
 
@@ -146,7 +146,7 @@ Font.prototype.GenerateFontMesh = function()
 {
    var b = 0;
    var a = 0;
-   this.fontmesh = new Mesh(this.engine);     
+   this.fontmesh = new Surface(this.engine);     
    var pt = new Array();
    var index = new Array();
 

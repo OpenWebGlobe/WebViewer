@@ -55,7 +55,7 @@ function ogSurface()
    this.elevation = 0.0;
    this.status = OG_OBJECT_BUSY;
    
-   /** @type {Mesh} */ 
+   /** @type {Surface} */ 
    this.surface = null;
 
 }
@@ -131,7 +131,7 @@ ogSurface.prototype.ParseOptions = function(options)
       var context = scene.parent;
       var engine = context.engine; // get engine!
      
-      this.surface = new Mesh(engine);
+      this.surface = new Surface(engine);
       this.surface.hide = false; //appended property.
       this.surface.ogid = this.id; //appended property.
 

@@ -38,11 +38,11 @@ function CanvasTexture(engine)
    this.gl = engine.gl;
    /** @type {boolean} */
    this.pole = false;
-   /** @type {Mesh} */
-   this.mesh = null;
-   /** @type {Mesh} */
+   /** @type {Surface} */
+   this.surface = null;
+   /** @type {Surface} */
    this.poleMesh = null;
-   /** @type {Mesh} */
+   /** @type {Surface} */
    this.videoMesh = null;
    /** @type number*/
    this.meshWidth = 0;
@@ -55,10 +55,10 @@ function CanvasTexture(engine)
 
 
 /**
- * @description Generates a mesh with a canvas2d as texture. The mesh size depends on the text length and style.
+ * @description Generates a surface with a canvas2d as texture. The mesh size depends on the text length and style.
  * @param {string} text the poi text.
  * @param {ogPoiTextStyle} style POI text style
- * @return {Mesh}
+ * @return {Surface}
  */
 CanvasTexture.prototype.CreateTextMesh =  function(text,style)
 {
@@ -74,9 +74,9 @@ CanvasTexture.prototype.CreateTextMesh =  function(text,style)
    this.text = text;
    this.DrawToCanvas(text,style); 
 
-   //create mesh
-   this.mesh = new Mesh(this.engine);
-   this.mesh.SetTexture(this.tex);
+   //create surface
+   this.surface = new Surface(this.engine);
+   this.surface.SetTexture(this.tex);
 
    var vert = new Array();
   
@@ -86,13 +86,13 @@ CanvasTexture.prototype.CreateTextMesh =  function(text,style)
    vert.push(this.meshWidth/2,this.meshHeight/2,0,(1/this.textureWidth*this.meshWidth),0);  
   
                  
-   this.mesh.SetBufferPoi(vert);
-   this.mesh.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");  
+   this.surface.SetBufferPoi(vert);
+   this.surface.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");  
    
-   this.mesh.meshWidth = this.meshWidth;
-   this.mesh.meshHeight = this.meshHeight;
+   this.surface.meshWidth = this.meshWidth;
+   this.surface.meshHeight = this.meshHeight;
    
-   return this.mesh;
+   return this.surface;
 }
 
  
@@ -101,7 +101,7 @@ CanvasTexture.prototype.CreateTextMesh =  function(text,style)
  * @description Generates a mesh with a canvas2d as texture. The mesh size depends on the text length and style.
  * @param {string} url the icon
  * @param {ogPoiIconStyle} iconstyle 
- * @return {Mesh}
+ * @return {Surface}
  */
 CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
 {
@@ -116,9 +116,9 @@ CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
    //draw canvas content
    this.DrawIconToCanvas(url,iconstyle); 
 
-   //create mesh
-   this.mesh = new Mesh(this.engine);
-   this.mesh.SetTexture(this.tex);
+   //create surface
+   this.surface = new Surface(this.engine);
+   this.surface.SetTexture(this.tex);
 
    var vert = new Array();
   
@@ -128,16 +128,16 @@ CanvasTexture.prototype.CreateIconMesh =  function(url,iconstyle)
    vert.push(this.meshWidth/2,this.meshHeight/2,0,(1/this.textureWidth*this.meshWidth),0);  
   
                  
-   this.mesh.SetBufferPoi(vert);
-   this.mesh.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");
+   this.surface.SetBufferPoi(vert);
+   this.surface.SetIndexBuffer([0, 1, 2, 0, 2, 3],"TRIANGLES");
    
-   this.mesh.bbmin = [-this.meshWidth/2,-this.meshHeight/2,0] 
-   this.mesh.bbmax = [this.meshWidth/2,this.meshHeight/2,0]
+   this.surface.bbmin = [-this.meshWidth/2,-this.meshHeight/2,0] 
+   this.surface.bbmax = [this.meshWidth/2,this.meshHeight/2,0]
    
-   this.mesh.meshWidth = this.meshWidth;
-   this.mesh.meshHeight = this.meshHeight;
+   this.surface.meshWidth = this.meshWidth;
+   this.surface.meshHeight = this.meshHeight;
    
-   return this.mesh;
+   return this.surface;
 }
 
 /**
@@ -294,18 +294,18 @@ CanvasTexture.prototype.ToGPU = function()
 
 
 /**
- * Returns a mesh for the poi-pole.
+ * Returns a surface for the poi-pole.
  * @param {number} x x cartesian pole start coordinate
  * @param {number} y y cartesian pole start coordinate
  * @param {number} z z cartesian pole start coordinate
  * @param {number} x2 x2 cartesian pole end coordinate
  * @param {number} y2 y2 cartesian pole end coordinate
  * @param {number} z2 z2 cartesian pole end coordinate
- * @return {Mesh}
+ * @return {Surface}
  */ 
 CanvasTexture.prototype.GetPoleMesh = function(x,y,z,x2,y2,z2,r,g,b,a)
 {
-   this.poleMesh = new Mesh(this.engine);
+   this.poleMesh = new Surface(this.engine);
 
    var vert = new Array();
 
@@ -329,10 +329,10 @@ CanvasTexture.prototype.GetPoleMesh = function(x,y,z,x2,y2,z2,r,g,b,a)
  */
 CanvasTexture.prototype.Destroy = function()
 {
-   if(this.mesh)
+   if(this.surface)
    {
-      this.mesh.Destroy();
-      this.mesh = null;
+      this.surface.Destroy();
+      this.surface = null;
    }
    
    if(this.poleMesh)

@@ -41,7 +41,7 @@ function ogMeshObject()
    this.type = OG_OBJECT_MESH;
    /** @type {Array.<{ogSurface}>} */
    this.surfaces_og = [];
-   /** @type {Array.<Mesh>} */
+   /** @type {Array.<Surface>} */
    this.surfaces = [];
 }
 

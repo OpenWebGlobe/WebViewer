@@ -25,7 +25,7 @@ goog.provide('owg.Texture');
 
 goog.require('goog.debug.Logger');
 goog.require('owg.MathUtils');
-goog.require('owg.Mesh');
+goog.require('owg.Surface');
 goog.require('owg.mat4');
 
 //------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_frameb
    this.ready = false;     // is true when texture is ready to use
    /** @type {boolean} */
    this.failed = false;    // is true when texture creation / download failed
-   /** @type {Mesh} */
+   /** @type {Surface} */
    this.blitMesh = null;   // optional mesh used for blitting
    /** @type {?number} */
    this.width = 0;
@@ -253,7 +253,7 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
 
       if (goog.isNull(this.blitMesh))
       {
-         this.blitMesh = new Mesh(this.engine);
+         this.blitMesh = new Surface(this.engine);
 
          if (!invtexcoord)
          {

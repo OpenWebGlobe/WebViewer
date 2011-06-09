@@ -25,7 +25,7 @@ goog.provide('owg.TerrainBlock');
 
 goog.require('owg.GeoCoord');
 goog.require('owg.Mercator');
-goog.require('owg.Mesh');
+goog.require('owg.Surface');
 goog.require('owg.Texture');
 goog.require('owg.mat4');
 goog.require('owg.vec3');
@@ -48,7 +48,7 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.texture = null;
    /** @type {boolean} */
    this.available = false;
-   /** @type {Mesh} */
+   /** @type {Surface} */
    this.mesh = null;
    
    /** @type {Array} */
@@ -352,7 +352,7 @@ TerrainBlock.prototype.CalcDistanceTo = function(vWhere)
 */
 TerrainBlock.prototype._CreateElevationMesh = function()
 {
-   this.mesh = new Mesh(this.engine);
+   this.mesh = new Surface(this.engine);
    
    var blocksize = 9;
    var elevationdata = new Array(blocksize*blocksize);

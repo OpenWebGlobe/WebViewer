@@ -27,7 +27,7 @@ goog.require('goog.debug.Logger');
 goog.require('owg.CanvasTexture');
 goog.require('owg.Font');
 goog.require('owg.GeoCoord');
-goog.require('owg.Mesh');
+goog.require('owg.Surface');
 goog.require('owg.Texture');
 
 /** 
@@ -56,11 +56,11 @@ function Poi(engine)
   this.signElv = 0.0;
   /** @type {boolean} */
   this.pole = false;
-  /** @type {Mesh} */
+  /** @type {Surface} */
   this.poleMesh = null;
-  /** @type {Mesh} */
+  /** @type {Surface} */
   this.iconMesh = null;
-  /** @type {Mesh} */
+  /** @type {Surface} */
   this.textMesh = null;
   /** @type {number} */
   this.scale = 20;
