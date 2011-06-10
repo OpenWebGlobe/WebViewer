@@ -1301,16 +1301,23 @@ goog.exportSymbol('ogShowPOILayer', ogShowPOILayer);
 //##############################################################################
 /** @description Create a Geometry Object
 *   @param {number} scene_id the scene
+*   @param {number} layer_id the scene
 *   @param {SurfaceOptions} options surface options
 */
-function ogCreateGeometry(scene_id, options)
+function ogCreateGeometry(scene_id, layer_id ,options)
 {
    // test if scene_id is a valid scene
    var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
-
+      var layer = /** @type {ogGeometryLayer} */ _GetObjectFromId(layer_id);
+      if( layer && layer.type == OG_OBJECT_GEOMETRYLAYER)
+      {
+              
+      }
       var geometry = _CreateObject(OG_OBJECT_GEOMETRY, scene, options);
+      
+      
       return geometry.id;
    }
    return -1;

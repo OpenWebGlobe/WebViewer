@@ -30,14 +30,6 @@ goog.require('owg.ogPOI');
 
 
 //------------------------------------------------------------------------------
-/** @typedef {{
-      text        : string,
-      position    : Array.<number>,
-      size        : number
-   }}
- */
-var PoiLayerOptions;
-//------------------------------------------------------------------------------
 /**
  * @constructor
  * @description POI Layer class (OpenWebGlobe object)
@@ -152,8 +144,7 @@ ogPOILayer.prototype.ParseOptions = function(options)
  */
 ogPOILayer.prototype._OnDestroy = function()
 {
-
-   
+   this.RemovePOILayer();
 }
 //------------------------------------------------------------------------------
 /**
