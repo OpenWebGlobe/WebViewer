@@ -22,7 +22,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      TUTORIAL 6a: Load a 3D-Model
+                      TUTORIAL 6a: Pick a 3D-Model
                       
 *******************************************************************************/
 -->
@@ -33,6 +33,7 @@
 <script type="text/javascript">
 
 var geometry = null;
+var geometrylayer = null;
 
 //------------------------------------------------------------------------------
 // Render-Event: called every frame:
@@ -46,6 +47,7 @@ function OnRender(context)
 // Mouse-Down-Event: Called when a mouse button is pressed
 function OnMouseDown(context, button, mx, my)
 {
+
    // retrieve the scene attached to context:
    var scene = ogGetScene(context);
    
@@ -66,6 +68,7 @@ function OnMouseDown(context, button, mx, my)
          ogShowMesh(mesh_id); //show all meshes.
       }   
    }
+   
    
 }
 //------------------------------------------------------------------------------
@@ -118,7 +121,11 @@ function main()
    // (7) 3D Model
    // first, we need to retrieve the scene:
    var scene = ogGetScene(ctx);
+   var world = ogGetWorld(scene);
 	
+   //create a geometry layer
+   geometrylayer = ogCreateGeometryLayer(world,"models");
+   
    // definition of geometry options.
    // A geometry is a container for meshes
    // a mesh is a container of surfaces. every surface needs a json file.
@@ -130,7 +137,7 @@ function main()
                            "type" : "MESH"      //model type. Currently only "MESH" supported.
                            };
    //create the surface                        
-   geometry = ogCreateGeometry(scene, geometryOptions);
+   geometry = ogCreateGeometry(geometrylayer, geometryOptions);
    
    // definition of second mesh options.
    var geometryOptions2 = {

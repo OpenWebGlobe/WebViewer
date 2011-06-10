@@ -191,7 +191,24 @@ ogPOILayer.prototype.CreatePOI = function(options)
 {
    options.textstyle = this.textstyle; //append the poi_layer styles..
    options.iconstyle = this.iconstyle;
-   var poi = _CreateObject(OG_OBJECT_POI,this.parent,options);
+   var poi = _CreateObject(OG_OBJECT_POI,this.parent.parent,options);
    this.poiarray.push(poi);
+   poi.poilayer = this;
    return poi;
+}
+//------------------------------------------------------------------------------
+/**
+ *  @description removes the poi and frees its memory.
+ *  @param {ogPOI} poi the poi
+ */
+ogPOILayer.prototype.RemovePOI = function(poi)
+{
+   for(var i= 0; i < this.poiarray.length; i++)
+   {
+      if(this.poiarray[i] == poi)
+      {
+        this.poiarray.splice(i,1); 
+      }
+      
+   }
 }

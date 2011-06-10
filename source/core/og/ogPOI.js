@@ -64,6 +64,8 @@ function ogPOI()
    this.iconstyle;
    /** @type {ogPoiTextStyle} */
    this.textstyle;
+   /** @type {?ogPOILayer} */
+   this.layer = null;
 }
 //------------------------------------------------------------------------------
 /** @extends {ogObject} */ 
@@ -129,7 +131,7 @@ ogPOI.prototype.ParseOptions = function(options)
    }
    else
    {
-      this.poi.SetPosition(position[1], position[0], position[2]);
+      this.poi.SetPosition(position[1], position[0], position[2],null);
    }
    
    this.poi.SetSize(size);
@@ -167,6 +169,11 @@ ogPOI.prototype._OnDestroy = function()
    if (poirenderer)
    {
       poirenderer.RemovePoi(this.poi);
+   }
+   
+   if(this.poilayer)
+   {
+      this.poilayer.RemovePOI(this);
    }
    /** @type {PoiManager} */
    var poimgr = context.engine.poimanager;
@@ -227,9 +234,15 @@ ogPOI.prototype.ChangeSize = function(newsize)
  */
 ogPOI.prototype.ChangePosition = function(lng, lat, elv)
 {
-   alert(lng);
-   alert(lat);
-   alert(elv);
+   if(this.poi.pole)
+   {
+      this.poi.SetPosition(lat,lng,elv,0);  
+   }
+   else
+   {
+      this.poi.SetPosition(lat,lng,elv,null);   
+   }
+
 }
 //------------------------------------------------------------------------------
 /**

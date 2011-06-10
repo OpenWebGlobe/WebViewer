@@ -87,7 +87,7 @@ function OnMouseDown(context, button, mx, my)
       };
       
       //create poi:
-      poi = ogCreatePOI(scene, poilayer, NewPoiDefinition);
+      poi = ogCreatePOI(poilayer, NewPoiDefinition);
       
       //set the lastpoi active for color change in OnTimer Callback
       lastpoi = poi;
@@ -137,7 +137,8 @@ function main()
    // first, we need to retrieve the scene:
    var scene = ogGetScene(ctx);
 	
-   poilayer = ogCreatePOILayer(scene,"bycicles");
+   var world = ogGetWorld(scene);
+   poilayer = ogCreatePOILayer(world,"bycicles");
  
 }
 //------------------------------------------------------------------------------

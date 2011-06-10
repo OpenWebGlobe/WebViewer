@@ -208,20 +208,5 @@ ogGeometry.prototype.Show = function()
 
 
 
-//------------------------------------------------------------------------------
-/**
-* @description 
-* @param {number} mx the canvas x coordinate
-* @param {number} my the canvas y coordinate
-*
-ogGeometry.prototype.PickGeometry= function(mx,my) //to discuss: wird wie draw() vom renderer aufgerufen.
-{
-   for (var i=0;i<this.meshes_og.length;i++)
-   {
-      this.meshes_og[i].Pick(mx,my);
-   }
-}
-*/
-
 
 

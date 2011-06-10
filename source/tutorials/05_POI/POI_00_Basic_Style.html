@@ -31,7 +31,11 @@
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+
 <script type="text/javascript">
 
 //------------------------------------------------------------------------------
@@ -67,7 +71,7 @@ function OnMouseDown(context, button, mx, my)
          flagpole : true
       };
       
-      var poi = ogCreatePOI(scene,bycicleLayer,NewPoiDefinition);
+      var poi = ogCreatePOI(bycicleLayer,NewPoiDefinition);
    }
 }
 //------------------------------------------------------------------------------
@@ -161,7 +165,8 @@ function main()
    ogCreatePOI(scene, airportLayer, PoiDefinitionWithIcon);
    
    // Create another poi layer to place poi's interactive
-   bycicleLayer = ogCreatePOILayer(scene,"byciclelayer");
+   var world = ogGetWorld(scene);
+   bycicleLayer = ogCreatePOILayer(world,"byciclelayer");
 
 
 }

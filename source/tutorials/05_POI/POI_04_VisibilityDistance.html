@@ -22,24 +22,27 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      TUTORIAL 5d: Use Picking on Poi
+                      TUTORIAL 5e: Visibility distance
                       
 *******************************************************************************/
 -->
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
 <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
 <script type="text/javascript">
 
-var poilayer = null;
+var poilayer;
+var hidden = false;
+
 //------------------------------------------------------------------------------
 // Render-Event: called every frame:
 function OnRender(context)
 {  
    ogSetTextColor(context, 0,1,0);
    ogDrawText(context, "Click middle mouse button to add a POI", 0, 50);
-   ogDrawText(context, "Click on a POI to increase it's size", 0, 20);
+   ogDrawText(context, "Visibility distance is set to 100km ", 0, 20);
 }
 //------------------------------------------------------------------------------
 // Mouse-Down-Event: Called when a mouse button is pressed
@@ -52,8 +55,8 @@ function OnMouseDown(context, button, mx, my)
    var pickedPoiId = ogPickPOI(scene,mx,my);
    if(pickedPoiId > 0)
    {
-      // increase POI size
-      ogChangePOISize(pickedPoiId,100);
+      // change poi icon
+      ogChangePOIIcon(pickedPoiId,"http://google-maps-icons.googlecode.com/files/water.png");
    }
    
    // call the pickglobe function, this gives the result in lng, lat, elv
@@ -64,14 +67,26 @@ function OnMouseDown(context, button, mx, my)
       var NewPoiDefinition = 
       {
          icon     : "http://google-maps-icons.googlecode.com/files/cycling.png",
-         //text 		: 	"Click: (" + result[1].toFixed(3) + ", " + result[2].toFixed(3) + ", " + result[3].toFixed(0) + ")",
          position :  [result[1], result[2], result[3]+2000],
          size 		: 	50,
-         flagpole : true
+         visibilityDistance : 100 //visibility distance in km!
       };
-      
-      var poi = ogCreatePOI(poilayer, NewPoiDefinition);
 
+      var poi = ogCreatePOI(poilayer,NewPoiDefinition);
+   }
+}
+//------------------------------------------------------------------------------
+function OnKeyDown(ctx,key)
+{
+   if(!hidden && key == 49)
+   {
+      hidden = true;
+      ogHidePOILayer(poilayer);
+   }
+   else
+   {
+      hidden = false;
+      ogShowPOILayer(poilayer);
    }
 }
 //------------------------------------------------------------------------------
@@ -110,19 +125,21 @@ function main()
    // (5) Set the mouse down function. We need this for picking!
    ogSetMouseDownFunction(ctx, OnMouseDown);
    
+   // (5) Set the mouse down function. We need this for picking!
+   ogSetKeyDownFunction(ctx, OnKeyDown);
+   
    // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
    
-   // (7) POI Layer
+   // (7) Define a POI Layer, POIs will be created in "OnMouseDown"-Callback function
    // first, we need to retrieve the scene:
-   var scene = ogGetScene(ctx);
+   var scene = ogGetScene(ctx);   
    var world = ogGetWorld(scene);
-	poilayer = ogCreatePOILayer(world,"bycicles");
+   poilayer = ogCreatePOILayer(world,"bicycle");
+           
 }
 //------------------------------------------------------------------------------
-   
 </script>
-
 </head>
 <body onload="main()">
    <div style="text-align: center">

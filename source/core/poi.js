@@ -52,8 +52,8 @@ function Poi(engine)
   this.lng = 0.0;
   /** @type {number} */
   this.elv = 0.0;
-  /** @type {number} */
-  this.signElv = 0.0;
+  /** @type {?number} */
+  this.signElv=null;
   /** @type {boolean} */
   this.pole = false;
   /** @type {Surface} */
@@ -167,7 +167,7 @@ Poi.prototype.SetContent = function(text,textStyle,timgurl,iconStyle)
 * @param {number} lat the latitude value
 * @param {number} lng the longitude value
 * @param {number} elv the elevation value
-* @param {number} signElv the elevation of poi text -> if this is set, the poi gets a pole from elv to signElv.
+* @param {?number} signElv the elevation of poi text -> if this is set, the poi gets a pole from elv to signElv.
 */ 
 Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
 {
@@ -175,6 +175,7 @@ Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
      this.lng = lng;
      this.elv = elv;
      this.signElv = signElv;
+     
      
     //calc poi width
     if(this.iconMesh && this.textMesh)

@@ -39,6 +39,7 @@ goog.require('owg.ogPOI');
 goog.require('owg.ogSurface');
 goog.require('owg.ogTexture');
 goog.require('owg.ogPOILayer');
+goog.require('owg.ogGeometryLayer');
 goog.require('goog.debug.Logger');
 
 //------------------------------------------------------------------------------
@@ -92,7 +93,7 @@ function _CreateObject(type, parent, options)
          newobject = new ogPOILayer();
          break;
       case OG_OBJECT_GEOMETRYLAYER:
-         // not available yet...
+         newobject = new ogGeometryLayer();
          break;
       case OG_OBJECT_VOXELLAYER:
          // not available yet...
@@ -900,6 +901,7 @@ function ogCreateWorld(scene_id)
       var worldoptions = {};
       worldoptions["scenetype"] = scene.scenetype;
       var world = _CreateObject(OG_OBJECT_WORLD, scene, worldoptions);
+      scene.world = world;
       return world.id;
    }
    
@@ -1058,27 +1060,100 @@ function ogRemoveElevationLayer(layer_id)
 goog.exportSymbol('ogRemoveElevationLayer', ogRemoveElevationLayer);
 //------------------------------------------------------------------------------
 //##############################################################################
+// ** POI LAYER-OBJECT **
+//##############################################################################
+//------------------------------------------------------------------------------
+/** @description Creates a POI Layer 
+*   @param {number} world_id the scene
+*   @param {string} layername 
+*   @param {Object} textstyle 
+*   @param {Object} iconstyle
+*   @returns number
+*/
+function ogCreatePOILayer(world_id,layername,textstyle,iconstyle)
+{
+   var options = {};
+   options["name"] = layername;
+   options["textstyle"] = textstyle;
+   options["iconstyle"] = iconstyle;
+   
+   //** @type {ogScene} */
+   var world = _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      var poiLayer = _CreateObject(OG_OBJECT_POILAYER, world, options);
+      return poiLayer.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogCreatePOILayer', ogCreatePOILayer);
+//------------------------------------------------------------------------------
+/** @description Removes a POI Layer
+*   @param {number} poilayer_id 
+*/
+function ogRemovePOILayer(poilayer_id)
+{
+   // @type {ogImageLayer}
+   var layer = _GetObjectFromId(poilayer_id);
+   if (layer && layer.type == OG_OBJECT_POILAYER)
+   {
+      layer.RemovePOILayer();
+      layer.UnregisterObject();
+   }
+   return -1;
+}
+goog.exportSymbol('ogRemovePOILayer', ogRemovePOILayer);
+//------------------------------------------------------------------------------
+/** @description Hides a POI Layer
+*   @param {number} poilayer_id 
+*/
+function ogHidePOILayer(poilayer_id)
+{
+   //** @type {ogPOILayer} */
+   var poilayer = /** @type {ogPOILayer} */_GetObjectFromId(poilayer_id);
+   if (poilayer && poilayer.type == OG_OBJECT_POILAYER)
+   {
+      poilayer.Hide();
+      
+   }
+   return -1;
+}
+goog.exportSymbol('ogHidePOILayer', ogHidePOILayer);
+//------------------------------------------------------------------------------
+/** @description Shows a POI Layer
+*   @param {number} poilayer_id 
+*/
+function ogShowPOILayer(poilayer_id)
+{
+   //** @type {ogPOILayer} */
+   var poilayer = /** @type {ogPOILayer} */_GetObjectFromId(poilayer_id);
+   if (poilayer && poilayer.type == OG_OBJECT_POILAYER)
+   {
+      poilayer.Show(); 
+   }
+   return -1;
+}
+goog.exportSymbol('ogShowPOILayer', ogShowPOILayer);
+
+//------------------------------------------------------------------------------
+//##############################################################################
 // ** POI OBJECT **
 //##############################################################################
 //------------------------------------------------------------------------------
 /**
 * @description Create a POI
-* @param {number} scene_id
 * @param {number} poilayer_id 
 * @param {PoiOptions} options
 * @returns {number} poi_id
 */
-function ogCreatePOI(scene_id,poilayer_id,options)
+function ogCreatePOI(poilayer_id,options)
 {
-   // test if scene_id is a valid scene
-   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
-   if (scene && scene.type == OG_OBJECT_SCENE)
+   var poilayer = /** @type {ogPOILayer} */ _GetObjectFromId(poilayer_id);
+   if (poilayer && poilayer.type == OG_OBJECT_POILAYER)
    {
-      var poilayer = /** @type {ogPOILayer} */ _GetObjectFromId(poilayer_id);
       var poi = poilayer.CreatePOI(options);
       return poi.id;
    }
-   
    return -1;
 }
 goog.exportSymbol('ogCreatePOI', ogCreatePOI);
@@ -1089,7 +1164,6 @@ goog.exportSymbol('ogCreatePOI', ogCreatePOI);
  */
 function ogDestroyPOI(poi_id)
 {
-   // test if scene_id is a valid scene
    var POI = _GetObjectFromId(poi_id);
    if (POI && POI.type == OG_OBJECT_POI)
    {
@@ -1223,103 +1297,92 @@ function ogPickPOI(scene_id, mx, my)
 }
 goog.exportSymbol('ogPickPOI', ogPickPOI);
 //------------------------------------------------------------------------------
-/** @description Creates a POI Layer 
-*   @param {number} scene_id the scene
+//##############################################################################
+// ** GEOMETRY LAYER OBJECT **
+//##############################################################################
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+/** @description Create a Geometry Layer Object
+*   @param {number} world_id the scene
 *   @param {string} layername 
-*   @param {Object} textstyle 
-*   @param {Object} iconstyle
-*   @returns number
 */
-function ogCreatePOILayer(scene_id,layername,textstyle,iconstyle)
+function ogCreateGeometryLayer(world_id, layername)
 {
-   var options = {};
-   options["name"] = layername;
-   options["textstyle"] = textstyle;
-   options["iconstyle"] = iconstyle;
-   
-   //** @type {ogScene} */
-   var scene = _GetObjectFromId(scene_id);
-   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   var options={};
+   options.Layername = layername;
+   // test if scene_id is a valid scene
+   var world = /** @type {ogWorld} */ _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
    {
-      var poiLayer = _CreateObject(OG_OBJECT_POILAYER, scene, options);
-      return poiLayer.id;
+      var layer = _CreateObject(OG_OBJECT_GEOMETRYLAYER, world, options);
+      return layer.id;
    }
    return -1;
 }
-goog.exportSymbol('ogCreatePOILayer', ogCreatePOILayer);
+goog.exportSymbol('ogCreateGeometryLayer', ogCreateGeometryLayer);
 //------------------------------------------------------------------------------
-/** @description Removes a POI Layer
-*   @param {number} poilayer_id 
-*/
-function ogRemovePOILayer(poilayer_id)
+/**
+ * @description Hide GeometryLayer
+ * @param {number} layer_id
+ */
+function ogHideGeometryLayer(layer_id)
 {
-   // @type {ogImageLayer}
-   var layer = _GetObjectFromId(poilayer_id);
-   if (layer && layer.type == OG_OBJECT_POILAYER)
+   var geolayer = /** @type ogGeometryLayer */ _GetObjectFromId(layer_id);
+   if (geolayer && geolayer.type == OG_OBJECT_GEOMETRYLAYER)
    {
-      layer.RemovePOILayer();
+      geolayer.Hide();
+   }
+}
+goog.exportSymbol('ogHideGeometryLayer', ogHideGeometryLayer);
+//------------------------------------------------------------------------------
+/**
+ * @description Show hidden GeometryLayer
+ * @param {number} layer_id
+ */
+function ogShowGeometryLayer(layer_id)
+{
+   var geolayer = /** @type ogGeometryLayer */ _GetObjectFromId(layer_id);
+   if (geolayer && geolayer.type == OG_OBJECT_GEOMETRYLAYER)
+   {
+      geolayer.Show();
+   }
+}
+goog.exportSymbol('ogHideGeometryLayer', ogHideGeometryLayer);
+//------------------------------------------------------------------------------
+/** @description Removes a Geometry Layer Object
+*   @param {number} layer_id the id of the geometry layer.
+*/
+function ogRemoveGeometryLayer(layer_id)
+{
+   var layer = /** @type {ogGeometryLayer} */ _GetObjectFromId(layer_id);
+   if (layer && layer.type == OG_OBJECT_GEOMETRYLAYER)
+   {
+      layer.RemoveGeometryLayer();
       layer.UnregisterObject();
    }
    return -1;
 }
-goog.exportSymbol('ogRemovePOILayer', ogRemovePOILayer);
+goog.exportSymbol('ogRemoveGeometryLayer', ogRemoveGeometryLayer);
 //------------------------------------------------------------------------------
-/** @description Hides a POI Layer
-*   @param {number} poilayer_id 
-*/
-function ogHidePOILayer(poilayer_id)
-{
-   //** @type {ogPOILayer} */
-   var poilayer = /** @type {ogPOILayer} */_GetObjectFromId(poilayer_id);
-   if (poilayer && poilayer.type == OG_OBJECT_POILAYER)
-   {
-      poilayer.Hide();
-      
-   }
-   return -1;
-}
-goog.exportSymbol('ogHidePOILayer', ogHidePOILayer);
-//------------------------------------------------------------------------------
-/** @description Shows a POI Layer
-*   @param {number} poilayer_id 
-*/
-function ogShowPOILayer(poilayer_id)
-{
-   //** @type {ogPOILayer} */
-   var poilayer = /** @type {ogPOILayer} */_GetObjectFromId(poilayer_id);
-   if (poilayer && poilayer.type == OG_OBJECT_POILAYER)
-   {
-      poilayer.Show(); 
-   }
-   return -1;
-}
-goog.exportSymbol('ogShowPOILayer', ogShowPOILayer);
-
-
 //##############################################################################
 // ** GEOMETRY OBJECT **
 //##############################################################################
+//------------------------------------------------------------------------------
 /** @description Create a Geometry Object
-*   @param {number} scene_id the scene
 *   @param {number} layer_id the scene
 *   @param {SurfaceOptions} options surface options
 */
-function ogCreateGeometry(scene_id, layer_id ,options)
+function ogCreateGeometry(layer_id ,options)
 {
-   // test if scene_id is a valid scene
-   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
-   if (scene && scene.type == OG_OBJECT_SCENE)
+   /** @type {ogGeometryLayer} */
+   var layer = /** @type {ogGeometryLayer} */ _GetObjectFromId(layer_id);
+   if( layer && layer.type == OG_OBJECT_GEOMETRYLAYER)
    {
-      var layer = /** @type {ogGeometryLayer} */ _GetObjectFromId(layer_id);
-      if( layer && layer.type == OG_OBJECT_GEOMETRYLAYER)
-      {
-              
-      }
-      var geometry = _CreateObject(OG_OBJECT_GEOMETRY, scene, options);
-      
-      
+      var geometry = _CreateObject(OG_OBJECT_GEOMETRY, layer.parent.parent, options);
+      layer.AddGeometry(geometry);
       return geometry.id;
    }
+
    return -1;
 }
 goog.exportSymbol('ogCreateGeometry', ogCreateGeometry);

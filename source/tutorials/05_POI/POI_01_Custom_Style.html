@@ -36,7 +36,7 @@
 <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
-<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script> 
+
 <script type="text/javascript">
 var poilayer;
 var hidden = false;
@@ -81,7 +81,7 @@ function OnMouseDown(context, button, mx, my)
          size: 50	               //optional, default is 40
       };
       
-      var poi = ogCreatePOI(scene,poilayer,NewPoiDefinition);
+      var poi = ogCreatePOI(poilayer,NewPoiDefinition);
    }
    
 
@@ -177,7 +177,8 @@ function main()
       "shadowBlur" 	: 0,
       "shadowColor" 	: [0,0,0,0]
    };
-   poilayer = ogCreatePOILayer(scene,"bicycle",customTextstyle,customIconstyle);
+   var world = ogGetWorld(scene);
+   poilayer = ogCreatePOILayer(world,"bicycle",customTextstyle,customIconstyle);
            
 }
 //------------------------------------------------------------------------------
