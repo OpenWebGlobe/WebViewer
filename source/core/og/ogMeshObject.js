@@ -56,11 +56,23 @@ ogMeshObject.prototype = new ogObject();
 * @ignore
 */
 ogMeshObject.prototype.ParseOptions = function(options)
-{   
+{
+      this.options = options;
+      if(this.options["jsonobject"])
+      {
+         var surfacearray = this.options["jsonobject"];
+         for(var i=0; i<surfacearray.length; i++)
+         {
+            this.options.jsonobject = surfacearray[i];
+            var ogsurf = _CreateObject(OG_OBJECT_SURFACE, this, this.options);
+            this.surfaces_og.push(ogsurf);
+            this.surfaces.push(ogsurf.GetSurface());
+         }
+      }
      // var scene = this.parent;
-      var ogsurf = _CreateObject(OG_OBJECT_SURFACE, this, options);
-      this.surfaces_og.push(ogsurf);
-      this.surfaces.push(ogsurf.GetSurface());
+      
+      
+      
 }
 
 

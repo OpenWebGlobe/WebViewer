@@ -56,9 +56,16 @@ function ogGeometry()
    this.meshes = [];
    /**@type {number} */
    this.indexInRendererArray = -1;
-   
    /** @type {boolean} */
    this.hide = false;
+   /** @type {string} */
+   this.jsonUrl = "";
+   /** @type {?function(number)} */
+   this.cbr = null;
+   /** @type {?function(number)} */
+   this.cbf = null;
+   /** @type {Object} */
+   this.options = null;
 }
 //------------------------------------------------------------------------------
 /** @extends {ogObject} */
@@ -71,19 +78,16 @@ ogGeometry.prototype = new ogObject();
 * @ignore
 */
 ogGeometry.prototype.ParseOptions = function(options)
-{  
+{
+   this.options = options;
    if(options["type"] == "MESH")
    {
       var scene = this.parent;
-      var mesh = _CreateObject(OG_OBJECT_MESH, this, options); 
-      this.meshes_og.push(mesh)
-      this.meshes.push(mesh.GetSurfaceArray());
+      if(options["url"])
+      {
+         this.loadGeometryFromJSON(options["url"],null,null);
+      }  
    }
-   
-   //add to geometry renderer...
-   var renderer = this._GetGeometryRenderer();
-   this.indexInRendererArray = renderer.AddGeometry(this.meshes);
-   
 }
 
 //------------------------------------------------------------------------------
@@ -202,6 +206,75 @@ ogGeometry.prototype.Show = function()
       var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
       mesh.Show();
    }
+}
+
+
+//------------------------------------------------------------------------------
+/** 
+ * @description download callback
+ * @ignore
+ */
+ogGeometry.prototype._cbfjsondownload = function()
+{
+   if (this.http.readyState==4)
+   {
+      if(this.http.status==404)
+      {
+         if (this.cbf)
+         {
+            this.cbf(this.id);
+         }
+      }
+      else
+      {
+         var data=this.http.responseText;      
+         var mesharray=/** @type {ObjectJSON} */ goog.json.parse(data);
+         
+         for(var i=0; i<mesharray.length; i++)
+         {
+            this.options.jsonobject = mesharray[i];
+            var mesh = _CreateObject(OG_OBJECT_MESH, this, this.options); 
+            this.meshes_og.push(mesh)
+            this.meshes.push(mesh.GetSurfaceArray());
+         }
+         if(this.cbr)
+         {
+            this.cbr(this.id);
+         }
+            
+         //add to geometry renderer...
+         var renderer = this._GetGeometryRenderer();
+         this.indexInRendererArray = renderer.AddGeometry(this.meshes);
+      }     
+   }    
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Load surface-data from a JSON file.
+ * @param {string} url the url to the JSON file.
+ * @param {?function(number)} opt_callbackready optional function called when surface finished download
+ * @param {?function(number)} opt_callbackfailed optional function called when surface failed download
+ */
+ogGeometry.prototype.loadGeometryFromJSON = function(url, opt_callbackready, opt_callbackfailed)
+{
+   if(url == null) 
+   {
+      alert("invalid json-url");
+      return;
+   }  
+   this.jsonUrl=url;
+      
+   this.http=new window.XMLHttpRequest();
+   this.http.open("GET",this.jsonUrl,true);
+   //this.http.setRequestHeader("Cache-Control", "public");
+   
+   this.cbr = opt_callbackready;
+   this.cbf = opt_callbackfailed;
+   
+   var me=this;
+   this.http.onreadystatechange = function(){me._cbfjsondownload();};
+   this.http.send();  
 }
 
 

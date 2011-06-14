@@ -122,8 +122,7 @@ ogSurface.prototype.ParseOptions = function(options)
       goog.debug.Logger.getLogger('owg.ogTexture').warning("** ERROR: parent is not scene!");
       return;
    }
-   
-   if (options["url"])
+   if(options["jsonobject"])
    {
       var mesh = this.parent;
       var geometry = mesh.parent;
@@ -139,16 +138,16 @@ ogSurface.prototype.ParseOptions = function(options)
       var ogSurface = this;
       var readycbf = function(e){ogSurface.ogSurface_callbackready(e);};
       var failedcbf = function(e){ogSurface.ogSurface_callbackfailed(e);};
-      this.surface.loadFromJSON(options["url"],readycbf,failedcbf);
+      this.surface.CreateFromJSONObject(options["jsonobject"],readycbf,failedcbf);
       this.jsonUrl = options["url"];
-   }
+   }   
    if(options["longitude"] && options["latitude"] && options["elevation"])
    {
       this.longitude = options["longitude"];
       this.latitude = options["latitude"];
       this.elevation = options["elevation"];
    }
-  
+      
 }
 //------------------------------------------------------------------------------
 /**

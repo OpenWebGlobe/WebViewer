@@ -128,10 +128,10 @@ function main()
    // A geometry is a container for meshes
    // a mesh is a container of surfaces. every surface needs a json file.
    var geometryOptions = {
-                           "url" : "sphere.json",
-                           "longitude" : 7.438637, //optional if not defined, the coordinates from json file will be used.
-                           "latitude" : 46.951081, //optional if not defined, the coordinates from json file will be used.
-                           "elevation" : 2200,  //optional if not defined, the coordinates from json file will be used.
+                           "url" : "cube.json",
+                           "longitude" : 7.616000, //optional if not defined, the coordinates from json file will be used.
+                           "latitude" : 45.908800, //optional if not defined, the coordinates from json file will be used.
+                           "elevation" : 18353,  //optional if not defined, the coordinates from json file will be used.
                            "type" : "MESH"      //model type. Currently only "MESH" supported.
                            };
    //create the surface                        
@@ -143,7 +143,7 @@ function main()
                            "type" : "MESH" 
                            };
 
-   ogAddToGeometry(geometry,geometryOptions2);
+   //ogAddToGeometry(geometry,geometryOptions2);
 }
 //------------------------------------------------------------------------------
    

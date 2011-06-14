@@ -1370,7 +1370,7 @@ goog.exportSymbol('ogRemoveGeometryLayer', ogRemoveGeometryLayer);
 //------------------------------------------------------------------------------
 /** @description Create a Geometry Object
 *   @param {number} layer_id the scene
-*   @param {SurfaceOptions} options surface options
+*   @param {GeometryOptions} options surface options
 */
 function ogCreateGeometry(layer_id ,options)
 {
