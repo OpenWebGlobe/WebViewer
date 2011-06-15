@@ -49,18 +49,27 @@ function PoiRenderer(engine)
  */
 PoiRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
 {
+   var x = vCameraPosition.Get()[0]; //ToDo: Expensive implementation !
+   var y = vCameraPosition.Get()[1];
+   var z = vCameraPosition.Get()[2];
+   var dx = 0;
+   var dy = 0;
+   var dz = 0;
+   var disLimit = 0;
+   
    // todo: frustum culling etc.
    for (var i=0;i<this.poiarray.length;i++)
    {
       var poi = this.poiarray[i];
       if(!poi.hide)
       {
-         var x = vCameraPosition.Get()[0]; //ToDo: Expensive implementation !
-         var y = vCameraPosition.Get()[1];
-         var z = vCameraPosition.Get()[2];
-         var dis = Math.sqrt(Math.pow(poi.posX-x,2)+ Math.pow(poi.posY-y,2) + Math.pow(poi.posZ-z,2));
-         var disLimit = poi.visibilityDistance; 
-         if(disLimit>dis)
+         dx = (poi.posX-x);
+         dy = (poi.posY-y);
+         dz = (poi.posZ-z);
+         var dis_squared = dx*dx + dy*dy + dz*dz;
+         
+         disLimit = poi.visibilityDistance*poi.visibilityDistance; 
+         if(disLimit>dis_squared)
          {
             poi.Draw();
          }

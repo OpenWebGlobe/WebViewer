@@ -3,7 +3,7 @@
       [
         {   
          "id"  :  "1",
-         "Center"  :  [7.438637,46.951081,2200],
+         "Center"  :  [ 8.083373,46.746813,1000],
          "DiffuseMap"  :  "texture.png",
          "VertexSemantic"  :  "pt",
          "Vertices"  :  [	-100,-100,100,0.00000,1.00000,

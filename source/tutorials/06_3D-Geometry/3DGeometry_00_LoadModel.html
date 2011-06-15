@@ -127,23 +127,33 @@ function main()
    // definition of geometry options.
    // A geometry is a container for meshes
    // a mesh is a container of surfaces. every surface needs a json file.
-   var geometryOptions = {
-                           "url" : "cube.json",
-                           "longitude" : 7.616000, //optional if not defined, the coordinates from json file will be used.
-                           "latitude" : 45.908800, //optional if not defined, the coordinates from json file will be used.
-                           "elevation" : 18353,  //optional if not defined, the coordinates from json file will be used.
+   var geometryOptions1 = {
+                           "url" : "G812.json",
+                          // "longitude" : 7.616000, //optional if not defined, the coordinates from json file will be used.
+                          // "latitude" : 45.908800, //optional if not defined, the coordinates from json file will be used.
+                          // "elevation" : 18353,  //optional if not defined, the coordinates from json file will be used.
                            "type" : "MESH"      //model type. Currently only "MESH" supported.
                            };
    //create the surface                        
-   geometry = ogCreateGeometry(geometrylayer, geometryOptions);
+   geometry1 = ogCreateGeometry(geometrylayer, geometryOptions1);
    
-   // definition of second mesh options.
+   // definition of second geometry
    var geometryOptions2 = {
-                           "url" : "torus.json",   //the position [lat,lng,elv] is in json file defined 
-                           "type" : "MESH" 
+                           "url" : "G821.json",
+                           "type" : "MESH"      
                            };
+                           
+   //create the surface                        
+   geometry2 = ogCreateGeometry(geometrylayer, geometryOptions2);
 
-   //ogAddToGeometry(geometry,geometryOptions2);
+      // definition of third geometry
+   var geometryOptions3 = {
+                           "url" : "G832.json",
+                           "type" : "MESH"      
+                           };
+   //create the surface                        
+   geometry3 = ogCreateGeometry(geometrylayer, geometryOptions3);
+   
 }
 //------------------------------------------------------------------------------
    

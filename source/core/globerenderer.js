@@ -338,6 +338,9 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    {
       this.lstFrustum[i].Render();
    }
+   
+   
+   // GeneratePoles();
 }
 //------------------------------------------------------------------------------
 
