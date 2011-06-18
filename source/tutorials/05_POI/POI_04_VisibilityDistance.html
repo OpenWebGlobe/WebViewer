@@ -42,7 +42,7 @@ function OnRender(context)
 {  
    ogSetTextColor(context, 0,1,0);
    ogDrawText(context, "Click middle mouse button to add a POI", 0, 50);
-   ogDrawText(context, "Visibility distance is set to 100km ", 0, 20);
+   ogDrawText(context, "Visibility range is set to 10-100km ", 0, 20);
 }
 //------------------------------------------------------------------------------
 // Mouse-Down-Event: Called when a mouse button is pressed
@@ -69,7 +69,7 @@ function OnMouseDown(context, button, mx, my)
          icon     : "http://google-maps-icons.googlecode.com/files/cycling.png",
          position :  [result[1], result[2], result[3]+2000],
          size 		: 	50,
-         visibilityDistance : 100 //visibility distance in km!
+         visibilityRange : [10,100] //visibility range in km!
       };
 
       var poi = ogCreatePOI(poilayer,NewPoiDefinition);

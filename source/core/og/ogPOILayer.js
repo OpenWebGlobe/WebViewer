@@ -69,11 +69,11 @@ function ogPOILayer()
       "iconWidth" 		: 64,
       "iconHeight" 		: 64,
       "border" 		: 5,
-      "backgroundColor" 	: 'rgba(0, 0, 0, 0.0)',
+      "backgroundColor" 	: "rgba(0, 0, 0, 0.0)",
       "shadowOffsetX" 	: 0,
       "shadowOffsetY" 	: 0,
-      "shadowBlur" 	: 0,
-      "shadowColor" 	: 'rgba(0, 0, 0, 0.6)'
+      "shadowBlur" 	: 10,
+      "shadowColor" 	: "rgba(255, 0, 0, 0.6)"
    };
 }
 //------------------------------------------------------------------------------
@@ -83,23 +83,23 @@ ogPOILayer.prototype = new ogObject();
 
 ogPOILayer.prototype.convertStyle = function(style)
 {
-      if(style["font"] && style["fontSize"]) style.fontString = style.fontSize+"px"+" "+style.font;
-      if(style["backgroundColor"])
+      if(style.font  && style.fontSize ) style.fontString = style.fontSize+"px"+" "+style.font;
+      if(style.backgroundColor )
       {
         var tmp = style.backgroundColor;
         style.backgroundColor = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
       } 
-      if(style["fontColor"])
+      if(style.fontColor )
       {
         var tmp = style.fontColor;
         style.fontColor = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
       }
-      if(style["strokeColor"])
+      if(style.strokeColor )
       {
         var tmp = style.strokeColor;
         style.strokeStyle = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
       }
-      if(style["shadowColor"])
+      if(style.shadowColor )
       {
         var tmp = style.shadowColor;
         style.shadowColor = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
@@ -113,24 +113,24 @@ ogPOILayer.prototype.convertStyle = function(style)
  */
 ogPOILayer.prototype.ParseOptions = function(options)
 {
-   if(options["name"])
+   if(options.name )
    {
-      this.layername = options["name"];
+      this.layername = options.name ;
    }
-   if(options["textstyle"])
+   if(options.textstyle )
    {
-      this.convertStyle(options["textstyle"]);
-      this.textstyle = options["textstyle"];
+      this.convertStyle(options.textstyle );
+      this.textstyle = options.textstyle ;
    }
    else
    {
       this.textstyle = this.defaultTextstyle;
    }
    
-   if(options["iconstyle"])
+   if(options.iconstyle )
    {
-      this.convertStyle(options["iconstyle"]);
-      this.iconstyle = options["iconstyle"];
+      this.convertStyle(options.iconstyle );
+      this.iconstyle = options.iconstyle ;
    }
    else
    {

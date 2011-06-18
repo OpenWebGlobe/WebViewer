@@ -1073,9 +1073,9 @@ goog.exportSymbol('ogRemoveElevationLayer', ogRemoveElevationLayer);
 function ogCreatePOILayer(world_id,layername,textstyle,iconstyle)
 {
    var options = {};
-   options["name"] = layername;
-   options["textstyle"] = textstyle;
-   options["iconstyle"] = iconstyle;
+   options.name = layername;
+   options.textstyle = textstyle;
+   options.iconstyle = iconstyle;
    
    //** @type {ogScene} */
    var world = _GetObjectFromId(world_id);

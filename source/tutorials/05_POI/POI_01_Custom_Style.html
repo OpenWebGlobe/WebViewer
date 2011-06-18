@@ -29,14 +29,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
-
-
-
-<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
+<!--<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
-<!--<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script> -->
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>-->
+
+
 <script type="text/javascript">
 var poilayer;
 var hidden = false;
@@ -151,32 +149,32 @@ function main()
    var scene = ogGetScene(ctx);
 	
 
+   //ToDo: Doesnt work with compiled version ??? why?
    var customTextstyle =
    {
-      "font" 	: 'arial', 
-      "fontSize" 		: 32,
-      "backgroundColor" 	: [0,0,0,0],
-      "fontColor" 		: [1,0,0,1],
+      "font"  	         : "Arial", 
+      "fontSize" 		   : 32,
+      "backgroundColor" : [0,0,0,0],
       "lineWidth" 		: 3,
       "strokeColor" 		: [0,0,0,1],
-      "textAlign" 		: 'left', 
       "shadowOffsetX" 	: 0,
       "shadowOffsetY" 	: 0,
-      "shadowBlur" 	: 0,
-      "shadowColor"  	: [0,0,0,0]
+      "shadowBlur" 	   : 0,
+      "shadowColor"  	: [0,0,0,0],
+      "fontColor"  		: [1,0,0,1]
    };
 
 
    var customIconstyle = 
    {
-      "width" 		: 32,
-      "height" 	: 32,
-      "border" 	: 0,
-      "backgroundColor" : [0,0,0,0],
-      "shadowOffsetX" 	: 0,
-      "shadowOffsetY" 	: 0,
-      "shadowBlur" 	: 0,
-      "shadowColor" 	: [0,0,0,0]
+       width  		      : 32,
+       height  	      : 32,
+       border  	      : 0,
+       backgroundColor  : [0,0,0,0],
+       shadowOffsetX  	: 0,
+       shadowOffsetY  	: 0,
+       shadowBlur  	   : 1,
+       shadowColor  	   : [1,0,0,1]
    };
    var world = ogGetWorld(scene);
    poilayer = ogCreatePOILayer(world,"bicycle",customTextstyle,customIconstyle);

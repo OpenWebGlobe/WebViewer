@@ -31,10 +31,10 @@
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
-<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
+<!--<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>-->
 
 <script type="text/javascript">
 
@@ -163,13 +163,13 @@ function main()
    {
       text     :  "Airport",
       icon     :  "http://google-maps-icons.googlecode.com/files/airport.png",
-		position :  [7.72, 46.71, 7000],
+		position :  [7.72, 46.71, 2000],
 		size 		: 	80,
       flagpole :  false
    };
    
    // (8.4) then create and add it to the scene
-   ogCreatePOI(scene, poilayer, PoiDefinitionWithIcon);
+   ogCreatePOI(poilayer, PoiDefinitionWithIcon);
    
    // Create another poi layer to place poi's interactive
    bycicleLayer = ogCreatePOILayer(world,"byciclelayer");
