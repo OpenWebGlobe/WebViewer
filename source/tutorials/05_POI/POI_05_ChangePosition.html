@@ -88,7 +88,7 @@ function OnMouseMove(ctx,mx,my)
    {
       var scene = ogGetScene(ctx);
       var result = ogPickGlobe(scene, mx, my);
-      ogChangePOIPosition(dragpoi_id,result[1],result[2],result[3]);
+      ogChangePOIPositionWGS84(dragpoi_id,result[1],result[2],result[3]);
    }
 }
 

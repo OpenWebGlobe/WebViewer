@@ -88,6 +88,11 @@ function OnKeyDown(ctx, keycode)
       //show the bycicle poi layer
       ogShowPOILayer(bycicleLayer);
    }
+   if ( keycode == 51) // '2' was pressed
+   {
+      //show the bycicle poi layer
+      ogRemovePOILayer(bycicleLayer);
+   }
    
 }
 //------------------------------------------------------------------------------
@@ -133,11 +138,13 @@ function main()
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
    
    // (8) Create a POI-Layer
-   // first, we need to retrieve the scene:
+   // first, we need to retrieve the scene and the world:
    var scene = ogGetScene(ctx);
+   var world = ogGetWorld(scene);
+   
 	
    // Create the poi layer
-   var airportLayer = ogCreatePOILayer(scene,"airports");
+   var poilayer = ogCreatePOILayer(world,"misc");
    
    // (8.1) let's define a poi with text:
 	var PoiDefinition = 
@@ -149,7 +156,7 @@ function main()
 	};
 	
    // (8.2) then create the POI and add to the scene:
-	var poi = ogCreatePOI(scene, airportLayer, PoiDefinition);
+	var poi = ogCreatePOI(poilayer, PoiDefinition);
    
    // (8.3) let's create a poi with text and and icon. (text is optional)
    var PoiDefinitionWithIcon =
@@ -159,13 +166,12 @@ function main()
 		position :  [7.72, 46.71, 7000],
 		size 		: 	80,
       flagpole :  false
-   }
+   };
    
    // (8.4) then create and add it to the scene
-   ogCreatePOI(scene, airportLayer, PoiDefinitionWithIcon);
+   ogCreatePOI(scene, poilayer, PoiDefinitionWithIcon);
    
    // Create another poi layer to place poi's interactive
-   var world = ogGetWorld(scene);
    bycicleLayer = ogCreatePOILayer(world,"byciclelayer");
 
 

@@ -65,7 +65,9 @@ function OnMouseDown(context, button, mx, my)
       }
    
   }
+  ogDestroyGeometry(context,geometry3);
 }
+var geometry3;
 //------------------------------------------------------------------------------
 function main()
 {
@@ -127,33 +129,17 @@ function main()
    // definition of geometry options.
    // A geometry is a container for meshes
    // a mesh is a container of surfaces. every surface needs a json file.
-   var geometryOptions1 = {
-                           "url" : "G812.json",
-                          // "longitude" : 7.616000, //optional if not defined, the coordinates from json file will be used.
-                          // "latitude" : 45.908800, //optional if not defined, the coordinates from json file will be used.
-                          // "elevation" : 18353,  //optional if not defined, the coordinates from json file will be used.
-                           "type" : "MESH"      //model type. Currently only "MESH" supported.
-                           };
-   //create the surface                        
-   geometry1 = ogCreateGeometry(geometrylayer, geometryOptions1);
-   
-   // definition of second geometry
-   var geometryOptions2 = {
-                           "url" : "G821.json",
-                           "type" : "MESH"      
-                           };
-                           
-   //create the surface                        
-   geometry2 = ogCreateGeometry(geometrylayer, geometryOptions2);
 
-      // definition of third geometry
-   var geometryOptions3 = {
-                           "url" : "G832.json",
-                           "type" : "MESH"      
-                           };
-   //create the surface                        
-   geometry3 = ogCreateGeometry(geometrylayer, geometryOptions3);
-   
+
+   //create the first 3d model                   
+   var geometry1 = ogLoadGeometryAsync(geometrylayer,"G812.json");
+
+   //create the second 3d model                      
+   var geometry2 = ogLoadGeometryAsync(geometrylayer,"G821.json");
+
+   //create the third 3d model
+   geometry3 = ogLoadGeometryAsync(geometrylayer,"G832.json");
+
 }
 //------------------------------------------------------------------------------
    

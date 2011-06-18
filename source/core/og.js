@@ -1066,8 +1066,8 @@ goog.exportSymbol('ogRemoveElevationLayer', ogRemoveElevationLayer);
 /** @description Creates a POI Layer 
 *   @param {number} world_id the scene
 *   @param {string} layername 
-*   @param {Object} textstyle 
-*   @param {Object} iconstyle
+*   @param {Object=} textstyle 
+*   @param {Object=} iconstyle
 *   @returns number
 */
 function ogCreatePOILayer(world_id,layername,textstyle,iconstyle)
@@ -1097,8 +1097,8 @@ function ogRemovePOILayer(poilayer_id)
    var layer = _GetObjectFromId(poilayer_id);
    if (layer && layer.type == OG_OBJECT_POILAYER)
    {
-      layer.RemovePOILayer();
       layer.UnregisterObject();
+      return 0;
    }
    return -1;
 }
@@ -1114,6 +1114,7 @@ function ogHidePOILayer(poilayer_id)
    if (poilayer && poilayer.type == OG_OBJECT_POILAYER)
    {
       poilayer.Hide();
+      return 0;
       
    }
    return -1;
@@ -1129,7 +1130,8 @@ function ogShowPOILayer(poilayer_id)
    var poilayer = /** @type {ogPOILayer} */_GetObjectFromId(poilayer_id);
    if (poilayer && poilayer.type == OG_OBJECT_POILAYER)
    {
-      poilayer.Show(); 
+      poilayer.Show();
+      return 0;
    }
    return -1;
 }
@@ -1167,8 +1169,23 @@ function ogDestroyPOI(poi_id)
    var POI = _GetObjectFromId(poi_id);
    if (POI && POI.type == OG_OBJECT_POI)
    {
-      POI.UnregisterObject();
+      if(POI.layer)
+      {
+         //if the poi is in a poilayer, the poilayer destroies the poi.
+            var POILayer = _GetObjectFromId(POI.layer);
+            if (POILayer  && POILayer .type == OG_OBJECT_POILAYER)
+            {
+               POILayer.RemovePOI(POI);
+            }
+      }
+      else
+      {
+         POI.UnregisterObject();
+         return 0;
+      }
+      
    }
+   return -1;
 }
 goog.exportSymbol('ogDestroyPOI', ogDestroyPOI);
 //------------------------------------------------------------------------------
@@ -1223,12 +1240,33 @@ goog.exportSymbol('ogChangePOISize', ogChangePOISize);
  * @param {number} lat Latitude
  * @param {number} elv Elevation
  */
-function ogChangePOIPosition(poi_id, lng, lat, elv)
+function ogChangePOIPositionWGS84(poi_id, lng, lat, elv)
 {
    var POI = /** @type {ogPOI} */ _GetObjectFromId(poi_id);
    if (POI && POI.type == OG_OBJECT_POI)
    {
-      POI.ChangePosition(lng, lat, elv);
+      /** @type {GeoCoord}*/
+      var geocord = new GeoCoord(lng,lat,elv);
+      var coors = [];
+      geocord.ToCartesian(coors);
+      POI.ChangePosition(coors[0], coors[1], coors[2]);
+   }
+}
+goog.exportSymbol('ogChangePOIPositionWGS84', ogChangePOIPositionWGS84);
+//------------------------------------------------------------------------------
+/**
+ * @description Change POI Position in cartesion coordinates
+ * @param {number} poi_id the POI
+ * @param {number} x cartesian x coordinate
+ * @param {number} y cartesian y coordinate
+ * @param {number} z cartesian z coordinate
+ */
+function ogChangePOIPosition(poi_id, x, y, z)
+{
+   var POI = /** @type {ogPOI} */ _GetObjectFromId(poi_id);
+   if (POI && POI.type == OG_OBJECT_POI)
+   {
+      POI.ChangePosition(x, y, z);
    }
 }
 goog.exportSymbol('ogChangePOIPosition', ogChangePOIPosition);
@@ -1370,10 +1408,31 @@ goog.exportSymbol('ogRemoveGeometryLayer', ogRemoveGeometryLayer);
 //------------------------------------------------------------------------------
 /** @description Create a Geometry Object
 *   @param {number} layer_id the scene
-*   @param {GeometryOptions} options surface options
+*   @param {Object} jsonobject the geometry as object. See OpenWebGlobe Geometry Exchange Format.
 */
-function ogCreateGeometry(layer_id ,options)
+function ogCreateGeometry(layer_id ,jsonobject)
 {
+   var options = {};
+   options.jsonobject=jsonobject;
+   /** @type {ogGeometryLayer} */
+   var layer = /** @type {ogGeometryLayer} */ _GetObjectFromId(layer_id);
+   if( layer && layer.type == OG_OBJECT_GEOMETRYLAYER)
+   {
+      var geometry = _CreateObject(OG_OBJECT_GEOMETRY, layer.parent.parent, options);
+      layer.AddGeometry(geometry);
+      return geometry.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogCreateGeometry', ogCreateGeometry);
+/** @description Create a Geometry Object
+*   @param {number} layer_id the scene
+*   @param {string} url json url
+*/
+function ogLoadGeometryAsync(layer_id ,url)
+{
+   var options = {};
+   options.url=url;
    /** @type {ogGeometryLayer} */
    var layer = /** @type {ogGeometryLayer} */ _GetObjectFromId(layer_id);
    if( layer && layer.type == OG_OBJECT_GEOMETRYLAYER)
@@ -1385,7 +1444,7 @@ function ogCreateGeometry(layer_id ,options)
 
    return -1;
 }
-goog.exportSymbol('ogCreateGeometry', ogCreateGeometry);
+goog.exportSymbol('ogLoadGeometryAsync', ogLoadGeometryAsync);
 //------------------------------------------------------------------------------
 /** @description Draw a Geometry
 *   @param {number} geometry_id
@@ -1396,27 +1455,29 @@ function ogDestroyGeometry(context,geometry_id)
    var geometry = /** @type {ogGeometry} */ _GetObjectFromId(geometry_id);
    if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
    {
-      geometry._OnDestroy();
+      _UnregisterObject(geometry_id);
    }
    return -1;
 }
 goog.exportSymbol('ogDestroyGeomentry', ogDestroyGeometry);
+
 //------------------------------------------------------------------------------
-/** @description Adds a Mesh to a geomertry
-*   @param {number} geometry_id 
-*   @param {GeometryOptions} options 
+/** @description 
+*   @param {number} geometry_id
+*   @param {number} lng
+*   @param {number} lat
+*   @param {number} elv
 */
-function ogAddToGeometry(geometry_id, options)
+function ogSetGeometryPositionWGS84(geometry_id, lng, lat, elv)
 {
-   /** @type {ogGeometry} */
-   var geometry = /** @type {ogGeometry} */ _GetObjectFromId(geometry_id);
+   var geometry = /** @type {ogGeometry} */_GetObjectFromId(geometry_id);
    if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
    {
-     geometry.Add(options);
+     return geometry.SetPositionWGS84(lng, lat, elv);
    }
    return -1;
 }
-goog.exportSymbol('ogAddToGeometry', ogAddToGeometry);
+goog.exportSymbol('ogSetGeometryPositionWGS84', ogSetGeometryPositionWGS84);
 
 //------------------------------------------------------------------------------
 /** @description gets the number of meshObjects in a geometry. 

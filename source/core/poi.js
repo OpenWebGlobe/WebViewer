@@ -89,8 +89,10 @@ function Poi(engine)
   /** @type {number} */ //the cartesian x position
   this.posZ;
    /** @type {number} */ //the cartesian visibility distance.
-  this.visibilityDistance = Infinity; //
-  
+  this.visibilityDistanceMin = 0; //
+  /** @type {number} */
+  this.visibilityDistanceMax = Infinity; //
+  /** @type {vec4} */
   this.poiActiveColor = new vec4(1,1,1,1);
   
   /** @type {ogPoiIconStyle} */
@@ -164,18 +166,18 @@ Poi.prototype.SetContent = function(text,textStyle,timgurl,iconStyle)
 //------------------------------------------------------------------------------
 /**
 * @description Set the Poi postion in wgs84 coordinates.
-* @param {number} lat the latitude value
-* @param {number} lng the longitude value
-* @param {number} elv the elevation value
-* @param {?number} signElv the elevation of poi text -> if this is set, the poi gets a pole from elv to signElv.
+* @param {number} x the latitude value
+* @param {number} y the longitude value
+* @param {number} z the elevation value
+* @param {?number} zs the elevation of poi text -> if this is set, the poi gets a pole from elv to signElv.
 */ 
-Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
+Poi.prototype.SetPosition = function(x,y,z,zs)
 {
-     this.lat = lat;
+     /*this.lat = lat;
      this.lng = lng;
      this.elv = elv;
      this.signElv = signElv;
-     
+     */
      
     //calc poi width
     if(this.iconMesh && this.textMesh)
@@ -194,29 +196,34 @@ Poi.prototype.SetPosition = function(lat,lng,elv,signElv)
      this.poiHeight = this.textMesh.meshHeight;
     }
     
-    
+    /*
     this.geoCoord = new GeoCoord(lng,lat,elv);
     var cart = new Array(3);
-    this.geoCoord.ToCartesian(cart);
+    this.geoCoord.ToCartesian(cart);*/
     if(this.iconMesh)
     {
-     this.iconMesh.SetAsBillboard(cart[0],cart[1],cart[2],-((this.iconMesh.meshWidth/2)+(this.poiWidth/2-this.iconMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);
+     //this.iconMesh.SetAsBillboard(cart[0],cart[1],cart[2],-((this.iconMesh.meshWidth/2)+(this.poiWidth/2-this.iconMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);
+     this.iconMesh.SetAsBillboard(x,y,z,-((this.iconMesh.meshWidth/2)+(this.poiWidth/2-this.iconMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);
+     
     }
     if(this.textMesh)
     {
-     this.textMesh.SetAsBillboard(cart[0],cart[1],cart[2],((this.textMesh.meshWidth/2)+(this.poiWidth/2-this.textMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);  
-    }
-    this.posX = cart[0];
-    this.posY = cart[1];
-    this.posZ = cart[2];
+     //this.textMesh.SetAsBillboard(cart[0],cart[1],cart[2],((this.textMesh.meshWidth/2)+(this.poiWidth/2-this.textMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);
+     this.textMesh.SetAsBillboard(x,y,z,((this.textMesh.meshWidth/2)+(this.poiWidth/2-this.textMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);  
     
-    if(signElv!=null)
+    }
+    this.posX = x;//cart[0];
+    this.posY = y;//cart[1];
+    this.posZ = z;//cart[2];
+    
+    if(zs!=null)
     {
-      this.geoCoord2 = new GeoCoord(lng,lat,signElv);
+      /*this.geoCoord2 = new GeoCoord(lng,lat,signElv);
       var cart2 = new Array(3);
-      this.geoCoord2.ToCartesian(cart2);
+      this.geoCoord2.ToCartesian(cart2);*/
       this.pole = true;
-      this.poleMesh = this.canvasTexture.GetPoleMesh(cart[0],cart[1],cart[2],cart2[0],cart2[1],cart2[2],this.poleR,this.poleG,this.poleB,this.poleA);
+     // this.poleMesh = this.canvasTexture.GetPoleMesh(cart[0],cart[1],cart[2],cart2[0],cart2[1],cart2[2],this.poleR,this.poleG,this.poleB,this.poleA);
+      this.poleMesh = this.canvasTexture.GetPoleMesh(x,y,z,0,0,0,this.poleR,this.poleG,this.poleB,this.poleA);
     }
 }
 //------------------------------------------------------------------------------
@@ -237,9 +244,10 @@ Poi.prototype.SetFlagpoleColor = function(color)
 *@description sets the flagpole color
 *@param {number} dist visibility distance in km!
 */
-Poi.prototype.SetVisibilityDistance = function(dist)
+Poi.prototype.SetVisibilityRange = function(dist)
 {
-   this.visibilityDistance = dist*1000*CARTESIAN_SCALE_INV;
+   this.visibilityDistanceMin = dist[0]*1000*CARTESIAN_SCALE_INV;
+   this.visibilityDistanceMax = dist[1]*1000*CARTESIAN_SCALE_INV;
 }
 
 //------------------------------------------------------------------------------
@@ -290,7 +298,15 @@ Poi.prototype.Draw = function()
 Poi.prototype.SetSize = function(size)
 {
   this.scale = size;
-  this.SetPosition(this.lat,this.lng,this.elv,this.signElv);
+  if(this.pole)
+  {
+      this.SetPosition(this.posX,this.posY,this.posZ,0);
+  }
+  else
+  {
+      this.SetPosition(this.posX,this.posY,this.posZ,null);
+  }
+  
 }
 //------------------------------------------------------------------------------
 /**

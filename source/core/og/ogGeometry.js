@@ -80,33 +80,17 @@ ogGeometry.prototype = new ogObject();
 ogGeometry.prototype.ParseOptions = function(options)
 {
    this.options = options;
-   if(options["type"] == "MESH")
+
+   var scene = this.parent;
+   if(options["url"])
    {
-      var scene = this.parent;
-      if(options["url"])
-      {
-         this.loadGeometryFromJSON(options["url"],null,null);
-      }  
+      this.loadGeometryFromJSON(options["url"]);
+   }
+   if(options["jsonobject"])
+   {
+      this.CreateFromJSONObject(options["jsonobject"]);
    }
 }
-
-//------------------------------------------------------------------------------
-/**
-* @description parse options
-* @param {GeometryOptions} options
-* @ignore
-*/
-ogGeometry.prototype.Add= function(options)
-{  
-   if(options["type"] == "MESH")
-   {
-      var scene = this.parent;
-      var mesh = _CreateObject(OG_OBJECT_MESH, this, options); 
-      this.meshes_og.push(mesh)
-      this.meshes.push(mesh.GetSurfaceArray());
-   }
-}
-
 
 
 //------------------------------------------------------------------------------
@@ -180,6 +164,25 @@ ogGeometry.prototype.GetMeshAt = function(index)
    return this.meshes_og[index].id;
 }
 
+
+//------------------------------------------------------------------------------
+/**
+ * @description Sets the postion of the whole geometry
+ * @param {number} lng
+ * @param  {number} lat
+ * @param  {number} elv
+ */
+ogGeometry.prototype.SetPositionWGS84 = function(lng, lat, elv)
+{
+   for(var j=0;j<this.meshes_og.length;j++)
+   {
+      /**@type {ogMeshObject} */
+      var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+      mesh.SetPositionWGS84(lng,lat,elv);
+   }
+}
+
+//------------------------------------------------------------------------------
 /**
  * @description hides the geometry
  */
@@ -194,7 +197,7 @@ ogGeometry.prototype.Hide = function()
 
 }
 
-
+//------------------------------------------------------------------------------
 /**
  * @description shows the geometry
  */
@@ -228,35 +231,43 @@ ogGeometry.prototype._cbfjsondownload = function()
       else
       {
          var data=this.http.responseText;      
-         var mesharray=/** @type {ObjectJSON} */ goog.json.parse(data);
-         
-         for(var i=0; i<mesharray.length; i++)
-         {
-            this.options.jsonobject = mesharray[i];
-            var mesh = _CreateObject(OG_OBJECT_MESH, this, this.options); 
-            this.meshes_og.push(mesh)
-            this.meshes.push(mesh.GetSurfaceArray());
-         }
-         if(this.cbr)
-         {
-            this.cbr(this.id);
-         }
-            
-         //add to geometry renderer...
-         var renderer = this._GetGeometryRenderer();
-         this.indexInRendererArray = renderer.AddGeometry(this.meshes);
+         var jsonobj=/** @type {ObjectJSON} */ goog.json.parse(data);
+         this.CreateFromJSONObject(jsonobj);  
       }     
    }    
 }
 
 //------------------------------------------------------------------------------
 /**
+ * @description Load model data from json object
+ * @param {Object} jsonobject the json object.
+ */
+ogGeometry.prototype.CreateFromJSONObject = function(jsonobject)
+{
+   var mesharray = jsonobject;
+   for(var i=0; i<mesharray.length; i++)
+   {
+      this.options.jsonobject = mesharray[i];
+      var mesh = _CreateObject(OG_OBJECT_MESH, this, this.options); 
+      this.meshes_og.push(mesh)
+      this.meshes.push(mesh.GetSurfaceArray());
+   }
+   if(this.cbr)
+   {
+      this.cbr(this.id);
+   }
+      
+   //add to geometry renderer...
+   var renderer = this._GetGeometryRenderer();
+   this.indexInRendererArray = renderer.AddGeometry(this.meshes);
+}
+
+//------------------------------------------------------------------------------
+/**
  * @description Load surface-data from a JSON file.
  * @param {string} url the url to the JSON file.
- * @param {?function(number)} opt_callbackready optional function called when surface finished download
- * @param {?function(number)} opt_callbackfailed optional function called when surface failed download
  */
-ogGeometry.prototype.loadGeometryFromJSON = function(url, opt_callbackready, opt_callbackfailed)
+ogGeometry.prototype.loadGeometryFromJSON = function(url)
 {
    if(url == null) 
    {
@@ -268,9 +279,6 @@ ogGeometry.prototype.loadGeometryFromJSON = function(url, opt_callbackready, opt
    this.http=new window.XMLHttpRequest();
    this.http.open("GET",this.jsonUrl,true);
    //this.http.setRequestHeader("Cache-Control", "public");
-   
-   this.cbr = opt_callbackready;
-   this.cbf = opt_callbackfailed;
    
    var me=this;
    this.http.onreadystatechange = function(){me._cbfjsondownload();};

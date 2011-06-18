@@ -87,8 +87,7 @@ ogSurface.prototype.ogSurface_callbackready = function(surface)
 {
    if(this.longitude != 0.0 && this.latitude != 0.0)
    {
-      this.surface.SetAsNavigationFrame(this.longitude,this.latitude, this.elevation);
-      
+      this.SetPositionWGS84(this.longitude,this.latitude, this.elevation);
    }
    this.status = OG_OBJECT_READY;
 
@@ -96,6 +95,17 @@ ogSurface.prototype.ogSurface_callbackready = function(surface)
    {
       this.cbfReady(this.id);
    }
+}
+//------------------------------------------------------------------------------
+/**
+* @description set position of the surface
+* @param {number} lng
+* @param {number} lat
+* @param {number} elv
+*/
+ogSurface.prototype.SetPositionWGS84 = function(lng,lat,elv)
+{  
+   this.surface.SetAsNavigationFrame(lng,lat,elv);
 }
 //------------------------------------------------------------------------------
 /**

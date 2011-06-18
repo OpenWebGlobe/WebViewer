@@ -36,7 +36,7 @@
 <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
-
+<!--<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script> -->
 <script type="text/javascript">
 var poilayer;
 var hidden = false;
@@ -60,7 +60,8 @@ function OnMouseDown(context, button, mx, my)
    if(pickedPoiId > 0)
    {
       // increase POI size
-      ogChangePOISize(pickedPoiId,100);
+     // ogChangePOISize(pickedPoiId,100);
+      ogDestroyPOI(pickedPoiId);
    }
    
    // call the pickglobe function, this gives the result in lng, lat, elv
@@ -76,7 +77,7 @@ function OnMouseDown(context, button, mx, my)
          size 		: 	50,
          flagpole : true,
          flagpoleColor: [0,0,1,1],  //	optional, default is [0,0,0,1] [r,g,b,a]
-         visibilityRange: [0, 1000],//	optional, default is [0,∞]
+         visibilityRange: [10,100],//	optional, default is [0,∞]
          mode: "absolute",	         //optional, default is "absolute"
          size: 50	               //optional, default is 40
       };

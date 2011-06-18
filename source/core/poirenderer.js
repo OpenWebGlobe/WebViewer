@@ -68,8 +68,9 @@ PoiRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
          dz = (poi.posZ-z);
          var dis_squared = dx*dx + dy*dy + dz*dz;
          
-         disLimit = poi.visibilityDistance*poi.visibilityDistance; 
-         if(disLimit>dis_squared)
+         var disLimitMin = poi.visibilityDistanceMin*poi.visibilityDistanceMin;
+         var disLimitMax = poi.visibilityDistanceMax*poi.visibilityDistanceMax; 
+         if(disLimitMax > dis_squared && disLimitMin < dis_squared)
          {
             poi.Draw();
          }

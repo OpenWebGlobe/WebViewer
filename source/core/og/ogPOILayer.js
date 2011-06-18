@@ -144,7 +144,10 @@ ogPOILayer.prototype.ParseOptions = function(options)
  */
 ogPOILayer.prototype._OnDestroy = function()
 {
-   this.RemovePOILayer();
+   for(var i= 0; i < this.poiarray.length; i++)
+   {
+      this.poiarray[i].UnregisterObject();
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -173,18 +176,6 @@ ogPOILayer.prototype.Show = function()
 
 //------------------------------------------------------------------------------
 /**
- *  @description removes all pois from the layer
- */
-ogPOILayer.prototype.RemovePOILayer = function()
-{
-   for(var i= 0; i < this.poiarray.length; i++)
-   {
-      this.poiarray[i]._OnDestroy();
-   }
-   
-}
-//------------------------------------------------------------------------------
-/**
  *  @description creates a poi using the layer styles.
  */
 ogPOILayer.prototype.CreatePOI = function(options)
@@ -207,7 +198,8 @@ ogPOILayer.prototype.RemovePOI = function(poi)
    {
       if(this.poiarray[i] == poi)
       {
-        this.poiarray.splice(i,1); 
+         this.poiarray[i].UnregisterObject();
+         this.poiarray.splice(i,1);
       }
       
    }

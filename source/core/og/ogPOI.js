@@ -93,7 +93,10 @@ ogPOI.prototype.ParseOptions = function(options)
    }
    if (options["position"])
    {
-      position = options["position"];
+      var wgs_position = options["position"];
+      var geocoord = new GeoCoord(wgs_position[0],wgs_position[1],wgs_position[2]);
+      var cart = [];
+      geocoord.ToCartesian(cart);
    }
    if (options["size"])
    {
@@ -127,11 +130,11 @@ ogPOI.prototype.ParseOptions = function(options)
    // todo: fix lat/lng -> lng/lat !!!
    if(options["flagpole"] == true)
    {
-      this.poi.SetPosition(position[1], position[0], position[2], 0);
+      this.poi.SetPosition(cart[0], cart[1], cart[2], 0);
    }
    else
    {
-      this.poi.SetPosition(position[1], position[0], position[2],null);
+      this.poi.SetPosition(cart[0], cart[1], cart[2],null);
    }
    
    this.poi.SetSize(size);
@@ -145,9 +148,9 @@ ogPOI.prototype.ParseOptions = function(options)
       poirenderer.AddPoi(this.poi);
    }
    
-   if(options["visibilityDistance"])
+   if(options["visibilityRange"])
    {
-      this.poi.SetVisibilityDistance(options["visibilityDistance"]);
+      this.poi.SetVisibilityRange(options["visibilityRange"]);
    }
    
 }
@@ -171,10 +174,6 @@ ogPOI.prototype._OnDestroy = function()
       poirenderer.RemovePoi(this.poi);
    }
    
-   if(this.poilayer)
-   {
-      this.poilayer.RemovePOI(this);
-   }
    /** @type {PoiManager} */
    var poimgr = context.engine.poimanager;
    poimgr.DestroyPoi(this.poi);
@@ -228,22 +227,22 @@ ogPOI.prototype.ChangeSize = function(newsize)
 //------------------------------------------------------------------------------
 /**
  * @description change POI location
- * @param {number} lng Lontigude
- * @param {number} lat Latitude
- * @param {number} elv elevation
+ * @param {number} x cartesian x coordinate
+ * @param {number} y cartesian y coordinate
+ * @param {number} z cartesian z coordinate
  */
-ogPOI.prototype.ChangePosition = function(lng, lat, elv)
+ogPOI.prototype.ChangePosition = function(x, y, z)
 {
    if(this.poi.pole)
    {
-      this.poi.SetPosition(lat,lng,elv,0);  
+      this.poi.SetPosition(x,y,z,0);  
    }
    else
    {
-      this.poi.SetPosition(lat,lng,elv,null);   
+      this.poi.SetPosition(x,y,z,null);   
    }
-
 }
+
 //------------------------------------------------------------------------------
 /**
  * @description hide the poi

@@ -68,11 +68,7 @@ ogMeshObject.prototype.ParseOptions = function(options)
             this.surfaces_og.push(ogsurf);
             this.surfaces.push(ogsurf.GetSurface());
          }
-      }
-     // var scene = this.parent;
-      
-      
-      
+      } 
 }
 
 
@@ -108,6 +104,24 @@ ogMeshObject.prototype.Hide = function()
       /** @type {ogSurface} */
       var surf = /** @type {ogSurface} */this.surfaces_og[k];
       surf.Hide();
+   }   
+}
+
+
+//------------------------------------------------------------------------------
+/**
+ * @description Sets the postion of the whole geometry
+ * @param {number} lng
+ * @param {number} lat
+ * @param {number} elv
+ */
+ogMeshObject.prototype.SetPositionWGS84 = function(lng,lat,elv)
+{
+   for(var k=0; k<this.surfaces_og.length;k++)
+   {
+      /** @type {ogSurface} */
+      var surf = /** @type {ogSurface} */this.surfaces_og[k];
+      surf.SetPositionWGS84(lng,lat,elv);
    }   
 }
 
