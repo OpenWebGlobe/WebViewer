@@ -64,7 +64,7 @@ function DatasetInfo()
    this.sLayerCopyright = null;    // Layer Copyright String
    /** @type {null|string} */
    this.nSRS = null;               // Spatial Reference System: 3395 or 3785
-   /** @type {Array.<number>|null} */
+   /** @type {null|Array.<number>|null} */
    this.vBoundingBox = null;       // Bounding Box: ulx uly lrx lry
    /** @type {null|number} */
    this.nLevelofDetail = null;     // Level of Detail
@@ -74,16 +74,19 @@ function DatasetInfo()
    this.nImageHeight = null;       // for image datasets: original image width
    /** @type {null|number} */
    this.nTileSize = null;          // for image datasets: size of a tile (in pixel)
-   /** @type {Array.<number>} */
+   /** @type {null|Array.<number>} */
    this.vTileLayout = null;        // Tile Dimension: x y
    /** @type {null|string} */
    this.sTileFormat = null;        // mime type of data, for example "image/png"
-   /** @type {Array.<number>} */
+   /** @type {null|Array.<number>} */
    this.vBounds = null;            // Zoom, TileX0, TileY0, TileX1, TileY1
-   /** @type {Array.<number>} */
+   /** @type {null|Array.<number>} */
    this.vCenterCoord = null;       // Dataset Center coord in WGS84
-   /** @type {string} */
-   this.sFileExtension = "";      // file extension.   
+   /** @type {null|string} */
+   this.sFileExtension = null;      // file extension.
+   /** @type {null|number} */
+   this.version = null;              // version
+   
 }
 
 //------------------------------------------------------------------------------
@@ -97,38 +100,78 @@ function _cbfdsidownload(dsi)
    {
       if (dsi.http.status==200)
       {
-         var data=dsi.http.responseText;      
-         var obj=/** @type {DatasetInfoJSON} */ goog.json.parse(data);
+         var data=dsi.http.responseText;
+         var obj;
+         try
+         {
+            obj=/** @type {DatasetInfoJSON} */ goog.json.parse(data);
+         }
+         catch(e)
+         {
+            alert(e);
+            return;
+         }
+         
+         if (obj['extent'])
+         {
+            dsi.version = 1;
+            dsi.sLayername = obj['name'];
+            dsi.nLevelofDetail = obj['maxlod'];
+            dsi.nTileSize = 256;
+            var extent = obj['extent'];
+            dsi.vBoundingBox = extent;
+            dsi.vBounds = [dsi.nLevelofDetail, extent[0], extent[1], extent[2], extent[3]];
+            
+            if (obj['format'] == "png")
+            {
+               dsi.sTileFormat = "image/png";
+            }
+            else if (obj['format'] == "jpg")
+            {
+               dsi.sTileFormat = "image/jpg";
+            }
+            else
+            {
+               dsi.sTileFormat = "image/png"; // default
+            }
       
-         dsi.sLayerName = obj['layer'];
-         dsi.sLayerCopyright = obj['copyright'];
-         dsi.nSRS = obj['srs'];
-         dsi.vBoundingBox = obj['boundingbox'];
-         dsi.nLevelofDetail = obj['levelofdetail'];
-         dsi.nImageWidth = obj['imagewidth'];
-         dsi.nImageHeight = obj['imageheight'];
-         dsi.nTileSize = obj['tilesize'];
-         dsi.vTileLayout = obj['tilelayout'];
-         dsi.sTileFormat = obj['tileformat'];
-         dsi.vBounds = obj['bounds'];
-         dsi.vCenterCoord = obj['center'];
-         
-         if (dsi.sTileFormat == "image/png")
-         {
-            dsi.sFileExtension = ".png";
-         }  
-         else if (dsi.sTileFormat == "image/jpg")
-         {
-            dsi.sFileExtension = ".jpg"; 
+            dsi.bReady = true;
+            
+            
          }
-         else if (dsi.sTileFormat == "elevation/json")
+         else
          {
-            dsi.sFileExtension = ".json"; 
+            dsi.version = 0;
+            dsi.sLayerName = obj['layer'];
+            dsi.sLayerCopyright = obj['copyright'];
+            dsi.nSRS = obj['srs'];
+            dsi.vBoundingBox = obj['boundingbox'];
+            dsi.nLevelofDetail = obj['levelofdetail'];
+            dsi.nImageWidth = obj['imagewidth'];
+            dsi.nImageHeight = obj['imageheight'];
+            dsi.nTileSize = obj['tilesize'];
+            dsi.vTileLayout = obj['tilelayout'];
+            dsi.sTileFormat = obj['tileformat'];
+            dsi.vBounds = obj['bounds'];
+            dsi.vCenterCoord = obj['center'];
+            
+            if (dsi.sTileFormat == "image/png")
+            {
+               dsi.sFileExtension = ".png";
+            }  
+            else if (dsi.sTileFormat == "image/jpg")
+            {
+               dsi.sFileExtension = ".jpg"; 
+            }
+            else if (dsi.sTileFormat == "elevation/json")
+            {
+               dsi.sFileExtension = ".json"; 
+            }
+            
+            //goog.debug.Logger.getLogger('owg.Datasetinfo').info("Datasetinfo: " + dsi.sLayerName + "(" + dsi.sTileFormat + ")" + dsi.sLayerCopyright);
+            
+            dsi.bReady = true;
          }
-         
-         goog.debug.Logger.getLogger('owg.Datasetinfo').info("Datasetinfo: " + dsi.sLayerName + "(" + dsi.sTileFormat + ")" + dsi.sLayerCopyright);
-         
-         dsi.bReady = true;     
       }
       else
       {

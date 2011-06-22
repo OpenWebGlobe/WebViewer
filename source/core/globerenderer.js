@@ -29,6 +29,7 @@ goog.require('owg.MercatorQuadtree');
 goog.require('owg.OSMImageLayer');
 goog.require('owg.ViewFrustum');
 goog.require('owg.i3dImageLayer');
+goog.require('owg.owgImageLayer');
 goog.require('owg.i3dElevationLayer');
 
 //------------------------------------------------------------------------------
@@ -103,8 +104,9 @@ function GlobeRenderer(engine)
  * 
  *    url: ARRAY of urls (it it always an array, even if there is only 1 url)
  *    layer: name of layer
- *    service: i3d for i3d tile layout (default)
+ *    service: i3d for i3d tile layout (deprecated)
  *             osm for OpenStreetMap tile layout
+ *             owg for OpenWebGlobe tile layout (default)
  *    
  *  Example:
  *    var imglayer = 
@@ -152,6 +154,18 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
       {
          var imgLayer = new OSMImageLayer();
          imgLayer.Setup(options["url"]);
+         index = this.imagelayerlist.length;
+         this.imagelayerlist.push(imgLayer);
+         this._UpdateLayers(); 
+      }
+   }
+   else if (options["service"] == "owg")
+   {
+      if (options["url"] && options["url"].length>0)
+      {
+         var layer = options["layer"];
+         var imgLayer = new owgImageLayer();
+         imgLayer.Setup(options["url"], layer, options["transparency"]);
          index = this.imagelayerlist.length;
          this.imagelayerlist.push(imgLayer);
          this._UpdateLayers(); 
