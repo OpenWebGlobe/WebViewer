@@ -100,26 +100,26 @@ function Poi(engine)
      "iconWidth" : 64,
      "iconHeight" : 64,
      "border" : 0,
-     "backgroundColor" : 'rgba(255, 255, 255, 0)',
+     "backgroundColor" : "rgba(255, 255, 255, 0)",
      "shadowOffsetX" : 0,
      "shadowOffsetY" : 0,
      "shadowBlur" : 0,
-     "shadowColor" : 'rgba(0, 0, 0, 0)'
+     "shadowColor" : "rgba(0, 0, 0, 0)"
      };
 
   /** @type {ogPoiTextStyle} */
   this.textStyle = {
      "id"         : 1,
-     "fontString" : '48px bold Arial',  
-     "backgroundColor" : 'rgba(0,0,0,0)',
-     "fontColor" : 'rgba(255,255,255,1.0)',
+     "fontString" : "48px bold Arial",  
+     "backgroundColor" : "rgba(0,0,0,0)",
+     "fontColor" : "rgba(255,255,255,1.0)",
      "lineWidth" : 8,
-     "strokeStyle" : 'rgba(0,0,0,1.0)', 
+     "strokeStyle" : "rgba(0,0,0,1.0)", 
      "fontSize" : 48,
      "shadowOffsetX" : 0,
      "shadowOffsetY" : 0,
      "shadowBlur" : 0,
-     "shadowColor" : 'rgba(0, 0, 0, 1.0)'
+     "shadowColor" : "rgba(0, 0, 0, 1.0)"
      };
 
 }

@@ -256,7 +256,7 @@ PoiManager.prototype.DestroyTextMesh = function(text,style)
 PoiManager.prototype.ChangePoiIcon = function(poi,url,style)
 { 
    poi.iconMesh = this.CreateIconMesh(url,style);
-   poi.SetPosition(poi.lat,poi.lng,poi.elv,poi.signElv);
+   poi.SetPosition(poi.posX,poi.posY,poi.posZ,null);
    this.DestroyIconMesh(poi.imgurl); 
    poi.imgurl = url;
 }
@@ -271,7 +271,7 @@ PoiManager.prototype.ChangePoiIcon = function(poi,url,style)
 PoiManager.prototype.ChangePoiText = function(poi,text,style)
 {
    poi.textMesh = this.CreateTextMesh(text,style);
-   poi.SetPosition(poi.lat,poi.lng,poi.elv,poi.signElv);
+   poi.SetPosition(poi.posX,poi.posY,poi.posZ,null);
    this.DestroyTextMesh(poi.text,style);
    poi.text = text;  
 }

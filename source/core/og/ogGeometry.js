@@ -66,6 +66,8 @@ function ogGeometry()
    this.cbf = null;
    /** @type {Object} */
    this.options = null;
+   /** @type {Number} */
+   this.layerID = -1; //the id of the geometrylayer containing this geometry.
 }
 //------------------------------------------------------------------------------
 /** @extends {ogObject} */
@@ -103,15 +105,9 @@ ogGeometry.prototype._OnDestroy = function()
    var renderer = this._GetGeometryRenderer();
    renderer.RemoveGeometry(this.indexInRendererArray);
 
-   for(var j=0;j<this.meshes.length;j++)
+   for(var j=0;j<this.meshes_og.length;j++)
    {
-      var surfaces = this.meshes[j];
-      for(var k=0; k<surfaces.length;k++)
-      {
-         /**@type {Surface} */
-         var surface = /**@type {Surface}*/surfaces[k];
-         surface.Destroy();
-      } 
+      this.meshes_og[j].UnregisterObject();
    }
    this.geometryarray = null;   
 }
@@ -247,7 +243,7 @@ ogGeometry.prototype.CreateFromJSONObject = function(jsonobject)
    var mesharray = jsonobject;
    for(var i=0; i<mesharray.length; i++)
    {
-      this.options.jsonobject = mesharray[i];
+      this.options["jsonobject"] = mesharray[i];
       var mesh = _CreateObject(OG_OBJECT_MESH, this, this.options); 
       this.meshes_og.push(mesh)
       this.meshes.push(mesh.GetSurfaceArray());

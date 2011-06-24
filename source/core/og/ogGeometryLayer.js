@@ -111,8 +111,12 @@ ogGeometryLayer.prototype.RemoveGeometryLayer = function()
 {
    for(var i= 0; i < this.geometryarray.length; i++)
    {
-      this.geometryarray[i]._OnDestroy(); //To Discuss: is this legal?
+      for(var j=i;j<this.geometryarray.length;j++){
+         this.geometryarray[i].indexInRendererArray -= 1;
+      }
+      this.geometryarray[i].UnregisterObject();
    }
+   
 }
 
 //------------------------------------------------------------------------------
@@ -122,6 +126,7 @@ ogGeometryLayer.prototype.RemoveGeometryLayer = function()
 ogGeometryLayer.prototype.AddGeometry = function(geometry)
 {
    this.geometryarray.push(geometry);
+   geometry.layerID = this.id;
 }
 
 //------------------------------------------------------------------------------
@@ -134,6 +139,10 @@ ogGeometryLayer.prototype.RemoveGeometry = function(geometry)
    {
       if(this.geometryarray[i] == geometry)
       {
+         for(var j=i+1;j<this.geometryarray.length;j++){
+            this.geometryarray[j].indexInRendererArray -= 1;
+         }
+         this.geometryarray[i].UnregisterObject();
          this.geometryarray.splice(i,1);
       }
    }

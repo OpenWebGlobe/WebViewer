@@ -63,7 +63,7 @@ ogMeshObject.prototype.ParseOptions = function(options)
          var surfacearray = this.options["jsonobject"];
          for(var i=0; i<surfacearray.length; i++)
          {
-            this.options.jsonobject = surfacearray[i];
+            this.options["jsonobject"] = surfacearray[i];
             var ogsurf = _CreateObject(OG_OBJECT_SURFACE, this, this.options);
             this.surfaces_og.push(ogsurf);
             this.surfaces.push(ogsurf.GetSurface());
@@ -71,6 +71,20 @@ ogMeshObject.prototype.ParseOptions = function(options)
       } 
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Called when object is destroyed. Never call manually.
+ * @ignore
+ */
+ogMeshObject.prototype._OnDestroy = function()
+{
+   for(var i=0; i<this.surfaces_og.length;i++)
+   {
+      this.surfaces_og[i].UnregisterObject();
+   }
+   this.surfaces_og = null;
+   this.surfaces = null;
+}
 
 //------------------------------------------------------------------------------
 /**
@@ -124,6 +138,7 @@ ogMeshObject.prototype.SetPositionWGS84 = function(lng,lat,elv)
       surf.SetPositionWGS84(lng,lat,elv);
    }   
 }
+
 
 
 /**

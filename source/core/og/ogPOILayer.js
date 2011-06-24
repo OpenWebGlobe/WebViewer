@@ -83,29 +83,29 @@ ogPOILayer.prototype = new ogObject();
 
 ogPOILayer.prototype.convertStyle = function(style)
 {
-      if(style.font  && style.fontSize ) style.fontString = style.fontSize+"px"+" "+style.font;
-      if(style.backgroundColor )
+      if(style["font"]  && style["fontSize"]) style["fontString"] = style["fontSize"]+"px"+" "+style["font"];
+      if(style["backgroundColor"])
       {
-        var tmp = style.backgroundColor;
-        style.backgroundColor = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
+        var tmp = style["backgroundColor"];
+        style["backgroundColor"] = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
       } 
-      if(style.fontColor )
+      if(style["fontColor"] )
       {
-        var tmp = style.fontColor;
-        style.fontColor = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
+        var tmp = style["fontColor"];
+        style["fontColor"] = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
       }
-      if(style.strokeColor )
+      if(style["strokeColor"])
       {
-        var tmp = style.strokeColor;
-        style.strokeStyle = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
+        var tmp = style["strokeColor"];
+        style["strokeStyle"] = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
       }
-      if(style.shadowColor )
+      if(style["shadowColor"] )
       {
-        var tmp = style.shadowColor;
-        style.shadowColor = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
+        var tmp = style["shadowColor"];
+        style["shadowColor"] = "rgba("+tmp[0]*255+","+tmp[1]*255+","+tmp[2]*255+","+tmp[3]+")";
       }
-      if(style.width) style.iconWidth = style.width;
-      if(style.height) style.iconHeight = style.height;
+      if(style["width"]) style["iconWidth"] = style["width"];
+      if(style["height"]) style["iconHeight"] = style["height"];
 }
 /**
  * @description Parse Options
@@ -113,24 +113,24 @@ ogPOILayer.prototype.convertStyle = function(style)
  */
 ogPOILayer.prototype.ParseOptions = function(options)
 {
-   if(options.name )
+   if(options["name"] )
    {
       this.layername = options.name ;
    }
-   if(options.textstyle )
+   if(options["textstyle"])
    {
-      this.convertStyle(options.textstyle );
-      this.textstyle = options.textstyle ;
+      this.convertStyle(options["textstyle"]);
+      this.textstyle = options["textstyle"] ;
    }
    else
    {
       this.textstyle = this.defaultTextstyle;
    }
    
-   if(options.iconstyle )
+   if(options["iconstyle"])
    {
-      this.convertStyle(options.iconstyle );
-      this.iconstyle = options.iconstyle ;
+      this.convertStyle(options["iconstyle"]);
+      this.iconstyle = options["iconstyle"];
    }
    else
    {
@@ -180,8 +180,8 @@ ogPOILayer.prototype.Show = function()
  */
 ogPOILayer.prototype.CreatePOI = function(options)
 {
-   options.textstyle = this.textstyle; //append the poi_layer styles..
-   options.iconstyle = this.iconstyle;
+   options["textstyle"] = this.textstyle; //append the poi_layer styles..
+   options["iconstyle"] = this.iconstyle;
    var poi = _CreateObject(OG_OBJECT_POI,this.parent.parent,options);
    this.poiarray.push(poi);
    poi.poilayer = this;
