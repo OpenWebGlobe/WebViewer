@@ -46,6 +46,8 @@ function ogScene()
    this.world = null;
    /** @type {ogCamera} */
    this.activecamera = null;
+   /** @type {Array.<ogCamera>}*/
+   this.cameras = [];
    /** @type {number} */
    this.scenetype = OG_SCENE_3D_ELLIPSOID_WGS84;
 
@@ -126,7 +128,30 @@ ogScene.prototype.PickSurface = function(mx, my)
    var context = /** @type ogContext */this.parent;
    
    return context.engine.PickSurface(mx, my); //returns the surface id.
-   
-
 }
 
+
+/**
+ * @description sets a new active camera.
+ * 
+ */
+ogScene.prototype.SetActiveCamera = function(camera_id)
+{
+   /** @type {ogCamera} */
+   var cam = /** @type {ogCamera} */ _GetObjectFromId(camera_id);
+   if (cam && cam.type == OG_OBJECT_CAMERA)
+   {
+      cam.UpdateNavigationNode();
+   }
+   this.activecamera = cam;
+   
+}
+
+/**
+ * @description appends the new camera to the camera array.
+ * 
+ */
+ogScene.prototype.AddCamera = function(camera)
+{
+   this.cameras.push(camera);
+}

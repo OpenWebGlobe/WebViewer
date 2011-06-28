@@ -521,6 +521,7 @@ function ogGetTextSize(context_id, text)
    return ret;
 }
 goog.exportSymbol('ogGetTextSize', ogGetTextSize);
+
 //##############################################################################
 // ** CONTEXT-EVENTS **
 //##############################################################################
@@ -806,7 +807,7 @@ function ogCreateScene(context_id, scenetype)
       {
          /** @type {ogScene} */
          var scene = _CreateObject(OG_OBJECT_SCENE, context, sceneoptions);
-         context.scene = scene;
+         context.scene = scene;         
          return scene.id;
       }
       else
@@ -886,6 +887,200 @@ function ogPickGlobe(scene_id, mx, my)
 goog.exportSymbol('ogPickGlobe', ogPickGlobe);
 //------------------------------------------------------------------------------
 //##############################################################################
+// ** CAMERA OBJECT **
+//##############################################################################
+/**
+ * @description Create context
+ * @param {number} scene_id scene id.
+ */
+function ogCreateCamera(scene_id)
+{
+    /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      var camera = _CreateObject(OG_OBJECT_CAMERA, scene, null);
+      scene.AddCamera(camera);
+      return camera.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogCreateCamera', ogCreateCamera);
+//------------------------------------------------------------------------------
+/**
+ * @description Destroys the camera object.
+ * @param {number} camera_id the camera id.
+ */
+function ogDestroyCamera(camera_id)
+{
+   /** @type {ogCamera} */
+   var cam = /** @type {ogCamera} */ _GetObjectFromId(camera_id);
+   if (cam && cam.type == OG_OBJECT_CAMERA)
+   {
+      cam.UnregisterObject();
+   }
+}
+goog.exportSymbol('ogDestroyCamera', ogDestroyCamera);
+
+//------------------------------------------------------------------------------
+/**
+ * @description Destroys the camera object.
+ * @param {number} camera_id the camera id.
+ * @param {number} lng
+ * @param {number} lat
+ * @param {number} elv
+ */
+function ogSetPosition(camera_id, lng, lat, elv)
+{
+   /** @type {ogCamera} */
+   var cam = /** @type {ogCamera} */ _GetObjectFromId(camera_id);
+   if (cam && cam.type == OG_OBJECT_CAMERA)
+   {
+      cam.SetPosition(lng,lat,elv);
+   }
+}
+goog.exportSymbol('ogSetPosition', ogSetPosition);
+
+//------------------------------------------------------------------------------
+/**
+ * @description get the position of the active camera
+ * @param {number} scene_id scene id.
+ */
+function ogGetPosition(scene_id)
+{
+    /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+     var cam = scene.activecamera;
+     return cam.GetPosition(); 
+   }
+   return null;
+}
+goog.exportSymbol('ogGetPosition', ogGetPosition);
+
+//------------------------------------------------------------------------------
+/**
+ * @description get the orientation of the active camera
+ * @param {number} camera_id
+ * @param {number} yaw
+ * @param {number} pitch
+ * @param {number} roll
+ */
+function ogSetOrientation(camera_id,yaw,pitch,roll)
+{
+    /** @type {ogCamera} */
+   var cam = /** @type {ogCamera} */ _GetObjectFromId(camera_id);
+   if (cam && cam.type == OG_OBJECT_CAMERA)
+   {
+     return cam.SetOrientation(yaw,pitch,roll); 
+   }
+   return null;
+}
+goog.exportSymbol('ogSetOrientation', ogSetOrientation);
+
+//------------------------------------------------------------------------------
+/**
+ * @description get the orientation of the active camera
+ * @param {number} scene_id scene id.
+ */
+function ogGetOrientation(scene_id)
+{
+    /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+     var cam = scene.activecamera;
+     var orientation = cam.GetOrientation();
+     orientation.yaw = orientation.yaw;
+     orientation.pitch = orientation.pitch;
+     orientation.roll = orientation.roll;
+     return orientation;
+   }
+   return null;
+}
+goog.exportSymbol('ogGetOrientation', ogGetOrientation);
+//------------------------------------------------------------------------------
+/**
+ * @description Get the active camera
+ * @param {number} scene_id scene id.
+ */
+function ogGetActiveCamera(scene_id)
+{
+    /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+     return scene.activecamera.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogGetActiveCamera', ogGetActiveCamera);
+//------------------------------------------------------------------------------
+/**
+ * @description Set a active camera
+ * @param {number} camera_id scene id.
+ */
+function ogSetActiveCamera(camera_id)
+{
+    /** @type {ogCamera} */
+   var cam = /** @type {ogCamera} */ _GetObjectFromId(camera_id);
+   if (cam && cam.type == OG_OBJECT_CAMERA)
+   {
+     cam.parent.SetActiveCamera(cam.id);
+   }
+}
+goog.exportSymbol('ogSetActiveCamera', ogSetActiveCamera);
+
+//------------------------------------------------------------------------------
+/**
+ * @description returns the number of defined cameras.
+ * @param {number} scene_id scene id.
+ */
+function ogGetNumCameras(scene_id)
+{
+    /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+     return scene.cameras.length;
+   }
+}
+goog.exportSymbol('ogGetNumCameras', ogGetNumCameras);
+
+//------------------------------------------------------------------------------
+/**
+ * @description returns the camera at index.
+ * @param {number} scene_id scene id.
+ * @param {number} index 
+ */
+function ogGetCameraAt(scene_id,index)
+{
+    /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+     return scene.cameras[index].id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogGetCameraAt', ogGetCameraAt);
+
+//------------------------------------------------------------------------------
+/**
+ * @description returns the camera at index.
+ * @param {number} scene_id scene id.
+ * @param {number} lat
+ * @param {number} lng
+ * @param {number} elv
+ */
+function ogLookAt(scene_id,lat,lng,elv)
+{
+   alert('implemet this.---')
+}
+goog.exportSymbol('ogGetCameraAt', ogGetCameraAt);
+//------------------------------------------------------------------------------
+//##############################################################################
 // ** WORLD-OBJECT **
 //##############################################################################
 /** @description create world object
@@ -918,6 +1113,16 @@ function ogCreateGlobe(context_id)
    // this is just a convienience function to save some typing.
    var scene_id = ogCreateScene(context_id, OG_SCENE_3D_ELLIPSOID_WGS84);
    var world_id = ogCreateWorld(scene_id);
+   
+   /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   
+   //create a camera object and add it to the scene
+   var cam = _CreateObject(OG_OBJECT_CAMERA, scene, null);
+   cam.SetCurrentPositionAsCameraPosition();
+   scene.SetActiveCamera(cam.id);
+   scene.AddCamera(cam);
+   
    return world_id;
 }
 goog.exportSymbol('ogCreateGlobe', ogCreateGlobe);

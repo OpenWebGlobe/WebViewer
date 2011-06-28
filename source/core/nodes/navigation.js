@@ -521,7 +521,7 @@ NavigationNode.prototype.GetPosition = function()
 //------------------------------------------------------------------------------
 
 NavigationNode.prototype.SetOrientation = function(yaw, pitch, roll)
-{
+{ 
    this._yaw = yaw;
    this._pitch = pitch;
    this._roll = roll;
