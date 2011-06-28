@@ -80,7 +80,8 @@ ogMeshObject.prototype._OnDestroy = function()
 {
    for(var i=0; i<this.surfaces_og.length;i++)
    {
-      this.surfaces_og[i].UnregisterObject();
+      var og_surf = /**@type {ogSurface} */this.surfaces_og[i];
+      og_surf.UnregisterObject();
    }
    this.surfaces_og = null;
    this.surfaces = null;

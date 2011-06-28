@@ -26,6 +26,7 @@ goog.provide('owg.ogGeometry');
 goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
 
+
 //------------------------------------------------------------------------------
 /**
  * @typedef {{
@@ -66,7 +67,7 @@ function ogGeometry()
    this.cbf = null;
    /** @type {Object} */
    this.options = null;
-   /** @type {Number} */
+   /** @type {number} */
    this.layerID = -1; //the id of the geometrylayer containing this geometry.
 }
 //------------------------------------------------------------------------------
@@ -107,7 +108,8 @@ ogGeometry.prototype._OnDestroy = function()
 
    for(var j=0;j<this.meshes_og.length;j++)
    {
-      this.meshes_og[j].UnregisterObject();
+      var mesh_og = /** @type {ogMeshObject}*/ this.meshes_og[j];
+      mesh_og.UnregisterObject();
    }
    this.geometryarray = null;   
 }
@@ -227,7 +229,7 @@ ogGeometry.prototype._cbfjsondownload = function()
       else
       {
          var data=this.http.responseText;      
-         var jsonobj=/** @type {ObjectJSON} */ goog.json.parse(data);
+         var jsonobj = goog.json.parse(data);
          this.CreateFromJSONObject(jsonobj);  
       }     
    }    

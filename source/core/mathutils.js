@@ -30,7 +30,15 @@ goog.provide('owg.MathUtils');
  * @description semi major axis [m]
  * @type number
  */
-var WGS84_a = 6378137.0; 
+var WGS84_a = 6378137.0;
+//------------------------------------------------------------------------------
+// Constants
+//------------------------------------------------------------------------------
+/**
+ * @description semi minor axis [m]
+ * @type number
+ */
+var WGS84_b = 6356752.3142; 
 //------------------------------------------------------------------------------
 /**
  * @description first numeric exccentrity (squared)

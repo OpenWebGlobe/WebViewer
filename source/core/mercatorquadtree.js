@@ -36,7 +36,7 @@ function MercatorQuadtree()
 }
 //------------------------------------------------------------------------------
 /**
-* @description calculates a quadkey to mercator ccordiantes
+* @description calculates a quadkey to mercator coordiantes
 * @param {string} quadKey
 * @param {Array} coords this is a output paramter.
 */

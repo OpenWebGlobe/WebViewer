@@ -33,11 +33,21 @@ goog.require('owg.vec4');
 
 /**
  * @typedef {{
- *     BoundingBox: Array.<number>,
+ *     BoundingBox : Array.<number>,
  *     CurtainIndex: number,
  *     IndexSemantic: string,
  *     Indices: Array.<number>,
  *     Offset: number,
+ *     VertexSemantic: string,
+ *     Vertices: Array.<number>
+ * }}
+ */
+
+//only really required variables.
+/**
+ * @typedef {{
+ *     IndexSemantic: string,
+ *     Indices: Array.<number>,
  *     VertexSemantic: string,
  *     Vertices: Array.<number>
  * }}
@@ -515,7 +525,18 @@ Surface.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcol
                            
          case "POINTS":     
                            this.gl.drawElements(this.gl.POINTS, this.numindex, this.gl.UNSIGNED_SHORT, 0);
-                           break;             
+                           break;
+                        
+         case "TRIANGLEFAN":
+                           if(opt_ranged)
+                           {
+                              this.gl.drawElements(this.gl.TRIANGLE_FAN, count, this.gl.UNSIGNED_SHORT, offset);
+                           }
+                           else
+                           {
+                               this.gl.drawElements(this.gl.TRIANGLE_FAN, this.numindex, this.gl.UNSIGNED_SHORT, 0);
+                           }                          
+                           break;
                         
          default:          
                            alert("unknown indexsemantic");

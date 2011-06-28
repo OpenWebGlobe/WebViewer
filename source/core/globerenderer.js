@@ -95,6 +95,11 @@ function GlobeRenderer(engine)
    this.vDir = new Array(3);
    
    this.matPick = new mat4(); // stored mvp matrix for picking
+   
+   this.northpole = new Surface(this.engine);
+   this.southpole = new Surface(this.engine);
+   this.northpolecolor = [8/255,24/255,58/255];
+   this.southpolecolor = [1,1,1];
 }
 
 //------------------------------------------------------------------------------
@@ -345,18 +350,239 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    this.lstFrustum.push(tb3);
    
    this._Divide();  // Subdivide Planet
-   this._Optimize(); // Optimize Planet: Remove Hidden Tiles!
+   //this._Optimize(); // Optimize Planet: Remove Hidden Tiles!
+   
    
    
    for (var i=0;i<this.lstFrustum.length;i++)
    {
-      this.lstFrustum[i].Render();
+      this.lstFrustum[i].Render();   
    }
    
+   var northTiles=[];
+   var southTiles=[];
+   for (var i=0;i<this.lstFrustum.length;i++)
+   {
+      var qcode = this.lstFrustum[i].quadcode;
    
-   // GeneratePoles();
+      //iterate trough all chars
+      var nstype = 0;
+      var c = qcode.charAt(0);
+      if(c=='0' || c =='1'){nstype = 1}; //nstype 1 = north; nstype = 0->tile is somewhere in the middle.
+      if(c=='2' || c =='3'){nstype = 2}; //nstype 2 = south
+      {
+         for(var j=1;j<qcode.length;j++)
+         {
+            c=qcode.charAt(j);
+            
+            if((c=='0' || c =='1') && nstype == '2')
+            {
+               nstype = 0;
+               break;
+            }
+            if((c=='2' || c =='3') && nstype == '1')
+            {
+               nstype = 0;
+               break;
+            }  
+         }
+      }
+      if(nstype == 1)
+      {
+         northTiles.push(this.lstFrustum[i]);
+      }
+      if(nstype == 2)
+      {
+         southTiles.push(this.lstFrustum[i]);
+      }
+   }
+   if(northTiles.length>3)
+   {
+     this._GenerateNorthPole(northTiles); 
+   }
+   if(southTiles.length>3)
+   {
+    this._GenerateSouthPole(southTiles); 
+   } 
 }
 //------------------------------------------------------------------------------
+/**
+ *@description Generate and draw the northpole.
+ *
+ */
+GlobeRenderer.prototype._GenerateNorthPole = function(northTiles)
+{
+      
+      // 1. sort the tiles according to its quadcode.
+      // 1a. get the length of the longest quadcode.
+      var maxqlength = 0;
+      for(var i=0;i<northTiles.length;i++)
+      {
+         if(northTiles[i].quadcode.length>maxqlength)
+         {
+            maxqlength = northTiles[i].quadcode.length;
+         }
+      }
+      
+      // 1b. padding up with zeros.
+      for(var i=0;i<northTiles.length;i++)
+      {
+         northTiles[i].new_quadcode = northTiles[i].quadcode;
+        while(northTiles[i].new_quadcode.length<maxqlength)
+        {
+            northTiles[i].new_quadcode += '0';
+        }
+      }   
+      
+      // the order function. the quadcode is used as a binary value and then converted
+      // to integer. These integers will be sorted.
+      var tileorder = function(tile_a,tile_b)
+         {
+            var a=parseInt(tile_a.new_quadcode,2);
+            var b=parseInt(tile_b.new_quadcode,2);
+            return a-b;   
+         };
+      northTiles.sort(tileorder);
+      
+      
+      //the north pole coordiantes
+      var npole = [0,0,0.75778401756096095573436686210235] //[0,0,WGS84_b*CARTESIAN_SCALE_INV]        
+      
+      
+      // fill up the vertices array
+      var vertices=[npole[0],npole[1],npole[2],this.northpolecolor[0],this.northpolecolor[1],this.northpolecolor[2],1];
+      var indices=[];
+      
+      
+      // fill up the vetrices array with the upper boundary vertiex data of tile.
+      for(var i=0;i<northTiles.length;i++)
+      {
+         var j = 2;
+         while(northTiles[i].mesh.vertexbufferdata[j]==0) //test if the z value is == 0
+         {
+            vertices.push(northTiles[i].vOffset[0]+northTiles[i].mesh.vertexbufferdata[j-2]);
+            vertices.push(northTiles[i].vOffset[1]+northTiles[i].mesh.vertexbufferdata[j-1]);
+            vertices.push(northTiles[i].vOffset[2]+northTiles[i].mesh.vertexbufferdata[j])
+            vertices.push(this.northpolecolor[0]);
+            vertices.push(this.northpolecolor[1]);
+            vertices.push(this.northpolecolor[2]);
+            vertices.push(1);
+            j += 5; 
+         }
+      }
+      
+      // fill up the indices buffer.
+      for(var l=0;l<(vertices.length/7)-2;l++)
+      {
+         indices.push(l);
+      }
+      indices.push(1);
+      indices.push(2);
+      indices.push(3);
+        
+      this.northpole.Destroy();
+      this.northpole = new Surface(this.engine);
+      
+      var northpole = {
+                        "VertexSemantic"  :  "pc",
+                        "Vertices" : vertices,
+                        "IndexSemantic"  :  "TRIANGLEFAN",
+                        "Indices"  : indices
+                     }
+      
+      this.northpole.CreateFromJSONObject(northpole,null,null);
+      this.northpole.Draw();
+}
+//------------------------------------------------------------------------------
+/**
+ *@description Generate and draw the southpole.
+ *
+ */
+GlobeRenderer.prototype._GenerateSouthPole = function(southTiles)
+{
+      
+      // 1. sort the tiles according to its quadcode.
+      // 1a. get the length of the longest quadcode.
+      var maxqlength = 0;
+      for(var i=0;i<southTiles.length;i++)
+      {
+         if(southTiles[i].quadcode.length>maxqlength)
+         {
+            maxqlength = southTiles[i].quadcode.length;
+         }
+      }
+      
+      // 1b. padding up with zeros.
+      for(var i=0;i<southTiles.length;i++)
+      {
+        southTiles[i].new_quadcode = southTiles[i].quadcode;
+        southTiles[i].new_quadcode = southTiles[i].new_quadcode.replace(/2/g,"0");
+        southTiles[i].new_quadcode = southTiles[i].new_quadcode.replace(/3/g,"1");
+        while(southTiles[i].new_quadcode.length<maxqlength)
+        {
+            southTiles[i].new_quadcode += '0';
+        }
+      }   
+      
+      // the order function. the quadcode is used as a binary value and then converted
+      // to integer. These integers will be sorted.
+      var tileorder = function(tile_a,tile_b)
+         {
+            var a = parseInt(tile_a.new_quadcode,2);
+            var b = parseInt(tile_b.new_quadcode,2);
+            return b-a;   
+         };
+      southTiles.sort(tileorder);
+      
+      
+      //the north pole coordiantes
+      var spole = [0,0,-0.75778401756096095573436686210235] //[0,0,WGS84_b*CARTESIAN_SCALE_INV]        
+      
+      
+      // fill up the vertices array
+      var vertices=[spole[0],spole[1],spole[2],this.southpolecolor[0],this.southpolecolor[1],this.southpolecolor[2],1];
+      var indices=[];
+      
+      // fill up the vetrices array with the upper boundary vertiex data of tile.
+      for(var i=0;i<southTiles.length;i++)
+      {
+         var j = southTiles[i].mesh.vertexbufferdata.length;
+         j-=1;
+         while(southTiles[i].mesh.vertexbufferdata[j]==0) //test if the texture coordinate value is == 0
+         {
+            vertices.push(southTiles[i].vOffset[0]+southTiles[i].mesh.vertexbufferdata[j-4]);
+            vertices.push(southTiles[i].vOffset[1]+southTiles[i].mesh.vertexbufferdata[j-3]);
+            vertices.push(southTiles[i].vOffset[2]+southTiles[i].mesh.vertexbufferdata[j-2])
+            vertices.push(this.southpolecolor[0]);
+            vertices.push(this.southpolecolor[1]);
+            vertices.push(this.southpolecolor[2]);
+            vertices.push(1);
+            j -= 5; 
+         }
+      }
+      
+      // fill up the indices buffer.
+      for(var l=0;l<(vertices.length/7)-2;l++)
+      {
+         indices.push(l);
+      }
+      indices.push(1);
+        
+      this.southpole.Destroy();
+      this.southpole = new Surface(this.engine);
+      
+      var southpole = {
+                        "VertexSemantic"  :  "pc",
+                        "Vertices" : vertices,
+                        "IndexSemantic"  :  "TRIANGLEFAN",
+                        "Indices"  : indices
+                     }
+      
+      this.southpole.CreateFromJSONObject(southpole,null,null);
+      this.southpole.Draw();
+}
+
+
 
 
 GlobeRenderer.prototype._Divide = function()
