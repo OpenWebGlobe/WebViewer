@@ -68,12 +68,12 @@ function ogPOILayer()
    {
       "iconWidth" 		: 64,
       "iconHeight" 		: 64,
-      "border" 		: 5,
+      "border" 		: 0,
       "backgroundColor" 	: "rgba(0, 0, 0, 0.0)",
       "shadowOffsetX" 	: 0,
       "shadowOffsetY" 	: 0,
-      "shadowBlur" 	: 10,
-      "shadowColor" 	: "rgba(255, 0, 0, 0.6)"
+      "shadowBlur" 	: 0,
+      "shadowColor" 	: "rgba(255, 0, 0, 0)"
    };
 }
 //------------------------------------------------------------------------------

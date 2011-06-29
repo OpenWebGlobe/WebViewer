@@ -1074,11 +1074,58 @@ goog.exportSymbol('ogGetCameraAt', ogGetCameraAt);
  * @param {number} lng
  * @param {number} elv
  */
-function ogLookAt(scene_id,lat,lng,elv)
+function ogLookAt(scene_id,lng,lat,elv)
 {
-   alert('implemet this.---')
+   var activecam = ogGetActiveCamera(scene_id);
+   var cam = /** @type {ogCamera} */ _GetObjectFromId(activecam);
+   cam.SetCurrentPositionAsCameraPosition();
+   
+   // Get the camera position and convert it to cartesian coordianets
+   var cpos = ogGetPosition(scene_id);      
+   var geocord = new GeoCoord(lng,lat,elv); //target cartesianb
+   var tc = [];
+   geocord.ToCartesian(tc);
+   var vtc = new vec3(tc[0],tc[1],tc[2]);
+   
+   // Get the target position and convert it to cartesian coordianets
+   var geocord2 = new GeoCoord(cpos.longitude,cpos.latitude,cpos.elevation); 
+   var cc = [];
+   geocord2.ToCartesian(cc);
+   var vcc = new vec3(cc[0],cc[1],cc[2]);
+   
+   //set up a navigation frame system with origin at target position
+   var navframe = new mat4();
+   navframe.CalcNavigationFrame(lng,lat);
+   
+   //convert the camera and target position into the navigationframe system
+   vcc_navframe = navframe.MultiplyVec3(vcc);
+   vtc_navframe = navframe.MultiplyVec3(vtc);
+   
+   
+   //calc a vector pointing from cam to target
+   var vn = vtc_navframe.Copy();
+   vn.Sub(vcc_navframe);
+   vn.Normalize();
+
+   //calc yaw and pitch out of this vector
+   var x = vn.Get()[2]; //points to north
+   var y = vn.Get()[1]; //points to east
+   var yaw = (Math.atan(vn.Get()[1]/vn.Get()[2])*57.295779513082320876798154814105)%360;
+   //yaw depends on quadrant...(atan function)
+   if((x>0 && y<0) || (x>0 && y>0))
+   {
+      yaw = 180-yaw;
+   }else
+   {
+      yaw = 360-yaw;
+   }
+   var pitch = -90+(Math.acos(vn.Get()[0])*57.295779513082320876798154814105)%360;
+   
+   //set the new orientation
+   var ori = ogGetOrientation(scene_id);
+   ogSetOrientation(activecam,yaw,pitch,ori.roll);
 }
-goog.exportSymbol('ogGetCameraAt', ogGetCameraAt);
+goog.exportSymbol('ogLookAt', ogLookAt);
 //------------------------------------------------------------------------------
 //##############################################################################
 // ** WORLD-OBJECT **
