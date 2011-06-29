@@ -1,0 +1,204 @@
+<!--
+/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2010-2011 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/
+
+                      TUTORIAL 7: Playing around with camera objects
+*******************************************************************************/
+-->
+<!DOCTYPE html>
+<html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+
+
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+<!--<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>-->
+
+
+<script type="text/javascript">
+var cam0;
+var cam1;
+var cam2;
+
+//------------------------------------------------------------------------------
+// called every frame:
+function OnRender(context)
+{
+   ogSetTextColor(context, 0,1,0);
+   ogDrawText(context, "Press 1,2 or 3 to change camera", 0, 50);
+   ogDrawText(context, "Press arrows to move the actual camera", 0, 90);
+   ogDrawText(context, "Press 5 to look at the POI", 0, 10);
+}
+//------------------------------------------------------------------------------
+function OnKeyDown(ctx,key)
+{
+   // get the scene
+   var scene = ogGetScene(ctx);
+   
+   // get the active cam
+   var cam = ogGetActiveCamera(scene);
+   
+   // get the current position
+   var currentpos = ogGetPosition(scene);
+   
+   // get the current orientation
+   var currentorientation = ogGetOrientation(scene);
+   
+   var lng = currentpos.longitude;
+   var lat = currentpos.latitude;
+   var elv = currentpos.elevation;
+   var yaw = currentorientation.yaw;
+   var pitch = currentorientation.pitch;
+   var roll = currentorientation.roll;
+   var inc = 0.01;
+   
+   if(key == 38) // arrow up
+   {
+      ogSetPosition(cam,lng+inc*Math.sin(yaw*3.14159/180),lat+inc*Math.cos(yaw*3.14159/180),currentpos.elevation);
+   }
+   if(key == 40) // arrow down
+   {
+      ogSetPosition(cam,lng-inc*Math.sin(yaw*3.14159/180),lat-inc*Math.cos(yaw*3.14159/180),currentpos.elevation);
+   }
+   
+   if(key == 39) // arrow left
+   {
+      ogSetOrientation(cam,yaw+3,pitch,roll);
+   }
+   if(key == 37) // arrow left
+   {
+      ogSetOrientation(cam,yaw-3,pitch,roll);
+   }
+   
+   if(key == 49) // go to cam0
+   {
+      ogSetActiveCamera(cam0);
+   }
+   if(key == 50) // go to cam1
+   {      
+      ogSetActiveCamera(cam1);
+   }
+   if(key == 51) // go to cam2
+   {      
+      ogSetActiveCamera(cam2);
+   }
+
+   if(key == '32') //space - iterate trough all camera views.
+   {
+      index = (index+1)%ogGetNumCameras(scene);
+      var cam = ogGetCameraAt(scene,index);
+      ogSetActiveCamera(cam);
+   }
+
+   
+   if(key == 53)  //the '5' key
+   {
+      ogLookAt(scene,7.569964,46.135222,2735);
+   }
+   
+}
+var index = 0;
+
+
+//------------------------------------------------------------------------------
+function main()
+{
+   // (1) create an OpenWebGlobe context using canvas
+   // first parameter is canvas-id and second is "fullscreen"
+   var ctx = ogCreateContextFromCanvas("canvas", true);
+   
+   // (2) Create a virtual globe
+   var globe = ogCreateGlobe(ctx);
+   
+   // (3) Add an image and an elevation layer
+   
+   var imgBlueMarble500 = 
+   {
+      url     : ["http://www.openwebglobe.org/data/img"],
+      layer   : "World500",
+      service : "i3d"
+   };
+   
+   var elvSRTM_CH = 
+   {
+      url     : ["http://www.openwebglobe.org/data/elv"],
+      layer   : "SRTM",
+      service : "i3d"
+   };
+   
+   ogAddImageLayer(globe, imgBlueMarble500);
+   ogAddElevationLayer(globe, elvSRTM_CH);
+
+   // (4) Set the "Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
+   ogSetRenderFunction(ctx, OnRender);
+   
+   // (5) Set the background color
+   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+   
+   // (6) set the key down function
+   ogSetKeyDownFunction(ctx, OnKeyDown);
+   
+   // (7) get the scenen
+   var scene = ogGetScene(ctx);
+   
+   // (8) get the id of the default camera
+   cam0 = ogGetActiveCamera(scene);
+   
+   // (9) create a new camera and set its position and orientation
+   cam1 = ogCreateCamera(scene);
+   ogSetPosition(cam1,7.763209,46.322292,5000);
+   ogSetOrientation(cam1,45,-30,0);
+   
+   // (10) create another camera and set its position and orientation
+   cam2 = ogCreateCamera(scene);
+   ogSetPosition(cam2,8.467200,46.558067,5000);
+   ogSetOrientation(cam1,90,-30,0);
+   
+   var world = ogGetWorld(scene);
+   var layer = ogCreatePOILayer(world);
+   
+   var options = 
+      {
+         icon     : "http://google-maps-icons.googlecode.com/files/cycling.png",
+         position :  [7.569964,46.135222,2735],
+         size 		: 	20,
+         flagpole : true
+      };
+   ogCreatePOI(layer,options);
+}
+//------------------------------------------------------------------------------
+   
+</script>
+
+</head>
+<body onload="main()">
+   <div style="text-align: center">
+   <canvas id="canvas"></canvas>          
+   </div>
+</body>
+</html>
