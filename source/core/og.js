@@ -1098,8 +1098,8 @@ function ogLookAt(scene_id,lng,lat,elv)
    navframe.CalcNavigationFrame(lng,lat);
    
    //convert the camera and target position into the navigationframe system
-   vcc_navframe = navframe.MultiplyVec3(vcc);
-   vtc_navframe = navframe.MultiplyVec3(vtc);
+   var vcc_navframe = navframe.MultiplyVec3(vcc);
+   var vtc_navframe = navframe.MultiplyVec3(vtc);
    
    
    //calc a vector pointing from cam to target

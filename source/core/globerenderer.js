@@ -402,7 +402,7 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    }
    if(southTiles.length>3)
    {
-    this._GenerateSouthPole(southTiles); 
+     this._GenerateSouthPole(southTiles); 
    } 
 }
 //------------------------------------------------------------------------------
@@ -626,7 +626,7 @@ GlobeRenderer.prototype._SubDivide = function()
    this.iterator.cnt++;
 }
 
-var SURFACE_NORMAL_THRESHOLD = -0.9;
+var SURFACE_NORMAL_THRESHOLD = 0.09;
 //------------------------------------------------------------------------------
 GlobeRenderer.prototype._CalcErrorMetric = function(i)
 {
@@ -658,17 +658,22 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
    }                                
                                                                                                            
    // (2) Visibility Test ("ellipsoidal backface-culling")     
-                              
+   
    var center = tb.vTilePoints[4].Get();
    var normal = tb._vNormal.Get();
    var campos = this.cameraposition.Get();
    this.vDir[0] = campos[0] - center[0];
    this.vDir[1] = campos[1] - center[1];
    this.vDir[2] = campos[2] - center[2];
+   // normalize vDir:
    var mag = Math.sqrt(this.vDir[0]*this.vDir[0]+this.vDir[1]*this.vDir[1]+this.vDir[2]*this.vDir[2]);
-   var d = (this.vDir[0] * normal[0] + this.vDir[1] * normal[1] + this.vDir[2] * normal[2])/mag;  
+   this.vDir[0] = this.vDir[0] / mag;
+   this.vDir[1] = this.vDir[1] / mag;
+   this.vDir[2] = this.vDir[2] / mag;
+   
+   var d = (this.vDir[0] * normal[0] + this.vDir[1] * normal[1] + this.vDir[2] * normal[2]);  
 
-   if (d<SURFACE_NORMAL_THRESHOLD)
+   if (d>SURFACE_NORMAL_THRESHOLD)
    {
       bVisible = false;  // reject
    }
@@ -679,7 +684,7 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
    }
    
    // (3) Calculate Error Metric
-   var dist = tb.CalcDistanceTo(/*this.cameraposition*/campos);
+   var dist = tb.CalcDistanceTo(campos);
    var dCell = tb.GetBlockSize();
    var error = this.quality * dCell / dist;
    
@@ -704,7 +709,7 @@ GlobeRenderer.prototype._Optimize = function()
       var mag = Math.sqrt(this.vDir[0]*this.vDir[0]+this.vDir[1]*this.vDir[1]+this.vDir[2]*this.vDir[2]);
       var d = (this.vDir[0] * normal[0] + this.vDir[1] * normal[1] + this.vDir[2] * normal[2])/mag;  
    
-      if (d<SURFACE_NORMAL_THRESHOLD)
+      if (d>=0/*SURFACE_NORMAL_THRESHOLD*/)
       {
          this.lstFrustum.splice(i, 1);  
       }
