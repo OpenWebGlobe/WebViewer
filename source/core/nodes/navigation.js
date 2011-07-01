@@ -146,7 +146,10 @@ function NavigationNode()
       
       // min altitude is currently 100 m, this can be customized in future.
       /** @type {number} */
-      this.minAltitude = 225; 
+      this.minAltitude = 225;
+      
+      /** @type {ogCamera} */
+      this.ogcam = null;
      
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -175,8 +178,22 @@ function NavigationNode()
          
          
          ts.SetCompassDirection(this._yaw);
+//         console.log(this._yaw);
          ts.SetPosition(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
          ts.SetGeoposition(this._longitude, this._latitude, this._ellipsoidHeight);
+         
+         if(this.ogcam)
+         {
+            this.ogcam.lng = this._longitude;
+            this.ogcam.lat = this._latitude;
+            this.ogcam.elv = this._ellipsoidHeight;
+            this.ogcam.pitch = this._pitch*57.295779513082320876798154814105;
+            this.ogcam.yaw = this._yaw*57.295779513082320876798154814105;
+            this.ogcam.roll = this._roll*57.295779513082320876798154814105;
+//            console.log("this.ogcam.yaw: "+this.ogcam.yaw);
+         }
+         
+        
       }
       //------------------------------------------------------------------------
       this.OnInit = function()
@@ -495,7 +512,19 @@ function NavigationNode()
             }
          //}
          
+          //update the ogCamera Object wich is currently active...
+         if(this.ogcam)
+         {
+            this.ogcam.lng = this._longitude;
+            this.ogcam.lat = this._latitude;
+            this.ogcam.elv = this._ellipsoidHeight;
+            this.ogcam.pitch = this._pitch*57.295779513082320876798154814105;  
+            this.ogcam.yaw = this._yaw*57.295779513082320876798154814105;
+            this.ogcam.roll = this._roll*57.295779513082320876798154814105;
+         }
          
+        
+      
       }
       //------------------------------------------------------------------------
 }

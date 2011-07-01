@@ -87,15 +87,17 @@ ogCamera.prototype._OnDestroy = function()
  */
 ogCamera.prototype.SetPosition = function(lng,lat,elv)
 {
+   this.lng = lng;
+   this.lat = lat;
+   this.elv = elv;
+   
    if(this.parent.activecamera == this)
    {
       var navnode = this._GetNavigationNode();
       navnode.SetPosition(lng,lat,elv);
    }
 
-   this.lng = lng;
-   this.lat = lat;
-   this.elv = elv;
+
 }
 
 //------------------------------------------------------------------------------
@@ -113,14 +115,16 @@ ogCamera.prototype.GetPosition = function()
  */
 ogCamera.prototype.SetOrientation = function(yaw,pitch,roll)
 {
+   this.yaw = yaw;
+   this.pitch = pitch;
+   this.roll = roll;
+   
    if(this == this.parent.activecamera)
    {
       var navnode = this._GetNavigationNode();
       navnode.SetOrientation(MathUtils.Deg2Rad(yaw),MathUtils.Deg2Rad(pitch),MathUtils.Deg2Rad(roll));
    }
-   this.yaw = yaw;
-   this.pitch = pitch;
-   this.roll = roll;
+
 }
 
 //------------------------------------------------------------------------------
@@ -162,6 +166,8 @@ ogCamera.prototype.UpdateNavigationNode = function()
    var navnode = this._GetNavigationNode();
    navnode.SetPosition(this.lng,this.lat,this.elv);
    navnode.SetOrientation(MathUtils.Deg2Rad(this.yaw),MathUtils.Deg2Rad(this.pitch),MathUtils.Deg2Rad(this.roll));
+   navnode.ogcam = this;
+   
 }
 
 

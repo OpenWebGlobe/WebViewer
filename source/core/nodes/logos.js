@@ -72,7 +72,7 @@ function LogosNode()
          //this.logo.Blit(this.engine.width-72, this.engine.height-72,0,0,1,1,true);
          
          if (this.btn)
-         {       
+         {
             this.compassr.Blit(this.mx-64, this.my-64,0,this.yaw,1,1,true);    
             this.compassbg.Blit(this.mx-64, this.my-64,0,0,1,1,true);
          }
