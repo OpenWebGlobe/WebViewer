@@ -1107,7 +1107,15 @@ function ogLookAt(scene_id,lng,lat,elv)
    
    //set up a navigation frame system with origin at target position
    var navframe = new mat4();
+
    navframe.CalcNavigationFrame(cpos.longitude,cpos.latitude);
+
+   navframe.CalcNavigationFrame(lng,lat);
+   
+   //convert the camera and target position into the navigationframe system
+   var vcc_navframe = navframe.MultiplyVec3(vcc);
+   var vtc_navframe = navframe.MultiplyVec3(vtc);
+
    
    var vn = navframe.MultiplyVec3(vec);
    //vn.Normalize();

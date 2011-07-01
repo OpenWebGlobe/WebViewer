@@ -599,7 +599,7 @@ TerrainBlock.prototype._CalcLocation = function()
    gc.Set(lng, lat, 0);
    gc.ToCartesian(point0);
    //---- Calc Second Point -----
-   xg = crd[2]; yg= crd[0];
+   xg = crd[2]; yg= crd[1];
    Mercator.MercatorToWGS84(xg, yg, wgs);
    lng = wgs[0];
    lat = wgs[1];
