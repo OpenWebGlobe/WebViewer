@@ -1090,56 +1090,73 @@ function ogLookAt(scene_id,lng,lat,elv)
    cam.SetCurrentPositionAsCameraPosition();
    
    // Get the camera position and convert it to cartesian coordianets
-   var cpos = ogGetPosition(scene_id);      
-   var geocord = new GeoCoord(lng,lat,elv); //target cartesianb
-   var tc = [];
-   geocord.ToCartesian(tc);
-   var vtc = new vec3(tc[0]*CARTESIAN_SCALE,tc[1]*CARTESIAN_SCALE,tc[2]*CARTESIAN_SCALE);
-   
-   // Get the target position and convert it to cartesian coordianets
+   var cpos = ogGetPosition(scene_id);
    var geocord2 = new GeoCoord(cpos.longitude,cpos.latitude,cpos.elevation); 
    var cc = [];
    geocord2.ToCartesian(cc);
-   var vcc = new vec3(cc[0]*CARTESIAN_SCALE,cc[1]*CARTESIAN_SCALE,cc[2]*CARTESIAN_SCALE);
+   var vcc = new vec3(cc[0],cc[1],cc[2]);
    
+   
+   // Get the target position and convert it to cartesian coordianets
+   var geocord = new GeoCoord(lng,lat,elv); //target cartesianb
+   var tc = [];
+   geocord.ToCartesian(tc);
+   var vtc = new vec3(tc[0],tc[1],tc[2]);
+   
+
    var vec = vtc.Copy();
    vec.Sub(vcc);
-   
+     
    //set up a navigation frame system with origin at target position
    var navframe = new mat4();
-
    navframe.CalcNavigationFrame(cpos.longitude,cpos.latitude);
-
-   navframe.CalcNavigationFrame(lng,lat);
    
-   //convert the camera and target position into the navigationframe system
-   var vcc_navframe = navframe.MultiplyVec3(vcc);
-   var vtc_navframe = navframe.MultiplyVec3(vtc);
-
+   var trans = new mat4();
+   trans.Translation(cc[0],cc[1],cc[2]);
    
-   var vn = navframe.MultiplyVec3(vec);
-   //vn.Normalize();
-
+   var navigationMatrix = new mat4();
+   navigationMatrix.Multiply(trans,navframe);
+   //navframe.CalcNavigationFrame(lng,lat);
+   //navframe.Transpose();
+   navigationMatrix.Transpose();   
+   var vn = navigationMatrix.MultiplyVec3(vec);
+   vn.Normalize();
+   
+   var vals = vn.Get();
+   var x = vals[0];
+   var y = vals[1];
+   var z = vals[2];
+   
+//   console.log(vn.ToString());
    //calc yaw and pitch out of this vector
-   var x = vn.Get()[2]; //points to north
-   var y = vn.Get()[1]; //points to east
-   var yaw = (Math.atan(vn.Get()[1]/vn.Get()[2])*57.295779513082320876798154814105);
-   //yaw depends on quadrant...(atan function)
-   if((x>0 && y<0) || (x>0 && y>0))
-   {
-      yaw = 180-yaw;
-   }else
+
+   var a = Math.sqrt(1-z*z);
+   var yaw = Math.acos(x/a)*57.295779513082320876798154814105;
+   if(y<0 && x>0)
    {
       yaw = 360-yaw;
    }
-   var pitch = -90+(Math.acos(vn.Get()[0])*57.295779513082320876798154814105);
+   if(y<0 && x<0)
+   {
+      yaw = 360-yaw;
+   }
+
+   var pitch = -(90-(Math.acos(z)*57.295779513082320876798154814105));
+   
+//   console.log("x: "+x+" y: "+y+" z: "+z);
+   
+   if(z<-0.9) //Tdo: clean up this...
+   {
+      yaw=180+yaw;
+      pitch=-pitch;
+   }
    
    //set the new orientation
    var ori = ogGetOrientation(scene_id);
-   ogSetOrientation(activecam,yaw,ori.pitch,ori.roll);
+   ogSetOrientation(activecam,yaw,pitch,ori.roll);
    
- //  console.log("currentOrientation ->   yaw: "+ori.yaw+" pitch: "+ori.pitch+" roll: "+ori.roll);
- //  console.log("newOrientation ->   yaw: "+yaw+" pitch: "+pitch);
+//   console.log("currentOrientation ->   yaw: "+ori.yaw+" pitch: "+ori.pitch+" roll: "+ori.roll);
+   //console.log("newOrientation ->   yaw: "+yaw+" pitch: "+pitch);
 }
 goog.exportSymbol('ogLookAt', ogLookAt);
 //------------------------------------------------------------------------------

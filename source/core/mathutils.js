@@ -38,7 +38,7 @@ var WGS84_a = 6378137.0;
  * @description semi minor axis [m]
  * @type number
  */
-var WGS84_b = 6356752.3142; 
+var WGS84_b = 6356752.314245; 
 //------------------------------------------------------------------------------
 /**
  * @description first numeric exccentrity (squared)
@@ -62,7 +62,7 @@ var WGS84_E = 0.081819190842961775161887117288255;
  * @description 1 - WGS84_E_SQUARED
  * @type number
  */
-var WGS84_E_SQQ = 0.993260503258;
+var WGS84_E_SQQ = 0.993305620011365;//0.993260503258;
 //------------------------------------------------------------------------------
 /**
  * @description factor to convert geocentric cartesian coordinates to interal representation
