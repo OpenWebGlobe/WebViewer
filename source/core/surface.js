@@ -767,7 +767,7 @@ Surface.prototype.SetJSONLoadCallback = function(f)
 Surface.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
 {
    var hit = false;
-   var u,v,t;
+   var u,v,t,triangleindex;
    u = 0;
    v = 0;
    t = 1e20;      
@@ -802,7 +802,7 @@ Surface.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
          var vector3 = invModelMatrix.MultiplyVec3(v3);
 
          
-         var result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,vector.Get()[0],vector.Get()[1],vector.Get()[2],vector2.Get()[0],vector2.Get()[1],vector2.Get()[2],vector3.Get()[0],vector3.Get()[1],vector3.Get()[2]);        
+         var result = this.intersector.IntersectTriangle(x,y,z,dirx,diry,dirz,vector.Get()[0],vector.Get()[1],vector.Get()[2],vector2.Get()[0],vector2.Get()[1],vector2.Get()[2],vector3.Get()[0],vector3.Get()[1],vector3.Get()[2]);
 
        }  
        else
@@ -819,8 +819,11 @@ Surface.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
             t = result.t;
             u = result.u;
             v = result.v;
+            triangleindex = i;
+            
          }              
       }
+      
    }
    
    if (hit)
@@ -829,6 +832,7 @@ Surface.prototype.TestRayIntersection = function(x,y,z,dirx,diry,dirz)
       hitresult.t = t;
       hitresult.u = u;
       hitresult.v = v;
+      hitresult.triangleindex = triangleindex;
       return hitresult;
    }
     

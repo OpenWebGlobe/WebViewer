@@ -1,0 +1,234 @@
+<!--
+/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2010-2011 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/
+
+                      TUTORIAL 7: Playing around with camera objects
+*******************************************************************************/
+-->
+<!DOCTYPE html>
+<html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
+
+<!--
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>-->
+
+
+<script type="text/javascript">
+
+var billboard_id;
+var billboardlayer;
+//------------------------------------------------------------------------------
+// called every frame:
+function OnRender(context)
+{
+   ogSetTextColor(context, 0,1,0);
+   ogDrawText(context, "Press 1,2 or 3 to change camera", 0, 50);
+   ogDrawText(context, "Press arrows to move the actual camera", 0, 90);
+   ogDrawText(context, "Press 5 to look at the POI", 0, 10);
+}
+
+//------------------------------------------------------------------------------
+// Mouse-Down-Event: Called when a mouse button is pressed
+function OnMouseDown(context, button, mx, my)
+{
+   // retrieve the scene attached to context:
+   var scene = ogGetScene(context);
+   
+   // get poi id of picked poi, returns -1 if no poi picked.
+   if(button == 1)
+   {
+   var coors = ogPickBillboard(scene,mx,my);
+   
+      if(coors)
+      {
+         if(coors.x * 512 > 40 && coors.x * 512 < 40+65 && coors.y * 512 > 40 && coors.y * 512 < 60+65 )
+         {
+            console.log("HIT");
+            updateCanvas();
+            ogUpdateBillboard(billboard_id,canvas);
+         }
+         console.log(" x: "+coors.x*512+" y: "+coors.y*512);
+      }
+   }
+}
+
+var nr = 0;
+//------------------------------------------------------------------------------
+function OnKeyDown(ctx,key)
+{
+   // get the scene
+   var scene = ogGetScene(ctx);
+
+   if(key == 49) // 1 create the canvas
+   {
+      createHTML5Canvas();
+      billboard_id = ogCreateBillboardFromCanvas(billboardlayer,canvas,7.569964+0.1*nr,46.135222,5735);
+      nr += 1;
+   }
+   if(key == 50) // 2 remove the canvas
+   {      
+      ogRemoveBillboardLayer(billboardlayer);
+   }
+   if(key == 51) // 3
+   {      
+     ogHideBillboardLayer(billboardlayer);
+   }
+   if(key == '52') //4
+   {
+      ogShowBillboardLayer(billboardlayer);
+   }
+   if(key == '53') //4
+   {
+      ogRemoveBillboard(billboard_id);
+   }
+
+}
+var index = 0;
+
+
+var canvas = null;
+var ctx = null;
+var color = 10;
+
+function updateCanvas()
+{
+   ctx.fillStyle = 'rgba(255, 0,255, 1)';
+   ctx.fillRect (50, 50, 50, 50);
+   ctx.fillRect (100, 100, 50, 50);
+   ctx.fillRect (150, 150, 50, 50);
+   
+}
+
+
+function createHTML5Canvas()
+{
+   
+   canvas = document.createElement('canvas');
+   canvas.id = "canvas2d";
+   //canvas = document.getElementById('canvas');
+   ctx = canvas.getContext('2d');
+  
+   ctx.canvas.width = 512;
+   ctx.canvas.height = 512;
+   ctx.fillStyle = 'rgba(255,255,255,0.7)';
+   ctx.fillRect (0, 0, 512, 512);
+   ctx.fillStyle = 'rgba(0, 0,'+color+', 0.5)';
+   ctx.fillRect (50, 50, 50, 50);
+   ctx.fillRect (100, 100, 50, 50);
+   ctx.fillRect (150, 150, 50, 50);
+   
+   color += 30;
+   
+ 
+}
+//------------------------------------------------------------------------------
+function main()
+{
+   // (1) create an OpenWebGlobe context using canvas
+   // first parameter is canvas-id and second is "fullscreen"
+   var ctx = ogCreateContextFromCanvas("canvas", true);
+   
+   // (2) Create a virtual globe
+   var globe = ogCreateGlobe(ctx);
+   
+   // (3) Add an image and an elevation layer
+   
+   var imgBlueMarble500 = 
+   {
+      url     : ["http://www.openwebglobe.org/data/img"],
+      layer   : "World500",
+      service : "i3d"
+   };
+   
+   var elvSRTM_CH = 
+   {
+      url     : ["http://www.openwebglobe.org/data/elv"],
+      layer   : "SRTM",
+      service : "i3d"
+   };
+   
+   ogAddImageLayer(globe, imgBlueMarble500);
+   ogAddElevationLayer(globe, elvSRTM_CH);
+
+   // (4) Set the "Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
+   ogSetRenderFunction(ctx, OnRender);
+   
+   // (5) Set the background color
+   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+   
+   // (6) set the key down function
+   ogSetKeyDownFunction(ctx, OnKeyDown);
+   
+   // (5) Set the mouse down function. We need this for picking!
+   ogSetMouseDownFunction(ctx, OnMouseDown);
+   
+   // (7) get the scenen
+   var scene = ogGetScene(ctx);
+   
+   // (8) get the id of the default camera
+   cam0 = ogGetActiveCamera(scene);
+   
+   // (9) create a new camera and set its position and orientation
+   cam1 = ogCreateCamera(scene);
+   ogSetPosition(cam1,7.763209,46.322292,5000);
+   ogSetOrientation(cam1,45,-30,0);
+   
+   // (10) create another camera and set its position and orientation
+   cam2 = ogCreateCamera(scene);
+   ogSetPosition(cam2,8.467200,46.558067,5000);
+   ogSetOrientation(cam1,90,-30,0);
+   
+   var world = ogGetWorld(scene);
+   var layer = ogCreatePOILayer(world);
+   
+   var options = 
+      {
+         icon     : "http://google-maps-icons.googlecode.com/files/cycling.png",
+         position :  [7.569964,46.135222,2735],
+        // position :  [15,46,0],
+         size 		: 	20,
+         flagpole : true
+      };
+   ogCreatePOI(layer,options);
+   
+   billboardlayer = ogCreateBillboardLayer(world,"billboards");
+}
+//------------------------------------------------------------------------------
+   
+</script>
+
+</head>
+<body onload="main()">
+   <div style="text-align: center">
+   <canvas id="canvas"></canvas>
+   <!--<canvas id="canvas2d"></canvas>-->
+   </div>
+</body>
+</html>

@@ -129,6 +129,18 @@ ogScene.prototype.PickSurface = function(mx, my)
    
    return context.engine.PickSurface(mx, my); //returns the surface id.
 }
+//------------------------------------------------------------------------------
+/**
+* @description Pick billboards
+* @param {number} mx x-coord of mouse
+* @param {number} my y-coord of mouse
+*/
+ogScene.prototype.PickBillboard = function(mx, my)
+{
+  /** @type {ogContext} */
+   var context = /** @type ogContext */this.parent;
+   return context.engine.PickBillboard(mx, my); //returns the billboard_id and the normalized coordinate on the billboard.
+}
 
 
 /**

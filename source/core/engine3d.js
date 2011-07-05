@@ -933,7 +933,7 @@ engine3d.prototype.PickPOI = function(mx, my)
 
 //------------------------------------------------------------------------------
 /**
- * @description PickGeometry: Retrieve geometry id of clicked poi
+ * @description PickSurface: Retrieve geometry id of clicked poi
  * @param {number} mx
  * @param {number} my
  */
@@ -942,6 +942,21 @@ engine3d.prototype.PickSurface = function(mx, my)
    if (this.scene)
    {
       return this.scene.nodeRenderObject.geometryrenderer.PickSurface(mx,my);
+   }
+   return -1;
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description PickBillboard retrieve the billboard_id and the normalized picking coordinates.
+ * @param {number} mx
+ * @param {number} my
+ */
+engine3d.prototype.PickBillboard = function(mx, my)
+{
+   if (this.scene)
+   {
+      return this.scene.nodeRenderObject.billboardrenderer.PickBillboard(mx,my);
    }
    return -1;
 }

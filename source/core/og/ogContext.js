@@ -278,7 +278,7 @@ ogContext.prototype.ParseOptions = function(options)
    // a html5 canvasid is provided:
    if (options["canvas"])
    {
-      this.engine.InitEngine(options["canvas"], true);  // (canvasid, fullscreen)
+      this.engine.InitEngine(options["canvas"], this.fullscreen);  // (canvasid, fullscreen)
    }
    else
    {

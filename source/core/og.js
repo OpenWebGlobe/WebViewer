@@ -40,6 +40,8 @@ goog.require('owg.ogSurface');
 goog.require('owg.ogTexture');
 goog.require('owg.ogPOILayer');
 goog.require('owg.ogGeometryLayer');
+goog.require('owg.ogBillboard');
+goog.require('owg.ogBillboardLayer');
 goog.require('goog.debug.Logger');
 
 //------------------------------------------------------------------------------
@@ -133,6 +135,12 @@ function _CreateObject(type, parent, options)
          break;
       case OG_OBJECT_NAVIGATIONCONTROLLER:
          // not available yet...
+         break;
+      case OG_OBJECT_BILLBOARD:
+         newobject = new ogBillboard();
+         break;
+      case OG_OBJECT_BILLBOARDLAYER:
+         newobject = new ogBillboardLayer();
          break;
       case OG_OBJECT_INVALID:
          // invalid object! can't be created!!
@@ -1116,8 +1124,6 @@ function ogLookAt(scene_id,lng,lat,elv)
    
    var navigationMatrix = new mat4();
    navigationMatrix.Multiply(trans,navframe);
-   //navframe.CalcNavigationFrame(lng,lat);
-   //navframe.Transpose();
    navigationMatrix.Transpose();   
    var vn = navigationMatrix.MultiplyVec3(vec);
    vn.Normalize();
@@ -1977,5 +1983,209 @@ function ogPickSurface(scene_id,mx,my)
    return -1;     
 }
 goog.exportSymbol('ogPickSurface', ogPickSurface);
+
+//------------------------------------------------------------------------------
+//##############################################################################
+// ** BILLBOARD LAYER **
+//##############################################################################
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+/** @description Creates a Billboard Layer 
+*   @param {number} world_id the scene
+*   @param {string} layername 
+*   @returns number
+*/
+function ogCreateBillboardLayer(world_id,layername)
+{
+   var options = {};
+   options["name"] = layername;
+   
+   //** @type {ogWorld} */
+   var world = _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      var billboardlayer = _CreateObject(OG_OBJECT_BILLBOARDLAYER, world, options);
+      return billboardlayer.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogCreateBillboardLayer', ogCreateBillboardLayer);
+//------------------------------------------------------------------------------
+/** @description Removes a Billboard Layer
+*   @param {number} billboardlayer_id 
+*/
+function ogRemoveBillboardLayer(billboardlayer_id)
+{
+   // @type {ogImageLayer}
+   var layer = _GetObjectFromId(billboardlayer_id);
+   if (layer && layer.type == OG_OBJECT_BILLBOARDLAYER)
+   {
+      layer.UnregisterObject();  
+   }
+}
+goog.exportSymbol('ogRemoveBillboardLayer', ogRemoveBillboardLayer);
+//------------------------------------------------------------------------------
+/** @description Hides a Billboard Layer
+*   @param {number} billboardlayer_id 
+*/
+function ogHideBillboardLayer(billboardlayer_id)
+{
+   //** @type {ogBillboardLayer} */
+   var billboardlayer = /** @type {ogBillboardLayer} */_GetObjectFromId(billboardlayer_id);
+   if (billboardlayer && billboardlayer.type == OG_OBJECT_BILLBOARDLAYER)
+   {
+      billboardlayer.Hide();
+   }
+}
+goog.exportSymbol('ogHideBillboardLayer', ogHideBillboardLayer);
+//------------------------------------------------------------------------------
+/** @description Shows a Billboard Layer
+*   @param {number} billboardlayer_id 
+*/
+function ogShowBillboardLayer(billboardlayer_id)
+{
+   //** @type {ogBillboardLayer} */
+   var billboardlayer = /** @type {ogBillboardLayer} */_GetObjectFromId(billboardlayer_id);
+   if (billboardlayer && billboardlayer.type == OG_OBJECT_BILLBOARDLAYER)
+   {
+      billboardlayer.Show();
+   }
+}
+goog.exportSymbol('ogShowBillboardLayer', ogShowBillboardLayer);
+
+//------------------------------------------------------------------------------
+//##############################################################################
+// ** Billboard OBJECT **
+//##############################################################################
+//------------------------------------------------------------------------------
+
+/** 
+ *@description Creates a Billboard using a HTML5 canvas element as content.
+ *@param {number} layer_id
+ *@param {HTMLCanvasElement} canvas the HTML5 canvas
+ *@param {number} lng
+ *@param {number} lat
+ *@param {number} elv
+ */
+function ogCreateBillboardFromCanvas(layer_id,canvas,lng,lat,elv)
+{
+   /** @type {ogBillboardLayer} */
+   var layer = /** @type {ogBillboardLayer} */_GetObjectFromId(layer_id);
+   if (layer && layer.type == OG_OBJECT_BILLBOARDLAYER)
+   {
+       var options = {};
+       options["canvas"] = canvas;
+       options["position"]=[lng,lat,elv];
+       var billboard = _CreateObject(OG_OBJECT_BILLBOARD, layer.parent.parent, options);
+       layer.AddBillboard(billboard);
+       billboard.layer = layer.id;
+       return billboard.id;
+   }
+   return -1;     
+}
+goog.exportSymbol('ogCreateBillboardFromCanvas', ogCreateBillboardFromCanvas);
+//------------------------------------------------------------------------------
+
+/** 
+ *@description removes the billboard and frees all memory
+ *@param {number} billboard_id the billboard id.
+ */
+function ogDestroyBillboard(billboard_id)
+{
+   /** @type {ogBillboard} */
+   var billboard = /** @type {ogBillboard} */_GetObjectFromId(billboard_id);
+   if (billboard  && billboard.type == OG_OBJECT_BILLBOARD)
+   {
+      if(billboard.layer)
+      {
+         //if the poi is in a poilayer, the poilayer destroies the poi.
+         var billboardlayer = _GetObjectFromId(billboard.layer);
+         if (billboardlayer  && billboardlayer.type == OG_OBJECT_BILLBOARDLAYER)
+         {
+            billboardlayer.RemoveBillboard(billboard);
+         }
+      }
+      else
+      {
+         billboard.UnregisterObject();
+      }
+      
+   }
+   return -1;     
+}
+goog.exportSymbol('ogDestroyBillboard', ogDestroyBillboard);
+//------------------------------------------------------------------------------
+
+/** 
+ *@description hides the billboard 
+ *@param {number} billboard_id the billboard id.
+ */
+function ogHideBillboard(billboard_id)
+{
+   /** @type {ogBillboard} */
+   var billboard = /** @type {ogBillboard} */_GetObjectFromId(billboard_id);
+   if (billboard  && billboard.type == OG_OBJECT_BILLBOARD)
+   {
+      billboard.Hide();
+   }
+   return -1;     
+}
+goog.exportSymbol('ogHideBillboard', ogHideBillboard);
+//------------------------------------------------------------------------------
+
+/** 
+ *@description shows the billboard 
+ *@param {number} billboard_id the billboard id.
+ */
+function ogShowBillboard(billboard_id)
+{
+   /** @type {ogBillboard} */
+   var billboard = /** @type {ogBillboard} */_GetObjectFromId(billboard_id);
+   if (billboard  && billboard.type == OG_OBJECT_BILLBOARD)
+   {
+      billboard.Show();
+   }
+   return -1;     
+}
+goog.exportSymbol('ogShowBillboard', ogShowBillboard);
+
+//------------------------------------------------------------------------------
+/** 
+ * @description returns an object if a billboard is picked
+ * @param {number} mx
+ * @param {number} my
+ */
+function ogPickBillboard(scene_id,mx,my)
+{
+    /** @type {ogScene} */
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+      return scene.PickBillboard(mx, my);
+   }
+   return -1;    
+}
+goog.exportSymbol('ogPickBillboard', ogPickBillboard);
+
+//------------------------------------------------------------------------------
+/** 
+ * @description updates the content of the billboard
+ * @param {number} billboard_id 
+ * @param {HTMLCanvasElement} canvas
+ */
+function ogUpdateBillboard(billboard_id,canvas)
+{
+    /** @type {ogBillboard} */
+   var billboard = /** @type {ogBillboard} */_GetObjectFromId(billboard_id);
+   if (billboard && billboard.type == OG_OBJECT_BILLBOARD)
+   {
+      return billboard.UpdateBillboard(canvas);
+   }
+   return -1;    
+}
+goog.exportSymbol('ogUpdateBillboard', ogUpdateBillboard);
+
+
+
 
 
