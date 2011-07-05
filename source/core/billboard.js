@@ -194,32 +194,36 @@ Billboard.prototype.Pick = function(mx,my)
       var hitbillboard = this.surface.TestRayIntersection(ray.x,ray.y,ray.z,ray.dirx,ray.diry,ray.dirz);
    }
   
-  var x = 0;
-  var y = 0;
-  
-  var u = hitbillboard.u;
-  var v = hitbillboard.v;
-  var w = (1-u-v);
-  
-  if(hitbillboard.triangleindex == 0)
+  if(hitbillboard)
   {
-    x = (u*-this.meshWidth/2+v*this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
-    y = (u*this.meshWidth/2+v*this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
-  
-  }else if (hitbillboard.triangleindex == 1)
-  {
-    x = (u*this.meshWidth/2+v*this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
-    y = (u*this.meshWidth/2+v*-this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
+    var x = 0;
+    var y = 0;
+    
+    var u = hitbillboard.u;
+    var v = hitbillboard.v;
+    var w = (1-u-v);
+    
+    if(hitbillboard.triangleindex == 0)
+    {
+      x = (u*-this.meshWidth/2+v*this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
+      y = (u*this.meshWidth/2+v*this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
+    
+    }else if (hitbillboard.triangleindex == 1)
+    {
+      x = (u*this.meshWidth/2+v*this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
+      y = (u*this.meshWidth/2+v*-this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
+    }
+    
+    x = x/this.meshWidth; //normalization 
+    y = y/this.meshHeight;//normalization 
+    
+    var hitresult = {};
+    hitresult.id = this.ogId;
+    hitresult.x = x;
+    hitresult.y = y;
+    return hitresult;
   }
-  
-  x = x/this.meshWidth; //normalization 
-  y = y/this.meshHeight;//normalization 
-  
-  var hitresult = {};
-  hitresult.id = this.ogId;
-  hitresult.x = x;
-  hitresult.y = y;
-  return hitresult;
+  return null;
 }
 //------------------------------------------------------------------------------
 /**
