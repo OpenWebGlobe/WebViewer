@@ -29,10 +29,10 @@
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
-<!--<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
-<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>-->
+<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>
 <script type="text/javascript">
 
 var billboard_id;
@@ -154,7 +154,8 @@ function main()
    createHTML5Canvas();
    
    //Create the Billboard from canvas
-   billboard_id = ogCreateBillboardFromCanvas(billboardlayer,canvas,7.569964,46.135222,5735);
+   var a = document.getElementById("canvas");
+   billboard_id = ogCreateBillboardFromCanvas(billboardlayer,a,7.569964,46.135222,5735);
 }
 //------------------------------------------------------------------------------
    

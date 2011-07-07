@@ -71,9 +71,19 @@ Billboard.prototype.Create = function(canvas)
    // set it as Billboard
    this.canvas = canvas;
    
-   this.ctx = this.canvas.getContext('2d');
-   this.meshWidth = this.ctx.canvas.width;
-   this.meshHeight = this.ctx.canvas.height;
+
+   switch(canvas.constructor.toString())
+   {
+    case "[object HTMLCanvasElement]":  this.ctx = this.canvas.getContext('2d');
+                                        this.meshWidth = this.ctx.canvas.width;
+                                        this.meshHeight = this.ctx.canvas.height;
+                                        break;
+                                      
+    case "[object HTMLVideoElement]":   this.meshWidth = canvas.videoWidth;
+                                        this.meshHeight = canvas.videoHeight;
+                                        break;
+    
+   }
    
    //set canvas as texture
    this.tex = new Texture(this.engine);

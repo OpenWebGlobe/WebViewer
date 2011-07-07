@@ -102,7 +102,7 @@ texture = raw_input("texture url: ")
 #write to json format
 name = filename.split('.')
 g = open(name[0]+'.json',"w")
-g.write("{\n\"id\"  :  \""+str(id)+"\",")
+g.write("[[{\n\"id\"  :  \""+str(id)+"\",")
 g.write("\n\"Center\"  :  ["+str(lng)+","+str(lat)+","+str(elv)+"],")
 g.write("\n\"DiffuseMap\"  :  \""+str(texture)+"\",")
 g.write("\n\"VertexSemantic\"  :  \""+vertexsemantic+"\",\n\"Vertices\"  :  [")
@@ -119,7 +119,7 @@ for x in idx:
     if i%3==0:
         g.write("\n\t\t\t\t")
 g.seek(-7,1) #set cursor pos back to remove last ','
-g.write("]\n\n}")
+g.write("]\n\n}]]")
 
 
 print "conversion successfully finished..."
