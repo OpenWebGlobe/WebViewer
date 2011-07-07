@@ -492,13 +492,15 @@ function NavigationNode()
             this._yaw = A2;
             
             
-            while (this._longitude>180) {this._longitude -=180;}
-            while (this._longitude<-180) { this._longitude +=180; }
-            while (this._latitude>90) { this._latitude-=180;}
-            while (this._latitude<-90) { this._latitude+=180;}
-
+            while (this._longitude>180) {this._longitude -=360;}
+            while (this._longitude<-180) { this._longitude +=360; }
+            while (this._latitude>90) { this._latitude =  180 - this._latitude;}
+            while (this._latitude<-90) { this._latitude = - 180 - this._latitude;}
+            
             bChanged = true;
          }
+         
+         
          
 
          // new altitude over ground is lower than min value
