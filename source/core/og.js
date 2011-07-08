@@ -1008,7 +1008,11 @@ function ogGetOrientation(scene_id)
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
      var cam = scene.activecamera;
-     return cam.GetOrientation();
+     var orientation = cam.GetOrientation();
+     orientation.yaw = orientation.yaw;
+     orientation.pitch = orientation.pitch;
+     orientation.roll = orientation.roll;
+     return orientation;
    }
    return null;
 }
@@ -1095,7 +1099,7 @@ function ogLookAt(scene_id,lng,lat,elv)
    
    // Get the camera position and convert it to cartesian coordianets
    var cpos = ogGetPosition(scene_id);
-   var geocord2 = new GeoCoord(cpos["longitude"],cpos["latitude"],cpos["elevation"]); 
+   var geocord2 = new GeoCoord(cpos.longitude,cpos.latitude,cpos.elevation); 
    var cc = [];
    geocord2.ToCartesian(cc);
    var vcc = new vec3(cc[0],cc[1],cc[2]);
@@ -1113,7 +1117,7 @@ function ogLookAt(scene_id,lng,lat,elv)
      
    //set up a navigation frame system with origin at target position
    var navframe = new mat4();
-   navframe.CalcNavigationFrame(cpos["longitude"],cpos["latitude"]);
+   navframe.CalcNavigationFrame(cpos.longitude,cpos.latitude);
    
    var trans = new mat4();
    trans.Translation(cc[0],cc[1],cc[2]);
@@ -1145,7 +1149,7 @@ function ogLookAt(scene_id,lng,lat,elv)
 
    var pitch = -(90-(Math.acos(z)*57.295779513082320876798154814105));
    
-   //console.log("x: "+x+" y: "+y+" z: "+z);
+//   console.log("x: "+x+" y: "+y+" z: "+z);
    
    if(z<-0.9) //Tdo: clean up this...
    {
@@ -1155,7 +1159,7 @@ function ogLookAt(scene_id,lng,lat,elv)
    
    //set the new orientation
    var ori = ogGetOrientation(scene_id);
-   ogSetOrientation(activecam,yaw,pitch,ori["roll"]);
+   ogSetOrientation(activecam,yaw,pitch,ori.roll);
    
 //   console.log("currentOrientation ->   yaw: "+ori.yaw+" pitch: "+ori.pitch+" roll: "+ori.roll);
    //console.log("newOrientation ->   yaw: "+yaw+" pitch: "+pitch);
@@ -1664,7 +1668,7 @@ function ogShowGeometryLayer(layer_id)
       geolayer.Show();
    }
 }
-goog.exportSymbol('ogHideGeometryLayer', ogHideGeometryLayer);
+goog.exportSymbol('ogShowGeometryLayer', ogShowGeometryLayer);
 //------------------------------------------------------------------------------
 /** @description Removes a Geometry Layer Object
 *   @param {number} layer_id the id of the geometry layer.
@@ -1742,7 +1746,7 @@ function ogDestroyGeometry(geometry_id)
    }
    return -1;
 }
-goog.exportSymbol('ogDestroyGeomentry', ogDestroyGeometry);
+goog.exportSymbol('ogDestroyGeometry', ogDestroyGeometry);
 
 //------------------------------------------------------------------------------
 /** @description 
