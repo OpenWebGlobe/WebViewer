@@ -1208,6 +1208,44 @@ function ogCreateGlobe(context_id)
    return world_id;
 }
 goog.exportSymbol('ogCreateGlobe', ogCreateGlobe);
+//------------------------------------------------------------------------------
+/**
+* @description Set Color of North Pole
+* @param {number} world_id
+* @param {number} red the red component [0,1]
+* @param {number} green the green coponent [0,1]
+* @param {number} blue the blue component [0,1]
+*/
+function ogSetNorthpoleColor(world_id,red, green, blue)
+{
+   // test if context_id is a valid context
+   /** @type ogWorld */
+   var world = /** @type ogWorld */ _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      world.SetNorthpoleColor(red, green, blue);
+   }
+}
+goog.exportSymbol('ogSetNorthpoleColor', ogSetNorthpoleColor);
+//------------------------------------------------------------------------------
+/**
+* @description Set Color of North Pole
+* @param {number} world_id
+* @param {number} red the red component [0,1]
+* @param {number} green the green coponent [0,1]
+* @param {number} blue the blue component [0,1]
+*/
+function ogSetSouthpoleColor(world_id,red, green, blue)
+{
+   // test if context_id is a valid context
+   /** @type ogWorld */
+   var world = /** @type ogWorld */ _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      world.SetSouthpoleColor(red, green, blue);
+   }
+}
+goog.exportSymbol('ogSetSouthpoleColor', ogSetSouthpoleColor);
 
 //##############################################################################
 // ** TEXTURE-OBJECT **

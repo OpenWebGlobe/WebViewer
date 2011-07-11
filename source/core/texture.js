@@ -130,6 +130,7 @@ Texture.prototype.loadTexture = function(url, opt_callbackready, opt_callbackfai
       _cbHandleLoadedTexture(curgl, texture, cbr, thismat);
       thismat.ready = true;
    }
+   this.texture.image.crossOrigin = '';
    this.texture.image.src = url;
    this.texture.image.onerror = function()
    {

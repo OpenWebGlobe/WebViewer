@@ -25,6 +25,7 @@ goog.provide('owg.ogWorld');
 
 goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
+goog.require('owg.GlobeRenderer');
 
 //------------------------------------------------------------------------------
 /**
@@ -99,3 +100,30 @@ ogWorld.prototype.ParseOptions = function(options)
       
    }
 }
+//------------------------------------------------------------------------------
+ogWorld.prototype.SetNorthpoleColor = function(red, green, blue)
+{
+      /** @type {ogContext} */
+      var context = /** @type ogContext */this.parent.parent;
+      /** @type {engine3d} */
+      var engine = context.engine;
+      
+      /** @type {GlobeRenderer} */
+      var renderer = engine.scene.nodeRenderObject.globerenderer;
+      
+      renderer.northpolecolor = [red, green, blue];
+}
+//------------------------------------------------------------------------------
+ogWorld.prototype.SetSouthpoleColor = function(red, green, blue)
+{
+      /** @type {ogContext} */
+      var context = /** @type ogContext */this.parent.parent;
+      /** @type {engine3d} */
+      var engine = context.engine;
+      
+      /** @type {GlobeRenderer} */
+      var renderer = engine.scene.nodeRenderObject.globerenderer;
+      
+      renderer.southpolecolor = [red, green, blue]; 
+}
+//------------------------------------------------------------------------------

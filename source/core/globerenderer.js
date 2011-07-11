@@ -98,7 +98,7 @@ function GlobeRenderer(engine)
    
    this.northpole = new Surface(this.engine);
    this.southpole = new Surface(this.engine);
-   this.northpolecolor = [8/255,24/255,58/255];
+   this.northpolecolor = [8/255,24/255,58/255]; 
    this.southpolecolor = [1,1,1];
 }
 

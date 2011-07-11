@@ -57,12 +57,16 @@ function main()
       service : "osm"
    };
    ogAddImageLayer(globe, imgOpenStreetMap);
+   
+   // (4) Set Color of north, south pole to match the "OpenStreetMap Color"
+   ogSetNorthpoleColor(globe, 181/255,208/255,208/255);
+   ogSetSouthpoleColor(globe, 241/255,238/255,232/255);
 
-   // (4) Set the "Render-Callback" function.
+   // (5) Set the "Render-Callback" function.
    // The callback function will be called everytime a frame is drawn.
    ogSetRenderFunction(ctx, OnRender);
    
-   // (5) Set the background color
+   // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1); 
 }
 //------------------------------------------------------------------------------
