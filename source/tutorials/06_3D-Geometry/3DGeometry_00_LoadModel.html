@@ -29,16 +29,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
 
-<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
-<script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
 <script type="text/javascript">
 
 var geometrylayer = null;
-var hidden = false
+var hidden = false;
 
 //------------------------------------------------------------------------------
 // Render-Event: called every frame:
@@ -65,9 +62,8 @@ function OnMouseDown(context, button, mx, my)
       }
    
   }
-  ogDestroyGeometry(context,geometry3);
 }
-var geometry3;
+
 //------------------------------------------------------------------------------
 function main()
 {
@@ -132,13 +128,13 @@ function main()
 
 
    //create the first 3d model                   
-   var geometry1 = ogLoadGeometryAsync(geometrylayer,"G812.json");
+   var geometry1 = ogLoadGeometryAsync(geometrylayer,"cube.json");
 
    //create the second 3d model                      
-   var geometry2 = ogLoadGeometryAsync(geometrylayer,"G821.json");
+   var geometry2 = ogLoadGeometryAsync(geometrylayer,"sphere.json");
 
    //create the third 3d model
-   geometry3 = ogLoadGeometryAsync(geometrylayer,"G832.json");
+   geometry3 = ogLoadGeometryAsync(geometrylayer,"torus.json");
 
 }
 //------------------------------------------------------------------------------
