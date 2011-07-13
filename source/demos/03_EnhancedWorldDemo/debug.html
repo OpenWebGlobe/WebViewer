@@ -40,23 +40,6 @@
         
          function main()
          {
-            var bMayRun = false;
-            if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent))
-            {
-               var ffversion=new Number(RegExp.$1)
-               if (ffversion>=4)
-               {
-                  bMayRun = true;
-               }
-            }
-            
-            if (!bMayRun)
-            {
-               document.write("<h3>Sorry your browser is now supported</h3> This alpha preview only runs on Firefox 4.");
-               alert("Sorry, the alpha preview requires Firefox 4.x. Later versions will support more browsers.");
-               return;
-            }
-      
             // (1) create an OpenWebGlobe context using canvas
             g_context = ogCreateContextFromCanvas("canvas", true);
    
