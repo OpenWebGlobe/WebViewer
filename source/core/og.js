@@ -2196,7 +2196,7 @@ goog.exportSymbol('ogShowBillboard', ogShowBillboard);
 function ogPickBillboard(scene_id,mx,my)
 {
     /** @type {ogScene} */
-   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
    {
       return scene.PickBillboard(mx, my);

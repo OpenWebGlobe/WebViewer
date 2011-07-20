@@ -122,21 +122,28 @@ function _cbfdsidownload(dsi)
             dsi.vBoundingBox = extent;
             dsi.vBounds = [dsi.nLevelofDetail, extent[0], extent[1], extent[2], extent[3]];
             
-            if (obj['format'] == "png")
+            if (obj['type'] == "image") // image tile
             {
-               dsi.sTileFormat = "image/png";
+               // image dataset
+               if (obj['format'] == "png")
+               {
+                  dsi.sTileFormat = "image/png";
+               }
+               else if (obj['format'] == "jpg")
+               {
+                  dsi.sTileFormat = "image/jpg";
+               }
+               else
+               {
+                  dsi.sTileFormat = "image/png"; // default
+               }
             }
-            else if (obj['format'] == "jpg")
+            /*else if (obj['type'] == "elevation")
             {
-               dsi.sTileFormat = "image/jpg";
-            }
-            else
-            {
-               dsi.sTileFormat = "image/png"; // default
-            }
+               // elevation dataset
+            }*/
       
             dsi.bReady = true;
-            
             
          }
          else

@@ -31,6 +31,7 @@ goog.require('owg.ViewFrustum');
 goog.require('owg.i3dImageLayer');
 goog.require('owg.owgImageLayer');
 goog.require('owg.i3dElevationLayer');
+goog.require('owg.owgElevationLayer');
 
 //------------------------------------------------------------------------------
 /**
@@ -208,7 +209,7 @@ GlobeRenderer.prototype.AddElevationLayer = function(options)
    var index = -1;
    if (options["service"] == "i3d")
    {
-      // i3d elevation tile service
+      // i3d elevation tile service 
       if (options["url"] && options["layer"])
       {
          if (options["url"].length>0)
@@ -219,6 +220,25 @@ GlobeRenderer.prototype.AddElevationLayer = function(options)
             // Create i3d layer:
             var elvLayer = new i3dElevationLayer();
             elvLayer.Setup(url, layer);
+            index = this.elevationlayerlist.length;
+            this.elevationlayerlist.push(elvLayer);
+            this._UpdateLayers();
+         }
+      }
+   }
+   else if (options["service"] == "owg")
+   {
+      // OpenWebGlobe elevation tile service
+      if (options["url"] && options["layer"])
+      {
+         if (options["url"].length>0)
+         {
+            var servers = options["url"];
+            var layer = options["layer"];
+             
+            // Create OpenWebGlobe Elevation layer:
+            var elvLayer = new owgElevationLayer();
+            elvLayer.Setup(servers, layer);
             index = this.elevationlayerlist.length;
             this.elevationlayerlist.push(elvLayer);
             this._UpdateLayers();
