@@ -86,7 +86,6 @@ function DatasetInfo()
    this.sFileExtension = null;      // file extension.
    /** @type {null|number} */
    this.version = null;              // version
-   
 }
 
 //------------------------------------------------------------------------------
@@ -128,20 +127,23 @@ function _cbfdsidownload(dsi)
                if (obj['format'] == "png")
                {
                   dsi.sTileFormat = "image/png";
+                  dsi.sFileExtension = ".png";
                }
                else if (obj['format'] == "jpg")
                {
                   dsi.sTileFormat = "image/jpg";
+                  dsi.sFileExtension = ".jpg";
                }
                else
                {
                   dsi.sTileFormat = "image/png"; // default
                }
             }
-            /*else if (obj['type'] == "elevation")
+            else if (obj['type'] == "elevation")
             {
                // elevation dataset
-            }*/
+               dsi.sFileExtension = ".json";
+            }
       
             dsi.bReady = true;
             

@@ -76,7 +76,7 @@ function owgImageLayer()
       var sFilename = this.servers[this.curserver] + "/" + this.layer + "/tiles/" +
                       res.lod + "/" + 
                       res.x + "/" + 
-                      res.y + ".png"
+                      res.y + this.dsi.sFileExtension;
                                 
       var ImageTexture = new Texture(engine);  
       ImageTexture.quadcode = quadcode;   // store quadcode in texture object
