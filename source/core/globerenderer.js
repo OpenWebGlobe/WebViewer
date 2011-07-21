@@ -88,7 +88,7 @@ function GlobeRenderer(engine)
    /** @type {number} */
    this.maxlod = 0;
    /** @type {number} */
-   this.quality = 4.0; //0.75; // quality parameter, reduce for lower quality
+   this.quality = 1.0; //0.75; // quality parameter, reduce for lower quality
    
    // current view frustum (for view frustum culling)
    
