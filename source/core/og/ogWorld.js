@@ -127,3 +127,18 @@ ogWorld.prototype.SetSouthpoleColor = function(red, green, blue)
       renderer.southpolecolor = [red, green, blue]; 
 }
 //------------------------------------------------------------------------------
+ogWorld.prototype.SetRenderQuality = function(quality)
+{
+      /** @type {ogContext} */
+      var context = /** @type ogContext */this.parent.parent;
+      /** @type {engine3d} */
+      var engine = context.engine;
+      
+      /** @type {GlobeRenderer} */
+      var renderer = engine.scene.nodeRenderObject.globerenderer;
+      
+      if (quality > 0 && quality <= 3)
+      {
+         renderer.quality = quality;
+      }
+}

@@ -1250,7 +1250,23 @@ function ogSetSouthpoleColor(world_id,red, green, blue)
    }
 }
 goog.exportSymbol('ogSetSouthpoleColor', ogSetSouthpoleColor);
-
+//------------------------------------------------------------------------------
+/**
+* @description Set Render Quality of world. 0.0 worst to 3.0 best. Default is 1.0
+* @param {number} world_id
+* @param {number} quality [0.0,3.0] default value is 1.0. Max is 3.0
+*/
+function ogSetRenderQuality(world_id,quality)
+{
+   // test if context_id is a valid context
+   /** @type ogWorld */
+   var world = /** @type ogWorld */ _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      world.SetRenderQuality(quality);
+   }
+}
+goog.exportSymbol('ogSetRenderQuality', ogSetRenderQuality);
 //##############################################################################
 // ** TEXTURE-OBJECT **
 //##############################################################################
