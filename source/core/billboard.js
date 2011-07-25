@@ -34,7 +34,7 @@ goog.require('owg.Texture');
 * @class poi
 * @constructor
 * 
-* @description A "Point Of Interest" Class.
+* @description The HTML5 - Canvas - Billboard class.
 * 
 * @author Benjamin Loesch benjamin.loesch@fhnw.ch
 * 
@@ -94,9 +94,12 @@ Billboard.prototype.Create = function(canvas)
    this.surface = new Surface(this.engine);
    this.surface.SetTexture(this.tex);
    
-    //get next power of two    
-   this.textureWidth = MathUtils.GetNextPowerOfTwo(this.meshWidth);
-   this.textureHeight = MathUtils.GetNextPowerOfTwo(this.meshHeight);  
+   //get next power of two - not nesscesary    
+   //this.textureWidth = MathUtils.GetNextPowerOfTwo(this.meshWidth);
+   //this.textureHeight = MathUtils.GetNextPowerOfTwo(this.meshHeight);
+   this.textureWidth = this.meshWidth;
+   this.textureHeight = this.meshHeight;
+   
 
    var vert = new Array();
   
@@ -216,12 +219,12 @@ Billboard.prototype.Pick = function(mx,my)
     if(hitbillboard.triangleindex == 0)
     {
       x = (u*-this.meshWidth/2+v*this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
-      y = (u*this.meshWidth/2+v*this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
+      y = (u*this.meshHeight/2+v*this.meshHeight/2+w*-this.meshHeight/2/(u+v+w))+this.meshHeight/2;
     
     }else if (hitbillboard.triangleindex == 1)
     {
       x = (u*this.meshWidth/2+v*this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
-      y = (u*this.meshWidth/2+v*-this.meshWidth/2+w*-this.meshWidth/2/(u+v+w))+this.meshWidth/2;
+      y = (u*this.meshHeight/2+v*-this.meshHeight/2+w*-this.meshHeight/2/(u+v+w))+this.meshHeight/2;
     }
     
     x = x/this.meshWidth; //normalization 
