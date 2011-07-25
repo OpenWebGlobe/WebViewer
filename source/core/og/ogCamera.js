@@ -106,7 +106,12 @@ ogCamera.prototype.SetPosition = function(lng,lat,elv)
  */
 ogCamera.prototype.GetPosition = function()
 {
-   return {"longitude":this.lng,"latitude":this.lat,"elevation":this.elv};
+   var pos = {};
+   pos["longitude"] = this.lng;
+   pos["latitude"] = this.lat;
+   pos["elevation"] = this.elv;
+   return pos;
+   //return {"longitude":this.lng,"latitude":this.lat,"elevation":this.elv};
 }
 
 //------------------------------------------------------------------------------
@@ -133,7 +138,12 @@ ogCamera.prototype.SetOrientation = function(yaw,pitch,roll)
  */
 ogCamera.prototype.GetOrientation = function()
 {
-   return {"yaw":this.yaw,"pitch":this.pitch,"roll":this.roll};
+   var ori = {};
+   ori["yaw"] = this.yaw;
+   ori["pitch"] = this.pitch;
+   ori["roll"] = this.roll;
+   return ori;
+   //return {"yaw":this.yaw,"pitch":this.pitch,"roll":this.roll};
 }
 
 

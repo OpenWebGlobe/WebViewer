@@ -61,19 +61,19 @@ ogBillboard.prototype.ParseOptions = function(options)
 {
    if (options == null)
    {
-      goog.debug.Logger.getLogger('owg.ogTexture').warning("** ERROR: no options for billboard creation!");
+      goog.debug.Logger.getLogger('owg.ogBillboard').warning("** ERROR: no options for billboard creation!");
       return;  // no options!!
    }
    
    if (this.parent == null)
    {
-      goog.debug.Logger.getLogger('owg.ogTexture').warning("** ERROR: no parent!");
+      goog.debug.Logger.getLogger('owg.ogBillboard').warning("** ERROR: no parent!");
       return;
    }
    
    if (this.parent.type != OG_OBJECT_SCENE)
    {
-      goog.debug.Logger.getLogger('owg.ogTexture').warning("** ERROR: parent is not scene!");
+      goog.debug.Logger.getLogger('owg.ogBillboard').warning("** ERROR: parent is not scene!");
       return;
    }
    
