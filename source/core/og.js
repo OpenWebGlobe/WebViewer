@@ -42,6 +42,7 @@ goog.require('owg.ogPOILayer');
 goog.require('owg.ogGeometryLayer');
 goog.require('owg.ogBillboard');
 goog.require('owg.ogBillboardLayer');
+goog.require('owg.FlyToAnimation'); //ToDo: not an og object---> ok?
 goog.require('goog.debug.Logger');
 
 //------------------------------------------------------------------------------
@@ -2234,8 +2235,30 @@ function ogUpdateBillboard(billboard_id,canvas)
    return -1;    
 }
 goog.exportSymbol('ogUpdateBillboard', ogUpdateBillboard);
+//------------------------------------------------------------------------------
+//##############################################################################
+// ** FlyTo Animation **
+//##############################################################################
+//------------------------------------------------------------------------------
 
-
-
-
+//------------------------------------------------------------------------------
+/** 
+ * @ignore
+ */
+function ogFlyTo(scene_id,lat,lng,elv)
+{
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+   
+   var flyAnimation = new FlyToAnimation(engine);
+   flyAnimation.CalcTrajectory(lat,lng,elv);
+   flyAnimation.StartFlyTo();
+   
+    
+}
+goog.exportSymbol('ogFlyTo', ogFlyTo);
 

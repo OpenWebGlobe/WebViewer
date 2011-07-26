@@ -735,7 +735,7 @@ engine3d.prototype.SetInitCallback = function(f)
 //------------------------------------------------------------------------------
 /**
  * @description sets the timer callback function
- * @param {function()} f timer callback handler.
+ * @param {?function()} f timer callback handler.
  */
 engine3d.prototype.SetTimerCallback = function(f)
 {
@@ -889,7 +889,7 @@ engine3d.prototype.SetKeyUpCallback = function(opt_f)
    }
    if (opt_f)
    {
-      _gcbfKeyUp = goog.events.listen(window, goog.events.EventType.KEYUP, function(e) { opt_f(e.keyCode, this); });
+      _gcbfKeyUp = goog.events.listen(window, goog.events.EventType.KEYUP, function(e) { opt_f(e.keyCode, this); },false,this);
    }
 };
 
