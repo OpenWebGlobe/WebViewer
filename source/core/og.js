@@ -2245,7 +2245,7 @@ goog.exportSymbol('ogUpdateBillboard', ogUpdateBillboard);
 /** 
  * @ignore
  */
-function ogFlyTo(scene_id,lat,lng,elv)
+function ogFlyTo(scene_id,lng,lat,elv)
 {
    var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
    /** @type {ogContext} */
@@ -2255,7 +2255,7 @@ function ogFlyTo(scene_id,lat,lng,elv)
    var engine = context.engine;
    
    var flyAnimation = new FlyToAnimation(engine);
-   flyAnimation.CalcTrajectory(lat,lng,elv);
+   flyAnimation.CalcTrajectory(lng,lat,elv);
    flyAnimation.StartFlyTo();
    
     
