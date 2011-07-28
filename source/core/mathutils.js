@@ -130,4 +130,29 @@ MathUtils.GetNextPowerOfTwo = function(value)
    }
    return powerOfTwo;
 }
+//------------------------------------------------------------------------------
+/**
+ * @description gets the next higher power of 2 value
+ * @param {Array} arr
+ * @param {number} index
+ * @return {number}
+ */
+MathUtils.InterpolateArray = function(arr,index)
+{
+   var num = Math.floor(index);
+   var rest = index-num;
+   var length = arr.length;
+   
+   if(num < length-1)
+   {
+    return arr[num]+rest*(arr[num+1]-arr[num]);
+   }
+   else
+   {
+      return arr[length-1];
+   }
+   
+
+}
+
 

@@ -2240,12 +2240,20 @@ goog.exportSymbol('ogUpdateBillboard', ogUpdateBillboard);
 // ** FlyTo Animation **
 //##############################################################################
 //------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
 /** 
- * @ignore
+ * @description flies the camera to a specific position. yaw,pitch and roll are
+ * optional if they are defined, there will be an interpolation between the current
+ * angles and the target angles otherwise the angles will not be changed.
+ *
+ * @param {number} scene_id the scene id.
+ * @param {number} lng target longitude
+ * @param {number} lat target latitude
+ * @param {number} elv target elevation
+ * @param {number} yaw target yaw
+ * @param {number} pitch target pitch
+ * @param {number} roll target roll
  */
-function ogFlyTo(scene_id,lng,lat,elv)
+function ogFlyTo(scene_id,lng,lat,elv,yaw,pitch,roll)
 {
    var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
    /** @type {ogContext} */
@@ -2254,11 +2262,107 @@ function ogFlyTo(scene_id,lng,lat,elv)
    /** @type {engine3d} */
    var engine = context.engine;
    
-   var flyAnimation = new FlyToAnimation(engine);
-   flyAnimation.CalcTrajectory(lng,lat,elv);
-   flyAnimation.StartFlyTo();
-   
-    
+   if(engine)
+   {
+      engine.FlyTo(lng,lat,elv,yaw,pitch,roll);
+   }
 }
 goog.exportSymbol('ogFlyTo', ogFlyTo);
+
+//------------------------------------------------------------------------------
+/** 
+ * @description The camera moves to a LookAt Position "distance" away from the
+ * point defined by lng,lat,elv. The camera orientation will not changed.
+ *
+ * @param {number} scene_id the scene id.
+ * @param {number} lng target longitude
+ * @param {number} lat target latitude
+ * @param {number} elv target elevation
+ * @param {number} distance distance in [m]
+ */
+function ogFlyToLookAtPosition(scene_id,lng,lat,elv,distance)
+{
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+   
+   if(engine)
+   {
+      engine.FlyToLookAtPosition(lng,lat,elv,distance);
+   }
+}
+goog.exportSymbol('ogFlyToLookAtPosition', ogFlyToLookAtPosition);
+//------------------------------------------------------------------------------
+/** 
+ * @description Set the duration of the FlyTo-animation in [ms].
+ *
+ * @param {number} scene_id the scene id.  
+ * @param {number} timespan duration in [ms]
+ */
+function ogSetFlightDuration(scene_id,timespan)
+{
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+   
+   if(engine)
+   {
+      engine.SetFlightDuration(timespan);
+   }
+
+}
+goog.exportSymbol('ogSetFlightDuration', ogSetFlightDuration);
+//------------------------------------------------------------------------------
+/** 
+ * @description Set the callback-function wich will be called when the flyto
+ * animation starts.
+ * 
+ * @param {number} scene_id the scene id.  
+ * @param {function()} f the callback function
+ */
+function ogSetFlyToStartCbf(scene_id,f)
+{
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+   
+   if(engine)
+   {
+      engine.SetFlyToStartCbf(f);
+   }
+}
+goog.exportSymbol('ogSetFlyToStartCbf', ogSetFlyToStartCbf);
+//------------------------------------------------------------------------------
+/** 
+ * @description   Set the callback-function wich will be called when the flyto
+ *                animation is finished and the desired position is reached.
+ *
+ * @param {number} scene_id the scene id.            
+ * @param {function()} f the callback function
+ */
+function ogSetPosReachedCbf(scene_id,f)
+{
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+   
+   if(engine)
+   {
+      engine.SetPosReachedCbf(f);
+   }
+
+}
+goog.exportSymbol('ogSetPosReachedCbf', ogSetPosReachedCbf);
 

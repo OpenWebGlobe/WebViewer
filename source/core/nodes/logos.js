@@ -81,7 +81,8 @@ function LogosNode()
          var lng = this.longitude.toFixed(6);
          var lat = this.latitude.toFixed(6);
          var elv = this.elevation.toFixed(2);
-         this.engine.DrawText("Current position: (" + lng+ ", " + lat + "," + elv + ")",0,0,0.5);  
+         this.engine.DrawText("Current position: (" + lng+ ", " + lat + "," + elv + ")",0,0,0.5);
+         
          
       }
       

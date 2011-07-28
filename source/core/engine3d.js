@@ -240,7 +240,11 @@ function engine3d()
    
    /** @type {TextureManager} */
    this.texturemanager = null;
+   
+   /** @type {FlyToAnimation} */
+   this.flyto = null;
       
+   
 }
 
 //------------------------------------------------------------------------------
@@ -316,6 +320,9 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    //Create TextureManager
    this.texturemanager = new TextureManager(this);
    
+   //Create FlyToAnimation
+   this.flyto = new FlyToAnimation(this);
+   
    // call init callback
 	if (this.cbfInit)
    {
@@ -328,6 +335,7 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    
    dtStart = new Date(); // setup main timer...
    window.requestAnimFrame(fncTimer, this.context); // request first frame
+   
   
 }
 
@@ -998,6 +1006,79 @@ engine3d.prototype.SetWorldType = function(worldtype)
    this.worldtype = worldtype;
 }
 //------------------------------------------------------------------------------
+//##############################################################################
+// ** FlyTo Functions **
+//##############################################################################
+//------------------------------------------------------------------------------
+/** 
+ * @description flies the camera to a specific position. yaw,pitch and roll are
+ * optional if they are defined, there will be an interpolation between the current
+ * angles and the target angles otherwise the angles will not be changed.
+ * @param {number} lng target longitude
+ * @param {number} lat target latitude
+ * @param {number} elv target elevation
+ * @param {number} yaw target yaw
+ * @param {number} pitch target pitch
+ * @param {number} roll target roll
+ */
+engine3d.prototype.FlyTo = function(lng,lat,elv,yaw,pitch,roll)
+{
+   this.flyto.StartFlyTo(lng,lat,elv,yaw,pitch,roll);
+}
+
+
+//------------------------------------------------------------------------------
+/** 
+ * @description The camera moves to a LookAt Position "distance" away from the
+ * point defined by lng,lat,elv. The camera orientation will not changed.
+ * @param {number} lng target longitude
+ * @param {number} lat target latitude
+ * @param {number} elv target elevation
+ * @param {number} distance distance in [m]
+ */
+engine3d.prototype.FlyToLookAtPosition = function(lng,lat,elv,distance)
+{
+   this.flyto.FlyToLookAtPosition(lng,lat,elv,distance);
+}
+
+//------------------------------------------------------------------------------
+/** 
+ * @description Set the duration of the FlyTo-animation in [ms].
+ * @param {number} timespan duration in [ms]
+ */
+engine3d.prototype.SetFlightDuration = function(timespan)
+{
+  this.flyto.SetFlightDuration(timespan);
+}
+
+//------------------------------------------------------------------------------
+/** 
+ * @description Set the callback-function wich will be called when the flyto
+ * animation starts.
+ * @param {function()} f the callback function
+ */
+engine3d.prototype.SetFlyToStartCbf = function(f)
+{
+  this.flyto.SetFlyToStartCbf(f);
+}
+
+//------------------------------------------------------------------------------
+/** 
+ * @description Set the callback-function wich will be called when the flyto
+ * animation is finished and the desired position is reached.
+ * @param {function()} f the callback function
+ */
+engine3d.prototype.SetPosReachedCbf = function(f)
+{
+  this.flyto.SetTargetPositionReachedCallback(f);
+}
+
+
+
+
+
+
+
 
 goog.exportSymbol('engine3d', engine3d);
 goog.exportProperty(engine3d.prototype, 'AltitudeAboveEllipsoid', engine3d.prototype.AltitudeAboveEllipsoid);

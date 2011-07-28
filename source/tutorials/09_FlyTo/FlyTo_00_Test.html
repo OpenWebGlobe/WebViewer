@@ -29,12 +29,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
 <!--
+<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+
 <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>-->
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 <script type="text/javascript">
 
 
@@ -42,9 +42,13 @@
 //------------------------------------------------------------------------------
 // Render-Event: called every frame:
 function OnRender(context)
-{  
-   ogSetTextColor(context, 0,1,0);
-  // ogDrawText(context, "Click middle mouse button to add a POI", 0, 50);
+{
+   //ogSetTextColor(context, 0,1,0);
+   // draw position  
+   var ori = ogGetOrientation(ogGetScene(context));
+   ogDrawText(context,"Current orientation: (" + ori.yaw+ ", " + ori.pitch + "," + ori.roll + ")",0,15);
+   
+   //ogDrawText(context, "Click middle mouse button to add a POI", 0, 50);
    //ogDrawText(context, "Visibility range is set to 10-100km ", 0, 20);
 }
 //------------------------------------------------------------------------------
@@ -62,19 +66,32 @@ function OnKeyDown(ctx,key)
 
    if(key == 49) // 1 - Davos
    {
-      ogFlyTo(scene,9.821343,46.793029,2000);
+      ogFlyToLookAtPosition(scene,9.821343,46.793029,2000,10000);
    }
    if(key==50) // 2 - Muttenz
    {
-      ogFlyTo(scene, 7.650014,47.516667,500);
+      ogFlyToLookAtPosition(scene, 7.650014,47.516667,500,10000);
    }
    if(key==51) // 3 - Basel
    {
-      ogFlyTo(scene,7.591127,47.550558,300);
+      ogFlyToLookAtPosition(scene,7.591127,47.550558,300,10000);
    }
    if(key==52) // 4 - Sion
    {
-      ogFlyTo(scene, 7.366654,46.233333,1500);
+      ogFlyToLookAtPosition(scene, 7.366654,46.233333,1500,10000);
+   }
+   if(key==53) // 5 - Sion
+   {
+      ogFlyToLookAtPosition(scene, 7.366654,46.233333,1500,30000);
+   }
+   if(key==54) // 6 - Sion
+   {
+      ogFlyToLookAtPosition(scene, 7.366654,46.233333,1500,100000);
+   }
+   if(key==54) // 7 - Sion
+   {
+      a = [1,2,1,2];
+      console.log(MathUtils.InterpolateArray(a,2.5));
    }
    
 }
@@ -136,8 +153,29 @@ function main()
    // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
    
-      var scene = ogGetScene(ctx);   
+   var scene = ogGetScene(ctx);   
    var world = ogGetWorld(scene);
+   
+   
+   
+      // Create the poi layer
+   var poilayer = ogCreatePOILayer(world,"misc");
+   
+   // (8.1) let's define a poi with text:
+	var PoiDefinition = 
+	{
+		text 		: 	"Hello World! 世界你好",
+		position :  [7.366654,46.233333,1500],
+      flagpole :  true
+	};
+	
+   // (8.2) then create the POI and add to the scene:
+	var poi = ogCreatePOI(poilayer, PoiDefinition);
+   
+   
+   
+   
+   
    // (6) Retrieve default camera and set it up:
    var camera = ogGetCameraAt(scene,0);
    ogSetPosition(camera, 7.366654,46.233333,1500);
