@@ -1051,34 +1051,6 @@ engine3d.prototype.SetFlightDuration = function(timespan)
   this.flyto.SetFlightDuration(timespan);
 }
 
-//------------------------------------------------------------------------------
-/** 
- * @description Set the callback-function wich will be called when the flyto
- * animation starts.
- * @param {function()} f the callback function
- */
-engine3d.prototype.SetFlyToStartCbf = function(f)
-{
-  this.flyto.SetFlyToStartCbf(f);
-}
-
-//------------------------------------------------------------------------------
-/** 
- * @description Set the callback-function wich will be called when the flyto
- * animation is finished and the desired position is reached.
- * @param {function()} f the callback function
- */
-engine3d.prototype.SetPosReachedCbf = function(f)
-{
-  this.flyto.SetTargetPositionReachedCallback(f);
-}
-
-
-
-
-
-
-
 
 goog.exportSymbol('engine3d', engine3d);
 goog.exportProperty(engine3d.prototype, 'AltitudeAboveEllipsoid', engine3d.prototype.AltitudeAboveEllipsoid);

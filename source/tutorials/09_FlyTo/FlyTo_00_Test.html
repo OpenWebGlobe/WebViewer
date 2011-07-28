@@ -29,12 +29,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!--
-<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
 
+<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
+<!--
 <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>-->
 <script type="text/javascript">
 
 
@@ -48,7 +48,7 @@ function OnRender(context)
    var ori = ogGetOrientation(ogGetScene(context));
    ogDrawText(context,"Current orientation: (" + ori.yaw+ ", " + ori.pitch + "," + ori.roll + ")",0,15);
    
-   //ogDrawText(context, "Click middle mouse button to add a POI", 0, 50);
+   ogDrawText(context, text, 0, 50);
    //ogDrawText(context, "Visibility range is set to 10-100km ", 0, 20);
 }
 //------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ function OnMouseDown(context, button, mx, my)
    
 }
 
-var p2 = false;
+
 //------------------------------------------------------------------------------
 function OnKeyDown(ctx,key)
 {
@@ -75,24 +75,23 @@ function OnKeyDown(ctx,key)
    if(key == 51) // 3 - Basel
    {
       ogFlyToLookAtPosition(scene,7.591127,47.550558,300,10000);
-   }
-   
+   }  
    if(key == 52) 
    {
-      
+      ogSetFlightDuration(scene,1000);
    }
- 
 }
 
 
-
-function writeFlyToState(context)
+var text = "";
+function flyToAnimationStarted(context)
 {
-    ogDrawText(context,"Fly to State : Moving",0,15);
+   text = "Moving";
 }
+
 function positionReached(context)
 {
-   ogDrawText(context,"Fly to State : In Position",0,15);
+   text = "In Position";
 }
 
 
@@ -135,7 +134,6 @@ function main()
    // (5) Set the mouse down function. We need this for picking!
    ogSetKeyDownFunction(ctx, OnKeyDown);
    
-   ogSetKeyUpFunction(ctx, OnKeyUp);
    
    // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
@@ -163,8 +161,8 @@ function main()
    ogSetPosition(camera, 7.366654,46.233333,15000000);
    
    
-   ogSetFlyToStartCbf(flyToStarted);
-   ogSetPosReachedCbf(positionReached);
+   ogSetFlyToStartedFunction(ctx,flyToAnimationStarted);
+   ogSetInPositionFunction(ctx,positionReached);
 
 }
 //------------------------------------------------------------------------------

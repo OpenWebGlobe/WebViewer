@@ -769,6 +769,37 @@ function ogSetEndRenderFunction(context_id, cbfEndRender)
 goog.exportSymbol('ogSetEndRenderFunction', ogSetEndRenderFunction);
 //------------------------------------------------------------------------------
 /**
+ * @description 
+ * @param {number} context_id id of the context
+ * @param {function(number)} cbfFlyToStarted the callback function
+ */
+function ogSetFlyToStartedFunction(context_id,cbfFlyToStarted)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfFlyToStarted = cbfFlyToStarted;
+   } 
+}
+goog.exportSymbol('ogSetFlyToStartedFunction',ogSetFlyToStartedFunction);
+//------------------------------------------------------------------------------
+/**
+ * @description 
+ * @param {number} context_id id of the context
+ * @param {function(number)} cbfInPosition the callback function
+ */
+function ogSetInPositionFunction(context_id,cbfInPosition)
+{
+   var obj = _GetObjectFromId(context_id);
+   if (obj && obj.type == OG_OBJECT_CONTEXT)
+   {
+      obj.cbfInPosition = cbfInPosition;
+   } 
+}
+goog.exportSymbol('ogSetInPositionFunction',ogSetInPositionFunction);
+//------------------------------------------------------------------------------
+
+/**
  * @description Set callback function for the end render event
  * @param {number} context_id id of the context
  * @param {number} numPasses number of render passes
@@ -2318,51 +2349,4 @@ function ogSetFlightDuration(scene_id,timespan)
 
 }
 goog.exportSymbol('ogSetFlightDuration', ogSetFlightDuration);
-//------------------------------------------------------------------------------
-/** 
- * @description Set the callback-function wich will be called when the flyto
- * animation starts.
- * 
- * @param {number} scene_id the scene id.  
- * @param {function()} f the callback function
- */
-function ogSetFlyToStartCbf(scene_id,f)
-{
-   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
-   /** @type {ogContext} */
-   var context =  /** @type ogContext */scene.parent;
-   // Get the engine
-   /** @type {engine3d} */
-   var engine = context.engine;
-   
-   if(engine)
-   {
-      engine.SetFlyToStartCbf(f);
-   }
-}
-goog.exportSymbol('ogSetFlyToStartCbf', ogSetFlyToStartCbf);
-//------------------------------------------------------------------------------
-/** 
- * @description   Set the callback-function wich will be called when the flyto
- *                animation is finished and the desired position is reached.
- *
- * @param {number} scene_id the scene id.            
- * @param {function()} f the callback function
- */
-function ogSetPosReachedCbf(scene_id,f)
-{
-   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
-   /** @type {ogContext} */
-   var context =  /** @type ogContext */scene.parent;
-   // Get the engine
-   /** @type {engine3d} */
-   var engine = context.engine;
-   
-   if(engine)
-   {
-      engine.SetPosReachedCbf(f);
-   }
-
-}
-goog.exportSymbol('ogSetPosReachedCbf', ogSetPosReachedCbf);
 

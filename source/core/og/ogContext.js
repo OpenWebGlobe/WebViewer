@@ -187,7 +187,33 @@ function _ctx_callback_keyup(keycode, engine)
    }
 }
 //------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_flytostartedcallback(engine)
+{
+   var context = engine.owg;
+   if (context.cbfFlyToStarted)
+   {
+      context.cbfFlyToStarted(engine.owg.id);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @ignore
+ * @param {engine3d} engine the engine
+ */
+function _ctx_callback_inpositioncallback(engine)
+{
+   var context = engine.owg;
+   if (context.cbfInPosition)
+   {
+      context.cbfInPosition(engine.owg.id);
+   }
+}
 
+//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 /**
@@ -225,6 +251,9 @@ function ogContext()
    this.cbfEndRender = null;
    this.cbfInit = null;
    this.cbfExit = null;
+   
+   this.cbfFlyToStarted = null;
+   this.cbfInPosition = null;
 }
 
 //------------------------------------------------------------------------------
@@ -295,7 +324,10 @@ ogContext.prototype.ParseOptions = function(options)
    this.engine.SetResizeCallback(_ctx_callback_resize);
    this.engine.SetKeyDownCallback(_ctx_callback_keydown);
    this.engine.SetKeyUpCallback(_ctx_callback_keyup);
-
+   
+   //FlyTo callback functions
+   this.engine.flyto.SetFlyToStartedCallback(_ctx_callback_flytostartedcallback);
+   this.engine.flyto.SetInPositionCallback(_ctx_callback_inpositioncallback);
 }
 //------------------------------------------------------------------------------
 /**
@@ -362,4 +394,5 @@ ogContext.prototype._OnDestroy = function()
    // #todo 
 }
 //------------------------------------------------------------------------------
+
 

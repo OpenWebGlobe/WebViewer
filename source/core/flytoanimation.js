@@ -55,10 +55,10 @@ function FlyToAnimation(engine)
    this.travelTime = 2000;
    /** @type{GeoCoord} */
    this.geocoor = new GeoCoord();
-   /** @type {?function()} */
-   this.cbf_flightStart = null;
-   /** @type {?function()} */
-   this.cbf_targetPosReached = null;
+   /** @type {?function(engine3d)} */
+   this.cbfFlyToStarted = null;
+   /** @type {?function(engine3d)} */
+   this.cbfInPosition = null;
 }
 
 //------------------------------------------------------------------------------
@@ -142,9 +142,9 @@ FlyToAnimation.prototype.StartFlyTo = function(target_lng,target_lat,target_elv,
 
    this.CalcTrajectory(target_lng,target_lat,target_elv);
    
-   if(this.cbf_flightStart)
+   if(this.cbfFlyToStarted)
    {
-      this.cbf_flightStart();
+      this.cbfFlyToStarted(this.engine);
    }
    
    //subscribe onTimer event.
@@ -199,9 +199,9 @@ FlyToAnimation.prototype.StopFlyTo = function()
    this.engine.SetTimerCallback(null);
    this.isMoving = false;
    
-   if(this.cbf_targetPosReached)
+   if(this.cbfInPosition)
    {
-      this.cbf_targetPosReached();
+      this.cbfInPosition(this.engine);
    }
 }
 
@@ -281,18 +281,18 @@ FlyToAnimation.prototype.SetFlightDuration = function(timespan)
 /** 
  * @description set the callback function which will be called when target pos is reached.
  */
-FlyToAnimation.prototype.SetTargetPositionReachedCallback = function(f)
+FlyToAnimation.prototype.SetInPositionCallback = function(f)
 {
-   this.cbf_targetPosReached = f;
+   this.cbfInPosition = f;
 }
 
 //------------------------------------------------------------------------------
 /** 
  * @description set the callback function which will be called when the animation starts
  */
-FlyToAnimation.prototype.SetFlyToStartCbf = function(f)
+FlyToAnimation.prototype.SetFlyToStartedCallback = function(f)
 {
-   this.cbf_flightStart = f;
+   this.cbfFlyToStarted = f;
 }
 
 
