@@ -64,49 +64,36 @@ function OnKeyDown(ctx,key)
 {
    var scene = ogGetScene(ctx);
 
-   if(key == 49) // 1 - Davos
+   if(key == 49) // 1 - Fly to Davos
    {
-      ogFlyToLookAtPosition(scene,9.821343,46.793029,2000,10000);
+      ogFlyTo(scene,9.821343,46.793029,2000,10000);
    }
-   if(key==50) // 2 - Muttenz
+   if(key == 50) // 2 - Muttenz
    {
       ogFlyToLookAtPosition(scene, 7.650014,47.516667,500,10000);
    }
-   if(key==51) // 3 - Basel
+   if(key == 51) // 3 - Basel
    {
       ogFlyToLookAtPosition(scene,7.591127,47.550558,300,10000);
    }
-   if(key==52) // 4 - Sion
-   {
-      ogFlyToLookAtPosition(scene, 7.366654,46.233333,1500,10000);
-   }
-   if(key==53) // 5 - Sion
-   {
-      ogFlyToLookAtPosition(scene, 7.366654,46.233333,1500,30000);
-   }
-   if(key==54) // 6 - Sion
-   {
-      ogFlyToLookAtPosition(scene, 7.366654,46.233333,1500,100000);
-   }
-   if(key==54) // 7 - Sion
-   {
-      a = [1,2,1,2];
-      console.log(MathUtils.InterpolateArray(a,2.5));
-   }
    
-}
-
-
-//------------------------------------------------------------------------------
-function OnKeyUp(ctx,key)
-{
-   if(key==50)
+   if(key == 52) 
    {
-      p2=false;
+      
    }
-   console.log("2 up");
+ 
 }
 
+
+
+function writeFlyToState(context)
+{
+    ogDrawText(context,"Fly to State : Moving",0,15);
+}
+function positionReached(context)
+{
+   ogDrawText(context,"Fly to State : In Position",0,15);
+}
 
 
 //------------------------------------------------------------------------------
@@ -153,35 +140,31 @@ function main()
    // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
    
+   // (7) get the scene and the world
    var scene = ogGetScene(ctx);   
    var world = ogGetWorld(scene);
    
-   
-   
-      // Create the poi layer
+
+   // Set the POIs
    var poilayer = ogCreatePOILayer(world,"misc");
    
-   // (8.1) let's define a poi with text:
 	var PoiDefinition = 
 	{
-		text 		: 	"Hello World! 世界你好",
+		text 		: 	"Davos",
 		position :  [7.366654,46.233333,1500],
       flagpole :  true
 	};
-	
    // (8.2) then create the POI and add to the scene:
 	var poi = ogCreatePOI(poilayer, PoiDefinition);
    
-   
-   
-   
-   
    // (6) Retrieve default camera and set it up:
-   var camera = ogGetCameraAt(scene,0);
-   ogSetPosition(camera, 7.366654,46.233333,1500);
-
-
+   var camera = ogGetActiveCamera(scene);
+   ogSetOrientation(camera,0,-90,0);
+   ogSetPosition(camera, 7.366654,46.233333,15000000);
    
+   
+   ogSetFlyToStartCbf(flyToStarted);
+   ogSetPosReachedCbf(positionReached);
 
 }
 //------------------------------------------------------------------------------
