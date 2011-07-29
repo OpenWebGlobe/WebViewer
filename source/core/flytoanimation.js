@@ -83,8 +83,8 @@ FlyToAnimation.prototype.CalcTrajectory = function(target_lng,target_lat,target_
    this.distance = WGS84_a * Math.acos(Math.sin(MathUtils.Deg2Rad(P0_wgs84[1]))*Math.sin(MathUtils.Deg2Rad(P3_wgs84[1]))+Math.cos(MathUtils.Deg2Rad(P0_wgs84[1]))*Math.cos(MathUtils.Deg2Rad(P3_wgs84[1]))*Math.cos(MathUtils.Deg2Rad(P3_wgs84[0]-P0_wgs84[0])));
 
    // define P1 and P2 - as longer the distance as higher the camera flies.
-   var P1_wgs84 = [start_pos.longitude,start_pos.latitude,start_pos.elevation + this.distance/2]; 
-   var P2_wgs84 = [target_lng,target_lat,target_elv + this.distance/2];
+   var P1_wgs84 = [start_pos.longitude,start_pos.latitude,start_pos.elevation + this.distance/4]; 
+   var P2_wgs84 = [target_lng,target_lat,target_elv + this.distance/4];
 
    //transformation of all bezier points into cartesian coordinates
    this.geocoor.Set(P0_wgs84[0],P0_wgs84[1],P0_wgs84[2]);
@@ -171,9 +171,8 @@ FlyToAnimation.prototype.Move = function(delta_t) //on tick callback function
       this.movingTime += delta_t; 
       var xs = this.movingTime / this.travelTime;
       
-      var profile = [0,0.05,0.15,0.3,0.45,0.6,0.75,0.9,0.93,0.96,1];
-      this.t = MathUtils.InterpolateArray(profile,xs*10);
-      
+      this.t = 0.5*Math.sin(Math.PI*xs-Math.PI/2)+0.5;
+
       if(xs > 1)
       {
          this.StopFlyTo();

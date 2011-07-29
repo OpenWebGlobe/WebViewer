@@ -95,7 +95,9 @@ function createHTML5Canvas()
    ctx.canvas.width = 200;
    ctx.canvas.height = 600;
    ctx.fillStyle = 'rgba(255,255,255,0.7)';
-   ctx.fillRect (0, 0, 250, 600);
+   ctx.fillRect (0, 0, 200, 600);
+   ctx.strokeStyle = "rgb(0, 0, 0)";
+   ctx.strokeRect(0,0,200,600);
    ctx.fillStyle = 'rgba(0, 0,50, 0.5)';
    ctx.fillRect (50, 50, 50, 50);
    ctx.fillRect (100, 100, 50, 50);
@@ -157,6 +159,7 @@ function main()
    //Create the Billboard from canvas
 
    billboard_id = ogCreateBillboardFromCanvas(billboardlayer,a,7.569964,46.135222,9735);
+   
 }
 //------------------------------------------------------------------------------
    

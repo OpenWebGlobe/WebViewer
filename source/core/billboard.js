@@ -145,7 +145,7 @@ Billboard.prototype.SetPosition = function(lng,lat,elv)
    var coord = new GeoCoord(lng,lat,elv);
    var cartesian = [];
    coord.ToCartesian(cartesian);
-   this.surface.SetAsBillboard(cartesian[0],cartesian[1],cartesian[2],CARTESIAN_SCALE_INV,CARTESIAN_SCALE_INV,0);
+   this.surface.SetAsBillboard(cartesian[0],cartesian[1],cartesian[2],0,0,0);
    
 }
 //------------------------------------------------------------------------------
