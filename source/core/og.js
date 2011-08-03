@@ -926,6 +926,49 @@ function ogPickGlobe(scene_id, mx, my)
 }
 goog.exportSymbol('ogPickGlobe', ogPickGlobe);
 //------------------------------------------------------------------------------
+/** @description Transforms WGS84 to geocentric cartesian coordinates.
+*   @param {number} scene_id the scene
+*   @param {number} lng longitude
+*   @param {number} lat latitude
+*   @param {number} elv elevation
+*   @returns {Array} array with [x,y,z].
+*/
+function ogToCartesian(scene_id, lng, lat, elv)
+{
+   /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+      var geocoor = new GeoCoord(lng,lat,elv);
+      var res = [];
+      geocoor.ToCartesian(res);
+      
+   } 
+   return (res || null);
+}
+goog.exportSymbol('ogToCartesian', ogToCartesian);
+//------------------------------------------------------------------------------
+/** @description Transforms geocentric cartesian to WGS84 coordinates.
+*   @param {number} scene_id the scene
+*   @param {number} x
+*   @param {number} y
+*   @param {number} z
+*   @returns {Array} array with [lng,lat,elv].
+*/
+function ogToWGS84(scene_id, x, y, z)
+{
+   /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+      var geocoor = new GeoCoord();
+      geocoor.FromCartesian(x,y,z);
+      var res = [geocoor.GetLongitude(),geocoor.GetLatitude(),geocoor.GetElevation()];      
+   } 
+   return (res || null);
+}
+goog.exportSymbol('ogToWGS84', ogToWGS84);
+//------------------------------------------------------------------------------
 //##############################################################################
 // ** CAMERA OBJECT **
 //##############################################################################
