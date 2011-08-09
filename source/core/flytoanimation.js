@@ -212,9 +212,13 @@ FlyToAnimation.prototype.StopFlyTo = function()
  * @param {number} target_lat
  * @param {number} target_elv
  * @param {number} distance
+ * @param {number=} opt_yaw
+ * @param {number=} opt_pitch
+ * @param {number=} opt_roll
  */
-FlyToAnimation.prototype.FlyToLookAtPosition = function(target_lng,target_lat,target_elv,distance)
+FlyToAnimation.prototype.FlyToLookAtPosition = function(target_lng,target_lat,target_elv,distance,opt_yaw,opt_pitch,opt_roll)
 {
+   
    this.navnode = this.engine.scene.nodeNavigation;
    distance = distance * CARTESIAN_SCALE_INV;  
 
@@ -234,8 +238,18 @@ FlyToAnimation.prototype.FlyToLookAtPosition = function(target_lng,target_lat,ta
    navigationMatrix.Multiply(trans,navframe);
 
  
-   // calc the target camera position in navigation frame coordinates   
-   var ori = this.navnode.GetOrientation();
+   // calc the target camera position in navigation frame coordinates
+   var ori = {};
+   if((opt_yaw!=null) && (opt_pitch!=null) && (opt_roll!=null))
+   {
+      ori.yaw = MathUtils.Deg2Rad(opt_yaw);
+      ori.pitch = MathUtils.Deg2Rad(opt_pitch);
+      ori.roll = MathUtils.Deg2Rad(opt_roll);
+   }
+   else
+   {
+      ori = this.navnode.GetOrientation();
+   }
    var pitch = ori.pitch-Math.PI/2;
    var x = distance * Math.sin(pitch) * Math.cos(ori.yaw);
    var y = distance * Math.sin(pitch) * Math.sin(ori.yaw);
@@ -256,7 +270,7 @@ FlyToAnimation.prototype.FlyToLookAtPosition = function(target_lng,target_lat,ta
    if(elv > target_elv) 
    {
       // start the animation.
-      this.StartFlyTo(lng,lat,elv);
+      this.StartFlyTo(lng,lat,elv,opt_yaw,opt_pitch,opt_roll);
    }
    else
    {

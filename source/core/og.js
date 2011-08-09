@@ -2353,8 +2353,11 @@ goog.exportSymbol('ogFlyTo', ogFlyTo);
  * @param {number} lat target latitude
  * @param {number} elv target elevation
  * @param {number} distance distance in [m]
+ * @param {number} opt_yaw in [degrees]
+ * @param {number} opt_pitch in [degrees]
+ * @param {number} opt_roll in [degrees]
  */
-function ogFlyToLookAtPosition(scene_id,lng,lat,elv,distance)
+function ogFlyToLookAtPosition(scene_id,lng,lat,elv,distance,opt_yaw,opt_pitch,opt_roll)
 {
    var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
    /** @type {ogContext} */
@@ -2365,7 +2368,7 @@ function ogFlyToLookAtPosition(scene_id,lng,lat,elv,distance)
    
    if(engine)
    {
-      engine.FlyToLookAtPosition(lng,lat,elv,distance);
+      engine.FlyToLookAtPosition(lng,lat,elv,distance,opt_yaw,opt_pitch,opt_roll);
    }
 }
 goog.exportSymbol('ogFlyToLookAtPosition', ogFlyToLookAtPosition);

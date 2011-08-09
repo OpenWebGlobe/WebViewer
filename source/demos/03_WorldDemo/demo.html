@@ -2,20 +2,23 @@
       Virtual Globe Demo
 -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
          <!-- >
             <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
-         -->
-         <!--<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+         
+         <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
          <script type="text/javascript" src="../../../compiled/deps.js"></script>
          <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
          -->
          
-         <script type="text/javascript" src="jquery-1.5.2.min.js"></script>
-         <script type="text/javascript" src="openwebglobe.js"></script>
+         <script type="text/javascript" src="externals/jquery-1.5.2.min.js"></script>
+         <script type="text/javascript" src="externals/openwebglobe.js"></script>
          <script type="text/javascript" src="tools/toolbox.js"></script>
          <script type="text/javascript" src="tools/tool.js"></script>
          <script type="text/javascript" src="tools/coordinates.js"></script>
+         <script type="text/javascript" src="externals/wgs84_ch1903.js"></script>
+         <script type="text/javascript" src="swisstopoapi.js"></script>
          <link rel="stylesheet" type="text/css" href="tools/toolstyle.css">
          <link rel="stylesheet" type="text/css" href="styles.css">
             
@@ -24,6 +27,9 @@
 <script type="text/javascript">
                
          var g_context = -1;
+         var scene = -1;
+         var world = -1;
+         var poilayer = -1;
       
       
          //---------------------------------------------------------------------
@@ -68,16 +74,44 @@
                service : "i3d"
             };
             
+            var imgSWISSTOPO = 
+            {
+                  url     : ["http://10.42.2.37"],
+                  layer   : "swissimage", 
+                  service : "owg"
+            };
+            
+            var elvDHM_GR =
+            {
+                  url     : ["http://10.42.2.37"],
+                  layer   : "DHM25GR",
+                  service : "owg"
+            }
+            
+            
             ogAddImageLayer(globe, imgBlueMarble500);
             ogAddImageLayer(globe, imgLandsat_CH);
             ogAddElevationLayer(globe, elvSRTM_CH);
-         
+            //ogAddImageLayer(globe, imgSWISSTOPO);
+            //ogAddElevationLayer(globe, elvDHM_GR);
+                        
+
+            
             // (4) Set the "Render-Callback" function.
             // The callback function will be called everytime a frame is drawn.
             ogSetRenderFunction(g_context, OnRender);
             
             // (5) Set the background color
             ogSetBackgroundColor(g_context, 0.2,0.2,0.7,1);
+            
+            
+            scene = ogGetScene(g_context);
+            world = ogGetWorld(scene);
+            
+            poilayer = ogCreatePOILayer(world,"searchtargets");
+                        
+            
+            
          }
          
          
@@ -175,7 +209,7 @@
          /*
           *    Toolbox
           */
-            var tb = new ToolBox('toolbox','canvas');
+            //var tb = new ToolBox('toolbox','canvas');
          
          });
          
@@ -188,14 +222,10 @@
             var textInput = jQuery('#placeSearchTb').val();
             while(textInput.indexOf(' ')!=-1)textInput = textInput.replace(' ','+'); //replace spaces with '+'
 
-            //alert(textInput);
-             queryUrl = "http://open.mapquestapi.com/nominatim/v1/search?"
- 
-               jQuery.getJSON(queryUrl,{ format:"json",
-                                    q:textInput
-                                    },
-                                    _cbfAjaxQuery
-                                    );      
+            var service = new swisstopoapi(null,_cbfAjaxQuery);
+            var targets = service.searchplace(textInput);
+            
+       
          }
         
          /*
@@ -203,41 +233,63 @@
           */
          function _cbfAjaxQuery(result)
          {
-             jQuery("#placeList").empty();
-            if(result.length>0)
+            if(this.targets.length == 0)
             {
-            jQuery.each(result,
-                  function(index,content)
-                  {
-                     if(index<10)
-                     {                         
-                        jQuery("#placeList")
-                        .append(jQuery("<li>")
-                        .addClass("placeSearchResult")
-                        .text(content.display_name)
-                        .attr("lat",content.lat)
-                        .attr("lng",content.lon)
-                        .click(function(){flyTo(content.lat,content.lon);}));                      
-                     }      
-                  }
-                  );
+                    jQuery("#placeList").empty();
+                    jQuery("#placeList")
+                              .append(jQuery("<li>")
+                              .addClass("placeSearchResult")
+                              .text("No place found..."));
+            }
+            else if(this.targets.length == 1)
+            {
+               flyTo(this.targets[0].lng,this.targets[0].lat,this.targets[0].elv,this.targets[0].name);
             }
             else
             {
-               jQuery("#placeList")
-                        .append(jQuery("<li>")
-                        .addClass("placeSearchResult")
-                        .text("No place found..."));
+                  jQuery("#placeList").empty();
+                 jQuery.each(targets,
+                        function(index,content)
+                        {  
+                        if(index<10)
+                        {                           
+                           jQuery("#placeList")
+                           .append(jQuery("<li>")
+                           .addClass("placeSearchResult")
+                           .text(content.name)
+                           .attr("lat",content.lat)
+                           .attr("lng",content.lng)
+                           .attr("elv",content.elv)
+                           .click(function()
+                                  {
+                                    flyTo(parseFloat(this.attributes.lng.nodeValue),parseFloat(this.attributes.lat.nodeValue),parseFloat(this.attributes.elv.nodeValue),this.textContent);
+                                    
+                                    }));                       
+                        }      
+                        }
+                        ); 
             }
+            
          }
          
          /*
           * Fly to function
           */
-         function flyTo(lat,lon)
+         function flyTo(lon,lat,elv,name)
          {
-            //engine.
-            jQuery('#divFlyTo').animate({left:'-300'},1000,function(){}); //pull in menu
+           
+            var PoiDefinition = 
+            {
+                  text 		: 	name,
+                  position :  [lon, lat, elv],
+                  size 		: 	5,
+                  flagpole :  true
+            };
+            ogCreatePOI(poilayer,PoiDefinition);
+            var ori = ogGetOrientation(scene);
+ 
+            ogFlyToLookAtPosition(scene,lon,lat,500,8000,ori.yaw,-30,ori.roll);
+            jQuery('#divFlyTo').animate({left:'-300'},1000,function(){}); //pull-in menu
          }
         
          
@@ -272,7 +324,7 @@
                </div>
                <div id="divTopRowTitle">OpenWebGlobe WebGL Viewer</div>
             </div>           
-           <!-- <div id='divFlyTo'>
+           <div id='divFlyTo'>
                <div id="divFlyToPullBtn"></div>
                <div id= "divSearchInput">
                   <input id="placeSearchTb" type="text" name="flyto"/>
@@ -280,12 +332,11 @@
                </div>
                   <ul id="placeList"></ul>
                </div>
-               
-            </div>  -->
+            </div> 
             <div id='divFhnwLogo'></div> 
             <div id='divCamptocamp'></div>
             <div id='divStats'></div>
-            <div id='divToolbox'></div>
+            <!--<div id='divToolbox'></div>-->
             
             <div id='divCredits'>
                <div id='divCreditsBtn'></div>
