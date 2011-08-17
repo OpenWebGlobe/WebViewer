@@ -646,7 +646,8 @@ GlobeRenderer.prototype._SubDivide = function()
    this.iterator.cnt++;
 }
 
-var SURFACE_NORMAL_THRESHOLD = 0.09;
+//var SURFACE_NORMAL_THRESHOLD = 0.09;
+var SURFACE_NORMAL_THRESHOLD = 0.4; //increased 17.08.2011 -Beni
 //------------------------------------------------------------------------------
 GlobeRenderer.prototype._CalcErrorMetric = function(i)
 {
@@ -692,7 +693,8 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
    this.vDir[2] = this.vDir[2] / mag;
    
    var d = (this.vDir[0] * normal[0] + this.vDir[1] * normal[1] + this.vDir[2] * normal[2]);  
-
+   
+   
    if (d>SURFACE_NORMAL_THRESHOLD)
    {
       bVisible = false;  // reject

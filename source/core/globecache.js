@@ -109,6 +109,7 @@ GlobeCache.prototype.IsReady = function()
 GlobeCache.prototype.RequestBlock = function(quadcode)
 {
    var terrainblock = this.cache.getItem(quadcode);
+   
    if (terrainblock == null)
    {
       // item doesn't exist yet, create a new one and request data (async)

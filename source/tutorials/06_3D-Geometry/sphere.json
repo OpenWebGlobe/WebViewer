@@ -2,7 +2,7 @@
  [
   {
 "id"  :  "222",
-"Center"  :  [1,1,1],
+"Center"  :  [7.438637,46.951081,3400],
 "DiffuseMap"  :  "texture.png",
 "VertexSemantic"  :  "pt",
 "Vertices"  :  [	0,-100,-0,0.95833,0.00000,

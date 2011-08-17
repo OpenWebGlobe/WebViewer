@@ -28,7 +28,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+
 <script type="text/javascript">
 
 //------------------------------------------------------------------------------
@@ -37,6 +41,20 @@ function OnRender(context)
 {
    ogSetTextColor(context, 0,1,0);
    ogDrawText(context, "Hello World", 0, 20);
+}
+
+function OnKeyDown(ctx,key)
+{
+   var scene = ogGetScene(ctx);
+
+   if(key == 49) // 1 - Fly to Davos
+   {
+      //normal Fly-To Camera moves to the desired position.
+      //camera orientation remains the same.
+      
+      ogFlyTo(scene,116.261687, 40.099347, 1000); //scene,longitude,latitude,elevation
+      
+   }
 }
      
 //------------------------------------------------------------------------------
@@ -67,7 +85,8 @@ function main()
    ogSetRenderFunction(ctx, OnRender);
    
    // (6) Set the background color
-   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1); 
+   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+   ogSetKeyDownFunction(ctx, OnKeyDown);
 }
 //------------------------------------------------------------------------------
    

@@ -63,6 +63,7 @@ function OSMImageLayer()
                       res.x + "/" + 
                       res.y + ".png"
 
+      
       var ImageTexture = new Texture(engine);  
       ImageTexture.quadcode = quadcode;   // store quadcode in texture object
       ImageTexture.layer = layer;
