@@ -86,9 +86,12 @@ FlyToAnimation.prototype.CalcTrajectory = function(target_lng,target_lat,target_
    var P1_wgs84 = [start_pos.longitude,start_pos.latitude,start_pos.elevation + this.distance/4]; 
    var P2_wgs84 = [target_lng,target_lat,target_elv + this.distance/4];
 
+/* 18.08.2011 - Simplyfied. Beni
+  
    //transformation of all bezier points into cartesian coordinates
    this.geocoor.Set(P0_wgs84[0],P0_wgs84[1],P0_wgs84[2]);
    this.geocoor.ToCartesian(this.P0);
+
     
    this.geocoor.Set(P1_wgs84[0],P1_wgs84[1],P1_wgs84[2]);
    this.geocoor.ToCartesian(this.P1);
@@ -98,6 +101,11 @@ FlyToAnimation.prototype.CalcTrajectory = function(target_lng,target_lat,target_
     
    this.geocoor.Set(P3_wgs84[0],P3_wgs84[1],P3_wgs84[2]);
    this.geocoor.ToCartesian(this.P3);
+*/
+   this.P0=P0_wgs84;
+   this.P1=P1_wgs84;
+   this.P2=P2_wgs84;
+   this.P3=P3_wgs84;
    
    // bezier points are defined.
    this.isReady = true;
@@ -172,20 +180,31 @@ FlyToAnimation.prototype.Move = function(delta_t) //on tick callback function
       var xs = this.movingTime / this.travelTime;
       
       this.t = 0.5*Math.sin(Math.PI*xs-Math.PI/2)+0.5;
-
       if(xs > 1)
       {
+         this.t=1; //to get sure camera moves to target
+        
          this.StopFlyTo();
       }
+
       
       var x = Math.pow((1-this.t),3)*this.P0[0] + 3*this.t*Math.pow((1-this.t),2)*this.P1[0] + 3*this.t*this.t*(1-this.t)*this.P2[0] + Math.pow(this.t,3)*this.P3[0];
       var y = Math.pow((1-this.t),3)*this.P0[1] + 3*this.t*Math.pow((1-this.t),2)*this.P1[1] + 3*this.t*this.t*(1-this.t)*this.P2[1] + Math.pow(this.t,3)*this.P3[1];
       var z = Math.pow((1-this.t),3)*this.P0[2] + 3*this.t*Math.pow((1-this.t),2)*this.P1[2] + 3*this.t*this.t*(1-this.t)*this.P2[2] + Math.pow(this.t,3)*this.P3[2];
          
       this.geocoor.FromCartesian(x,y,z);
-      this.navnode.SetPosition(this.geocoor.GetLongitude(),this.geocoor.GetLatitude(),this.geocoor.GetElevation());
+     // this.navnode.SetPosition(this.geocoor.GetLongitude(),this.geocoor.GetLatitude(),this.geocoor.GetElevation());/* 18.08.2011 - Simplyfied. Beni
+      this.navnode.SetPosition(x,y,z);
+
       this.navnode.SetOrientation(this.start_yaw+this.t*this.delta_yaw,this.start_pitch+this.t*this.delta_pitch,this.start_roll+this.t*this.delta_roll);
-   }  
+
+   
+      if(this.t == 1)
+      { 
+         this.StopFlyTo();
+      }
+   }
+   //console.log(this.t);
 }
 
 

@@ -94,10 +94,13 @@ GeoCoord.prototype.GetElevation = function()
     var coslong = Math.cos(MathUtils.Deg2Rad(this._wgscoords[0]));    // cos of latitude
     
     var Rn = WGS84_a / Math.sqrt(1.0-WGS84_E_SQUARED*sinlat*sinlat);
+  
     
     result[0] = (Rn + this._wgscoords[2]) * coslat * coslong;
     result[1] = (Rn + this._wgscoords[2]) * coslat * sinlong;
     result[2] = (WGS84_E_SQQ*Rn + this._wgscoords[2]) * sinlat;
+   
+   
     
     result[0] *= CARTESIAN_SCALE_INV;
     result[1] *= CARTESIAN_SCALE_INV;
