@@ -105,7 +105,7 @@ SceneGraph.prototype.Tick = function(nMSeconds)
 SceneGraph.prototype.Traverse = function()
 {
    this.traversalstate.PushModel(this.matModel);
-   this.traversalstate.PushView(this.matModel);
+   this.traversalstate.PushView(this.matView);
    this.traversalstate.PushProjection(this.matProj);
    
    this.nodeNavigation.OnTraverse(this.traversalstate); 
