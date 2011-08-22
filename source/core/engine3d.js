@@ -334,7 +334,11 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    
    
    dtStart = new Date(); // setup main timer...
-   window.requestAnimFrame(fncTimer, this.context); // request first frame
+   if(typeof(window)!="undefined")//if owg runs in a webworker "window" is not available!
+   {
+      window.requestAnimFrame(fncTimer, this.context); // request first frame
+   }
+   
    
   
 }
@@ -646,16 +650,19 @@ engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
  * @param {function()} callback
  * @param {Element=} opt_element
  */
-window.requestAnimFrame = (function() {
-   return window.requestAnimationFrame ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame ||
-          window.oRequestAnimationFrame ||
-          window.msRequestAnimationFrame ||
-          function(callback, element) {
-             window.setTimeout(callback, 30);
-          };
-})();
+if(typeof(window)!="undefined")//if owg runs in a webworker "window" is not available!
+{
+   window.requestAnimFrame = (function() {
+      return window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function(callback, element) {
+               window.setTimeout(callback, 30);
+            };
+   })();
+}
 
 //------------------------------------------------------------------------------
 // MAIN TIMER FUNCTION
@@ -702,8 +709,11 @@ function fncTimer()
       {
          engine.cbfRender(engine); // call  draw callback function
       }
-
-      window.requestAnimFrame(fncTimer, engine.context);
+      if(typeof(window)!="undefined") //if owg runs in a webworker "window" is not available!
+      {
+         window.requestAnimFrame(fncTimer, engine.context);
+      }
+      
 
    }
 
