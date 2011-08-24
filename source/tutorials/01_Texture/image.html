@@ -29,6 +29,9 @@
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
+<!--<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>-->
 <script type="text/javascript">
 
 var texture;
@@ -44,9 +47,27 @@ function OnRender(context)
    // You don't have to do this test, blit just does nothing if
    // the object is not ready.
    if (ogGetObjectStatus(texture) == OG_OBJECT_READY)
-   {
-      ogBlitTexture(texture, 50, 100);
+   {     
+      ogBlitTexture(texture, 50, 100);  
    }
+   
+   // With definition of optional options.
+   /*
+   if (ogGetObjectStatus(texture) == OG_OBJECT_READY)
+   {
+      var options = {};
+      options.z = 0;
+      options.angle = 45;
+      options.scalex = 2;
+      options.scaley = 2;
+      options.blend = true;
+      options.invtexcoord = false;
+      options.alpha = 0.5; //get sure that "options.blend = true" if you use this!
+      
+      ogBlitTexture(texture, 50, 100, options);
+      
+   }
+   */
 }
 //------------------------------------------------------------------------------
 function TextureReady(tex)
