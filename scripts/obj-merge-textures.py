@@ -61,15 +61,20 @@ class Material(object):
 def main(argv):
     parser = OptionParser()
     parser.add_option('-i', '--input', metavar='FILENAME', help='input object filename')
-    parser.add_option('-d', '--directory', default='.', metavar='DIRECTORY', help='output directory')
-    parser.add_option('-t', '--texture', default='mtl.jpg', metavar='FILENAME', help='texture image filename')
-    parser.add_option('-m', '--mtllib', default='mtl.mtl', metavar='FILENAME', help='material library filename')
-    parser.add_option('-o', '--obj', default='obj.obj', metavar='FILENAME', help='object filename')
+    parser.add_option('-o', '--output', metavar='FILENAME', help='object filename')
     options, args = parser.parse_args(argv[1:])
     if options.input is None or options.input == '-':
-        lines, dirname = list(sys.stdin), '.'
+        lines = list(sys.stdin)
+        input_dirname = '.'
     else:
-        lines, dirname = list(open(options.input)), os.path.dirname(options.input)
+        lines = list(open(options.input))
+        input_dirname = os.path.dirname(options.input)
+    if options.output is None or options.output == '-':
+        output_dirname = '.'
+        basename = obj
+    else:
+        output_dirname = os.path.dirname(options.output) or '.'
+        basename = os.path.splitext(os.path.basename(options.output))[0]
     fieldss = [re.split(r'\s+', line.rstrip()) if not line.startswith('#') else None for line in lines]
     # Parse material libraries
     materials, material = {}, None
@@ -79,7 +84,7 @@ def main(argv):
         if fields[0] != 'mtllib':
             continue
         assert len(fields) == 2
-        for mtllib_line in open(os.path.join(dirname, fields[1])):
+        for mtllib_line in open(os.path.join(input_dirname, fields[1])):
             mtllib_fields = re.split(r'\s+', mtllib_line.rstrip())
             if mtllib_fields[0] == 'newmtl':
                 assert len(mtllib_fields) == 2
@@ -91,7 +96,7 @@ def main(argv):
                 assert len(mtllib_fields) == 2
                 assert material is not None
                 assert material.image is None
-                material.image = Image.open(os.path.join(dirname, mtllib_fields[1]))
+                material.image = Image.open(os.path.join(input_dirname, mtllib_fields[1]))
                 continue
     # Determine the material used for each texture vertex
     material = None
@@ -136,17 +141,14 @@ def main(argv):
     if not os.path.exists(output_dirname):
         os.makedirs(output_dirname)
     # Write the Wavefront OBJ file
-    if options.obj is None or options.obj == '-':
-        obj = sys.stdout
-    else:
-        obj = open(os.path.join(options.directory, options.obj), 'w')
+    obj = open(os.path.join(output_dirname, '%s.obj' % basename), 'w')
     vti = 0
     for line, fields in izip(lines, fieldss):
         if not fields:
             obj.write(line)
             continue
         if fields[0] == 'mtllib':
-            obj.write('mtllib %s\r\n' % options.mtllib)
+            obj.write('mtllib %s.mtl\r\n' % basename)
             continue
         if fields[0] == 'vt':
             assert len(fields) == 3
@@ -160,19 +162,19 @@ def main(argv):
             continue
         obj.write(line)
     # Write the material library
-    mtllib = open(os.path.join(options.directory, options.mtllib), 'w')
+    mtllib = open(os.path.join(output_dirname, '%s.mtl' % basename), 'w')
     mtllib.write('newmtl mtl\r\n')
     mtllib.write('Ka 1 1 1\r\n')
     mtllib.write('Kd 1 1 1\r\n')
     mtllib.write('Ks 1 0 0\r\n')
-    mtllib.write('map_Kd %s\r\n' % options.texture)
+    mtllib.write('map_Kd %s.jpg\r\n' % basename)
     mtllib.close()
     # Write the texture
     image = Image.new('RGB', (size, size))
     for key, material in materials.items():
         if material.image is not None:
             image.paste(material.image, material.uv.area)
-    image.transpose(Image.FLIP_TOP_BOTTOM).save(os.path.join(options.directory, options.texture))
+    image.transpose(Image.FLIP_TOP_BOTTOM).save(os.path.join(output_dirname, '%s.jpg' % basename))
 
 
 if __name__ == '__main__':
