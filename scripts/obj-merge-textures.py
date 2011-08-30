@@ -4,6 +4,7 @@ from collections import defaultdict
 from itertools import izip
 import math
 from optparse import OptionParser
+import os
 import os.path
 import re
 import sys
@@ -132,6 +133,8 @@ def main(argv):
         else:
             break
         size *= 2
+    if not os.path.exists(output_dirname):
+        os.makedirs(output_dirname)
     # Write the Wavefront OBJ file
     if options.obj is None or options.obj == '-':
         obj = sys.stdout
