@@ -3,6 +3,7 @@
 from collections import defaultdict
 from itertools import izip
 import math
+from optparse import OptionParser
 import os.path
 import re
 import sys
@@ -57,9 +58,17 @@ class Material(object):
 
 
 def main(argv):
-    filename = argv[1]
-    dirname = os.path.dirname(filename)
-    lines = list(open(filename))
+    parser = OptionParser()
+    parser.add_option('-i', '--input', metavar='FILENAME', help='input object filename')
+    parser.add_option('-d', '--directory', default='.', metavar='DIRECTORY', help='output directory')
+    parser.add_option('-t', '--texture', default='mtl.jpg', metavar='FILENAME', help='texture image filename')
+    parser.add_option('-m', '--mtllib', default='mtl.mtl', metavar='FILENAME', help='material library filename')
+    parser.add_option('-o', '--obj', default='obj.obj', metavar='FILENAME', help='object filename')
+    options, args = parser.parse_args(argv[1:])
+    if options.input is None or options.input == '-':
+        lines, dirname = list(sys.stdin), '.'
+    else:
+        lines, dirname = list(open(options.input)), os.path.dirname(options.input)
     fieldss = [re.split(r'\s+', line.rstrip()) if not line.startswith('#') else None for line in lines]
     # Parse material libraries
     materials, material = {}, None
@@ -127,35 +136,39 @@ def main(argv):
     for key, material in materials.items():
         if material.image is not None:
             image.paste(material.image, material.uv.area)
-    image.transpose(Image.FLIP_TOP_BOTTOM).save(os.path.join(dirname, 'mtl.jpg'))
+    image.transpose(Image.FLIP_TOP_BOTTOM).save(os.path.join(options.directory, options.texture))
     # Write the material library
-    mtllib = open(os.path.join(dirname, 'mtl.mtl'), 'wb')
-    print >>mtllib, 'newmtl mtl'
-    print >>mtllib, 'Ka 1 1 1'
-    print >>mtllib, 'Kd 1 1 1'
-    print >>mtllib, 'Ks 1 0 0'
-    print >>mtllib, 'map_Kd mtl.jpg'
+    mtllib = open(os.path.join(options.directory, options.mtllib), 'w')
+    mtllib.write('newmtl mtl\r\n')
+    mtllib.write('Ka 1 1 1\r\n')
+    mtllib.write('Kd 1 1 1\r\n')
+    mtllib.write('Ks 1 0 0\r\n')
+    mtllib.write('map_Kd %s\r\n' % options.texture)
     mtllib.close()
     # Transform each texture vertex
+    if options.obj is None or options.obj == '-':
+        obj = sys.stdout
+    else:
+        obj = open(os.path.join(options.directory, options.obj), 'w')
     vti = 0
     for line, fields in izip(lines, fieldss):
         if not fields:
-            print line,
+            obj.write(line)
             continue
         if fields[0] == 'mtllib':
-            print 'mtllib mtl.mtl\r'
+            obj.write('mtllib %s\r\n' % options.mtllib)
             continue
         if fields[0] == 'vt':
             assert len(fields) == 3
             vti += 1
             vt = numpy.array([float(fields[1]), float(fields[2]), 1])
             vt = numpy.dot(material_by_vti[vti].transform, vt)
-            print 'vt %f %f\r' % (vt[0], vt[1])
+            obj.write('vt %f %f\r\n' % (vt[0], vt[1]))
             continue
         if fields[0] == 'usemtl':
-            print 'usemtl mtl\r'
+            obj.write('usemtl mtl\r\n')
             continue
-        print line,
+        obj.write(line)
 
 
 if __name__ == '__main__':
