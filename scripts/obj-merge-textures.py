@@ -132,20 +132,7 @@ def main(argv):
         else:
             break
         size *= 2
-    image = Image.new('RGB', (size, size))
-    for key, material in materials.items():
-        if material.image is not None:
-            image.paste(material.image, material.uv.area)
-    image.transpose(Image.FLIP_TOP_BOTTOM).save(os.path.join(options.directory, options.texture))
-    # Write the material library
-    mtllib = open(os.path.join(options.directory, options.mtllib), 'w')
-    mtllib.write('newmtl mtl\r\n')
-    mtllib.write('Ka 1 1 1\r\n')
-    mtllib.write('Kd 1 1 1\r\n')
-    mtllib.write('Ks 1 0 0\r\n')
-    mtllib.write('map_Kd %s\r\n' % options.texture)
-    mtllib.close()
-    # Transform each texture vertex
+    # Write the Wavefront OBJ file
     if options.obj is None or options.obj == '-':
         obj = sys.stdout
     else:
@@ -169,6 +156,20 @@ def main(argv):
             obj.write('usemtl mtl\r\n')
             continue
         obj.write(line)
+    # Write the material library
+    mtllib = open(os.path.join(options.directory, options.mtllib), 'w')
+    mtllib.write('newmtl mtl\r\n')
+    mtllib.write('Ka 1 1 1\r\n')
+    mtllib.write('Kd 1 1 1\r\n')
+    mtllib.write('Ks 1 0 0\r\n')
+    mtllib.write('map_Kd %s\r\n' % options.texture)
+    mtllib.close()
+    # Write the texture
+    image = Image.new('RGB', (size, size))
+    for key, material in materials.items():
+        if material.image is not None:
+            image.paste(material.image, material.uv.area)
+    image.transpose(Image.FLIP_TOP_BOTTOM).save(os.path.join(options.directory, options.texture))
 
 
 if __name__ == '__main__':
