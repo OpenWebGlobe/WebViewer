@@ -1,3 +1,6 @@
+/**
+ * @description 
+ */
 function loadpois(poilayer)
 {
 poidef = {//icon     :"../images/city.png",

@@ -113,7 +113,7 @@ ogImageLayer.prototype.RemoveImageLayer = function()
    var renderer = this.GetGlobeRenderer();
    if (renderer && this.layerindex != -1)
    {
-       renderer.RemoveElevationLayer(this.layerindex);
+       renderer.RemoveImageLayer(this.layerindex);
    }
 }
 //------------------------------------------------------------------------------
