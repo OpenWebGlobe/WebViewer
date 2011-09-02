@@ -1,4 +1,4 @@
-
+goog.require('owg.OpenWebGlobe');
 
 //Definition oo global variables
 var globe;
