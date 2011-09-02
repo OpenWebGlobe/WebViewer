@@ -6,19 +6,22 @@
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
          <!-- >
             <script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>  
-         
+         -->
          <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
          <script type="text/javascript" src="../../../compiled/deps.js"></script>
          <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
-         -->
+         
          
          <script type="text/javascript" src="externals/jquery-1.5.2.min.js"></script>
-         <script type="text/javascript" src="externals/openwebglobe.js"></script>
+       <!--  <script type="text/javascript" src="externals/openwebglobe.js"></script>-->
          <script type="text/javascript" src="tools/toolbox.js"></script>
          <script type="text/javascript" src="tools/tool.js"></script>
          <script type="text/javascript" src="tools/coordinates.js"></script>
          <script type="text/javascript" src="externals/wgs84_ch1903.js"></script>
+         <script type="text/javascript" src="poiloader.js"></script>
          <script type="text/javascript" src="swisstopoapi.js"></script>
+         <script type="text/javascript" src="QuadTree.js"></script>
+         <script type="text/javascript" src="worker.js"></script>
          <link rel="stylesheet" type="text/css" href="tools/toolstyle.css">
          <link rel="stylesheet" type="text/css" href="styles.css">
             
@@ -30,14 +33,29 @@
          var scene = -1;
          var world = -1;
          var poilayer = -1;
+         var poiloader = null;
       
       
          //---------------------------------------------------------------------
-      
+         var count = 0;
          function OnRender(context)
          {
+            count = count+1;
+            var pos = ogGetPosition(scene);
+            
+            if(count > 20)
+            {
+                  if(poiloader != null)
+                  {
+                        poiloader.UpdatePois(pos.longitude,pos.latitude,pos.elevation);
+                  }
+                  count = 0;
+            }
+            poiloader.createPOI();
+            /*
             //ogSetTextColor(context, 0,1,0);
             //ogDrawText(context, "Hello World", 0, 20);
+            */
          }
         
          //---------------------------------------------------------------------
@@ -92,7 +110,7 @@
             ogAddImageLayer(globe, imgBlueMarble500);
             ogAddImageLayer(globe, imgLandsat_CH);
             ogAddElevationLayer(globe, elvSRTM_CH);
-            //ogAddImageLayer(globe, imgSWISSTOPO);
+            ogAddImageLayer(globe, imgSWISSTOPO);
             //ogAddElevationLayer(globe, elvDHM_GR);
                         
 
@@ -105,13 +123,17 @@
             ogSetBackgroundColor(g_context, 0.2,0.2,0.7,1);
             
             
+            
             scene = ogGetScene(g_context);
             world = ogGetWorld(scene);
             
             poilayer = ogCreatePOILayer(world,"searchtargets");
                         
+            poiloader = new PoiLoader(scene);
             
             
+            
+
          }
          
          
@@ -336,7 +358,7 @@
             <div id='divFhnwLogo'></div> 
             <div id='divCamptocamp'></div>
             <div id='divStats'></div>
-            <!--<div id='divToolbox'></div>-->
+            <div id='divToolbox'></div>
             
             <div id='divCredits'>
                <div id='divCreditsBtn'></div>

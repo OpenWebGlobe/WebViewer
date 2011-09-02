@@ -149,9 +149,16 @@ ogTexture.prototype.Blit = function(x,y,opt_options)
    {
       /** @type {engine3d} */
       var engine = /** @type engine3d */this.parent.parent;
-      if (this.texture)
+       if (this.texture)
       {
-         this.texture.Blit(x, y);
+         if(opt_options != null)
+         {
+            this.texture.Blit(x, y, opt_options["z"], opt_options["angle"], opt_options["scalex"], opt_options["scaley"], opt_options["blend"], opt_options["invtexcoord"], opt_options["alpha"]);
+         }
+         else
+         {
+            this.texture.Blit(x, y);
+         }  
       }
    }
 }

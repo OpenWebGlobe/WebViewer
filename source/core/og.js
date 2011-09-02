@@ -2403,7 +2403,29 @@ function ogSetFlightDuration(scene_id,timespan)
    {
       engine.SetFlightDuration(timespan);
    }
-
 }
 goog.exportSymbol('ogSetFlightDuration', ogSetFlightDuration);
 
+//------------------------------------------------------------------------------
+/** 
+ * @description Set the canvas size offset. Canvas width = window.width - widthOffset
+ *             works only if fullscreen turned on.
+ *
+ * @param {number} scene_id the scene id.  
+ * @param {number} widthoffset the canvas width-offset
+ * @param {number} heightoffset the canvas height-offset
+ */
+function ogSetCanvasSizeOffset(scene_id,widthoffset,heightoffset)
+{
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+   
+  engine.widthOffset = widthoffset;
+  engine.heightOffset = heightoffset;
+  _fncResize(null);
+}
+goog.exportSymbol('ogSetCanvasSizeOffset', ogSetCanvasSizeOffset);

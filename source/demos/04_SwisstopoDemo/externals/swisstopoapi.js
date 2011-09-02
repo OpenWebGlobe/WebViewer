@@ -1,0 +1,155 @@
+
+
+var swisstopoapi = {};
+swisstopoapi.waitforheight = [];
+
+/**
+ * @description loads a jsonp file: internal function
+ * @param {string} url the request url
+ * @param {function} cb the callback function
+ */
+swisstopoapi.getJSONP = function(url,cb)
+{
+   var cbnum = "cb"+swisstopoapi.getJSONP.counter++;
+   var cbname ="swisstopoapi.getJSONP."+cbnum;
+   
+   url+="&cb="+cbname;
+   
+   var script = document.createElement("script");
+   swisstopoapi.getJSONP[cbnum] = function(response)
+                     {
+                        try{
+                           cb(response)
+                        }
+                        finally
+                        {
+                           delete swisstopoapi.getJSONP[cbnum];
+                           script.parentNode.removeChild(script);
+                        }
+                     }
+   script.src = url;
+   document.body.appendChild(script);
+}
+swisstopoapi.getJSONP.counter = 0;
+
+
+/**
+ * @description loads a jsonp file
+ * @param {string} place the place to look for
+ */
+swisstopoapi.sendQuery = function(place)
+{
+   /*clear result list */
+   var node = document.getElementById('divSearchResults');
+   while(node.children.length>1) {
+    node.removeChild(node.lastChild);
+   }
+   // send the query
+   queryUrl = "http://api.geo.admin.ch/swisssearch/geocoding?query="+place;
+   this.getJSONP(queryUrl,swisstopoapi.jsoncallback);
+   document.body.style.cursor = "wait";
+}
+
+
+/**
+ * @description the json callback this function parses the result and sets the "search result" content
+ * @param {Object} data the answer data object from geo.admin.ch
+ */
+swisstopoapi.jsoncallback = function(data)
+{
+   //if no data return
+   if(data.results.length==0)
+   {
+      document.getElementById("txtInput").value = "Not found...";
+      document.body.style.cursor = 'default';
+      return; 
+   }
+   
+   //set the searchresult-div to visible
+   var divResults = document.getElementById("divSearchResults");
+   divResults.style.visibility = 'visible';
+   document.getElementById("divSearchResultTitle").style.visibility = 'visible';
+   
+   //parse json answer
+   rawdata = data.results;
+   
+   
+   
+   //go trough the result array and append resultbars
+   for(var i=0;i<rawdata.length;i++)
+   {
+
+      //create a resultbar and append it
+      var resultbar = document.createElement('div');
+      resultbar.innerHTML = rawdata[i].label;
+      resultbar.id = 'divResultBar';
+      
+      resultbar.bbox = rawdata[i].bbox;
+      resultbar.data = rawdata[i];
+      
+      //the onclick callback if someone clicks on a resultbar
+      resultbar.onclick = function()
+      {
+         document.getElementById("divSearchResultTitle").style.visibility = 'hidden';
+         var sr = document.getElementById("divSearchResults");
+         sr.style.visibility = 'hidden';
+         
+         //fly to position
+         if(this.bbox[0]==this.bbox[2] && this.bbox[1] == this.bbox[3])
+         {
+            var lat = CHtoWGSlat(this.bbox[0],this.bbox[1]);
+            var lng = CHtoWGSlng(this.bbox[0],this.bbox[1]);
+
+         }
+         else //calc the middle of the bounding box
+         {
+            var lat = CHtoWGSlat((this.bbox[0]+this.bbox[2])/2,(this.bbox[1]+this.bbox[3])/2);
+            var lng = CHtoWGSlng((this.bbox[0]+this.bbox[2])/2,(this.bbox[1]+this.bbox[3])/2);
+         }
+         var pos = ogGetOrientation(scene);
+         ogFlyToLookAtPosition(scene,lng,lat,100,5000,pos.yaw,-45,0);
+         
+         //get the height of the position - not really used for the moment
+         /*
+         swisstopoapi.getJSONP("http://api.geo.admin.ch/height?easting="+this.bbox[0]+"&northing="+this.bbox[1],swisstopoapi.heightcallback);
+         this.data.lat = lat;
+         this.data.lng = lng;
+         swisstopoapi.waitforheight.push(this.data);*/    
+      }
+      
+      //the search result div dissapears if a click on body occurs.
+      document.body.onclick = function()
+      {
+         document.getElementById("divSearchResultTitle").style.visibility = 'hidden';
+         var sr = document.getElementById("divSearchResults");
+         sr.style.visibility = 'hidden';
+         document.body.onclick = null;
+      }
+
+      //add the resultbar to the search results.
+      divResults.appendChild(resultbar);
+   }
+   
+   document.body.style.cursor = 'default';
+}
+
+
+/**
+ * @description callback of a height request... not really used at the moment.
+ */
+swisstopoapi.heightcallback = function(data)
+{
+   posdata = swisstopoapi.waitforheight.pop(rawdata[i]);
+   posdata.height = data.height;
+   
+   poistring="poidef = {icon     : \"[image]\",\n\
+               text 		: "+posdata.label+",\n\
+               position : ["+posdata.lng+","+posdata.lat+","+posdata.height+"],\n\
+               size 		: 	20,\n\
+               flagpole : true\n\
+               };"
+   //alert(poistring);
+}
+
+
+
