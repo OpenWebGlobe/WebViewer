@@ -96,7 +96,7 @@ function i3dImageLayer()
    {
       if (this.dsi.nLevelofDetail)
       {
-         return this.dsi.nLevelofDetail-1;
+         return this.dsi.nLevelofDetail;
       }
       else
       {
