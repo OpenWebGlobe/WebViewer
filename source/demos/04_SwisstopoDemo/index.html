@@ -43,7 +43,21 @@ var boundlayer = 0;
 var scene;
 var world;
 
-
+function OnKeyDown(ctx,key)
+{
+   if(key == 49) // 1 - 
+   {
+      ogSetRenderQuality(world,1);
+   }
+   if(key == 50) // 2 - Change POI Icon
+   {
+       ogSetRenderQuality(world,2);
+   }
+      if(key == 51) // 3- Change POI Icon
+   {
+       ogSetRenderQuality(world,3);
+   }
+}
 /**
  * @description set up the virtual globe
  */
@@ -92,6 +106,11 @@ function main()
       loadpois(layer);
       
       ogSetCanvasSizeOffset(scene,250,125);
+      
+      document.body.onclick = function(){ document.getElementById("divNavigationManual").style.visibility = 'hidden';
+      document.body.onclick = null;}
+      
+      
 }
 
 
@@ -230,6 +249,7 @@ function toggleboundaries(sender)
       <div  id="divSearchResults">
             <div id="divSearchResultTitle">Search Results</div>
       </div>
+      <div id="divNavigationManual"></div>
       <canvas id="canvas">
       </canvas>
    </div>

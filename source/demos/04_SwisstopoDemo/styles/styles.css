@@ -226,3 +226,16 @@
 }
 
 
+#divNavigationManual
+{
+   width : 420px;
+   height : 220px;
+   left : 10%;
+   top : 10%;
+   background-image : url('../images/navigation.png');
+   z-index : 100;
+   position : absolute;
+   background-repeat : no-repeat;
+}
+
+

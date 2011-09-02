@@ -107,7 +107,7 @@ swisstopoapi.jsoncallback = function(data)
             var lng = CHtoWGSlng((this.bbox[0]+this.bbox[2])/2,(this.bbox[1]+this.bbox[3])/2);
          }
          var pos = ogGetOrientation(scene);
-         ogFlyToLookAtPosition(scene,lng,lat,100,10000,pos.yaw,-45,0);
+         ogFlyToLookAtPosition(scene,lng,lat,100,5000,pos.yaw,-45,0);
          
          //get the height of the position - not really used for the moment
          /*
