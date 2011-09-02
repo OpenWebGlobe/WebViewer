@@ -117,6 +117,7 @@ function main()
       ogLoadGeometryAsync(geometrylayer,"models/bulle.json");
       ogLoadGeometryAsync(geometrylayer,"models/epagny.json");
       ogLoadGeometryAsync(geometrylayer,"models/fhnw.json");
+      ogLoadGeometryAsync(geometrylayer,"models/nuerensdorf.json");
       
       
 }
@@ -131,12 +132,6 @@ function resizeCanvas(engine,w,h)
       {
             ogSetSize(scene,window.innerWidth-400,window.innerHeight-425);
       }
-      
-      
-      /*var c = document.getElementById("canvas");
-      c.width = window.innerWidth-250;
-      c.height = window.innerHeight-125;
-      console.log("resized w: "+w+" h: "+h);*/
 }
 
 
@@ -167,8 +162,13 @@ function flyto(n)
             case 2:    ogFlyToLookAtPosition(scene,7.058635,46.616078,400,1400,pos.yaw,-40,0);
                        break;
                   
+            //Nürensdorf
+            case 3:    ogFlyToLookAtPosition(scene,8.649798224,47.45031594,519,500,pos.yaw,-45,0);
+                       break;
+            
+                  
             //FHNW     
-            case 3:    ogFlyToLookAtPosition(scene,7.63818214,47.53376607,285,500,pos.yaw,-45,0);
+            case 4:    ogFlyToLookAtPosition(scene,7.63818214,47.53376607,285,500,pos.yaw,-45,0);
                        break;
             
             //EPFL - coming soon...
@@ -237,8 +237,9 @@ function toggleboundaries(sender)
                   <ul class="classMenu">
                         <li onclick="flyto(1)">Simple 3D Objects (Gruyere / Epagny)</li>
                         <li onclick="flyto(2)">Simple 3D Objects (Bulle)</li>
-                        <li onclick="flyto(3)">Textured Buildings (FHNW)</li>
-                        <li onclick="flyto(4)">Textured Buildings (EPFL)</li>
+                        <li onclick="flyto(3)">Medium Quality 3D Objects (Nürensdorf)</li>
+                        <li onclick="flyto(4)">Textured Buildings (FHNW)</li>
+                        <li onclick="flyto(5)">Textured Buildings (EPFL)</li>
                   </ul>
             </div>
             <div class="classSeparatorTitle">Infos</div>
