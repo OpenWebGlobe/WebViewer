@@ -1,14 +1,86 @@
 #!/usr/bin/python
+################################################################################
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                                                                #
+#                                                                              #
+#                            3D Object Converter                               #
+#                               Version 1.0.1                                  #
+#                                                                              #
+#                              (c) 2010-2011 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+################################################################################
+#     Licensed under MIT License. Read the file LICENSE for more information   @
+################################################################################
+#
+
 import urllib2
 import sys
 import os
 import os.path
 import tarfile
 import re
+import glob
 
 
-filename = sys.argv[1]
-print filename
+if len(sys.argv) < 2:
+   print('usage:\n')
+   print('--source wavefront.obj')
+   print('--calccenter')
+   print('--flipxy')
+   print('--integer')
+   print('\nexample: obj2json.py --source bla.obj --calccenter')
+   sys.exit()
+   
+
+filename = ""
+bSource = 0
+bCalccenter = 0
+bFlipxy = 0
+bInteger = 0
+
+id = 1
+lng = 0
+lat = 0
+elv = 0
+texture = ""
+
+
+   
+for i in range(1,len(sys.argv)):
+    if not(sys.argv[i].startswith('--')):
+      if bSource == 1:
+         filename = sys.argv[i]
+    if sys.argv[i] == ('--source'):
+        bSource = 1
+    if sys.argv[i] == ('--calccenter'):
+        bCalccenter = 1
+    if sys.argv[i] == ('--flipxy'):
+        bFlipxy = 1
+    if sys.argv[i] == ('--integer'):
+        bInteger = 1
+ 
+ 
+if (bSource == 0):
+    print('Error: please specify input file using --source parameter')
+    sys.exit()
+   
+if (bSource):
+    print('Source: ' + filename)
+   
+if (bCalccenter):
+    print('calculating centroid...')
+    
+if (bFlipxy):
+    print('flipping x and y!')
+   
 color = ",1,0,0,1" #set color
 
 
@@ -55,9 +127,16 @@ pt = []
 pnt = []
 idx = []
 ilb = []
-for i in range(0,65000):
-    ilb.append(" ") #interleaved buffer
+ilb2 = []
 
+bHasNormals = 0
+if vertexsemantic == "pnt":
+   bHasNormals = 1
+
+#for i in range(0,65000):
+#    ilb.append(" ") #interleaved buffer
+
+cnt = 0
 
 for line in lines:
     if line[0:2] == "v ":
@@ -75,9 +154,8 @@ for line in lines:
     elif line[0:2] == "f ": #face definition
         vertices = line[2:-1].split() #splits every space
         for vert in vertices:
-            
             if vertexsemantic == "p":
-                ilb[int(a[0])-1] = (v[int(vert)-1]+color)
+                ilb[int(vert)-1] = (v[int(vert)-1]+color)
                 idx.append(vert)
                 
             elif vertexsemantic == "pt": #this means f 1/2    
@@ -85,20 +163,60 @@ for line in lines:
                 ilb[int(a[0])-1] = (v[int(a[0])-1]+","+(vt[int(a[1])-1]))
                 idx.append(a[0])
                 
-            elif vertexsemantic == "pnt": #this means f 1/2/2    
+            elif vertexsemantic == "pnt": #this means f 1/2/2  (note in wavefront it is: p/t/n and not pnt!)   
                 a = vert.split('/')
-                ilb[int(a[0])-1] = (v[int(a[0])-1]+","+(vt[int(a[1])-1])+","+(vt[int(a[2])-1]))
-                idx.append(a[0])
+                ilb.append((v[int(a[0])-1]+","+(vn[int(a[2])-1])+","+(vt[int(a[1])-1])))
+                #ilb[int(a[0])-1] = (v[int(a[0])-1]+","+(vn[int(a[2])-1])+","+(vt[int(a[1])-1]))
+                #print int(a[0])-1
+                #idx.append(a[0]-1)
+                idx.append(cnt)
+                cnt = cnt + 1
                 
 f.close();
 
-id = input("type a unique model-id: ")
-lng = input("center longitude: ")
-lat = input("center latitude: ")
-elv = input("center elevation: ")
-texture = raw_input("texture url: ")
+cx = 0;
+cy = 0;
+cz = 0;
 
 
+if bCalccenter:
+    numelems = len(v);
+    part = 1.0 / float(numelems)
+    print ('Number of elements: ' + str(numelems))
+    for c in v:
+        tokens = c.split(',')
+        x = float(tokens[0])
+        y = float(tokens[1])
+        z = float(tokens[2])
+        cx = cx + x * part;
+        cy = cy + y * part;
+        cz = cz + z * part;
+    if bInteger:
+       cx = int(cx)
+       cy = int(cy)
+       cz = int(cz)    
+    print ('Center = (' + str(cx) + ', ' + str(cy) + ', ' + str(cz))
+    lng = cx
+    lat = cy
+    elv = cz
+    #now recreate ilb
+    for ilbiterator in ilb:
+        tokens2 = ilbiterator.split(',')
+        if len(tokens2) > 2:
+            newx = float(tokens2[0]) - cx
+            newy = float(tokens2[1]) - cy
+            newz = float(tokens2[2]) - cz
+            if bFlipxy:
+                s = str(newy) + ',' + str(-newz) + ',' + str(newx)
+            else:        
+                s = str(newx) + ',' + str(newy) + ',' + str(newz)
+            for i in range(3,len(tokens2)):
+                s = s + ','
+                s = s + tokens2[i]
+            ilb2.append(s)
+    ilb = ilb2
+    ilb2 = []
+    
 #write to json format
 name = filename.split('.')
 g = open(name[0]+'.json',"w")
@@ -115,7 +233,7 @@ g.write("],\n\"IndexSemantic\"  :  \"TRIANGLES\",\n\"Indices\"  :  [\t")
 i=0
 for x in idx:
     i+=1
-    g.write(str(int(x)-1)+",")
+    g.write(str(int(x))+",")
     if i%3==0:
         g.write("\n\t\t\t\t")
 g.seek(-7,1) #set cursor pos back to remove last ','

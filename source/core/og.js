@@ -62,100 +62,111 @@ function _CreateID()
 //------------------------------------------------------------------------------
 /**
  * @description Internal factory function to create an OpenWebGlobeObject
- * @param {number} type the object type
+ * @param {number} typ the object type
  * @param {ogObject} parent the parent object or null
  * @param {Object} options the object specific options
  * @ignore
  */
-function _CreateObject(type, parent, options)
+function _CreateObject(typ, parent, options)
 {
    /** @type {ogObject} */
    var newobject = null;
    
-   switch(type)
+   if (typ == OG_OBJECT_CONTEXT)
+   {     
+      newobject = new ogContext();
+   }
+   else if (typ == OG_OBJECT_SCENE)
    {
-      case OG_OBJECT_CONTEXT:
-         newobject = new ogContext();
-         break;
-      case OG_OBJECT_SCENE:
          newobject = new ogScene();
-         break;
-      case OG_OBJECT_WORLD:
-         newobject = new ogWorld();
-         break;
-      case OG_OBJECT_IMAGELAYER:
-         newobject = new ogImageLayer();
-         break;
-      case OG_OBJECT_ELEVATIONLAYER:
-         newobject = new ogElevationLayer();
-         break;
-      case OG_OBJECT_WAYPOINTLAYER:
-         // not available yet...
-         break;
-      case OG_OBJECT_POILAYER:
-         newobject = new ogPOILayer();
-         break;
-      case OG_OBJECT_GEOMETRYLAYER:
-         newobject = new ogGeometryLayer();
-         break;
-      case OG_OBJECT_VOXELLAYER:
-         // not available yet...
-         break;
-      case OG_OBJECT_IMAGE:
-         // probably not available in WebGL version -> use texture
-         break;
-      case OG_OBJECT_TEXTURE:
-         newobject = new ogTexture();
-         break;
-      case OG_OBJECT_POI:
-         newobject = new ogPOI();
-         break;
-      case OG_OBJECT_PIXELBUFFER:
-         // not available yet...
-         break;
-      case OG_OBJECT_GEOMETRY:
-         newobject = new ogGeometry();
-         break;
-      case OG_OBJECT_MESH:
-         newobject = new ogMeshObject();
-         break;
-      case OG_OBJECT_SURFACE:
-         newobject = new ogSurface();
-         break;
-      case OG_OBJECT_CAMERA:
-          newobject = new ogCamera();
-         break;
-      case OG_OBJECT_TEXT:
-         // not available yet...
-         break;
-      case OG_OBJECT_BINARYDATA:
-         // not available yet (JSON data and not "binary")
-         break;
-      case OG_OBJECT_LIGHT:
-         // not available yet...
-         break;
-      case OG_OBJECT_NAVIGATIONCONTROLLER:
-         // not available yet...
-         break;
-      case OG_OBJECT_BILLBOARD:
-         newobject = new ogBillboard();
-         break;
-      case OG_OBJECT_BILLBOARDLAYER:
-         newobject = new ogBillboardLayer();
-         break;
-      case OG_OBJECT_INVALID:
-         // invalid object! can't be created!!
-         goog.debug.Logger.getLogger('owg.OpenWebGlobe').warning("** WARNING: Trying to create an invalid object!");
-         return null;
-         break;
-      default:
-         goog.debug.Logger.getLogger('owg.OpenWebGlobe').warning("** WARNING: Can't create object. Wrong type!");
-         return null;
+   }
+   else if (typ ==  OG_OBJECT_WORLD)
+   {
+      newobject = new ogWorld();
+   }
+   else if (typ ==  OG_OBJECT_IMAGELAYER)
+   {
+      newobject = new ogImageLayer();
+   }
+   else if (typ ==  OG_OBJECT_ELEVATIONLAYER)
+   {
+      newobject = new ogElevationLayer();
+   }
+   else if (typ ==  OG_OBJECT_WAYPOINTLAYER)
+   {
+      // not available yet...
+   }
+   else if (typ ==  OG_OBJECT_POILAYER)
+   {
+      newobject = new ogPOILayer();
+   }
+   else if (typ ==  OG_OBJECT_GEOMETRYLAYER)
+   {
+      newobject = new ogGeometryLayer();
+   }
+   else if (typ ==  OG_OBJECT_VOXELLAYER)
+   {
+      // not available yet...
+   }
+   else if (typ ==  OG_OBJECT_IMAGE)
+   {
+      // probably not available in WebGL version -> use texture
+   }
+   else if (typ ==  OG_OBJECT_TEXTURE)
+   {
+      newobject = new ogTexture();
+   }
+   else if (typ ==  OG_OBJECT_POI)
+   {
+      newobject = new ogPOI();
+   }
+   else if (typ ==  OG_OBJECT_PIXELBUFFER)
+   {
+      // not available yet...
+   }
+   else if (typ ==  OG_OBJECT_GEOMETRY)
+   {
+      newobject = new ogGeometry();
+   }
+   else if (typ ==  OG_OBJECT_MESH)
+   {
+      newobject = new ogMeshObject();
+   }
+   else if (typ ==  OG_OBJECT_SURFACE)
+   {
+      newobject = new ogSurface();
+   }
+   else if (typ ==  OG_OBJECT_CAMERA)
+   {
+       newobject = new ogCamera();
+   }
+   else if (typ ==  OG_OBJECT_TEXT)
+   {
+      // not available yet...
+   }
+   else if (typ ==  OG_OBJECT_BINARYDATA)
+   {
+      // not available yet (JSON data and not "binary")
+   }
+   else if (typ ==  OG_OBJECT_LIGHT)
+   {
+      // not available yet...
+   }
+   else if (typ ==  OG_OBJECT_NAVIGATIONCONTROLLER)
+   {
+      // not available yet...
+   }
+   else if (typ ==  OG_OBJECT_BILLBOARD)
+   {
+      newobject = new ogBillboard();
+   }
+   else if (typ ==  OG_OBJECT_BILLBOARDLAYER)
+   {
+      newobject = new ogBillboardLayer();
    }
    
    if (newobject != null)
-   {
-      newobject.SetId(_CreateID());
+   {  newobject.SetId(_CreateID());
       newobject.SetParent(parent);
       newobject.RegisterObject();
       newobject.ParseOptions(options);
@@ -2392,7 +2403,29 @@ function ogSetFlightDuration(scene_id,timespan)
    {
       engine.SetFlightDuration(timespan);
    }
-
 }
 goog.exportSymbol('ogSetFlightDuration', ogSetFlightDuration);
 
+//------------------------------------------------------------------------------
+/** 
+ * @description Set the canvas size offset. Canvas width = window.width - widthOffset
+ *             works only if fullscreen turned on.
+ *
+ * @param {number} scene_id the scene id.  
+ * @param {number} widthoffset the canvas width-offset
+ * @param {number} heightoffset the canvas height-offset
+ */
+function ogSetCanvasSizeOffset(scene_id,widthoffset,heightoffset)
+{
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+   
+  engine.widthOffset = widthoffset;
+  engine.heightOffset = heightoffset;
+  _fncResize(null);
+}
+goog.exportSymbol('ogSetCanvasSizeOffset', ogSetCanvasSizeOffset);

@@ -1,0 +1,260 @@
+<!--/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2010-2011 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/-->
+<!DOCTYPE html>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link rel="stylesheet" type="text/css" href="styles/styles.css">
+
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script> 
+<!--<script type="text/javascript" src="externals/openwebglobe_0.3.js"></script>-->
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+<script type="text/javascript" src="externals/wgs84_ch1903.js"></script>
+<script type="text/javascript" src="externals/swisstopoapi.js"></script>
+<script type="text/javascript" src="externals/loadpois.js"></script>
+<script type="text/javascript">
+
+
+//Definition oo global variables
+var globe;
+var boundlayer = 0;
+var scene;
+var world;
+
+function OnKeyDown(ctx,key)
+{
+   if(key == 49) // 1 - 
+   {
+      ogSetRenderQuality(world,1);
+   }
+   if(key == 50) // 2 - Change POI Icon
+   {
+       ogSetRenderQuality(world,2);
+   }
+      if(key == 51) // 3- Change POI Icon
+   {
+       ogSetRenderQuality(world,3);
+   }
+}
+/**
+ * @description set up the virtual globe
+ */
+function main()
+{
+      resizeCanvas();
+      g_context = ogCreateContextFromCanvas("canvas", true);
+      
+      globe = ogCreateGlobe(g_context);
+      
+      
+      //load blue marble image data
+      var imgBlueMarble500 = 
+      {
+         url     : ["http://www.openwebglobe.org/data/img"], //change adress here
+         layer   : "World500",
+         service : "i3d"
+      };
+      ogAddImageLayer(globe, imgBlueMarble500);
+      
+      //load swissimage data 
+      var imgSWISSTOPO = 
+      {
+            url     : ["http://10.42.2.37"], //change adress here
+            layer   : "swissimage", 
+            service : "owg"
+      };
+      ogAddImageLayer(globe, imgSWISSTOPO);
+      
+      //load Elevation data dhm25
+      var elvDHM =
+      {
+            url     : ["http://10.42.2.37"], //change adress here.
+            layer   : "DHM25",
+            service : "owg"
+      }
+      ogAddElevationLayer(globe, elvDHM);
+     
+      ogSetBackgroundColor(g_context, 0.2,0.2,0.7,1);
+      
+      scene = ogGetScene(g_context);
+      world = ogGetWorld(scene);
+      
+      //create the poilayer and load the pois from loadpois.js   
+      layer = ogCreatePOILayer(world,"poilayer");
+      loadpois(layer);
+      
+      ogSetCanvasSizeOffset(scene,250,125);
+      
+      document.body.onclick = function(){ document.getElementById("divNavigationManual").style.visibility = 'hidden';
+      document.body.onclick = null;}
+      
+      
+}
+
+
+/**
+ * @description adapt canvas size.
+ */
+function resizeCanvas(engine,w,h)
+{
+      if(scene>0)
+      {
+            ogSetSize(scene,window.innerWidth-400,window.innerHeight-425);
+      }
+      
+      
+      /*var c = document.getElementById("canvas");
+      c.width = window.innerWidth-250;
+      c.height = window.innerHeight-125;
+      console.log("resized w: "+w+" h: "+h);*/
+}
+
+
+/**
+ * @description search button callback.
+ */
+function search()
+{
+      var searchtext = document.getElementById("txtInput").value;
+      swisstopoapi.sendQuery(searchtext);
+}
+
+
+/**
+ * @description flyto links callback.
+ */
+function flyto(n)
+{
+      var pos = ogGetOrientation(scene);
+      switch(n)
+      {
+            //FHNW
+            case 1:     ogFlyToLookAtPosition(scene,7.591127,47.550558,300,4000,pos.yaw,-45,0); 
+                        break;
+                  
+            //EPFL
+            case 2:    ogFlyToLookAtPosition(scene,6.565556,46.520278,300,4000,pos.yaw,-45,0);
+                       break;
+                  
+            //Nürensdorf      
+            case 3:    ogFlyToLookAtPosition(scene,8.648886,47.446943,300,4000,pos.yaw,-45,0);
+                       break;
+            
+            //gruyere 
+            case 4:    ogFlyToLookAtPosition(scene, 7.081948,46.583608,300,4000,pos.yaw,-45,0);
+                       break;
+            
+            default:    break;
+ 
+      }
+}
+
+
+/**
+ * @description toggle the boundary layer
+ */
+function toggleboundaries(sender)
+{
+      var boundariesLayer =
+      {
+            url     : ["http://10.42.2.37"], //??
+            layer   : "DHM25",
+            service : "owg"
+      }
+      
+      //just for test - replace this with the boundary tile service.
+      var imgOpenStreetMap = 
+      {
+      url     : ["http://a.tile.openstreetmap.org", "http://b.tile.openstreetmap.org", "http://c.tile.openstreetmap.org" ],
+      service : "osm"
+      };
+      if(sender.checked == true)
+      {
+            boundlayer = ogAddImageLayer(globe, imgOpenStreetMap);
+      }
+      else
+      {
+            ogRemoveImageLayer(boundlayer);
+      }
+}
+</script>
+
+
+<body onload="main()" style="background-color:#999999; overflow:hidden;">
+   
+   <div id="divTopRow">
+      <div id="divTopRowImageRight"></div>
+      <div id="divTopRowImageLeft"></div>
+      <div id="divTitle">3D Viewer for geo.admin.ch</div>
+      <div id="divSubTitle"></div>
+   </div>
+   
+   <div id="divMenuLeft">
+            <div class="classSeparatorTitle">Localisation Search</div>
+            <div id="divMenuSearch">
+            <form>
+                  <input id="txtInput" type="text" size="20">
+                  <input type="button" value="Go" onclick="search()">
+            </form>
+            </div>
+            <div class="classSeparatorTitle">Boundaries</div>
+            <div id="divMenuBoundaries">
+            <input type="checkbox" onclick="toggleboundaries(this)"> Boundaries 
+            </div>
+            <div class="classSeparatorTitle">3D Models</div>
+            <div id="divMenu3DModels">
+                  <ul class="classMenu">
+                        <li onclick="flyto(1)">Simple 3D Objects (Bulle)</li>
+                        <li onclick="flyto(2)">Medium Quality Buildings (Nürensdorf)</li>
+                        <li onclick="flyto(3)">Textured Buildings (FHNW)</li>
+                        <li onclick="flyto(4)">Textured Buildings (EPFL)</li>
+                  </ul>
+            </div>
+            <div class="classSeparatorTitle">Infos</div>
+            <div id="divMenuInfos">
+                  <ul class="classMenu">
+                        <a href="https://dav0.bgdi.admin.ch/swisstopo/3d/information.pdf" target="_blank"><li>Information</li></a>
+                        <a href="https://dav0.bgdi.admin.ch/swisstopo/3d/copyright.pdf" target="_blank"><li>Copyright & Dataprotection</li></a>
+                        <a href="mailto:beat.tschanz@swisstopo.ch" target="_blank"><li>Contact / Feedback</li></a>
+                        <a href="http://www.geo.admin.ch" target="_blank"><li>Homepage</li></a>
+                        <a href="http://www.geo.admin.ch/internet/geoportal/en/home/current.enhRSS.html" target="_blank"><li>RSS</li></a>
+                        <a href="http://twitter.com/#!/swiss_geoportal" target="_blank"><li>Twitter</li></a>
+                  </ul>
+            </div>
+      </div>
+   </div>
+  <div id="divCanvas">
+      <div  id="divSearchResults">
+            <div id="divSearchResultTitle">Search Results</div>
+      </div>
+      <div id="divNavigationManual"></div>
+      <canvas id="canvas">
+      </canvas>
+   </div>
+
+ 
+   
+</body>
+
