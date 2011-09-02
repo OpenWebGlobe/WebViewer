@@ -243,8 +243,97 @@ function engine3d()
    
    /** @type {FlyToAnimation} */
    this.flyto = null;
-      
-   
+}
+
+//------------------------------------------------------------------------------
+/**
+ * Creates the HTLM for a failure message
+ * @param {string} msg
+ * @return {string} The html.
+ */
+var makeFailHTML = function(msg)
+{
+   return '' +
+      '<table style="background-color: #8CE; width: 100%; height: 100%;"><tr>' +
+      '<td align="center">' +
+      '<div style="display: table-cell; vertical-align: middle;">' +
+      '<div style="">' + msg + '</div>' +
+      '</div>' +
+      '</td></tr></table>';
+};
+
+/**
+ * Message: getting a webgl browser
+ * @type {string}
+ */
+var GET_A_WEBGL_BROWSER = '' +
+  'This page requires a browser that supports WebGL.<br/>' +
+  '<a href="http://get.webgl.org">Click here to upgrade your browser.</a>';
+
+/**
+ * Message: need better hardware
+ * @type {string}
+ */
+var OTHER_PROBLEM = '' +
+  "It doesn't appear your computer can support WebGL.<br/>" +
+  '<a href="http://get.webgl.org/troubleshooting/">Click here for more information.</a>';
+
+/**
+ * Creates a webgl context. If creation fails it will
+ * change the contents of the container of the <canvas>
+ * tag to an error message with the correct links for WebGL.
+ * @param {Element} canvas. The canvas element to create a
+ *     context from.
+ * @return {WebGLRenderingContext} The created context.
+ */
+var setupWebGL = function(canvas)
+{
+  function showLink(str)
+  {
+    var container = canvas.parentNode;
+    if (container)
+    {
+      container["innerHTML"] = makeFailHTML(str);
+    }
+  };
+
+  if (!window["WebGLRenderingContext"])
+  {
+    showLink(GET_A_WEBGL_BROWSER);
+    return null;
+  }
+
+  var context = create3DContext(canvas);
+  if (!context)
+  {
+    showLink(OTHER_PROBLEM);
+  }
+  return context;
+};
+
+/**
+ * Creates a webgl context.
+ * @param {!Element} canvas The canvas tag to get context
+ *     from. If one is not passed in one will be created.
+ * @return {!WebGLRenderingContext} The created context.
+ */
+var create3DContext = function(canvas)
+{
+  var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
+  var context = null;
+  for (var ii = 0; ii < names.length; ++ii)
+  {
+     try
+      {
+         context = canvas.getContext(names[ii]);
+      }
+      catch(e) {}
+      if (context)
+      {
+         break;
+      }
+  }
+  return context;
 }
 
 //------------------------------------------------------------------------------
@@ -254,8 +343,16 @@ function engine3d()
  * @param {boolean} bFullscreen True if the canvas should autofit the browser window
  */
 engine3d.prototype.InitEngine = function(canvasid, bFullscreen) 
-{ 
+{
    var canvas = document.getElementById(canvasid);
+   
+   this.gl = setupWebGL(canvas);
+   if (!this.gl)
+   {
+      
+      return;
+   }
+   
    this.context = canvas;
    
    if (bFullscreen)
