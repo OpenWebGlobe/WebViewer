@@ -19,7 +19,6 @@
 ################################################################################
 #     Licensed under MIT License. Read the file LICENSE for more information   @
 ################################################################################
-#
 
 import urllib2
 import sys
@@ -155,20 +154,19 @@ for line in lines:
         vertices = line[2:-1].split() #splits every space
         for vert in vertices:
             if vertexsemantic == "p":
-                ilb[int(vert)-1] = (v[int(vert)-1]+color)
-                idx.append(vert)
+                ilb.append(v[int(vert)-1]+color)
+                idx.append(cnt)
+                cnt = cnt + 1
                 
             elif vertexsemantic == "pt": #this means f 1/2    
                 a = vert.split('/')
-                ilb[int(a[0])-1] = (v[int(a[0])-1]+","+(vt[int(a[1])-1]))
-                idx.append(a[0])
+                ilb.append(v[int(a[0])-1]+","+(vt[int(a[1])-1]))
+                idx.append(cnt)
+                cnt = cnt + 1
                 
             elif vertexsemantic == "pnt": #this means f 1/2/2  (note in wavefront it is: p/t/n and not pnt!)   
                 a = vert.split('/')
                 ilb.append((v[int(a[0])-1]+","+(vn[int(a[2])-1])+","+(vt[int(a[1])-1])))
-                #ilb[int(a[0])-1] = (v[int(a[0])-1]+","+(vn[int(a[2])-1])+","+(vt[int(a[1])-1]))
-                #print int(a[0])-1
-                #idx.append(a[0]-1)
                 idx.append(cnt)
                 cnt = cnt + 1
                 
@@ -179,43 +177,48 @@ cy = 0;
 cz = 0;
 
 
-if bCalccenter:
-    numelems = len(v);
-    part = 1.0 / float(numelems)
-    print ('Number of elements: ' + str(numelems))
-    for c in v:
-        tokens = c.split(',')
-        x = float(tokens[0])
-        y = float(tokens[1])
-        z = float(tokens[2])
-        cx = cx + x * part;
-        cy = cy + y * part;
-        cz = cz + z * part;
-    if bInteger:
-       cx = int(cx)
-       cy = int(cy)
-       cz = int(cz)    
-    print ('Center = (' + str(cx) + ', ' + str(cy) + ', ' + str(cz))
-    lng = cx
-    lat = cy
-    elv = cz
-    #now recreate ilb
-    for ilbiterator in ilb:
-        tokens2 = ilbiterator.split(',')
-        if len(tokens2) > 2:
+
+numelems = len(v);
+part = 1.0 / float(numelems)
+print ('Number of elements: ' + str(numelems))
+for c in v:
+    tokens = c.split(',')
+    x = float(tokens[0])
+    y = float(tokens[1])
+    z = float(tokens[2])
+    cx = cx + x * part;
+    cy = cy + y * part;
+    cz = cz + z * part;
+if bInteger:
+   cx = int(cx)
+   cy = int(cy)
+   cz = int(cz)    
+print ('Center = (' + str(cx) + ', ' + str(cy) + ', ' + str(cz))
+lng = cx
+lat = cy
+elv = cz
+#now recreate ilb
+for ilbiterator in ilb:
+    tokens2 = ilbiterator.split(',')
+    if len(tokens2) > 2:
+        if bCalccenter:
             newx = float(tokens2[0]) - cx
             newy = float(tokens2[1]) - cy
             newz = float(tokens2[2]) - cz
-            if bFlipxy:
-                s = str(newy) + ',' + str(-newz) + ',' + str(newx)
-            else:        
-                s = str(newx) + ',' + str(newy) + ',' + str(newz)
-            for i in range(3,len(tokens2)):
-                s = s + ','
-                s = s + tokens2[i]
-            ilb2.append(s)
-    ilb = ilb2
-    ilb2 = []
+        else:
+            newx = float(tokens2[0])
+            newy = float(tokens2[1])
+            newz = float(tokens2[2])
+        if bFlipxy:
+            s = str(newy) + ',' + str(-newz) + ',' + str(newx)
+        else:        
+            s = str(newx) + ',' + str(newy) + ',' + str(newz)
+        for i in range(3,len(tokens2)):
+            s = s + ','
+            s = s + tokens2[i]
+        ilb2.append(s)
+ilb = ilb2
+ilb2 = []
     
 #write to json format
 name = filename.split('.')

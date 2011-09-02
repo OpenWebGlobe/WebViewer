@@ -98,7 +98,7 @@ function i3dElevationLayer()
    {
       if (this.dsi.nLevelofDetail)
       {
-         return this.dsi.nLevelofDetail-1;
+         return this.dsi.nLevelofDetail;
       }
       else
       {
