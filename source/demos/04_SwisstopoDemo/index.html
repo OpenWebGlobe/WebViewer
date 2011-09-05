@@ -41,21 +41,6 @@ var world;
 var searchpoilayer;
 var searchpoi;
 
-function OnKeyDown(ctx,key)
-{
-   if(key == 49) // 1 - 
-   {
-      ogSetRenderQuality(world,1);
-   }
-   if(key == 50) // 2 - Change POI Icon
-   {
-       ogSetRenderQuality(world,2);
-   }
-      if(key == 51) // 3- Change POI Icon
-   {
-       ogSetRenderQuality(world,3);
-   }
-}
 /**
  * @description set up the virtual globe
  */
@@ -107,10 +92,7 @@ function main()
       
       document.body.onclick = function(){ document.getElementById("divNavigationManual").style.visibility = 'hidden';
       document.body.onclick = null;}
-      
-      ogSetKeyDownFunction(g_context,OnKeyDown);
-      
-      
+   
       geometrylayer = ogCreateGeometryLayer(world,"buildings");
       ogLoadGeometryAsync(geometrylayer,"models/bulle.json");
       ogLoadGeometryAsync(geometrylayer,"models/epagny.json");
