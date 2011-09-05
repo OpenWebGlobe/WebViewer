@@ -38,6 +38,8 @@ var globe;
 var boundlayer = 0;
 var scene;
 var world;
+var searchpoilayer;
+var searchpoi;
 
 function OnKeyDown(ctx,key)
 {
@@ -116,7 +118,14 @@ function main()
       ogLoadGeometryAsync(geometrylayer,"models/nuerensdorf.json");
       ogLoadGeometryAsync(geometrylayer,"models/psea.json");
       
-      
+      searchpoilayer = ogCreatePOILayer(world,"searchedpois");
+      poidef = { icon     : "images/point.png",
+               position : [0,0,0],
+               size 		: 	0.2,
+               flagpole : false
+               };
+      //set a poi
+      searchpoi = ogCreatePOI(searchpoilayer,poidef);
 }
 
 
@@ -138,7 +147,18 @@ function resizeCanvas(engine,w,h)
 function search()
 {
       var searchtext = document.getElementById("txtInput").value;
-      swisstopoapi.sendQuery(searchtext);
+      if(searchtext == "renderquality")
+      {
+            var quality = parseFloat(window.prompt("Set Render-Quality (min: 1.0; max: 3.0)"));           
+            if(quality>1 && quality<=3)
+            {
+                  ogSetRenderQuality(world,quality);
+            }
+      }
+      else
+      {
+            swisstopoapi.sendQuery(searchtext);
+      }
 }
 
 
