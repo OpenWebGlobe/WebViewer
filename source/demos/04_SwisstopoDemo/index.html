@@ -26,11 +26,7 @@
 
 <link rel="stylesheet" type="text/css" href="styles/styles.css">
 
-<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
-<script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script> 
-<!--<script type="text/javascript" src="externals/openwebglobe_0.3.js"></script>-->
-<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+<script type="text/javascript" src="externals/openwebglobe_0.5.0.js"></script>
 <script type="text/javascript" src="externals/wgs84_ch1903.js"></script>
 <script type="text/javascript" src="externals/swisstopoapi.js"></script>
 <script type="text/javascript" src="externals/loadpois.js"></script>
@@ -110,6 +106,16 @@ function main()
       document.body.onclick = function(){ document.getElementById("divNavigationManual").style.visibility = 'hidden';
       document.body.onclick = null;}
       
+      ogSetKeyDownFunction(g_context,OnKeyDown);
+      
+      
+      geometrylayer = ogCreateGeometryLayer(world,"buildings");
+      ogLoadGeometryAsync(geometrylayer,"models/bulle.json");
+      ogLoadGeometryAsync(geometrylayer,"models/epagny.json");
+      ogLoadGeometryAsync(geometrylayer,"models/fhnw.json");
+      ogLoadGeometryAsync(geometrylayer,"models/nuerensdorf.json");
+      ogLoadGeometryAsync(geometrylayer,"models/psea.json");
+      
       
 }
 
@@ -123,12 +129,6 @@ function resizeCanvas(engine,w,h)
       {
             ogSetSize(scene,window.innerWidth-400,window.innerHeight-425);
       }
-      
-      
-      /*var c = document.getElementById("canvas");
-      c.width = window.innerWidth-250;
-      c.height = window.innerHeight-125;
-      console.log("resized w: "+w+" h: "+h);*/
 }
 
 
@@ -150,20 +150,26 @@ function flyto(n)
       var pos = ogGetOrientation(scene);
       switch(n)
       {
-            //FHNW
-            case 1:     ogFlyToLookAtPosition(scene,7.591127,47.550558,300,4000,pos.yaw,-45,0); 
+            //Epagny
+            case 1:     //ogFlyTo(scene,7.085848,46.580348,1020,335,-10,0);
+                        ogFlyToLookAtPosition(scene,7.083207,46.588348,400,1400,pos.yaw,-30,0);
                         break;
                   
-            //EPFL
-            case 2:    ogFlyToLookAtPosition(scene,6.565556,46.520278,300,4000,pos.yaw,-45,0);
+            //Bulle
+            case 2:    ogFlyToLookAtPosition(scene,7.058635,46.616078,400,1400,pos.yaw,-40,0);
                        break;
                   
-            //Nürensdorf      
-            case 3:    ogFlyToLookAtPosition(scene,8.648886,47.446943,300,4000,pos.yaw,-45,0);
+            //Nürensdorf
+            case 3:    ogFlyToLookAtPosition(scene,8.649798224,47.45031594,519,500,pos.yaw,-45,0);
                        break;
             
-            //gruyere 
-            case 4:    ogFlyToLookAtPosition(scene, 7.081948,46.583608,300,4000,pos.yaw,-45,0);
+                  
+            //FHNW     
+            case 4:    ogFlyToLookAtPosition(scene,7.63818214,47.53376607,285,500,pos.yaw,-45,0);
+                       break;
+            
+            //EPFL 
+            case 5:    ogFlyToLookAtPosition(scene,6.5625981894,46.5177948548,396.00,500,pos.yaw,-30,0);
                        break;
             
             default:    break;
@@ -226,10 +232,11 @@ function toggleboundaries(sender)
             <div class="classSeparatorTitle">3D Models</div>
             <div id="divMenu3DModels">
                   <ul class="classMenu">
-                        <li onclick="flyto(1)">Simple 3D Objects (Bulle)</li>
-                        <li onclick="flyto(2)">Medium Quality Buildings (Nürensdorf)</li>
-                        <li onclick="flyto(3)">Textured Buildings (FHNW)</li>
-                        <li onclick="flyto(4)">Textured Buildings (EPFL)</li>
+                        <li onclick="flyto(1)">Simple 3D Objects (Gruyere / Epagny)</li>
+                        <li onclick="flyto(2)">Simple 3D Objects (Bulle)</li>
+                        <li onclick="flyto(3)">Medium Quality 3D Objects (Nürensdorf)</li>
+                        <li onclick="flyto(4)">Textured Buildings (FHNW)</li>
+                        <li onclick="flyto(5)">Textured Buildings (EPFL)</li>
                   </ul>
             </div>
             <div class="classSeparatorTitle">Infos</div>
