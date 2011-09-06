@@ -99,22 +99,30 @@ swisstopoapi.jsoncallback = function(data)
          {
             var lat = CHtoWGSlat(this.bbox[0],this.bbox[1]);
             var lng = CHtoWGSlng(this.bbox[0],this.bbox[1]);
-
+            
+            //fly to position and set a poi
+            //get the height of the position - unused
+            swisstopoapi.getJSONP("http://api.geo.admin.ch/height?easting="+this.bbox[0]+"&northing="+this.bbox[1],swisstopoapi.heightcallback);
+            this.data.lat = lat;
+            this.data.lng = lng;
+            swisstopoapi.waitforheight.push(this.data);
+            
          }
          else //calc the middle of the bounding box
          {
             var lat = CHtoWGSlat((this.bbox[0]+this.bbox[2])/2,(this.bbox[1]+this.bbox[3])/2);
             var lng = CHtoWGSlng((this.bbox[0]+this.bbox[2])/2,(this.bbox[1]+this.bbox[3])/2);
+            
+            // just fly to position
+            var pos = ogGetOrientation(scene);
+            ogFlyToLookAtPosition(scene,lng,lat,100,5000,pos.yaw,-45,0);
+            
          }
-         var pos = ogGetOrientation(scene);
-         ogFlyToLookAtPosition(scene,lng,lat,100,5000,pos.yaw,-45,0);
          
-         //get the height of the position - not really used for the moment
-         /*
-         swisstopoapi.getJSONP("http://api.geo.admin.ch/height?easting="+this.bbox[0]+"&northing="+this.bbox[1],swisstopoapi.heightcallback);
-         this.data.lat = lat;
-         this.data.lng = lng;
-         swisstopoapi.waitforheight.push(this.data);*/    
+
+
+         
+    
       }
       
       //the search result div dissapears if a click on body occurs.
@@ -142,13 +150,16 @@ swisstopoapi.heightcallback = function(data)
    posdata = swisstopoapi.waitforheight.pop(rawdata[i]);
    posdata.height = data.height;
    
-   poistring="poidef = {icon     : \"[image]\",\n\
-               text 		: "+posdata.label+",\n\
-               position : ["+posdata.lng+","+posdata.lat+","+posdata.height+"],\n\
-               size 		: 	20,\n\
-               flagpole : true\n\
-               };"
-   //alert(poistring);
+  //set a poi if it's an address....
+   if(posdata.service == "address")
+   {
+      ogChangePOIPositionWGS84(searchpoi,posdata.lng,posdata.lat,posdata.height);
+   }
+  
+   
+   //fly to
+   var pos = ogGetOrientation(scene);
+   ogFlyToLookAtPosition(scene,posdata.lng,posdata.lat,posdata.height,1000,pos.yaw,-45,0);
 }
 
 

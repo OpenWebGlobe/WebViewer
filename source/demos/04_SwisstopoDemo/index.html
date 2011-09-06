@@ -38,22 +38,9 @@ var globe;
 var boundlayer = 0;
 var scene;
 var world;
+var searchpoilayer;
+var searchpoi;
 
-function OnKeyDown(ctx,key)
-{
-   if(key == 49) // 1 - 
-   {
-      ogSetRenderQuality(world,1);
-   }
-   if(key == 50) // 2 - Change POI Icon
-   {
-       ogSetRenderQuality(world,2);
-   }
-      if(key == 51) // 3- Change POI Icon
-   {
-       ogSetRenderQuality(world,3);
-   }
-}
 /**
  * @description set up the virtual globe
  */
@@ -105,10 +92,7 @@ function main()
       
       document.body.onclick = function(){ document.getElementById("divNavigationManual").style.visibility = 'hidden';
       document.body.onclick = null;}
-      
-      ogSetKeyDownFunction(g_context,OnKeyDown);
-      
-      
+   
       geometrylayer = ogCreateGeometryLayer(world,"buildings");
       ogLoadGeometryAsync(geometrylayer,"models/bulle.json");
       ogLoadGeometryAsync(geometrylayer,"models/epagny.json");
@@ -116,7 +100,14 @@ function main()
       ogLoadGeometryAsync(geometrylayer,"models/nuerensdorf.json");
       ogLoadGeometryAsync(geometrylayer,"models/psea.json");
       
-      
+      searchpoilayer = ogCreatePOILayer(world,"searchedpois");
+      poidef = { icon     : "images/point.png",
+               position : [0,0,0],
+               size 		: 	0.2,
+               flagpole : false
+               };
+      //set a poi
+      searchpoi = ogCreatePOI(searchpoilayer,poidef);
 }
 
 
@@ -138,7 +129,18 @@ function resizeCanvas(engine,w,h)
 function search()
 {
       var searchtext = document.getElementById("txtInput").value;
-      swisstopoapi.sendQuery(searchtext);
+      if(searchtext == "renderquality")
+      {
+            var quality = parseFloat(window.prompt("Set Render-Quality (min: 1.0; max: 3.0)"));           
+            if(quality>1 && quality<=3)
+            {
+                  ogSetRenderQuality(world,quality);
+            }
+      }
+      else
+      {
+            swisstopoapi.sendQuery(searchtext);
+      }
 }
 
 
