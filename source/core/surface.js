@@ -431,7 +431,7 @@ Surface.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcol
                       this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 8*4, 0*4); // position
                       this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 8*4, 3*4); // normal
                       this.gl.vertexAttribPointer(2, 2, this.gl.FLOAT, false, 8*4, 6*4); // texcoord
-                      this.engine.shadermanager.UseShader_PNT(this.engine.matModelViewProjection);
+                      this.engine.shadermanager.UseShader_PNT(this.engine.matNormal, this.engine.matModelView, this.engine.matProjection);
                       break;
                         
         case "pc": 
