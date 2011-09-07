@@ -92,6 +92,7 @@
     position: absolute;
     top: 125px;
     width: 250px;
+    visibility:hidden;
 }
 #divMenuSearch {
     background-color: #ffffff;
@@ -236,6 +237,7 @@
    z-index : 100;
    position : absolute;
    background-repeat : no-repeat;
+   visibility : hidden;
 }
 
 
