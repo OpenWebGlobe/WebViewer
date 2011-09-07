@@ -106,7 +106,7 @@ function owgImageLayer()
    {
       if (this.dsi.nLevelofDetail)
       {
-         return this.dsi.nLevelofDetail;
+         return this.dsi.nLevelofDetail-1;
       }
       else
       {
@@ -117,7 +117,7 @@ function owgImageLayer()
    
    this.Contains = function(quadcode)
    {
-      if (quadcode.length > this.dsi.nLevelofDetail)
+      if (quadcode.length > this.dsi.nLevelofDetail-1)
       {
          return false;
       }
