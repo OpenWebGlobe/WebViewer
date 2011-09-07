@@ -109,6 +109,19 @@ function main()
                };
       //set a poi
       searchpoi = ogCreatePOI(searchpoilayer,poidef);
+      
+    
+      
+}
+
+function searchFiledKeyPressed(evt)
+{
+      if(evt.keyCode==13)
+      {
+            search();
+            evt.preventDefault();
+            evt.stopPropagation();
+      }
 }
 
 
@@ -130,7 +143,7 @@ function resizeCanvas(engine,w,h)
 function search()
 {
       var searchtext = document.getElementById("txtInput").value;
-      if(searchtext == "renderquality")
+      if(searchtext == "config:quality")
       {
             var quality = parseFloat(window.prompt("Set Render-Quality (min: 1.0; max: 3.0)"));           
             if(quality>1 && quality<=3)
@@ -223,10 +236,10 @@ function toggleboundaries(sender)
    <div id="divMenuLeft">
             <div class="classSeparatorTitle">Localisation Search</div>
             <div id="divMenuSearch">
-            <form>
-                  <input id="txtInput" type="text" size="20">
+
+                  <input id="txtInput" type="text" size="20" onkeypress="searchFiledKeyPressed(event)">
                   <input type="button" value="Go" onclick="search()">
-            </form>
+
             </div>
             <div class="classSeparatorTitle">Boundaries</div>
             <div id="divMenuBoundaries">
