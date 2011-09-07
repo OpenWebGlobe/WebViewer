@@ -2,6 +2,7 @@
 
 var swisstopoapi = {};
 swisstopoapi.waitforheight = [];
+swisstopoapi.timeoutid;
 
 /**
  * @description loads a jsonp file: internal function
@@ -48,6 +49,11 @@ swisstopoapi.sendQuery = function(place)
    queryUrl = "http://api.geo.admin.ch/swisssearch/geocoding?query="+place;
    this.getJSONP(queryUrl,swisstopoapi.jsoncallback);
    document.body.style.cursor = "wait";
+   document.getElementById("txtInput").style.cursor = 'wait';
+   //set a timeout for the request...
+   swisstopoapi.timeoutid = setTimeout(function(){document.getElementById("txtInput").value = "Not found...";
+      document.body.style.cursor = 'default';
+      document.getElementById("txtInput").style.cursor = 'text';},10000);
 }
 
 
@@ -57,11 +63,13 @@ swisstopoapi.sendQuery = function(place)
  */
 swisstopoapi.jsoncallback = function(data)
 {
+   clearTimeout(swisstopoapi.timeoutid);
    //if no data return
    if(data.results.length==0)
    {
       document.getElementById("txtInput").value = "Not found...";
       document.body.style.cursor = 'default';
+      document.getElementById("txtInput").style.cursor = 'text';
       return; 
    }
    
@@ -139,6 +147,7 @@ swisstopoapi.jsoncallback = function(data)
    }
    
    document.body.style.cursor = 'default';
+   document.getElementById("txtInput").style.cursor = 'text';
 }
 
 
