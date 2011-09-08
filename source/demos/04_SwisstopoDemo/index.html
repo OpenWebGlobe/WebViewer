@@ -221,12 +221,12 @@ function toggleboundaries(sender)
       if(sender.checked == true)
       {
             boundlayer = ogAddImageLayer(globe, imgOpenStreetMap);
+            ogFlyTo(scene, 8.226692,46.80121,320000,0,-90,0);
       }
       else
       {
             ogRemoveImageLayer(boundlayer);
       }
-      ogFlyTo(scene, 8.226692,46.80121,320000,0,-90,0);
 }
 </script>
 
