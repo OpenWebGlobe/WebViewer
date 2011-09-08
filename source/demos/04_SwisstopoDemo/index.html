@@ -1,36 +1,13 @@
-<!--/*******************************************************************************
-#      ____               __          __  _      _____ _       _               #
-#     / __ \              \ \        / / | |    / ____| |     | |              #
-#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
-#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
-#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
-#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
-#           | |                                                                #
-#           |_|                 _____ _____  _  __                             #
-#                              / ____|  __ \| |/ /                             #
-#                             | (___ | |  | | ' /                              #
-#                              \___ \| |  | |  <                               #
-#                              ____) | |__| | . \                              #
-#                             |_____/|_____/|_|\_\                             #
-#                                                                              #
-#                              (c) 2010-2011 by                                #
-#           University of Applied Sciences Northwestern Switzerland            #
-#                     Institute of Geomatics Engineering                       #
-#                           martin.christen@fhnw.ch                            #
-********************************************************************************
-*     Licensed under MIT License. Read the file LICENSE for more information   *
-*******************************************************************************/-->
 <!DOCTYPE html>
 <html>
+<head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
-<head>
-      
-      <title>geo.admin.ch 3D Viewer</title>
-</head>
+<title>geo.admin.ch 3D Viewer</title>
+
 <link rel="stylesheet" type="text/css" href="styles/styles.css">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
-<script type="text/javascript" src="externals/openwebglobe_0.5.1.js"></script>
+<script type="text/javascript" src="externals/openwebglobe_0.5.2.js"></script>
 <script type="text/javascript" src="externals/wgs84_ch1903.js"></script>
 <script type="text/javascript" src="externals/swisstopoapi.js"></script>
 <script type="text/javascript" src="externals/loadpois.js"></script>
@@ -138,6 +115,7 @@ function main()
                   };
             //set a poi
             searchpoi = ogCreatePOI(searchpoilayer,poidef);
+            checkUrlParameters();
       
       }
 
@@ -244,16 +222,42 @@ function toggleboundaries(sender)
       if(sender.checked == true)
       {
             boundlayer = ogAddImageLayer(globe, imgOpenStreetMap);
+            ogFlyTo(scene, 8.226692,46.80121,320000,0,-90,0);
       }
       else
       {
             ogRemoveImageLayer(boundlayer);
       }
-      ogFlyTo(scene, 8.226692,46.80121,320000,0,-90,0);
+}
+
+
+function checkUrlParameters()
+{
+      var pos = {};
+      pos.lng = null;
+      pos.lat = null;
+      pos.elv = null;
+      pos.yaw = null;
+      pos.pitch = null;
+      pos.roll = null;
+   
+      if (location.search != "")
+      {
+            var x = location.search.substr(1).split("&")
+            for (var i=0; i<x.length; i++)
+            {
+                  var y = x[i].split("=");
+                  pos[y[0]] = y[1];
+            }
+            if(pos.lng!=null && pos.lat!=null && pos.elv!=null)
+            {
+               ogFlyTo(scene,pos.lng,pos.lat,pos.elv,pos.yaw,pos.pitch,pos.roll);   
+            }     
+      }
 }
 </script>
 
-
+</head>
 <body onload="main()" style="background-color:#999999; overflow:hidden;">
    
    <div id="divTopRow">
@@ -288,15 +292,14 @@ function toggleboundaries(sender)
             <div class="classSeparatorTitle">Infos</div>
             <div id="divMenuInfos">
                   <ul class="classMenu">
-                        <a href="https://dav0.bgdi.admin.ch/swisstopo/3d/information.pdf" target="_blank"><li>Information</li></a>
-                        <a href="https://dav0.bgdi.admin.ch/swisstopo/3d/copyright.pdf" target="_blank"><li>Copyright & Dataprotection</li></a>
-                        <a href="mailto:beat.tschanz@swisstopo.ch" target="_blank"><li>Contact / Feedback</li></a>
-                        <a href="http://www.geo.admin.ch" target="_blank"><li>Homepage</li></a>
-                        <a href="http://www.geo.admin.ch/internet/geoportal/en/home/current.enhRSS.html" target="_blank"><li>RSS</li></a>
-                        <a href="http://twitter.com/#!/swiss_geoportal" target="_blank"><li>Twitter</li></a>
+                        <li><a href="https://dav0.bgdi.admin.ch/swisstopo/3d/information.pdf" target="_blank">Information</a></li>
+                        <li><a href="https://dav0.bgdi.admin.ch/swisstopo/3d/copyright.pdf" target="_blank">Copyright & Dataprotection</a></li>
+                        <li><a href="mailto:beat.tschanz@swisstopo.ch" target="_blank">Contact / Feedback</a></li>
+                        <li><a href="http://www.geo.admin.ch" target="_blank">Homepage</a></li>
+                        <li><a href="http://www.geo.admin.ch/internet/geoportal/en/home/current.enhRSS.html" target="_blank">RSS</a></li>
+                        <li><a href="http://twitter.com/#!/swiss_geoportal" target="_blank">Twitter</a></li>
                   </ul>
             </div>
-      </div>
    </div>
   <div id="divCanvas">
       <div  id="divSearchResults">
