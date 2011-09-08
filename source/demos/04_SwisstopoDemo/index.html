@@ -115,6 +115,7 @@ function main()
                   };
             //set a poi
             searchpoi = ogCreatePOI(searchpoilayer,poidef);
+            checkUrlParameters();
       
       }
 
@@ -226,6 +227,32 @@ function toggleboundaries(sender)
       else
       {
             ogRemoveImageLayer(boundlayer);
+      }
+}
+
+
+function checkUrlParameters()
+{
+      var pos = {};
+      pos.lng = null;
+      pos.lat = null;
+      pos.elv = null;
+      pos.yaw = null;
+      pos.pitch = null;
+      pos.roll = null;
+   
+      if (location.search != "")
+      {
+            var x = location.search.substr(1).split("&")
+            for (var i=0; i<x.length; i++)
+            {
+                  var y = x[i].split("=");
+                  pos[y[0]] = y[1];
+            }
+            if(pos.lng!=null && pos.lat!=null && pos.elv!=null)
+            {
+               ogFlyTo(scene,pos.lng,pos.lat,pos.elv,pos.yaw,pos.pitch,pos.roll);   
+            }     
       }
 }
 </script>
