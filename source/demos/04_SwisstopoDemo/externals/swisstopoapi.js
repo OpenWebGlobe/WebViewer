@@ -162,7 +162,7 @@ swisstopoapi.heightcallback = function(data)
   //set a poi if it's an address....
    if(posdata.service == "address")
    {
-      ogChangePOIPositionWGS84(searchpoi,posdata.lng,posdata.lat,posdata.height);
+      ogChangePOIPositionWGS84(searchpoi,posdata.lng,posdata.lat,posdata.height+10);
    }
   
    

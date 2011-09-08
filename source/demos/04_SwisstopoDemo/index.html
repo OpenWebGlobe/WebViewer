@@ -24,13 +24,18 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
+<head>
+      
+      <title>geo.admin.ch 3D Viewer</title>
+</head>
 <link rel="stylesheet" type="text/css" href="styles/styles.css">
-
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
 <script type="text/javascript" src="externals/openwebglobe_0.5.1.js"></script>
 <script type="text/javascript" src="externals/wgs84_ch1903.js"></script>
 <script type="text/javascript" src="externals/swisstopoapi.js"></script>
 <script type="text/javascript" src="externals/loadpois.js"></script>
+
+
 <script type="text/javascript">
 
 
@@ -47,71 +52,95 @@ var searchpoi;
  */
 function main()
 {
-      resizeCanvas();
-      g_context = ogCreateContextFromCanvas("canvas", true);
-      
-      globe = ogCreateGlobe(g_context);
-      
-      
-      //load blue marble image data
-      var imgBlueMarble500 = 
+      var browserName=navigator.appName;
+          
+      //check for internet explorer users
+      if(browserName == "Microsoft Internet Explorer")
       {
-         url     : ["http://www.openwebglobe.org/data/img"], //change adress here
-         layer   : "World500",
-         service : "i3d"
-      };
-      ogAddImageLayer(globe, imgBlueMarble500);
-      
-      //load swissimage data 
-      var imgSWISSTOPO = 
-      {
-            url     : ["http://10.42.2.37"], //change adress here
-            layer   : "swissimage", 
-            service : "owg"
-      };
-      ogAddImageLayer(globe, imgSWISSTOPO);
-      
-      //load Elevation data dhm25
-      var elvDHM =
-      {
-            url     : ["http://10.42.2.37"], //change adress here.
-            layer   : "DHM25",
-            service : "owg"
+            CFInstall.check({
+                  mode: "overlay",
+                  destination: "http://demo3d.geo.admin.ch/"
+            });
+            var info = document.getElementById("divNavigationManual");
+            info.style.visibility = 'visible';
+            info.style.background = "";
+            info.style.color = "#ffffff";
+            info.style.fontFamily = 'Arial';
+            info.style.fontSize = '14px';
+            info.style.width = '600px';
+            info.style.left = '10px';
+            info.style.top = '10px';
+            info.innerHTML="This site doesn't work with Internet Explorer. To enable OpenWebGlobe SDK in Internet Explorer you can try to use Google Chrome Frame <a href=\"http://code.google.com/intl/de-DE/chrome/chromeframe/\">here.</a>";   
       }
-      ogAddElevationLayer(globe, elvDHM);
-     
-      ogSetBackgroundColor(g_context, 0.2,0.2,0.7,1);
+      else
+      {
+            document.getElementById("divMenuLeft").style.visibility='visible';
+            document.getElementById("divNavigationManual").style.visibility = 'visible';
+            resizeCanvas();
+            g_context = ogCreateContextFromCanvas("canvas", true);
+            
+            globe = ogCreateGlobe(g_context);
+            
+            
+            //load blue marble image data
+            var imgBlueMarble500 = 
+            {
+            url     : ["http://www.openwebglobe.org/data/img"], //change adress here
+            layer   : "World500",
+            service : "i3d"
+            };
+            ogAddImageLayer(globe, imgBlueMarble500);
+            
+            //load swissimage data 
+            var imgSWISSTOPO = 
+            {
+                  url     : ["http://10.42.2.37"], //change adress here
+                  layer   : "swissimage", 
+                  service : "owg"
+            };
+            ogAddImageLayer(globe, imgSWISSTOPO);
+            
+            //load Elevation data dhm25
+            var elvDHM =
+            {
+                  url     : ["http://10.42.2.37"], //change adress here.
+                  layer   : "DHM25",
+                  service : "owg"
+            }
+            ogAddElevationLayer(globe, elvDHM);
       
-      scene = ogGetScene(g_context);
-      world = ogGetWorld(scene);
+            ogSetBackgroundColor(g_context, 0.2,0.2,0.7,1);
+            
+            scene = ogGetScene(g_context);
+            world = ogGetWorld(scene);
+            
+            //create the poilayer and load the pois from loadpois.js   
+            layer = ogCreatePOILayer(world,"poilayer");
+            loadpois(layer);
+            
+            ogSetCanvasSizeOffset(scene,250,125);
+            
+            document.body.onclick = function(){ document.getElementById("divNavigationManual").style.visibility = 'hidden';
+            document.body.onclick = null;}
       
-      //create the poilayer and load the pois from loadpois.js   
-      layer = ogCreatePOILayer(world,"poilayer");
-      loadpois(layer);
+            geometrylayer = ogCreateGeometryLayer(world,"buildings");
+            ogLoadGeometryAsync(geometrylayer,"models/bulle.json");
+            ogLoadGeometryAsync(geometrylayer,"models/epagny.json");
+            ogLoadGeometryAsync(geometrylayer,"models/fhnw.json");
+            ogLoadGeometryAsync(geometrylayer,"models/nuerensdorf.json");
+            ogLoadGeometryAsync(geometrylayer,"models/psea.json");
+            
+            searchpoilayer = ogCreatePOILayer(world,"searchedpois");
+            poidef = { icon     : "images/point.png",
+                  position : [0,0,0],
+                  size 		: 	0.2,
+                  flagpole : false
+                  };
+            //set a poi
+            searchpoi = ogCreatePOI(searchpoilayer,poidef);
       
-      ogSetCanvasSizeOffset(scene,250,125);
-      
-      document.body.onclick = function(){ document.getElementById("divNavigationManual").style.visibility = 'hidden';
-      document.body.onclick = null;}
-   
-      geometrylayer = ogCreateGeometryLayer(world,"buildings");
-      ogLoadGeometryAsync(geometrylayer,"models/bulle.json");
-      ogLoadGeometryAsync(geometrylayer,"models/epagny.json");
-      ogLoadGeometryAsync(geometrylayer,"models/fhnw.json");
-      ogLoadGeometryAsync(geometrylayer,"models/nuerensdorf.json");
-      ogLoadGeometryAsync(geometrylayer,"models/psea.json");
-      
-      searchpoilayer = ogCreatePOILayer(world,"searchedpois");
-      poidef = { icon     : "images/point.png",
-               position : [0,0,0],
-               size 		: 	0.2,
-               flagpole : false
-               };
-      //set a poi
-      searchpoi = ogCreatePOI(searchpoilayer,poidef);
-      
-    
-      
+      }
+
 }
 
 function searchFiledKeyPressed(evt)
@@ -220,6 +249,7 @@ function toggleboundaries(sender)
       {
             ogRemoveImageLayer(boundlayer);
       }
+      ogFlyTo(scene, 8.226692,46.80121,320000,0,-90,0);
 }
 </script>
 
