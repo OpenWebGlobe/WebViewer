@@ -66,7 +66,7 @@ function NavigationNode()
       /** @type {number} */
       this._latitude = 45.9088;
       /** @type {number} */
-      this._ellipsoidHeight = 17228.45;
+      this._ellipsoidHeight = 17000.0;
       
       /** @type {number} */
       this._fYawSpeed = 0;
@@ -267,7 +267,6 @@ function NavigationNode()
          }
 
          this.lastkey = e.keyCode;
-         this._bPositionChanged = true;
       }
       //------------------------------------------------------------------------
       // EVENT: OnKeyUp
@@ -291,7 +290,6 @@ function NavigationNode()
          }
 
          this.lastkey = 0;
-         this._bPositionChanged = true;
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseDown
@@ -309,7 +307,7 @@ function NavigationNode()
 
          this._nMouseX = e.offsetX;
          this._nMouseY = e.offsetY;
-         this._bPositionChanged = true;
+         
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseUp
@@ -387,8 +385,6 @@ function NavigationNode()
          }
          
          var deltaSurface = (p*this._fSurfacePitchSpeed*dTick)/250;
-         var bChanged = false;
-         
          
          if (this._pitch_increase>0)
          {
@@ -402,7 +398,7 @@ function NavigationNode()
                this._pitch_increase = 0;
             }
       
-            bChanged = true;
+            this._bPositionChanged = true;
          }
       
          if (this._pitch_decrease>0)
@@ -417,13 +413,13 @@ function NavigationNode()
                this._pitch_decrease = 0;
             }
       
-            bChanged = true;
+            this._bPositionChanged = true;
          }
          
          if (deltaPitch)
          {
             this._pitch += deltaPitch;
-            bChanged = true;
+            this._bPositionChanged = true;
          }
          
          if (deltaYaw)
@@ -438,13 +434,13 @@ function NavigationNode()
             {
                this._yaw = 2.0*Math.PI - this._yaw;
             }
-            bChanged = true;
+            this._bPositionChanged = true;
          }
          
          // Change Elevation
          
-         //if (deltaH || deltaSurface)
-         //{
+         if (this._bPositionChanged)
+         {
             currentAltitudeG = this.engine.AltitudeAboveGround();
             if (isNaN(currentAltitudeG))
             {
@@ -452,7 +448,7 @@ function NavigationNode()
             }
             
             newAltitudeG = currentAltitudeG;
-         //}
+         }
          
          if (deltaH)
          {
@@ -497,7 +493,7 @@ function NavigationNode()
             while (this._latitude>90) { this._latitude =  180 - this._latitude;}
             while (this._latitude<-90) { this._latitude = - 180 - this._latitude;}
             
-            bChanged = true;
+            this._bPositionChanged = true;
          }
          
          
@@ -507,7 +503,7 @@ function NavigationNode()
          // this means we managed to get underground and have to fix it
          //if (deltaH || deltaSurface)
          //{
-            if (newAltitudeG < this.minAltitude) 
+            if (newAltitudeG < this.minAltitude && this._bPositionChanged) 
             {
                var cor = this.minAltitude - newAltitudeG;
                this._ellipsoidHeight += cor;             

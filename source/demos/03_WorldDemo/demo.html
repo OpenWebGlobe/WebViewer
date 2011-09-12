@@ -19,10 +19,7 @@
          <script type="text/javascript" src="tools/tool.js"></script>
          <script type="text/javascript" src="tools/coordinates.js"></script>
          <script type="text/javascript" src="externals/wgs84_ch1903.js"></script>
-         <script type="text/javascript" src="poiloader.js"></script>
          <script type="text/javascript" src="swisstopoapi.js"></script>
-         <script type="text/javascript" src="QuadTree.js"></script>
-         <script type="text/javascript" src="worker.js"></script>
          <link rel="stylesheet" type="text/css" href="tools/toolstyle.css">
          <link rel="stylesheet" type="text/css" href="styles.css">
             
@@ -41,22 +38,11 @@
          var count = 0;
          function OnRender(context)
          {
-            count = count+1;
-            var pos = ogGetPosition(scene);
-            
-            if(count > 20)
-            {
-                  if(poiloader != null)
-                  {
-                        poiloader.UpdatePois(pos.longitude,pos.latitude,pos.elevation);
-                  }
-                  count = 0;
-            }
-            poiloader.createPOI();
-            /*
-            //ogSetTextColor(context, 0,1,0);
-            //ogDrawText(context, "Hello World", 0, 20);
-            */
+   
+   
+            ogSetTextColor(context, 1,1,0);
+            ogDrawText(context, "Hello World", 0, 20);
+   
          }
         
          //---------------------------------------------------------------------
@@ -127,12 +113,7 @@
             
             scene = ogGetScene(g_context);
             world = ogGetWorld(scene);
-            
-            poilayer = ogCreatePOILayer(world,"searchtargets");
-                        
-            poiloader = new PoiLoader(scene);
-            
-            
+         
             
 
          }
