@@ -59,24 +59,7 @@
             }
             else
             {
-                  /*
-            var bMayRun = false;
-            if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent))
-            {
-               var ffversion=new Number(RegExp.$1)
-               if (ffversion>=4)
-               {
-                  bMayRun = true;
-               }
-            }
             
-            if (!bMayRun)
-            {
-               document.write("<h3>Sorry your browser is now supported</h3> This alpha preview only runs on Firefox 4.");
-               alert("Sorry, the alpha preview requires Firefox 4.x. Later versions will support more browsers.");
-               return;
-            }
-                  */
             // (1) create an OpenWebGlobe context using canvas
             g_context = ogCreateContextFromCanvas("canvas", true);
             
@@ -119,11 +102,14 @@
             
           
             
-
+            // set some pois
             ogSetBackgroundColor(g_context, 0.2,0.2,0.7,1);
             var poilayer = ogCreatePOILayer(world,"poilayer");
+            loadpois(poilayer);
             
-            loadpois(poilayer)
+            billboardlayer = ogCreateBillboardLayer(world,"billboards");
+
+            
             }
          }
          
@@ -284,8 +270,10 @@
           */
          function flyTo(lat,lon)
          {
-            //engine.
-            jQuery('#divFlyTo').animate({left:'-300'},1000,function(){}); //pull in menu
+            var pos = ogGetOrientation(scene);
+            ogFlyToLookAtPosition(scene,lon,lat,100,5000,pos.yaw,-45,0);
+            
+            jQuery('#divFlyTo').animate({left:'-300'},500,function(){}); //pull in menu
          }
         
          
@@ -336,7 +324,7 @@
                <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4dc13505170fbc5e"></script>               
                <!-- AddThis Button END -->
             </div>              
-           <!-- <div id='divFlyTo'>
+            <div id='divFlyTo'>
                <div id="divFlyToPullBtn"></div>
                <div id= "divSearchInput">
                   <input id="placeSearchTb" type="text" name="flyto"/>
@@ -345,7 +333,7 @@
                   <ul id="placeList"></ul>
                </div>
                
-            </div>  -->
+            </div>  
             <div id='divLikeButtons'></div>
             <div id='divFhnwLogo'></div> 
             <div id='divCamptocamp'></div>

@@ -155,10 +155,10 @@
 #divFlyToPullBtn
 {
    background-image : url(images/flytobg.png);
-   background-position : 4px 0px;
+   background-position : -17px 0px;
    background-repeat : no-repeat;
    width : 30px;
-   height : 80px;
+   height : 82px;
    position : absolute;
    right : -2px;
    top : -4px;
@@ -171,7 +171,7 @@
    background-repeat : repeat-x;
    cursor : pointer;
    height : 37px;
-   left : -32px;
+   left : -38px;
    list-style-position : inside;
    list-style-type : none;
    padding : 5px;
