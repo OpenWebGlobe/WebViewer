@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
-<title>geo.admin.ch 3D Viewer</title>
+<title>OpenWebGlobe SDK WebViewer</title>
 
 <link rel="stylesheet" type="text/css" href="styles/styles.css">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
@@ -100,11 +100,10 @@ function main()
             document.body.onclick = null;}
       
             geometrylayer = ogCreateGeometryLayer(world,"buildings");
-            ogLoadGeometryAsync(geometrylayer,"models/bulle.json");
-            ogLoadGeometryAsync(geometrylayer,"models/epagny.json");
+
             ogLoadGeometryAsync(geometrylayer,"models/fhnw.json");
-            ogLoadGeometryAsync(geometrylayer,"models/nuerensdorf.json");
-            ogLoadGeometryAsync(geometrylayer,"models/psea.json");
+
+
             
             searchpoilayer = ogCreatePOILayer(world,"searchedpois");
             poidef = { icon     : "images/point.png",
@@ -200,34 +199,7 @@ function flyto(n)
 }
 
 
-/**
- * @description toggle the boundary layer
- */
-function toggleboundaries(sender)
-{
-      var boundariesLayer =
-      {
-            url     : ["http://10.42.2.37"], //??
-            layer   : "DHM25",
-            service : "owg"
-      }
-      
-      //just for test - replace this with the boundary tile service.
-      var imgOpenStreetMap = 
-      {
-      url     : ["http://a.tile.openstreetmap.org", "http://b.tile.openstreetmap.org", "http://c.tile.openstreetmap.org" ],
-      service : "osm"
-      };
-      if(sender.checked == true)
-      {
-            boundlayer = ogAddImageLayer(globe, imgOpenStreetMap);
-            ogFlyTo(scene, 8.226692,46.80121,320000,0,-90,0);
-      }
-      else
-      {
-            ogRemoveImageLayer(boundlayer);
-      }
-}
+
 
 
 function checkUrlParameters()
