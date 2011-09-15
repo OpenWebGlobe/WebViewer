@@ -1,0 +1,291 @@
+/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2010-2011 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/  
+
+/* Top-row Styles..... */
+
+#divTopRow
+{  background-image : url(images/transp.png);
+   background-repeat: repeat;
+   width : 100%;
+   height : 580px;
+   position : absolute;
+   left : 0px;
+   top : 0px;
+}
+
+#divTopRowContent
+{
+   text-align : center;
+   /*background-color:#ffffff;*/
+   position : absolute;
+   width : 600px;
+   height : 400px;
+   top : 50%;
+   left : 50%;
+   margin-left : -300px;
+   margin-top : -200px;  
+   opacity : 1.0;
+}
+                     
+
+#divTopRow h1
+{
+   color : #ffffff;
+   font-family : arial;
+   font-size : 32px;
+}
+
+
+#divTopRow h3
+{
+   color:#ffffff;                     
+ 
+}
+  
+     
+#divTopRow p
+{
+   color : #ffffff;                   
+   position : relative;
+   background-color : transparent;
+   font-family : arial;
+   font-size : 16px;
+   text-align : left;
+   text-shadow : 0 0 2px #000, 0 0 2px #000,0 0 2px #000;  
+}
+
+/* Top row 'about'-button */
+#divTopRowBtn
+{
+   background-image : url(images/about.png);
+   background-position : -3px -20px;
+   background-repeat : no-repeat;
+   width : 86px;
+   height : 30px;
+   position : absolute;
+   left : 10px;
+   bottom : -30px;
+   cursor : pointer;
+}
+
+
+/* Top row Title*/              
+#divTopRowTitle
+{
+   color : #ffffff;
+   font-family : arial;
+   font-size : 32px;
+   text-shadow : 0 0 2px #000, 0 0 2px #000,0 0 2px #000;
+   width : 600px;
+   height : 50px;
+   position : absolute;
+   left : 35%;
+   bottom : 0px;
+   display : none;
+}
+ 
+
+/* FHNW Logo  */
+#divFhnwLogo
+{
+   background-image : url(images/fhnw_logo.png);
+   background-repeat : no-repeat;
+   height : 60px;
+   width : 300px;
+   position : absolute;
+   left : 60px;
+   top : 15px;
+   display : none;
+   opacity : 1.0;
+   z-index : 1;
+   cursor : pointer;
+}
+
+/*CampToCamp Logo */
+#divCamptocamp
+{
+   background-image : url(images/camptocamp.png);
+   background-repeat : no-repeat;
+   height : 60px;
+   width : 80px;
+   position : absolute;
+   left : 420px;
+   top : 15px;
+   display : none;
+   opacity : 1.0;
+   z-index : 1;
+   cursor : pointer;
+}
+
+
+/* Fly to feature */
+#divFlyTo
+{
+   background-color : #000000;
+   background-repeat: no-repeat;
+   width : 330px;
+   height : 75px;
+   position : absolute;
+   left : -300px;
+   top : 200px;
+   display : none;
+}
+
+
+#divFlyToPullBtn
+{
+   background-image : url(images/flytobg.png);
+   background-position : 4px 0px;
+   background-repeat : no-repeat;
+   width : 30px;
+   height : 80px;
+   position : absolute;
+   right : -2px;
+   top : -4px;
+   cursor : pointer;
+}
+
+.placeSearchResult
+{
+   background-image : url(images/resultbg.png);
+   background-repeat : repeat-x;
+   cursor : pointer;
+   height : 37px;
+   left : -32px;
+   list-style-position : inside;
+   list-style-type : none;
+   padding : 5px;
+   position : relative;
+   text-align : left;
+   width : 290px;
+   color : #ffffff;
+   font-family : arial;
+   overflow : hidden;
+}
+   
+.placeSearchResult:hover
+{
+   background-color: #ccccff;
+}
+
+
+#divSearchInput
+{
+   padding: 15px;
+   margin:5px;
+}
+
+
+/* Like Buttons and Openwebglobe Logo */
+#divLikeButtons
+{
+   background-image : url(images/openWEBglobe.png);
+   background-repeat : no-repeat;
+   width : 300px;
+   height : 100px;
+   position : absolute;
+   right : 20px;
+   top : 40px;
+   display : none;
+   z-index : 1;
+}
+
+/* Credits Div */
+#divCredits
+{
+   background-image : url(images/transp.png);
+   background-repeat : repeat;
+   width : 250px;
+   height : 250px;
+   position : absolute;
+   right : 10px;
+   bottom : -250px;
+   display : none;
+}
+
+#divCredits p
+{
+   color : #FFFFFF;
+   font-family : arial;
+   text-align : left;
+   padding-left :  8px; 
+   text-shadow: 0 0 2px #000, 0 0 2px #000,0 0 2px #000;
+   margin-top: -15px;
+}
+
+#divCredits h3
+{
+   color : #FFFFFF;
+   font-family : arial;
+   text-align : center;
+   padding-left : 8px;
+   text-shadow : 0 0 2px #000, 0 0 2px #000,0 0 2px #000;
+}
+
+
+.creditsSmall a
+{
+   font-size : 10px;
+   text-shadow : 0 0 2px #000000, 0 0 2px #000000, 0 0 2px #000000;
+   color : #ffffff;
+   text-decoration : none;
+}
+
+
+#divCreditsBtn
+{
+   background-image : url(images/credits.png);
+   background-position : 0px 3px;
+   background-repeat : no-repeat;
+   width : 85px;
+   height : 30px;
+   position : absolute;
+   right : -2px;
+   top : -30px;
+   cursor : pointer;
+}
+
+
+
+
+
+/* HGDSUDJUDSHGPOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+           
+                
+   
+   
+   
+                
+   .content{ color:#ffffff; }
+   
+   
+  
+   
+
+
+
+ 
+
+
+
+
