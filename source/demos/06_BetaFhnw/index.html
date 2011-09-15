@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<title>geo.admin.ch 3D Viewer</title>
+
+<link rel="stylesheet" type="text/css" href="styles/styles.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+<script type="text/javascript" src="externals/openwebglobe_0.5.3.js"></script>
+<script type="text/javascript" src="externals/wgs84_ch1903.js"></script>
+<script type="text/javascript" src="externals/swisstopoapi.js"></script>
+<script type="text/javascript" src="externals/loadpois.js"></script>
+
+
+<script type="text/javascript">
+
+
+//Definition oo global variables
+var globe;
+var boundlayer = 0;
+var scene;
+var world;
+var searchpoilayer;
+var searchpoi;
+
+/**
+ * @description set up the virtual globe
+ */
+function main()
+{
+      var browserName=navigator.appName;
+          
+      //check for internet explorer users
+      if(browserName == "Microsoft Internet Explorer")
+      {
+            CFInstall.check({
+                  mode: "overlay",
+                  destination: "http://www.openwebglobe.org/beta"
+            });
+            var info = document.getElementById("divNavigationManual");
+            info.style.visibility = 'visible';
+            info.style.background = "";
+            info.style.color = "#ffffff";
+            info.style.fontFamily = 'Arial';
+            info.style.fontSize = '14px';
+            info.style.width = '600px';
+            info.style.left = '10px';
+            info.style.top = '10px';
+            info.innerHTML="This site doesn't work with Internet Explorer. To enable OpenWebGlobe SDK in Internet Explorer you can try to use Google Chrome Frame <a href=\"http://code.google.com/intl/de-DE/chrome/chromeframe/\">here.</a>";   
+      }
+      else
+      {
+            document.getElementById("divMenuLeft").style.visibility='visible';
+            document.getElementById("divNavigationManual").style.visibility = 'visible';
+            resizeCanvas();
+            g_context = ogCreateContextFromCanvas("canvas", true);
+            
+            globe = ogCreateGlobe(g_context);
+            
+            
+             var imgBlueMarble500 = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "World500",
+               service : "i3d"
+            };
+            
+            var imgLandsat_CH = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "LandsatCH",
+               /*transparency : 0.5,*/
+               service : "i3d"
+            };
+            
+            var elvSRTM_CH = 
+            {
+               url     : ["http://www.openwebglobe.org/data/elv"],
+               layer   : "SRTM",
+               service : "i3d"
+            };
+            
+            ogAddImageLayer(globe, imgBlueMarble500);
+            ogAddImageLayer(globe, imgLandsat_CH);
+            ogAddElevationLayer(globe, elvSRTM_CH);
+      
+            ogSetBackgroundColor(g_context, 0.2,0.2,0.7,1);
+            
+            scene = ogGetScene(g_context);
+            world = ogGetWorld(scene);
+            
+            //create the poilayer and load the pois from loadpois.js   
+            layer = ogCreatePOILayer(world,"poilayer");
+            loadpois(layer);
+            
+            ogSetCanvasSizeOffset(scene,250,125);
+            
+            document.body.onclick = function(){ document.getElementById("divNavigationManual").style.visibility = 'hidden';
+            document.body.onclick = null;}
+      
+            geometrylayer = ogCreateGeometryLayer(world,"buildings");
+            ogLoadGeometryAsync(geometrylayer,"models/bulle.json");
+            ogLoadGeometryAsync(geometrylayer,"models/epagny.json");
+            ogLoadGeometryAsync(geometrylayer,"models/fhnw.json");
+            ogLoadGeometryAsync(geometrylayer,"models/nuerensdorf.json");
+            ogLoadGeometryAsync(geometrylayer,"models/psea.json");
+            
+            searchpoilayer = ogCreatePOILayer(world,"searchedpois");
+            poidef = { icon     : "images/point.png",
+                  position : [0,0,0],
+                  size 		: 	0.2,
+                  flagpole : false
+                  };
+            //set a poi
+            searchpoi = ogCreatePOI(searchpoilayer,poidef);
+            checkUrlParameters();
+      
+      }
+
+}
+
+function searchFiledKeyPressed(evt)
+{
+      if(evt.keyCode==13)
+      {
+            search();
+            evt.preventDefault();
+            evt.stopPropagation();
+      }
+}
+
+
+/**
+ * @description adapt canvas size.
+ */
+function resizeCanvas(engine,w,h)
+{
+      if(scene>0)
+      {
+            ogSetSize(scene,window.innerWidth-400,window.innerHeight-425);
+      }
+}
+
+
+/**
+ * @description search button callback.
+ */
+function search()
+{
+      var searchtext = document.getElementById("txtInput").value;
+      if(searchtext == "config:quality")
+      {
+            var quality = parseFloat(window.prompt("Set Render-Quality (min: 1.0; max: 3.0)"));           
+            if(quality>1 && quality<=3)
+            {
+                  ogSetRenderQuality(world,quality);
+            }
+      }
+      else
+      {
+            swisstopoapi.sendQuery(searchtext);
+      }
+}
+
+
+/**
+ * @description flyto links callback.
+ */
+function flyto(n)
+{
+      var pos = ogGetOrientation(scene);
+      switch(n)
+      {
+            //Zürich
+            case 1:     //ogFlyTo(scene,7.085848,46.580348,1020,335,-10,0);
+                        ogFlyToLookAtPosition(scene,8.541001,47.379022,400,6000,pos.yaw,-30,0);
+                        break;
+                  
+            //Bern
+            case 2:    ogFlyToLookAtPosition(scene,7.438637,46.951081,400,6000,pos.yaw,-40,0);
+                       break;
+                  
+            //Basel
+            case 3:    ogFlyToLookAtPosition(scene,7.591127,47.550558,519,6000,pos.yaw,-45,0);
+                       break;
+            
+                  
+            //Geneva    
+            case 4:    ogFlyToLookAtPosition(scene,6.149985,46.200013,285,6000,pos.yaw,-45,0);
+                       break;
+            
+            //St. Gallen
+            case 5:    ogFlyToLookAtPosition(scene,9.377225,47.423336,396.00,6000,pos.yaw,-30,0);
+                       break;
+            
+            default:    break;
+ 
+      }
+}
+
+
+/**
+ * @description toggle the boundary layer
+ */
+function toggleboundaries(sender)
+{
+      var boundariesLayer =
+      {
+            url     : ["http://10.42.2.37"], //??
+            layer   : "DHM25",
+            service : "owg"
+      }
+      
+      //just for test - replace this with the boundary tile service.
+      var imgOpenStreetMap = 
+      {
+      url     : ["http://a.tile.openstreetmap.org", "http://b.tile.openstreetmap.org", "http://c.tile.openstreetmap.org" ],
+      service : "osm"
+      };
+      if(sender.checked == true)
+      {
+            boundlayer = ogAddImageLayer(globe, imgOpenStreetMap);
+            ogFlyTo(scene, 8.226692,46.80121,320000,0,-90,0);
+      }
+      else
+      {
+            ogRemoveImageLayer(boundlayer);
+      }
+}
+
+
+function checkUrlParameters()
+{
+      var pos = {};
+      pos.lng = null;
+      pos.lat = null;
+      pos.elv = null;
+      pos.yaw = null;
+      pos.pitch = null;
+      pos.roll = null;
+   
+      if (location.search != "")
+      {
+            var x = location.search.substr(1).split("&")
+            for (var i=0; i<x.length; i++)
+            {
+                  var y = x[i].split("=");
+                  pos[y[0]] = y[1];
+            }
+            if(pos.lng!=null && pos.lat!=null && pos.elv!=null)
+            {
+               ogFlyTo(scene,pos.lng,pos.lat,pos.elv,pos.yaw,pos.pitch,pos.roll);   
+            }     
+      }
+}
+</script>
+
+</head>
+<body onload="main()" style="background-color:#999999; overflow:hidden;">
+   
+   <div id="divTopRow">
+      <div id="divTopRowImageRight"></div>
+      <a href="http://www.fhnw.ch"><div id="divTopRowImageLeft"></div></a>
+      <div id="divTitle">OpenWebGlobe WebViewer</div>
+      <div id="divSubTitle"></div>
+   </div>
+   
+   <div id="divMenuLeft">   
+            <div class="classSeparatorTitle">Fly To</div>
+            <div id="divMenu3DModels">
+                  <ul class="classMenu">
+                        <li onclick="flyto(1)">Zurich</li>
+                        <li onclick="flyto(2)">Bern</li>
+                        <li onclick="flyto(3)">Basel</li>
+                        <li onclick="flyto(4)">Geneva</li>
+                        <li onclick="flyto(5)">St. Gallen</li>
+                  </ul>
+            </div>
+            <div class="classSeparatorTitle">Contributors</div>
+            <div id="divMenuInfos">
+                  <a href="http://www.fhnw.ch"><div id="divContFhnw"></div></a>
+                  <a href="http://www.camptocamp.com/"><div id="divCampToCamp"></div></a>
+            </div>
+   </div>
+  <div id="divCanvas">  
+      <div id="divNavigationManual"></div>
+      <canvas id="canvas">
+      </canvas>
+   </div>
+
+ 
+   
+</body>
+
