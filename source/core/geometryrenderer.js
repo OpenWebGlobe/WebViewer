@@ -41,6 +41,8 @@ function GeometryRenderer(engine)
    /** @type {Array.<Array.<Surface>>} */  
    this.geometryarray = [];
    
+   /** @type {ViewFrustum} */
+   this.frustum = new ViewFrustum();
 
 }
 
@@ -52,7 +54,10 @@ function GeometryRenderer(engine)
  */
 GeometryRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
 {
-   // todo: frustum culling etc.
+   // frustum culling etc.
+   this.frustum.Update(matModelViewProjection);
+    
+    
    for (var i=0;i<this.geometryarray.length;i++)
    {
       var meshes = this.geometryarray[i];
@@ -64,9 +69,15 @@ GeometryRenderer.prototype.Render = function(vCameraPosition, matModelViewProjec
             var surface = surfaces[k];
             if(!surface.hide)
             {
-              surface.Draw();  
+               if(!this.frustum.TestBox(surface.bbmin[0],surface.bbmin[1],surface.bbmin[2],surface.bbmax[0],surface.bbmax[1],surface.bbmax[2]))
+               {
+                  return;   
+               }
+               else
+               {
+               surface.Draw();  
+               }
             }
-            
          } 
       }
    }

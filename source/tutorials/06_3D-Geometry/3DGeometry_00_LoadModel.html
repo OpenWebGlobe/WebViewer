@@ -29,8 +29,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
-
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
 <script type="text/javascript">
 
@@ -128,7 +130,7 @@ function main()
 
 
    //create the first 3d model                   
-   var geometry1 = ogLoadGeometryAsync(geometrylayer,"test.json");
+  // var geometry1 = ogLoadGeometryAsync(geometrylayer,"test.json");
 
 
    //create the second 3d model                      

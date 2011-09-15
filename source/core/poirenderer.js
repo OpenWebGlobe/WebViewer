@@ -40,6 +40,7 @@ function PoiRenderer(engine)
    /** @type {Array.<Poi>} */
    this.poiarray = [];
    
+   /** @type {ViewFrustum} */
    this.frustum = new ViewFrustum();
 }
 
@@ -59,7 +60,7 @@ PoiRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
    var dz = 0;
    var disLimit = 0;
    
-   // todo: frustum culling etc.
+   // frustum culling 
    this.frustum.Update(matModelViewProjection);
    
    for (var i=0;i<this.poiarray.length;i++)
