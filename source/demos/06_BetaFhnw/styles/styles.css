@@ -66,8 +66,7 @@
     width: 317px;
 }
 
-#divTopRowImageLeft
-{
+#divTopRowImageLeft{
    background-image : url(../images/fhnw_logo.png);
    background-repeat : no-repeat;
    position : absolute;
@@ -111,7 +110,7 @@
 
 #divMenu3DModels {
     background-color: #ffffff;
-    height: 142px;
+    height: 175px;
     left: 0;
     top: 0;
      margin-top: 3px;
@@ -119,13 +118,12 @@
 
 #divMenuInfos {
     background-color: #ffffff;
-    height: 95px;
+    height: 206px;
     left: 0;
     top: 0;
 }
 
-#divCanvas
-{
+#divCanvas{
    /*background-image : url(images/transp.png);
    background-repeat: repeat;*/
    background-color : #000000;
@@ -139,6 +137,44 @@
    height : 100%;
 }
 
+#divContFhnw{
+   /*width : 100px;*/
+   height : 100px;
+   background-image : url('../images/fhnw_logo_small.png');
+   background-repeat : no-repeat;
+   background-position : -47px 50%;
+ 
+}
+
+#divCampToCamp{
+   /*width : 100px;*/
+   height : 100px;
+   background-image : url('../images/camptocamp.png');
+   background-repeat : no-repeat;
+   background-position : 50%;
+}
+
+#divGitHub{
+   /*width : 100px;*/
+   height : 100px;
+
+}
+
+#divGitHubLogo{
+   /*width : 100px;*/
+   height : 100px;
+   background-image : url('../images/github-logo1.png');
+   background-repeat : no-repeat;
+   background-position : 50%;
+}
+
+#divContact{
+   /*width : 100px;*/
+   height : 100px;
+   background-image : url('../images/infoat.png');
+   background-repeat : no-repeat;
+   background-position : 50%;
+}
 
 
 
@@ -166,13 +202,14 @@
   
   .classSeparatorTitle
   {
-   text-align:center;
+   text-align:left;
    background-color : #000000;
    font-family : sans-serif;
    color : #ffffff;
    font-weight : bold;
    font-size : 12px;
    padding : 3px;
+   padding-left : 20px;
   }
   
   .classMenu a
@@ -238,24 +275,6 @@
    visibility : hidden;
 }
 
-#divContFhnw
-{
-   /*width : 100px;*/
-   height : 100px;
-   background-image : url('../images/fhnw_logo_small.png');
-   background-repeat : no-repeat;
-   background-position : -47px 50%;
- 
-}
-
-#divCampToCamp
-{
-   /*width : 100px;*/
-   height : 100px;
-   background-image : url('../images/camptocamp.png');
-   background-repeat : no-repeat;
-   background-position : 50%;
-}
 
 
 

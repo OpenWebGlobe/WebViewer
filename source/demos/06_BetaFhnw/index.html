@@ -8,8 +8,6 @@
 <link rel="stylesheet" type="text/css" href="styles/styles.css">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
 <script type="text/javascript" src="externals/openwebglobe_0.5.3.js"></script>
-<script type="text/javascript" src="externals/wgs84_ch1903.js"></script>
-<script type="text/javascript" src="externals/swisstopoapi.js"></script>
 <script type="text/javascript" src="externals/loadpois.js"></script>
 
 
@@ -114,6 +112,7 @@ function main()
             //set a poi
             searchpoi = ogCreatePOI(searchpoilayer,poidef);
             checkUrlParameters();
+            
       
       }
 
@@ -171,27 +170,41 @@ function flyto(n)
       var pos = ogGetOrientation(scene);
       switch(n)
       {
-            //Zürich
-            case 1:     //ogFlyTo(scene,7.085848,46.580348,1020,335,-10,0);
-                        ogFlyToLookAtPosition(scene,8.541001,47.379022,400,6000,pos.yaw,-30,0);
+            
+                       //Overview
+            case 1:    ogFlyTo(scene,7.616000,45.908800,17000,0,-18,0);
+                       break;
+                  
+                        //Aletsch Glacier
+            case 2:    ogFlyTo(scene,8.056578,46.395399,3263,10,-5,0);
+                       break;
+                  
+                        //Zermatt
+            case 3:    ogFlyTo(scene,7.738281,45.998256,3175,20,-14,0);
                         break;
                   
+                        //St. Moritz
+            case 4:    ogFlyTo(scene,9.860272,46.514042,2847,225,-10,0);
+                       break;
+                  
+                  
+            //Zürich
+            case 5:     //ogFlyTo(scene,7.085848,46.580348,1020,335,-10,0);
+                        ogFlyToLookAtPosition(scene,8.541001,47.379022,400,6000,pos.yaw,-30,0);
+                        break;
             //Bern
-            case 2:    ogFlyToLookAtPosition(scene,7.438637,46.951081,400,6000,pos.yaw,-40,0);
+            case 6:    ogFlyToLookAtPosition(scene,7.438637,46.951081,400,6000,pos.yaw,-40,0);
                        break;
                   
             //Basel
-            case 3:    ogFlyToLookAtPosition(scene,7.591127,47.550558,519,6000,pos.yaw,-45,0);
+            case 7:    ogFlyToLookAtPosition(scene,7.591127,47.550558,519,6000,pos.yaw,-45,0);
                        break;
             
                   
             //Geneva    
-            case 4:    ogFlyToLookAtPosition(scene,6.149985,46.200013,285,6000,pos.yaw,-45,0);
+            case 8:    ogFlyToLookAtPosition(scene,6.149985,46.200013,285,6000,pos.yaw,-45,0);
                        break;
-            
-            //St. Gallen
-            case 5:    ogFlyToLookAtPosition(scene,9.377225,47.423336,396.00,6000,pos.yaw,-30,0);
-                       break;
+
             
             default:    break;
  
@@ -242,11 +255,14 @@ function checkUrlParameters()
             <div class="classSeparatorTitle">Fly To</div>
             <div id="divMenu3DModels">
                   <ul class="classMenu">
-                        <li onclick="flyto(1)">Zurich</li>
-                        <li onclick="flyto(2)">Bern</li>
-                        <li onclick="flyto(3)">Basel</li>
-                        <li onclick="flyto(4)">Geneva</li>
-                        <li onclick="flyto(5)">St. Gallen</li>
+                        <li onclick="flyto(1)">Overview</li>
+                        <li onclick="flyto(2)">Aletsch Glacier</li>
+                        <li onclick="flyto(3)">Zermatt</li>
+                        <li onclick="flyto(4)">St. Moritz</li>
+                        <li onclick="flyto(5)">Zurich</li>
+                        <li onclick="flyto(6)">Bern</li>
+                        <li onclick="flyto(7)">Basel</li>
+                        <li onclick="flyto(8)">Geneva</li>
                   </ul>
             </div>
             <div class="classSeparatorTitle">Contributors</div>
@@ -254,6 +270,14 @@ function checkUrlParameters()
                   <a href="http://www.fhnw.ch"><div id="divContFhnw"></div></a>
                   <a href="http://www.camptocamp.com/"><div id="divCampToCamp"></div></a>
             </div>
+            <div class="classSeparatorTitle">Source Code available at</div>
+            <div id="divGitHub">
+                  <a href="https://github.com/OpenWebGlobe"><div id="divGitHubLogo"></div></a>
+            </div>
+            <div class="classSeparatorTitle">Contact</div>
+            <div id="divContact"> 
+            </div>
+            
    </div>
   <div id="divCanvas">  
       <div id="divNavigationManual"></div>
