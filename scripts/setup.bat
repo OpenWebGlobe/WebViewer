@@ -4,7 +4,7 @@ REM ***********************
 REM ** SETUP PYTHON PATH **
 REM ***********************
 
-Set PYTHON=C:\Python27\python.exe
+Set PYTHON=D:\Python26\ArcGIS10.0\python.exe
 
 
 

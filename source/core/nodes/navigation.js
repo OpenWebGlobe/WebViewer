@@ -62,9 +62,9 @@ function NavigationNode()
       /** @type {number} */
       this._roll = 0;
       /** @type {number} */
-      this._longitude = 7.616;
+      this._longitude = 116.261687;
       /** @type {number} */
-      this._latitude = 45.9088;
+      this._latitude = 40.099347;
       /** @type {number} */
       this._ellipsoidHeight = 17000.0;
       

@@ -71,7 +71,19 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.elevationlayers = 0;
    this._vNormal = new vec3();
    
+   
+   
+   /** @type {number} */
+   this.longitude0  = -180.0;
+   /** @type {number} */
+   this.latitude0   = -90.0;
+   /** @type {number} */
+   this.longitude1  =  180.0;
+   /** @type {number} */   
+   this.latitude1   =  90.0;
+   
    this._CalcLocation();
+   
 }
 
 // #fixme: this function name must be renamed, 
@@ -596,6 +608,8 @@ TerrainBlock.prototype._CalcLocation = function()
    Mercator.MercatorToWGS84(xg, yg, wgs);
    var lng = wgs[0];
    var lat = wgs[1];
+   this.longitude0 = lng;
+   this.latitude1  = lat;
    gc.Set(lng, lat, 0);
    gc.ToCartesian(point0);
    //---- Calc Second Point -----
@@ -610,6 +624,8 @@ TerrainBlock.prototype._CalcLocation = function()
    Mercator.MercatorToWGS84(xg, yg, wgs);
    lng = wgs[0];
    lat = wgs[1];
+   this.longitude1 = lng;
+   this.latitude0  = lat;
    gc.Set(lng, lat, 0);
    gc.ToCartesian(point2);
    

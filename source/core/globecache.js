@@ -48,7 +48,7 @@ function GlobeCache(engine, imagelayerlist, elevationlayerlist, quadtree, caches
    /** @type {MercatorQuadtree} */
    this.quadtree = quadtree;
    
-   this.cache = new Cache(cachesize, false);
+   this.cache = new Cache(cachesize, true);
 }
 //------------------------------------------------------------------------------
 /**

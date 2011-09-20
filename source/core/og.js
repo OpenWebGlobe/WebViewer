@@ -44,6 +44,7 @@ goog.require('owg.ogBillboard');
 goog.require('owg.ogBillboardLayer');
 goog.require('owg.FlyToAnimation'); //ToDo: not an og object---> ok?
 goog.require('goog.debug.Logger');
+goog.require('owg.ogAoeImageLayer');
 
 //------------------------------------------------------------------------------
 //* @ignore
@@ -163,6 +164,14 @@ function _CreateObject(typ, parent, options)
    else if (typ ==  OG_OBJECT_BILLBOARDLAYER)
    {
       newobject = new ogBillboardLayer();
+   }
+   else if (typ ==  OG_OBJECT_AOEIMAGELAYER)
+   {
+      newobject = new ogAoeImageLayer();
+   }
+   else if (typ == OG_OBJECT_AOEIMAGE)
+   {
+      newobject = new ogAoeImage();
    }
    
    if (newobject != null)
@@ -1777,6 +1786,74 @@ function ogCreateGeometryLayer(world_id, layername)
    return -1;
 }
 goog.exportSymbol('ogCreateGeometryLayer', ogCreateGeometryLayer);
+//------------------------------------------------------------------------------
+//##############################################################################
+// ** AOEIMAGE LAYER OBJECT **
+//##############################################################################
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+/** @description Create a AoeImage Layer Object
+*   @param {number} world_id the scene
+*   @param {string} layername 
+*/
+function ogCreateAoeImageLayer(world_id, layername)
+{
+   var options={};
+   options["name"] = layername;
+   // test if scene_id is a valid scene
+   var world = /** @type {ogWorld} */ _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      var layer = _CreateObject(OG_OBJECT_AOEIMAGELAYER, world, options);
+      return layer.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogCreateAoeImageLayer', ogCreateAoeImageLayer);
+//------------------------------------------------------------------------------
+//##############################################################################
+// ** AOEIMAGE OBJECT **
+//##############################################################################
+//------------------------------------------------------------------------------
+/** @description Create a aoeimage Object
+*   @param {number} layer_id the scene
+*   @param {Object} .
+*/
+function ogCreateAoeImage(layer_id ,options)
+{
+   
+   
+   /** @type {ogAoeImageLayer} */
+   var layer = /** @type {ogAoeImageLayer} */ _GetObjectFromId(layer_id);
+   if( layer && layer.type == OG_OBJECT_AOEIMAGELAYER)
+   {
+      var aoeimage = _CreateObject(OG_OBJECT_AOEIMAGE, layer.parent.parent, options);
+      layer.AddAoeImage(aoeimage);
+      return aoeimage.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogCreateAoeImage', ogCreateAoeImage);
+//------------------------------------------------------------------------------
+/** @description Destroys a AoeImage
+*   @param {number} aoeimage_id
+*/
+function ogDestroyAoeImage(aoeimage_id)
+{
+   /** @type {ogAoeImage} */
+   var aoeimage = /** @type {ogAoeImage} */ _GetObjectFromId(aoeimage_id);
+   if (aoeimage && aoeimage.type == OG_OBJECT_AOEIMAGE)
+   {
+         var layer_id = aoeimage.layerID;
+         var layer = /** @type {ogAoeImageLayer} */ _GetObjectFromId(layer_id);
+         if (layer && layer.type == OG_OBJECT_AOEIMAGELAYER)
+         {
+            layer.RemoveAoeImage(aoeimage);  
+         }   
+   }
+   return -1;
+}
+goog.exportSymbol('ogDestroyAoeImage', ogDestroyAoeImage);
 //------------------------------------------------------------------------------
 /**
  * @description Hide GeometryLayer
