@@ -1146,6 +1146,11 @@ Surface.prototype.CopyFrom = function(surface)
    this.numindex = surface.numindex
    this.Ready = surface.Ready;
    this.numOfTriangles = surface.numOfTriangles;
+   this.vbo = surface.vbo;
+   this.ibo = surface.ibo;
+   this.modelMatrix = surface.modelMatrix;
+   this.indexsemantic = surface.indexsemantic;
+   
 }
 
 goog.exportSymbol('Surface', Surface);
