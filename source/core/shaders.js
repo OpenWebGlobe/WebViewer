@@ -290,7 +290,7 @@ ShaderManager.prototype.InitShader_PNT = function()
  */
 ShaderManager.prototype.InitShader_PC = function()
 {
-   var src_vertexshader_PC= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec4 aColor;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition, 1.0);\n   vColor = aColor;\n}\n";
+   var src_vertexshader_PC= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec4 aColor;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition, 1.0);\n   vColor = aColor;\n   gl_PointSize = 100.0;}\n";
    var src_fragmentshader_PC= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_FragColor = vColor;\n}\n\n";
   
    this.vs_pc = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PC);

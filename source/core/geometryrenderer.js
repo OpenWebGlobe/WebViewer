@@ -60,25 +60,34 @@ GeometryRenderer.prototype.Render = function(vCameraPosition, matModelViewProjec
     
    for (var i=0;i<this.geometryarray.length;i++)
    {
-      var meshes = this.geometryarray[i];
-      for(var j=0;j<meshes.length;j++)
+      if(this.geometryarray[i] instanceof PointSprite)
       {
-         var surfaces = meshes[j];
-         for(var k=0; k<surfaces.length;k++)
+         /** @type {PointSprite}*/
+         var pointsprite = /** @type {PointSprite}*/this.geometryarray[i];
+         pointsprite.Draw();
+      }
+      else
+      {
+         var meshes = this.geometryarray[i];
+         for(var j=0;j<meshes.length;j++)
          {
-            var surface = surfaces[k];
-            if(!surface.hide)
+            var surfaces = meshes[j];
+            for(var k=0; k<surfaces.length;k++)
             {
-               if(!this.frustum.TestBox(surface.bbmin[0],surface.bbmin[1],surface.bbmin[2],surface.bbmax[0],surface.bbmax[1],surface.bbmax[2]))
+               var surface = surfaces[k];
+               if(!surface.hide)
                {
-                  return;   
+                  if(!this.frustum.TestBox(surface.bbmin[0],surface.bbmin[1],surface.bbmin[2],surface.bbmax[0],surface.bbmax[1],surface.bbmax[2]))
+                  {
+                     return;   
+                  }
+                  else
+                  {
+                  surface.Draw();  
+                  }
                }
-               else
-               {
-               surface.Draw();  
-               }
-            }
-         } 
+            } 
+         }
       }
    }
    

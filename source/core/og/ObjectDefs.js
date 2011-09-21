@@ -74,6 +74,8 @@ var OG_OBJECT_BILLBOARD             = 21;
 //* @constant
 var OG_OBJECT_BILLBOARDLAYER        = 22;
 //* @constant
+var OG_OBJECT_POINTSPRITE           = 23;
+//* @constant
 var OG_OBJECT_INVALID               = 65535;
 
 goog.exportSymbol('OG_OBJECT_CONTEXT', OG_OBJECT_CONTEXT);

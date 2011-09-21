@@ -37,6 +37,7 @@ goog.require('owg.vec3');
 goog.require('owg.PoiManager');
 goog.require('owg.TextureManager');
 goog.require('owg.GeoCoord');
+goog.require('owg.PointSprite');
 
 /** 
  * 
@@ -262,6 +263,8 @@ function engine3d()
 	
 	/** @type {number} */
 	this.heightOffset = 0;
+	
+
 }
 
 //------------------------------------------------------------------------------
@@ -455,7 +458,7 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
       window.requestAnimFrame(fncTimer, this.context); // request first frame
    }
    
-   
+
   
 }
 
@@ -814,6 +817,7 @@ function fncTimer()
       // (2) Set Current Viewport and clear
       engine.SetViewport(0, 0, engine.width, engine.height);
       engine.Clear();
+
             
       // (3) Draw Scenegraph 
       if (engine.scene)

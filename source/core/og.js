@@ -43,6 +43,7 @@ goog.require('owg.ogGeometryLayer');
 goog.require('owg.ogBillboard');
 goog.require('owg.ogBillboardLayer');
 goog.require('owg.FlyToAnimation'); //ToDo: not an og object---> ok?
+goog.require('owg.ogPointSprite');
 goog.require('goog.debug.Logger');
 
 //------------------------------------------------------------------------------
@@ -163,6 +164,10 @@ function _CreateObject(typ, parent, options)
    else if (typ ==  OG_OBJECT_BILLBOARDLAYER)
    {
       newobject = new ogBillboardLayer();
+   }
+   else if (typ ==  OG_OBJECT_POINTSPRITE)
+   {
+      newobject = new ogPointSprite();
    }
    
    if (newobject != null)
