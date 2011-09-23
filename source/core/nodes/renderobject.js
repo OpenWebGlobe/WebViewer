@@ -28,6 +28,7 @@ goog.require('owg.PoiRenderer');
 goog.require('owg.GeometryRenderer');
 goog.require('owg.BillboardRenderer');
 goog.require('owg.ScenegraphNode');
+goog.require('owg.AoeImageRenderer');
 
 /**
  * Render Object Node. Renders OpenWebGlobe objects, including virtual globe 
@@ -46,6 +47,8 @@ function RenderObjectNode()
       this.geometryrenderer = null;
       /** @type {BillboardRenderer} */
       this.billboardrenderer = null;
+      /** @type {AoeImageRenderer} */
+      this.aoeimagerenderer = null;
       
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -60,6 +63,7 @@ function RenderObjectNode()
          this.poirenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.geometryrenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.billboardrenderer.Render(this.camera, this.engine.matModelViewProjection);
+         this.aoeimagerenderer.Render(this.camera, this.engine.matModelViewProjection);
       }
       
       //------------------------------------------------------------------------
@@ -76,6 +80,7 @@ function RenderObjectNode()
             this.poirenderer = new PoiRenderer(this.engine);
             this.geometryrenderer = new GeometryRenderer(this.engine);
             this.billboardrenderer = new BillboardRenderer(this.engine);
+            this.aoeimagerenderer = new AoeImageRenderer(this.engine);
       }
       
       //------------------------------------------------------------------------

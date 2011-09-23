@@ -39,6 +39,9 @@ function PoiRenderer(engine)
    
    /** @type {Array.<Poi>} */
    this.poiarray = [];
+   
+   /** @type {ViewFrustum} */
+   this.frustum = new ViewFrustum();
 }
 
 //------------------------------------------------------------------------------
@@ -57,12 +60,24 @@ PoiRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
    var dz = 0;
    var disLimit = 0;
    
-   // todo: frustum culling etc.
+   // frustum culling 
+   this.frustum.Update(matModelViewProjection);
+   
    for (var i=0;i<this.poiarray.length;i++)
    {
       var poi = this.poiarray[i];
       if(!poi.hide)
       {
+         
+         //check if poi is in viewfrustum
+         if(!this.frustum.TestBox(poi.posX,poi.posY,poi.posZ,poi.posX+0.001,poi.posY+0.001,poi.posZ+0.001))
+         {
+            return;   
+         }
+
+         
+         
+         //check if poi is in viewdistance
          dx = (poi.posX-x);
          dy = (poi.posY-y);
          dz = (poi.posZ-z);
@@ -72,9 +87,11 @@ PoiRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
          var disLimitMax = poi.visibilityDistanceMax*poi.visibilityDistanceMax; 
          if(disLimitMax > dis_squared && disLimitMin < dis_squared)
          {
-            poi.Draw();
-         }
+           poi.Draw();
+         }   
       }
+      
+      
       
    }
    

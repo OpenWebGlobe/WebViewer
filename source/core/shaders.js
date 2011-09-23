@@ -108,7 +108,7 @@ function ShaderManager(gl)
    this.fs_poi = null;
 }
 
-
+//------------------------------------------------------------------------------
 /**
  *  
  * @param {mat4} modelviewprojection
@@ -123,21 +123,24 @@ ShaderManager.prototype.UseShader_P = function(modelviewprojection,color)
       this.gl.uniform4fv(this.gl.getUniformLocation(this.program_p, "uColor"), color.Get());
    }   
 }
-
+//------------------------------------------------------------------------------
 /**
- *  
- * @param {mat4} modelviewprojection
+ * @param {mat4} normalmatrix 
+ * @param {mat4} modelview
+ * @param {mat4} projection
  */
-ShaderManager.prototype.UseShader_PNT = function(modelviewprojection)
+ShaderManager.prototype.UseShader_PNT = function(normalmatrix, modelview, projection)
 {
    if (this.program_pnt)
    {
       this.gl.useProgram(this.program_pnt);
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matMVP"), false, modelviewprojection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matModelView"), false, modelview.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matProjection"), false, projection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matNormal"), false, normalmatrix.Get());
       this.gl.uniform1i(this.gl.getUniformLocation(this.program_pnt, "uTexture"),0);
    }   
 }
-
+//------------------------------------------------------------------------------
 /**
  *  
  * @param {mat4} modelviewprojection
@@ -150,7 +153,7 @@ ShaderManager.prototype.UseShader_PC = function(modelviewprojection)
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pc, "matMVP"), false, modelviewprojection.Get());
    }    
 }
-
+//------------------------------------------------------------------------------
 /**
  *  
  * @param {mat4} modelviewprojection
@@ -164,7 +167,7 @@ ShaderManager.prototype.UseShader_PT = function(modelviewprojection)
       this.gl.uniform1i(this.gl.getUniformLocation(this.program_pt, "uTexture"), 0);   
    }    
 }
-
+//------------------------------------------------------------------------------
 /**
  *  
  * @param {mat4} modelviewprojection
@@ -177,7 +180,7 @@ ShaderManager.prototype.UseShader_PNCT = function(modelviewprojection)
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnct, "matMVP"), false, modelviewprojection.Get());
    }    
 }
-
+//------------------------------------------------------------------------------
 /**
  *  
  * @param {mat4} modelviewprojection
@@ -191,7 +194,7 @@ ShaderManager.prototype.UseShader_Font = function(modelviewprojection, fontcolor
       this.gl.uniform4fv(this.gl.getUniformLocation(this.program_font, "uColor"), fontcolor.Get());  
    }    
 }
-
+//------------------------------------------------------------------------------
 /** 
  * @param {mat4} modelviewprojection
  * @param {vec4} color
@@ -205,8 +208,7 @@ ShaderManager.prototype.UseShader_Poi = function(modelviewprojection, color)
       this.gl.uniform4fv(this.gl.getUniformLocation(this.program_poi, "uColor"), color.Get());  
    }    
 }
-
-
+//------------------------------------------------------------------------------
 /**
  *  Initializes the point shader 
  *  internal use
@@ -242,20 +244,17 @@ ShaderManager.prototype.InitShader_P = function()
           alert("Shader Link: " + this.gl.getProgramInfoLog(this.program_p));
           return;
       }
-   }
-   
+   } 
 }
-
+//------------------------------------------------------------------------------
 /**
  *  Initializes the point,normal, texture shader 
  *  internal use
  */
 ShaderManager.prototype.InitShader_PNT = function()
 {
-   var src_vertexshader_PNT= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute vec2 aTexCoord;\nvarying vec3 vNormal;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n   vNormal = aNormal;\n}\n";
-   var src_fragmentshader_PNT= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec3 vNormal;\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\nvoid main()\n{\n   gl_FragColor = abs(vec4(vNormal.x, vNormal.y, vNormal.z, 1.0));\n}\n\n";
-   
-  
+   var src_vertexshader_PNT = "attribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute vec2 aTexCoord;\n\nuniform mat4 matModelView;\nuniform mat4 matProjection;\nuniform mat4 matNormal;\n\nvarying vec2 vTexCoord;\nvarying vec3 vNormal;\nvarying vec4 vPosition;\n\nvoid main(void)\n{\nvPosition = matModelView * vec4(aPosition, 1.0);\ngl_Position = matProjection * vPosition;\nvTexCoord = aTexCoord;\nvNormal = (matNormal * vec4(aNormal,1.0)).xyz;\n}\n";
+   var src_fragmentshader_PNT= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec2 vTexCoord;\nvarying vec3 vNormal;\nvarying vec4 vPosition;\nuniform sampler2D uTexture;\nvoid main(void)\n{\nvec3 L = normalize(-vPosition.xyz);\nfloat lamb = 2.0*max(dot(normalize(vNormal), L), 0.0);\nvec3 diff = vec3(1.0,0.0,0.0) * lamb;\ngl_FragColor = vec4(diff.xyz, 1.0);\n}\n";  
   
    this.vs_pnt = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PNT);
    this.fs_pnt = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_PNT);
@@ -284,14 +283,14 @@ ShaderManager.prototype.InitShader_PNT = function()
       }
    }
 }
-
+//------------------------------------------------------------------------------
 /**
  *  Initializes the point,color shader 
  *  internal use
  */
 ShaderManager.prototype.InitShader_PC = function()
 {
-   var src_vertexshader_PC= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec4 aColor;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition, 1.0);\n   vColor = aColor;\n}\n";
+   var src_vertexshader_PC= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec4 aColor;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition, 1.0);\n   vColor = aColor;\n   gl_PointSize = 100.0;}\n";
    var src_fragmentshader_PC= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_FragColor = vColor;\n}\n\n";
   
    this.vs_pc = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PC);
@@ -321,7 +320,7 @@ ShaderManager.prototype.InitShader_PC = function()
       }
    }
 }
-
+//------------------------------------------------------------------------------
 /**
  *  Initializes the point,texture
  *  internal use
@@ -358,7 +357,7 @@ ShaderManager.prototype.InitShader_PT = function()
    }
   
 } 
-
+//------------------------------------------------------------------------------
 /**
  *  Initializes the point,normal,color,texture shader 
  *  internal use
@@ -396,8 +395,7 @@ ShaderManager.prototype.InitShader_PNCT = function()
    }
    
 } 
-
-
+//------------------------------------------------------------------------------
 /**
  *  Initializes the font shader
  *  internal use
@@ -432,8 +430,7 @@ ShaderManager.prototype.InitShader_Font = function()
       }
    }
 }
-
-
+//------------------------------------------------------------------------------
 /**
  *  Initializes the font shader
  *  internal use
@@ -468,9 +465,7 @@ ShaderManager.prototype.InitShader_Poi = function()
       }
    }
 }
-
-
-
+//------------------------------------------------------------------------------
 /**
  *  Initializes all shaders. 
  * 
@@ -487,7 +482,7 @@ ShaderManager.prototype.InitShaders = function()
    this.InitShader_Font();
    this.InitShader_Poi();
 } 
-
+//------------------------------------------------------------------------------
 /**
  *  internal use.
  */
@@ -517,7 +512,5 @@ ShaderManager.prototype._createShader = function(shaderType, shaderSource)
 
    return shader;
 }
-
-//------------------------------------------------------------------------------
 
 

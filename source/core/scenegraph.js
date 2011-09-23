@@ -108,13 +108,13 @@ SceneGraph.prototype.Traverse = function()
    this.traversalstate.PushView(this.matView);
    this.traversalstate.PushProjection(this.matProj);
    
-   this.nodeNavigation.OnTraverse(this.traversalstate); 
-   this.nodeCamera.OnTraverse(this.traversalstate);           
-   this.nodeBeginRender.OnTraverse(this.traversalstate);   
-   this.nodeRenderObject.OnTraverse(this.traversalstate); 
-   this.nodeRender.OnTraverse(this.traversalstate);          
-   this.nodeEndRender.OnTraverse(this.traversalstate);     
-   this.nodeLogos.OnTraverse(this.traversalstate);               
+   this.nodeNavigation.OnTraverse(this.traversalstate);    // Navigation Node (for view matrix)
+   this.nodeCamera.OnTraverse(this.traversalstate);        // 修改了traversalstate的PerspectiveProjection为(45, 0.00001, 10.0)    
+   this.nodeBeginRender.OnTraverse(this.traversalstate);   // Begin Render Node (for multipass rendering, currently unsupported)
+   this.nodeRenderObject.OnTraverse(this.traversalstate);  // 修改了camera的position
+   this.nodeRender.OnTraverse(this.traversalstate);        // Generic Rendering Node (currently unused, render custom objects)  
+   this.nodeEndRender.OnTraverse(this.traversalstate);     // End Render Node (for multipass rendering, currently unsupported)
+   this.nodeLogos.OnTraverse(this.traversalstate);         // logo      
    
    this.traversalstate.PopModel();
    this.traversalstate.PopView();
@@ -128,23 +128,23 @@ SceneGraph.prototype.Traverse = function()
  */
 SceneGraph.prototype.Render = function()
 {
-   this.nodeNavigation.OnChangeState();
-   this.nodeNavigation.OnRender();  
+   this.nodeNavigation.OnChangeState();         // 设置了ViewMatrix
+   this.nodeNavigation.OnRender();              // nothing
    
-   this.nodeCamera.OnChangeState(); 
-   this.nodeCamera.OnRender();          
+   this.nodeCamera.OnChangeState();             // SetProjectionMatrix
+   this.nodeCamera.OnRender();                  // nothing
     
-   this.nodeBeginRender.OnChangeState();
-   this.nodeBeginRender.OnRender();
+   this.nodeBeginRender.OnChangeState();        // nothing
+   this.nodeBeginRender.OnRender();             // nothing
        
-   this.nodeRenderObject.OnChangeState();
-   this.nodeRenderObject.OnRender(); 
+   this.nodeRenderObject.OnChangeState();       // nothing
+   this.nodeRenderObject.OnRender();            // 主要globerenderer.Render
    
-   this.nodeRender.OnChangeState();
-   this.nodeRender.OnRender(); 
+   this.nodeRender.OnChangeState();             // nothing
+   this.nodeRender.OnRender();                  // nothing
             
-   this.nodeEndRender.OnChangeState();
-   this.nodeEndRender.OnRender();  
+   this.nodeEndRender.OnChangeState();          // nothing
+   this.nodeEndRender.OnRender();               // nothing
        
    this.nodeLogos.OnChangeState();
    this.nodeLogos.OnRender();        

@@ -243,21 +243,35 @@ ogGeometry.prototype._cbfjsondownload = function()
 ogGeometry.prototype.CreateFromJSONObject = function(jsonobject)
 {
    var mesharray = jsonobject;
-   for(var i=0; i<mesharray.length; i++)
+   if(jsonobject['indexbuffer']==null)
    {
-      this.options["jsonobject"] = mesharray[i];
-      var mesh = _CreateObject(OG_OBJECT_MESH, this, this.options); 
-      this.meshes_og.push(mesh)
-      this.meshes.push(mesh.GetSurfaceArray());
+      //if there is no indexbuffer -> display the geometry as pointsprite.
+      this.options = jsonobject;
+      this.ogpointsprite = _CreateObject(OG_OBJECT_POINTSPRITE,this,this.options)
+      
+      //add to geometry renderer...
+      var renderer = this._GetGeometryRenderer();
+      this.indexInRendererArray = renderer.AddGeometry(this.ogpointsprite.pointsprite);
    }
-   if(this.cbr)
+   else
    {
-      this.cbr(this.id);
+      for(var i=0; i<mesharray.length; i++)
+      {
+         this.options["jsonobject"] = mesharray[i];
+         var mesh = _CreateObject(OG_OBJECT_MESH, this, this.options); 
+         this.meshes_og.push(mesh)
+         this.meshes.push(mesh.GetSurfaceArray());
+      }
+      if(this.cbr)
+      {
+         this.cbr(this.id);
+      }
+      //add to geometry renderer...
+      var renderer = this._GetGeometryRenderer();
+      this.indexInRendererArray = renderer.AddGeometry(this.meshes);
    }
       
-   //add to geometry renderer...
-   var renderer = this._GetGeometryRenderer();
-   this.indexInRendererArray = renderer.AddGeometry(this.meshes);
+
 }
 
 //------------------------------------------------------------------------------

@@ -30,8 +30,6 @@
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
-
-
 <script type="text/javascript">
 var poilayer;
 var hidden = false;
@@ -55,8 +53,8 @@ function OnMouseDown(context, button, mx, my)
    if(pickedPoiId > 0)
    {
       // increase POI size
-     // ogChangePOISize(pickedPoiId,100);
-      ogDestroyPOI(pickedPoiId);
+     ogChangePOISize(pickedPoiId,100);
+
    }
    
    // call the pickglobe function, this gives the result in lng, lat, elv
@@ -84,21 +82,7 @@ function OnMouseDown(context, button, mx, my)
 }
 
 
-function OnKeyDown(ctx,key)
-{
 
-   if(!hidden)
-   {
-      hidden = true;
-      ogHidePOILayer(poilayer);
-   }
-   else
-   {
-      hidden = false;
-      ogShowPOILayer(poilayer);
-   }
-
-}
 //------------------------------------------------------------------------------
 function main()
 {
@@ -135,8 +119,6 @@ function main()
    // (5) Set the mouse down function. We need this for picking!
    ogSetMouseDownFunction(ctx, OnMouseDown);
    
-   // (5) Set the mouse down function. We need this for picking!
-   ogSetKeyDownFunction(ctx, OnKeyDown);
    
    // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);

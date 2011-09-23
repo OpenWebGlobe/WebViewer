@@ -73,6 +73,13 @@ var OG_OBJECT_POI                   = 20;
 var OG_OBJECT_BILLBOARD             = 21;
 //* @constant
 var OG_OBJECT_BILLBOARDLAYER        = 22;
+
+//* @constant
+var OG_OBJECT_AOEIMAGELAYER         = 65533;
+//* @constant
+var OG_OBJECT_AOEIMAGE              = 65534;
+//* @constant
+var OG_OBJECT_POINTSPRITE           = 23;
 //* @constant
 var OG_OBJECT_INVALID               = 65535;
 
@@ -98,6 +105,8 @@ goog.exportSymbol('OG_OBJECT_NAVIGATIONCONTROLLER', OG_OBJECT_NAVIGATIONCONTROLL
 goog.exportSymbol('OG_OBJECT_POI', OG_OBJECT_POI);
 goog.exportSymbol('OG_OBJECT_BILLBOARD', OG_OBJECT_BILLBOARD);
 goog.exportSymbol('OG_OBJECT_BILLBOARDLAYER', OG_OBJECT_BILLBOARDLAYER);
+goog.exportSymbol('OG_OBJECT_AOEIMAGELAYER', OG_OBJECT_AOEIMAGELAYER);
+goog.exportSymbol('OG_OBJECT_AOEIMAGE', OG_OBJECT_AOEIMAGE);
 goog.exportSymbol('OG_OBJECT_INVALID', OG_OBJECT_INVALID);
 
 //------------------------------------------------------------------------------

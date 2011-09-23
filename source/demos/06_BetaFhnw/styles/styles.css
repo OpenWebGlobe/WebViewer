@@ -1,0 +1,281 @@
+/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2010-2011 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/  
+
+/* #divTopRow ----------------------------------------------------------------*/
+#divTopRow
+{
+   /*background-image : url(images/transp.png);
+   background-repeat: repeat;*/
+   background-color : #ffffff;
+   width : 100%;
+   height : 105px;
+   position : absolute;
+   left : 0px;
+   top : 0px;
+}
+
+#divTitle {
+    font-family: arial;
+    font-size: 27px;
+    font-weight: normal;
+    height: 30px;
+    left: 40%;
+    position: absolute;
+    top: 39px;
+    width: 362px;
+}
+#divSubTitle {
+    background-image: url("../images/demo.png");
+    font-family: sans-serif;
+    font-size: 18px;
+    height: 88px;
+    right: 247px;
+    position: absolute;
+    top: -26px;
+    width: 285px;
+    background-repeat: none;
+}
+
+#divTopRowImageRight {
+    background-image: url("http://wiki.openwebglobe.org/lib/tpl/incognitek/images/logo.png");
+    background-repeat: no-repeat;
+    height: 125px;
+    position: absolute;
+    right: 0px;
+    top: -11px;
+    width: 317px;
+}
+
+#divTopRowImageLeft{
+   background-image : url(../images/fhnw_logo.png);
+   background-repeat : no-repeat;
+   position : absolute;
+   height : 125px;
+   width : 615px;
+   top : 16px;
+   left : 0px;
+}
+
+
+
+
+
+
+/* #divMenuLeft ----------------------------------------------------------------*/
+#divMenuLeft {
+    background-color: #ffffff;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 125px;
+    width: 250px;
+    visibility:hidden;
+}
+#divMenuSearch {
+    background-color: #ffffff;
+    height: 23px;
+    left: 0;
+    top: 0;
+    margin:  21px;
+}
+#divMenuBoundaries {
+    background-color: #ffffff;
+    height: 23px;
+    left: 0;
+    margin: 17px;
+    top: 0;
+    font-family :  sans-serif;
+    font-size : 12px;
+}
+
+#divMenu3DModels {
+    background-color: #ffffff;
+    height: 175px;
+    left: 0;
+    top: 0;
+     margin-top: 3px;
+}
+
+#divMenuInfos {
+    background-color: #ffffff;
+    height: 206px;
+    left: 0;
+    top: 0;
+}
+
+#divCanvas{
+   /*background-image : url(images/transp.png);
+   background-repeat: repeat;*/
+   background-color : #000000;
+   position : absolute;
+   /*width : 300px;
+   height : 200px;*/
+   /*position : absolute;*/
+   left : 250px;
+   top : 125px;
+   width : 100%;
+   height : 100%;
+}
+
+#divContFhnw{
+   /*width : 100px;*/
+   height : 100px;
+   background-image : url('../images/fhnw_logo_small.png');
+   background-repeat : no-repeat;
+   background-position : -47px 50%;
+ 
+}
+
+#divCampToCamp{
+   /*width : 100px;*/
+   height : 100px;
+   background-image : url('../images/camptocamp.png');
+   background-repeat : no-repeat;
+   background-position : 50%;
+}
+
+#divGitHub{
+   /*width : 100px;*/
+   height : 100px;
+
+}
+
+#divGitHubLogo{
+   /*width : 100px;*/
+   height : 100px;
+   background-image : url('../images/github-logo1.png');
+   background-repeat : no-repeat;
+   background-position : 50%;
+}
+
+#divContact{
+   /*width : 100px;*/
+   height : 100px;
+   background-image : url('../images/infoat.png');
+   background-repeat : no-repeat;
+   background-position : 50%;
+}
+
+
+
+/*  Menu appereance ----------------------------------------------------------*/
+  .classMenu {
+   left : 0px;
+  }
+
+  ul.classMenu {
+    background-color: white;
+    margin:  0px;
+}
+.classMenu li {
+    font-family: sans-serif;
+    font-size: 12px;
+    list-style: none ;
+    padding: 3px 19px 2px;
+    margin-left: -40px;
+}
+.classMenu  a:hover,li:hover {
+    background-color: red;
+    color: white;
+    cursor : pointer;
+}
+  
+  .classSeparatorTitle
+  {
+   text-align:left;
+   background-color : #000000;
+   font-family : sans-serif;
+   color : #ffffff;
+   font-weight : bold;
+   font-size : 12px;
+   padding : 3px;
+   padding-left : 20px;
+  }
+  
+  .classMenu a
+  {
+   color : #000000;
+   font-family : sans-serif;
+   font-style : normal;
+   text-decoration: none;
+
+  }
+  
+#divSearchResults
+{
+   background-color : #000000;
+   z-index : 100;
+   position : absolute;
+   visibility : hidden;
+   padding-right : 12px;
+}
+
+#divResultBar 
+{
+    background-color: #FFFFFF;
+    font-family: sans-serif;
+    font-size: 12px;
+    padding: 2px 0px 2px 12px;
+    width: 100%;
+   
+}
+
+#divResultBar:hover
+{
+   background-color : #ff0000;
+   color : #ffffff;
+
+}
+
+
+
+#divSearchResultTitle
+{
+   text-align:center;
+   background-color : #000000;
+   font-family : sans-serif;
+   color : #ffffff;
+   font-weight : bold;
+   font-size : 12px;
+   visibility : hidden;
+   padding : 3px;
+}
+
+
+#divNavigationManual
+{
+   width : 525px;
+   height : 250px;
+   left : 10%;
+   top : 10%;
+   background-image : url('../images/navigation.png');
+   z-index : 100;
+   position : absolute;
+   background-repeat : no-repeat;
+   visibility : hidden;
+}
+
+
+
+
+

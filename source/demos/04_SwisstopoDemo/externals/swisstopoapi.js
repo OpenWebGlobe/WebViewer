@@ -2,6 +2,7 @@
 
 var swisstopoapi = {};
 swisstopoapi.waitforheight = [];
+swisstopoapi.timeoutid;
 
 /**
  * @description loads a jsonp file: internal function
@@ -48,6 +49,11 @@ swisstopoapi.sendQuery = function(place)
    queryUrl = "http://api.geo.admin.ch/swisssearch/geocoding?query="+place;
    this.getJSONP(queryUrl,swisstopoapi.jsoncallback);
    document.body.style.cursor = "wait";
+   document.getElementById("txtInput").style.cursor = 'wait';
+   //set a timeout for the request...
+   swisstopoapi.timeoutid = setTimeout(function(){document.getElementById("txtInput").value = "Not found...";
+      document.body.style.cursor = 'default';
+      document.getElementById("txtInput").style.cursor = 'text';},10000);
 }
 
 
@@ -57,11 +63,13 @@ swisstopoapi.sendQuery = function(place)
  */
 swisstopoapi.jsoncallback = function(data)
 {
+   clearTimeout(swisstopoapi.timeoutid);
    //if no data return
    if(data.results.length==0)
    {
       document.getElementById("txtInput").value = "Not found...";
       document.body.style.cursor = 'default';
+      document.getElementById("txtInput").style.cursor = 'text';
       return; 
    }
    
@@ -99,22 +107,30 @@ swisstopoapi.jsoncallback = function(data)
          {
             var lat = CHtoWGSlat(this.bbox[0],this.bbox[1]);
             var lng = CHtoWGSlng(this.bbox[0],this.bbox[1]);
-
+            
+            //fly to position and set a poi
+            //get the height of the position - unused
+            swisstopoapi.getJSONP("http://api.geo.admin.ch/height?easting="+this.bbox[0]+"&northing="+this.bbox[1],swisstopoapi.heightcallback);
+            this.data.lat = lat;
+            this.data.lng = lng;
+            swisstopoapi.waitforheight.push(this.data);
+            
          }
          else //calc the middle of the bounding box
          {
             var lat = CHtoWGSlat((this.bbox[0]+this.bbox[2])/2,(this.bbox[1]+this.bbox[3])/2);
             var lng = CHtoWGSlng((this.bbox[0]+this.bbox[2])/2,(this.bbox[1]+this.bbox[3])/2);
+            
+            // just fly to position
+            var pos = ogGetOrientation(scene);
+            ogFlyToLookAtPosition(scene,lng,lat,100,5000,pos.yaw,-45,0);
+            
          }
-         var pos = ogGetOrientation(scene);
-         ogFlyToLookAtPosition(scene,lng,lat,100,5000,pos.yaw,-45,0);
          
-         //get the height of the position - not really used for the moment
-         /*
-         swisstopoapi.getJSONP("http://api.geo.admin.ch/height?easting="+this.bbox[0]+"&northing="+this.bbox[1],swisstopoapi.heightcallback);
-         this.data.lat = lat;
-         this.data.lng = lng;
-         swisstopoapi.waitforheight.push(this.data);*/    
+
+
+         
+    
       }
       
       //the search result div dissapears if a click on body occurs.
@@ -131,6 +147,7 @@ swisstopoapi.jsoncallback = function(data)
    }
    
    document.body.style.cursor = 'default';
+   document.getElementById("txtInput").style.cursor = 'text';
 }
 
 
@@ -142,13 +159,16 @@ swisstopoapi.heightcallback = function(data)
    posdata = swisstopoapi.waitforheight.pop(rawdata[i]);
    posdata.height = data.height;
    
-   poistring="poidef = {icon     : \"[image]\",\n\
-               text 		: "+posdata.label+",\n\
-               position : ["+posdata.lng+","+posdata.lat+","+posdata.height+"],\n\
-               size 		: 	20,\n\
-               flagpole : true\n\
-               };"
-   //alert(poistring);
+  //set a poi if it's an address....
+   if(posdata.service == "address")
+   {
+      ogChangePOIPositionWGS84(searchpoi,posdata.lng,posdata.lat,posdata.height+10);
+   }
+  
+   
+   //fly to
+   var pos = ogGetOrientation(scene);
+   ogFlyToLookAtPosition(scene,posdata.lng,posdata.lat,posdata.height,1000,pos.yaw,-45,0);
 }
 
 

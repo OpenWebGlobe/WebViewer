@@ -32,7 +32,7 @@ goog.require('owg.i3dImageLayer');
 goog.require('owg.owgImageLayer');
 goog.require('owg.i3dElevationLayer');
 goog.require('owg.owgElevationLayer');
-
+goog.require('owg.GoogleImageLayer');
 //------------------------------------------------------------------------------
 /**
  * @typedef {{
@@ -172,6 +172,17 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
          var layer = options["layer"];
          var imgLayer = new owgImageLayer();
          imgLayer.Setup(options["url"], layer, options["transparency"]);
+         index = this.imagelayerlist.length;
+         this.imagelayerlist.push(imgLayer);
+         this._UpdateLayers(); 
+      }
+   }
+   else if (options["service"] == "goo")
+   {
+      if (options["url"] && options["url"].length>0)
+      {
+         var imgLayer = new GoogleImageLayer();
+         imgLayer.Setup(options["url"]);
          index = this.imagelayerlist.length;
          this.imagelayerlist.push(imgLayer);
          this._UpdateLayers(); 
@@ -617,12 +628,14 @@ GlobeRenderer.prototype._Divide = function()
 //------------------------------------------------------------------------------
 GlobeRenderer.prototype._SubDivide = function()
 {
+   //从lstFrustum中的最后一块地形开始
    var i = this.iterator.cnt;
    if (this.lstFrustum[i].IsAvailable())
    {
       if (this._CalcErrorMetric(i))
       {
          var quadcode = this.lstFrustum[i].quadcode;
+         
          var tb0 = this.globecache.RequestBlock(quadcode+"0");
          var tb1 = this.globecache.RequestBlock(quadcode+"1");
          var tb2 = this.globecache.RequestBlock(quadcode+"2");
@@ -640,6 +653,10 @@ GlobeRenderer.prototype._SubDivide = function()
             this.lstFrustum.push(tb3);
             return;
          }
+      }
+      else
+      {
+         //console.log(this.lstFrustum[i].quadcode);
       }
    }  
    
@@ -688,9 +705,13 @@ GlobeRenderer.prototype._CalcErrorMetric = function(i)
    this.vDir[2] = campos[2] - center[2];
    // normalize vDir:
    var mag = Math.sqrt(this.vDir[0]*this.vDir[0]+this.vDir[1]*this.vDir[1]+this.vDir[2]*this.vDir[2]);
-   this.vDir[0] = this.vDir[0] / mag;
-   this.vDir[1] = this.vDir[1] / mag;
-   this.vDir[2] = this.vDir[2] / mag;
+   if (mag > 0)
+   {
+      this.vDir[0] = this.vDir[0] / mag;
+      this.vDir[1] = this.vDir[1] / mag;
+      this.vDir[2] = this.vDir[2] / mag;
+   }
+   
    
    var d = (this.vDir[0] * normal[0] + this.vDir[1] * normal[1] + this.vDir[2] * normal[2]);  
    
