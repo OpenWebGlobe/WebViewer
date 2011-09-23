@@ -22,65 +22,69 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      TUTORIAL 5b: Custom POI Style
+                      Function Tests
                       
 *******************************************************************************/
 -->
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+ <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+
+
 <script type="text/javascript">
-var poilayer;
-var hidden = false;
+
+var aoeimage = null;
+var aoeimagelayer = null;
+
 //------------------------------------------------------------------------------
 // Render-Event: called every frame:
 function OnRender(context)
 {  
+   
    ogSetTextColor(context, 0,1,0);
-   ogDrawText(context, "Click middle mouse button to add a POI", 0, 50);
-   ogDrawText(context, "Click on a POI to increase it's size", 0, 20);
+   ogDrawText(context, "Press 1 to add, 2 to remove", 0, 20);
 }
 //------------------------------------------------------------------------------
 // Mouse-Down-Event: Called when a mouse button is pressed
 function OnMouseDown(context, button, mx, my)
 {
-   // retrieve the scene attached to context:
-   var scene = ogGetScene(context);
-   
-   // get poi id of picked poi, returns -1 if no poi picked. 
-   var pickedPoiId = ogPickPOI(scene,mx,my);
-   if(pickedPoiId > 0)
-   {
-      // increase POI size
-     ogChangePOISize(pickedPoiId,100);
-
-   }
-   
-   // call the pickglobe function, this gives the result in lng, lat, elv
-   var result = ogPickGlobe(scene, mx, my);
-   if (button == 1 && result[0])
-   {
-      // place poi:
-      var NewPoiDefinition = 
-      {
-         "icon"     : "http://google-maps-icons.googlecode.com/files/cycling.png",
-         "text" 		: 	"Click: (" + result[1].toFixed(3) + ", " + result[2].toFixed(3) + ", " + result[3].toFixed(0) + ")",
-         "position" :  [result[1], result[2], result[3]+2000],
-         "size" 		: 	50,
-         "flagpole" : true,
-         "flagpoleColor": [0,0,1,1],  //	optional, default is [0,0,0,1] [r,g,b,a]
-         "visibilityRange": [10,100],//	optional, default is [0,∞]
-         "mode": "absolute",	         //optional, default is "absolute"
-         "size": 50	               //optional, default is 40
-      };
-      
-      var poi = ogCreatePOI(poilayer,NewPoiDefinition);
-   }
-   
-
+   return;
+ 
 }
 
+
+//------------------------------------------------------------------------------
+
+function OnKeyDown(ctx,key)
+{
+   if(key == 49) // 1 - Create a geometry Layer and load a model
+   {
+      //img = new aoeImage(ctx);
+      options = 
+      {
+      longitude0 :108.799532930521,
+      latitude0  :40.6338723204708,
+      longitude1 :108.914426930521,
+      latitude1  :40.6442853204708,
+      url        : "texture.png"
+      };
+      aoeimage = ogCreateAoeImage(aoeimagelayer, options);
+      ogFlyTo(ogGetScene(ctx),108.799532930521,40.6338723204708, 18000, 0, -90 ,0);
+     
+   }
+   if(key == 50) // 2 - Create a second model out of a json object and add it to the layer
+   {
+      ogDestroyAoeImage(aoeimage);
+   
+      
+   }
+ 
+   
+}
 
 
 //------------------------------------------------------------------------------
@@ -88,76 +92,49 @@ function main()
 {
    // (1) create an OpenWebGlobe context using canvas
    // first parameter is canvas-id and second is "fullscreen"
+   
    var ctx = ogCreateContextFromCanvas("canvas", true);
    
    // (2) Create a virtual globe
    var globe = ogCreateGlobe(ctx);
    
    // (3) Add an image and an elevation layer
-   var imgBlueMarble500 = 
-   {
-      url     : ["http://www.openwebglobe.org/data/img"],
-      layer   : "World500",
-      service : "i3d"
-   };
-   
-   var elvSRTM_CH = 
-   {
-      url     : ["http://www.openwebglobe.org/data/elv"],
-      layer   : "SRTM",
-      service : "i3d"
-   };
-   
-   ogAddImageLayer(globe, imgBlueMarble500);
-   ogAddElevationLayer(globe, elvSRTM_CH);
-   
 
+   var imgGoogleMap = 
+   {
+      url     : ["http://khm0.google.com", "http://khm1.google.com"],
+      service : "goo"
+   };
+    var imgOpenStreetMap = 
+   {
+      url     : ["http://a.tile.openstreetmap.org", "http://b.tile.openstreetmap.org", "http://c.tile.openstreetmap.org" ],
+      service : "osm"
+   };
+   //ogAddImageLayer(globe, imgOpenStreetMap);
+   ogAddImageLayer(globe, imgGoogleMap);
+   
+         
+   //ogAddImageLayer(globe, imgBlueMarble500);
+   //ogAddImageLayer(globe, imgLandsat_CH);
+   //ogAddElevationLayer(globe, elvSRTM_CH);
+   
    // (4) Set the "Render-Callback" function.
    // The callback function will be called everytime a frame is drawn.
    ogSetRenderFunction(ctx, OnRender);
    
-   // (5) Set the mouse down function. We need this for picking!
+   // (5) Set the mouse down function. 
    ogSetMouseDownFunction(ctx, OnMouseDown);
-   
    
    // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
    
-   // (7) POI Layer with custom style
-   // first, we need to retrieve the scene:
+   ogSetKeyDownFunction(ctx, OnKeyDown);
    var scene = ogGetScene(ctx);
-	
+   var world = ogGetWorld(scene);   
+   aoeimagelayer = ogCreateAoeImageLayer(world,"aoeimages");
 
- 
-   var customTextstyle =
-   {
-      "font"  	         : "Arial", 
-      "fontSize" 		   : 32,
-      "backgroundColor" : [0,0,0,0],
-      "lineWidth" 		: 3,
-      "strokeColor" 		: [0,0,0,1],
-      "shadowOffsetX" 	: 0,
-      "shadowOffsetY" 	: 0,
-      "shadowBlur" 	   : 0,
-      "shadowColor"  	: [0,0,0,0],
-      "fontColor"  		: [1,0,0,1]
-   };
+   
 
-
-   var customIconstyle = 
-   {
-      "width"  		      : 32,
-      "height"  	      : 32,
-      "border"  	      : 0,
-      "backgroundColor"  : [0,0,0,0],
-      "shadowOffsetX"  	: 0,
-      "shadowOffsetY"  	: 0,
-      "shadowBlur"  	   : 1,
-      "shadowColor" 	   : [0,0,1,1]
-   };
-   var world = ogGetWorld(scene);
-   poilayer = ogCreatePOILayer(world,"bicycle",customTextstyle,customIconstyle);
-           
 }
 //------------------------------------------------------------------------------
    

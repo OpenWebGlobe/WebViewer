@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<title>OpenWebGlobe SDK WebViewer</title>
+
+<link rel="stylesheet" type="text/css" href="styles/styles.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+<script type="text/javascript" src="externals/openwebglobe_0.5.3.js"></script>
+<script type="text/javascript" src="externals/loadpois.js"></script>
+
+
+<script type="text/javascript">
+
+
+//Definition oo global variables
+var globe;
+var boundlayer = 0;
+var scene;
+var world;
+var searchpoilayer;
+var searchpoi;
+
+/**
+ * @description set up the virtual globe
+ */
+function main()
+{
+      var browserName=navigator.appName;
+          
+      //check for internet explorer users
+      if(browserName == "Microsoft Internet Explorer")
+      {
+            CFInstall.check({
+                  mode: "overlay",
+                  destination: "http://www.openwebglobe.org/beta"
+            });
+            var info = document.getElementById("divNavigationManual");
+            info.style.visibility = 'visible';
+            info.style.background = "";
+            info.style.color = "#ffffff";
+            info.style.fontFamily = 'Arial';
+            info.style.fontSize = '14px';
+            info.style.width = '600px';
+            info.style.left = '10px';
+            info.style.top = '10px';
+            info.innerHTML="This site doesn't work with Internet Explorer. To enable OpenWebGlobe SDK in Internet Explorer you can try to use Google Chrome Frame <a href=\"http://code.google.com/intl/de-DE/chrome/chromeframe/\">here.</a>";   
+      }
+      else
+      {
+            document.getElementById("divMenuLeft").style.visibility='visible';
+            document.getElementById("divNavigationManual").style.visibility = 'visible';
+            resizeCanvas();
+            g_context = ogCreateContextFromCanvas("canvas", true);
+            
+            globe = ogCreateGlobe(g_context);
+            
+            
+             var imgBlueMarble500 = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "World500",
+               service : "i3d"
+            };
+            
+            var imgLandsat_CH = 
+            {
+               url     : ["http://www.openwebglobe.org/data/img"],
+               layer   : "LandsatCH",
+               /*transparency : 0.5,*/
+               service : "i3d"
+            };
+            
+            var elvSRTM_CH = 
+            {
+               url     : ["http://www.openwebglobe.org/data/elv"],
+               layer   : "SRTM",
+               service : "i3d"
+            };
+            
+            ogAddImageLayer(globe, imgBlueMarble500);
+            ogAddImageLayer(globe, imgLandsat_CH);
+            ogAddElevationLayer(globe, elvSRTM_CH);
+      
+            ogSetBackgroundColor(g_context, 0.2,0.2,0.7,1);
+            
+            scene = ogGetScene(g_context);
+            world = ogGetWorld(scene);
+            
+            //create the poilayer and load the pois from loadpois.js   
+            layer = ogCreatePOILayer(world,"poilayer");
+            loadpois(layer);
+            
+            ogSetCanvasSizeOffset(scene,250,125);
+            
+            document.body.onclick = function(){ document.getElementById("divNavigationManual").style.visibility = 'hidden';
+            document.body.onclick = null;}
+      
+            geometrylayer = ogCreateGeometryLayer(world,"buildings");
+
+            ogLoadGeometryAsync(geometrylayer,"models/fhnw.json");
+
+
+            
+            searchpoilayer = ogCreatePOILayer(world,"searchedpois");
+            poidef = { icon     : "images/point.png",
+                  position : [0,0,0],
+                  size 		: 	0.2,
+                  flagpole : false
+                  };
+            //set a poi
+            searchpoi = ogCreatePOI(searchpoilayer,poidef);
+            checkUrlParameters();
+            
+      
+      }
+
+}
+
+function searchFiledKeyPressed(evt)
+{
+      if(evt.keyCode==13)
+      {
+            search();
+            evt.preventDefault();
+            evt.stopPropagation();
+      }
+}
+
+
+/**
+ * @description adapt canvas size.
+ */
+function resizeCanvas(engine,w,h)
+{
+      if(scene>0)
+      {
+            ogSetSize(scene,window.innerWidth-400,window.innerHeight-425);
+      }
+}
+
+
+/**
+ * @description search button callback.
+ */
+function search()
+{
+      var searchtext = document.getElementById("txtInput").value;
+      if(searchtext == "config:quality")
+      {
+            var quality = parseFloat(window.prompt("Set Render-Quality (min: 1.0; max: 3.0)"));           
+            if(quality>1 && quality<=3)
+            {
+                  ogSetRenderQuality(world,quality);
+            }
+      }
+      else
+      {
+            swisstopoapi.sendQuery(searchtext);
+      }
+}
+
+
+/**
+ * @description flyto links callback.
+ */
+function flyto(n)
+{
+      var pos = ogGetOrientation(scene);
+      switch(n)
+      {
+            
+                       //Overview
+            case 1:    ogFlyTo(scene,7.616000,45.908800,17000,0,-18,0);
+                       break;
+                  
+                        //Aletsch Glacier
+            case 2:    ogFlyTo(scene,8.056578,46.395399,3263,10,-5,0);
+                       break;
+                  
+                        //Zermatt
+            case 3:    ogFlyTo(scene,7.738281,45.998256,3175,20,-14,0);
+                        break;
+                  
+                        //St. Moritz
+            case 4:    ogFlyTo(scene,9.860272,46.514042,2847,225,-10,0);
+                       break;
+                  
+                  
+            //Zürich
+            case 5:     //ogFlyTo(scene,7.085848,46.580348,1020,335,-10,0);
+                        ogFlyToLookAtPosition(scene,8.541001,47.379022,400,6000,pos.yaw,-30,0);
+                        break;
+            //Bern
+            case 6:    ogFlyToLookAtPosition(scene,7.438637,46.951081,400,6000,pos.yaw,-40,0);
+                       break;
+                  
+            //Basel
+            case 7:    ogFlyToLookAtPosition(scene,7.591127,47.550558,519,6000,pos.yaw,-45,0);
+                       break;
+            
+                  
+            //Geneva    
+            case 8:    ogFlyToLookAtPosition(scene,6.149985,46.200013,285,6000,pos.yaw,-45,0);
+                       break;
+
+            
+            default:    break;
+ 
+      }
+}
+
+
+
+
+
+function checkUrlParameters()
+{
+      var pos = {};
+      pos.lng = null;
+      pos.lat = null;
+      pos.elv = null;
+      pos.yaw = null;
+      pos.pitch = null;
+      pos.roll = null;
+   
+      if (location.search != "")
+      {
+            var x = location.search.substr(1).split("&")
+            for (var i=0; i<x.length; i++)
+            {
+                  var y = x[i].split("=");
+                  pos[y[0]] = y[1];
+            }
+            if(pos.lng!=null && pos.lat!=null && pos.elv!=null)
+            {
+               ogFlyTo(scene,pos.lng,pos.lat,pos.elv,pos.yaw,pos.pitch,pos.roll);   
+            }     
+      }
+}
+</script>
+
+</head>
+<body onload="main()" style="background-color:#999999; overflow:hidden;">
+   
+   <div id="divTopRow">
+      <div id="divTopRowImageRight"></div>
+      <a href="http://www.fhnw.ch"><div id="divTopRowImageLeft"></div></a>
+      <div id="divTitle">OpenWebGlobe WebViewer</div>
+      <div id="divSubTitle"></div>
+   </div>
+   
+   <div id="divMenuLeft">   
+            <div class="classSeparatorTitle">Fly To</div>
+            <div id="divMenu3DModels">
+                  <ul class="classMenu">
+                        <li onclick="flyto(1)">Overview</li>
+                        <li onclick="flyto(2)">Aletsch Glacier</li>
+                        <li onclick="flyto(3)">Zermatt</li>
+                        <li onclick="flyto(4)">St. Moritz</li>
+                        <li onclick="flyto(5)">Zurich</li>
+                        <li onclick="flyto(6)">Bern</li>
+                        <li onclick="flyto(7)">Basel</li>
+                        <li onclick="flyto(8)">Geneva</li>
+                  </ul>
+            </div>
+            <div class="classSeparatorTitle">Contributors</div>
+            <div id="divMenuInfos">
+                  <a href="http://www.fhnw.ch"><div id="divContFhnw"></div></a>
+                  <a href="http://www.camptocamp.com/"><div id="divCampToCamp"></div></a>
+            </div>
+            <div class="classSeparatorTitle">Source Code available at</div>
+            <div id="divGitHub">
+                  <a href="https://github.com/OpenWebGlobe"><div id="divGitHubLogo"></div></a>
+            </div>
+            <div class="classSeparatorTitle">Contact</div>
+            <div id="divContact"> 
+            </div>
+            
+   </div>
+  <div id="divCanvas">  
+      <div id="divNavigationManual"></div>
+      <canvas id="canvas">
+      </canvas>
+   </div>
+
+ 
+   
+</body>
+

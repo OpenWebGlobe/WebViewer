@@ -145,8 +145,47 @@ FlyToAnimation.prototype.StartFlyTo = function(target_lng,target_lat,target_elv,
    }
    
    this.delta_yaw = this.target_yaw - this.start_yaw;
+   if(Math.abs(this.delta_yaw)>Math.PI)
+   {
+      if(this.delta_yaw>0)
+      {
+         this.delta_yaw=this.delta_yaw-(2*Math.PI);
+      }
+      else
+      {
+         this.delta_yaw=this.delta_yaw+(2*Math.PI);
+      }
+      
+   }
+   
+   
    this.delta_pitch = this.target_pitch - this.start_pitch;
-   this.delta_roll = this.target_roll - this.start_roll;
+   if(Math.abs(this.delta_pitch)>Math.PI)
+   {
+      if(this.delta_pitch>0)
+      {
+         this.delta_pitch=this.delta_pitch-(2*Math.PI);
+      }
+      else
+      {
+         this.delta_pitch=this.delta_pitch+(2*Math.PI);
+      }
+      
+   }
+   
+   this.delta_roll = this.target_roll - this.start_roll; 
+   if(Math.abs(this.delta_roll)>Math.PI)
+   {
+      if(this.delta_roll>0)
+      {
+         this.delta_roll=this.delta_roll-(2*Math.PI);
+      }
+      else
+      {
+         this.delta_roll=this.delta_roll+(2*Math.PI);
+      }
+      
+   }
 
    this.CalcTrajectory(target_lng,target_lat,target_elv);
    

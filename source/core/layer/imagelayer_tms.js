@@ -1,4 +1,3 @@
-<!--
 /*******************************************************************************
 #      ____               __          __  _      _____ _       _               #
 #     / __ \              \ \        / / | |    / ____| |     | |              #
@@ -22,50 +21,54 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      TUTORIAL 0: Draw text on screen
-*******************************************************************************/    
--->
-<!DOCTYPE html>
-<html lang="en">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
-<script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
-<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>
-<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
-<script type="text/javascript">
+goog.provide('owg.TMSImageLayer');
+
+goog.require('owg.GlobeUtils');
+goog.require('owg.OSMImageLayer');
+goog.require('owg.MercatorQuadtree');
+goog.require('owg.Texture');
 
 //------------------------------------------------------------------------------
-// called every frame:
-function OnRender(context)
+/**
+ * @constructor
+ * @description Image Layer for Tile Map Service
+ * @author Feng Lei, fenglei@aoe.ac.cn
+ */
+function TMSImageLayer()
 {
-   ogSetTextColor(context, 0,1,0);
-   ogDrawText(context, "Hello World", 0, 20);
-}
-//------------------------------------------------------------------------------
-function main()
-{
-   // (1) Create an OpenWebGlobe context using an existing canvas.
-   // The first parameter is canvas-id and second is "fullscreen"
-   var ctx = ogCreateContextFromCanvas("canvas", true);
+   this.transparency = 1.0;
    
-   // (2) Set the "Render-Callback" function.
-   // The callback function will be called everytime a frame is drawn.
-   // We need this to draw the text
-   ogSetRenderFunction(ctx, OnRender);
-   
-   // (3) Set the background color of the OpenWebGlobe context
-   // Default would be black
-   ogSetBackgroundColor(ctx, 0,0,0.5,1);
-}
-//------------------------------------------------------------------------------
-   
-</script>
+   //---------------------------------------------------------------------------
+   this.RequestTile = function(engine, quadcode, layer, cbfReady, cbfFailed, caller)
+   {
+      var coords = new Array(4);
+      var res = {};
+      this.quadtree.QuadKeyToTileCoord(quadcode, res);
+      res.y = Math.pow(2, res.lod)- 1 - res.y;
+      var sFilename = this.servers[this.curserver] + "/" + 
+                      res.lod + "/" + 
+                      res.x + "/" + 
+                      res.y + ".png";
+      
+                      
+                  
 
-</head>
-<body onload="main()">
-   <div style="text-align: center">
-   <canvas id="canvas"></canvas>          
-   </div>
-</body>
-</html>
+      var ImageTexture = new Texture(engine);  
+      ImageTexture.quadcode = quadcode;   // store quadcode in texture object
+      ImageTexture.layer = layer;
+      ImageTexture.cbfReady = cbfReady;   // store the ready callback in texture object
+      ImageTexture.cbfFailed = cbfFailed; // store the failure callback in texture object
+      ImageTexture.caller = caller;
+      ImageTexture.transparency = this.transparency;
+      ImageTexture.loadTexture(sFilename, _cbOSMTileReady, _cbOSMTileFailed, true); 
+       
+ 
+   };
+   
+}
+
+TMSImageLayer.prototype = new OSMImageLayer();
+
+//------------------------------------------------------------------------------
+
+
