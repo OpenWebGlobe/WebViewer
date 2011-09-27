@@ -384,7 +384,6 @@ var j=0;
 /**
  * @description Draws the Surface element. Ensure that "toGPU" is called before calling this method.
  * note: this method still needs some optimization
- * note: ranged draw must be supported soon
  * @param {boolean=} opt_ranged
  * @param {number=} opt_count
  * @param {number=} opt_offset

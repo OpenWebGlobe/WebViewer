@@ -32,7 +32,7 @@ goog.require('owg.mat4');
 * @class point
 * @constructor
 * 
-* @description todo...
+* @description a pointsprite class
 * 
 * @author Benjamin Loesch benjamin.loesch@fhnw.ch
 * 
@@ -52,20 +52,61 @@ function PointSprite(engine)
   this.modelMatrix = null;
 
   this.newModelMatrix = new mat4();
+  
+  this.points = [];
+  
+  this.offset = 0;
+  this.numofpoints = 0;
+  this.totalnumpoints = 70000000;
+
+  
 }
 
-
-
-
-PointSprite.prototype.SetPoints = function(options)
+PointSprite.prototype.SetCenter = function(lng,lat,elv)
 {
-  this.pointdata = new Float32Array(options['Vertices']);
-
-  if(options['Center'])
-  {
-      this.SetAsNavigationFrame(options['Center'][0],options['Center'][1],options['Center'][2]);
-  }
+      this.SetAsNavigationFrame(lng,lat,elv);
 }
+
+
+/**
+ * @description sets the point data
+ * @param {Array.<number>} newpoints the options object includes the center position as wgs84 and the point positions as x,y,z
+ */
+PointSprite.prototype.SetPoints = function(newpoints)
+{
+  this.numofpoints += newpoints.length/7;
+ //console.log(this.points.length);
+  this.pointdata=null;
+  this.pointdata = new Float32Array(newpoints);
+  this._ToGPU();
+//  console.log("number of points: "+this.numofpoints);
+}
+
+
+PointSprite.prototype.SetNumberOfPoints = function(numberofpoints)
+{
+  this.totalnumpoints1 = numberofpoints;
+  
+}
+
+/**
+ * @description frees all memory
+ */
+PointSprite.prototype.Destroy = function()
+{
+
+   if (this.vbo)
+   {
+      this.gl.deleteBuffer(this.vbo);
+      this.vbo = null;
+   }
+   this.pointdata = null;
+   this.vbo = null;
+
+}
+
+
+
 
 
 /**
@@ -126,75 +167,85 @@ PointSprite.prototype.SetAsNavigationFrame = function(lng,lat,elv)
 }
 
 
-
+/**
+ * @description draws the points.
+ */
 PointSprite.prototype.Draw = function()
 {
-
-    //1. set points into gpu
-    if(!this.vbo)
+    if(this.pointdata != null)
     {
-      this._ToGPU();
-    }
-  
-  
-  
-    if(this.modelMatrix)
-   {     
-      this.engine.PushMatrices();
-      this.newModelMatrix.Multiply(this.modelMatrix,this.engine.matModel);
-      this.engine.SetModelMatrix(this.newModelMatrix);   
-   }
-   
-   
-
-       // setup interleaved VBO and IBO
-   this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
- 
-  //3. activate shader and get attribute pointers
-    //case "pc": 
-                      this.gl.enableVertexAttribArray(0);
-                      this.gl.enableVertexAttribArray(1);
-                      this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
-                      this.gl.vertexAttribPointer(1, 4, this.gl.FLOAT, false, 7*4, 3*4); // color
-                      this.engine.shadermanager.UseShader_PC(this.engine.matModelViewProjection);
-                 //     break;
-  
-    //this.gl.enable(this.gl.BLEND);
-    //this.gl.blendFunc(this.gl.SRC_ALPHA,this.gl.ONE);
-
-  //4. draw the points
-   this.gl.drawArrays(this.gl.POINTS,0,this.pointdata.length/7); //2=anzahl punkte
-                    
-      if (this.texture)
+      //1. set points into gpu
+      if(!this.vbo)
       {
-         this.texture.Disable();
+        this._ToGPU();
       }
-  //5. disable webgl things
+    
   
+      if(this.modelMatrix)
+     {     
+        this.engine.PushMatrices();
+        this.newModelMatrix.Multiply(this.modelMatrix,this.engine.matModel);
+        this.engine.SetModelMatrix(this.newModelMatrix);   
+     }
+     
+     
+     // setup interleaved VBO and IBO
+     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
+   
+    //3. activate shader and get attribute pointers
+   
+      this.gl.enableVertexAttribArray(0);
+      this.gl.enableVertexAttribArray(1);
+      this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
+      this.gl.vertexAttribPointer(1, 4, this.gl.FLOAT, false, 7*4, 3*4); // color
+      var invmvp = new mat4();
+      invmvp.Inverse(this.engine.matModelViewProjection);
+      this.engine.shadermanager.UseShader_Point(this.engine.matModelViewProjection,invmvp);
+                        
+                        
+  
+    //4. draw the points
+     this.gl.drawArrays(this.gl.POINTS,0,this.numofpoints); //2=anzahl punkte
+                      
+  
+    
       this.gl.disableVertexAttribArray(0);
       this.gl.disableVertexAttribArray(1); 
-  
+      
       if(this.modelMatrix)
       {     
          this.engine.PopMatrices();   
-      } 
+      }
+    }
 }
 
 
+/**
+ * @description internal function writes everything to the gpu
+ */
+
 PointSprite.prototype._ToGPU = function()
 {
-   //test vertexbufferdata ungleich null
    // Create VB
+   if(this.vbo === null)
+   {
+    
     this.vbo = this.gl.createBuffer();
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, this.pointdata, this.gl.STATIC_DRAW);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, this.totalnumpoints, this.gl.STATIC_DRAW);
+    this.gl.bufferSubData(this.gl.ARRAY_BUFFER,0,this.pointdata);
+    this.offset += (this.pointdata.length)*4;
+   }
+   else
+   {
     
-    /*
-    // Create IB
-    this.ibo = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);
-    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.indexbufferdata, this.gl.STATIC_DRAW);
-    */
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
+    this.gl.bufferSubData(this.gl.ARRAY_BUFFER,this.offset,this.pointdata);
+    this.offset += (this.pointdata.length)*4;
+
+   }
+   
+    
 }
 
 

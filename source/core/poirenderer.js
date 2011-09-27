@@ -70,9 +70,9 @@ PoiRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
       {
          
          //check if poi is in viewfrustum
-         if(!this.frustum.TestBox(poi.posX,poi.posY,poi.posZ,poi.posX+0.001,poi.posY+0.001,poi.posZ+0.001))
+         if(!this.frustum.TestBox(poi.posX,poi.posY,poi.posZ,poi.posX+0.001,poi.posY+0.001,poi.posZ+0.001)) //something wrong here...
          {
-            return;   
+          //  return;   
          }
 
          

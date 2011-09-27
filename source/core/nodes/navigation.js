@@ -58,13 +58,13 @@ function NavigationNode()
       /** @type {number} */
       this._yaw = 0;
       /** @type {number} */
-      this._pitch = -0.3;
+      this._pitch = -0.03;
       /** @type {number} */
       this._roll = 0;
       /** @type {number} */
-      this._longitude = 116.261687;
+      this._longitude = 7.616000;
       /** @type {number} */
-      this._latitude = 40.099347;
+      this._latitude = 45.908800;
       /** @type {number} */
       this._ellipsoidHeight = 17000.0;
       
@@ -107,8 +107,6 @@ function NavigationNode()
       /** @type {boolean} */
       this._bRollAnim = false;
       /** @type {number} */
-      this._MinElevation = 150.0;
-      /** @type {number} */
       this._angle = 0.001;
       /** @type {number} */
       this._dist = -0.4;
@@ -146,7 +144,7 @@ function NavigationNode()
       
       // min altitude is currently 100 m, this can be customized in future.
       /** @type {number} */
-      this.minAltitude = 225;
+      this.minAltitude = 0;
       
       /** @type {ogCamera} */
       this.ogcam = null;
