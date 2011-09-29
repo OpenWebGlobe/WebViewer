@@ -64,7 +64,10 @@ GeometryRenderer.prototype.Render = function(vCameraPosition, matModelViewProjec
       {
          /** @type {PointSprite}*/
          var pointsprite = /** @type {PointSprite}*/this.geometryarray[i];
-         pointsprite.Draw();
+         if(!pointsprite.hide)
+         {
+            pointsprite.Draw();
+         }
       }
       else
       {
@@ -79,7 +82,7 @@ GeometryRenderer.prototype.Render = function(vCameraPosition, matModelViewProjec
                {
                   if(!this.frustum.TestBox(surface.bbmin[0],surface.bbmin[1],surface.bbmin[2],surface.bbmax[0],surface.bbmax[1],surface.bbmax[2]))
                   {
-                     return;   
+                    // return;   
                   }
                   else
                   {

@@ -106,6 +106,14 @@ function ShaderManager(gl)
    this.vs_poi = null;
    /** @type WebGLShader */
    this.fs_poi = null;
+   
+   //Point for PointClouds
+   /** @type WebGLProgram */
+   this.program_point = null;
+   /** @type WebGLShader */
+   this.vs_point = null;
+   /** @type WebGLShader */
+   this.fs_point = null;
 }
 
 //------------------------------------------------------------------------------
@@ -209,6 +217,20 @@ ShaderManager.prototype.UseShader_Poi = function(modelviewprojection, color)
    }    
 }
 //------------------------------------------------------------------------------
+/** 
+ * @param {mat4} modelviewprojection
+ * @param {mat4} invmatmodelviewprojection the inverse mvp
+ */
+ShaderManager.prototype.UseShader_Point = function(modelviewprojection, invmatmodelviewprojection)
+{
+   if (this.program_point)
+   {
+      this.gl.useProgram(this.program_point);
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_point, "matMVP"),false,modelviewprojection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_point, "matInvMVP"),false,invmatmodelviewprojection.Get());
+   }    
+}
+//------------------------------------------------------------------------------
 /**
  *  Initializes the point shader 
  *  internal use
@@ -290,7 +312,7 @@ ShaderManager.prototype.InitShader_PNT = function()
  */
 ShaderManager.prototype.InitShader_PC = function()
 {
-   var src_vertexshader_PC= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec4 aColor;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition, 1.0);\n   vColor = aColor;\n   gl_PointSize = 100.0;}\n";
+   var src_vertexshader_PC= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec4 aColor;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition, 1.0);\n   vColor = aColor;\n   gl_PointSize = 1.0;}\n";
    var src_fragmentshader_PC= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_FragColor = vColor;\n}\n\n";
   
    this.vs_pc = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PC);
@@ -465,6 +487,48 @@ ShaderManager.prototype.InitShader_Poi = function()
       }
    }
 }
+
+//------------------------------------------------------------------------------
+/**
+ *  Initializes the point,normal,color,texture shader 
+ *  internal use
+ */
+ShaderManager.prototype.InitShader_Point = function()
+{
+   
+   var src_vertexshader_Point= "uniform mat4 matMVP;\nuniform mat4 matInvMVP;\nattribute vec3 aPosition;\nattribute vec4 aColor;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition, 1.0);\n   vColor = aColor;\n   gl_PointSize = clamp(100000000.0/abs((distance(matMVP*vec4(aPosition, 1.0),matInvMVP*vec4(0.0,0.0,0.0,1.0)))),0.0,5.0);}\n";
+   var src_fragmentshader_Point= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_FragColor = vColor;\n}\n\n";
+      
+    
+   this.vs_point = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_Point);
+   this.fs_point= this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_Point);
+   
+   if (this.vs_point && this.fs_point)
+   {
+      // create program object
+      this.program_point = this.gl.createProgram();
+      
+      // attach our two shaders to the program
+      this.gl.attachShader(this.program_point, this.vs_point);
+      this.gl.attachShader(this.program_point, this.fs_point);
+      
+      // setup attributes
+      this.gl.bindAttribLocation(this.program_point, 0, "aPosition"); 
+      this.gl.bindAttribLocation(this.program_point, 1, "aColor");
+      
+      // linking
+      this.gl.linkProgram(this.program_point);
+      if (!this.gl.getProgramParameter(this.program_point, this.gl.LINK_STATUS)) 
+      {
+          alert(this.gl.getProgramInfoLog(this.program_point));
+          return;
+      }
+   }
+} 
+
+
+
+
 //------------------------------------------------------------------------------
 /**
  *  Initializes all shaders. 
@@ -481,6 +545,7 @@ ShaderManager.prototype.InitShaders = function()
    this.InitShader_PNCT();
    this.InitShader_Font();
    this.InitShader_Poi();
+   this.InitShader_Point();
 } 
 //------------------------------------------------------------------------------
 /**
