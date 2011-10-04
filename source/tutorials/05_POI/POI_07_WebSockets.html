@@ -195,7 +195,8 @@ function main()
    // reveive position data by websocket server.
    
    var ws = new WebSocket('ws://localhost:8181/consoleappsample');
-
+   //var ws = new WebSocket('ws://localhost:9999');
+   
    // when data is comming from the server, this metod is called
    ws.onmessage = function (evt) {
        OnNewPosition(evt);
@@ -203,12 +204,12 @@ function main()
 
    // when the connection is established, this method is called
    ws.onopen = function () {
-       
+       console.log("connected to server");
    };
 
    // when the connection is closed, this method is called
    ws.onclose = function () {
-      
+      console.log("disconnected from server");
    }
    
    //var cam = ogGetActiveCamera(scene);
