@@ -181,14 +181,15 @@ function engine3d()
 	
    // Default Background color
    /** @type {number} */
-   this.bg_r = 0;
+   this.bg_r = 0.670588;
    /** @type {number} */
-   this.bg_g = 0;
+   this.bg_g = 0.921569;
    /** @type {number} */
-   this.bg_b = 0;
+   this.bg_b = 1;
    /** @type {number} */
    this.bg_a = 1;
    
+	
    // Viewport
    /** @type {number} */
    this.vp_x = 0;
