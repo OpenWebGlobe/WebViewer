@@ -33,10 +33,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
-<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<!--<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
-<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>
+<!--<script type="text/javascript" src="http://benvanik.github.com/WebGL-Inspector/core/embed.js"></script>-->
 <script type="text/javascript">
 
 
@@ -46,7 +46,7 @@
 function OnRender(context)
 {
    ogSetTextColor(context,1,1,1);
-   ogDrawText(context, "Press 1 to move to a given position", 0, 130);
+  //ogDrawText(context, "Press 1 to move to a given position", 0, 130);
    ogSetTextColor(context,1,0,0);
 }
 
@@ -57,14 +57,29 @@ function OnKeyDown(ctx,key)
 {
    var scene = ogGetScene(ctx);
 
-   if(key == 49) // 1 - Fly to Davos
+   if(key == 49) // 1 - Fly to pointcloud
    {
-      //normal Fly-To Camera moves to the desired position.
-      //camera orientation remains the same.
-      
-      ogFlyTo(scene,9.821343,46.793029,8000); //scene,longitude,latitude,elevation
-      
+      ogFlyTo(scene,7.6374,47.5335,1285.8677); //scene,longitude,latitude,elevation
    }
+   
+   if(key == 50) // 2 - hide pointcloud
+   {
+      ogHideGeometry(geometry1);
+      ogHideGeometry(geometry2);
+      ogHideGeometry(geometry3);
+   }
+   
+   if(key == 51) // 3 - show pointcloud
+   {
+      ogShowGeometry(geometry1);
+      ogShowGeometry(geometry2);
+      ogShowGeometry(geometry3);
+   }
+   if(key == 52) // 3 - destroy part of pointcloud
+   {
+      ogDestroyGeometry(geometry1);
+   }
+   
 
 }
 
@@ -79,6 +94,7 @@ function main()
    var globe = ogCreateGlobe(ctx);
    
    // (3) Add an image and an elevation layer
+   
    var imgBlueMarble500 = 
    {
       url     : ["http://www.openwebglobe.org/data/img"],
@@ -93,10 +109,28 @@ function main()
       service : "i3d"
    };
    
-   ogAddImageLayer(globe, imgBlueMarble500);
-   ogAddElevationLayer(globe, elvSRTM_CH);
+  // ogAddImageLayer(globe, imgBlueMarble500);
+  // ogAddElevationLayer(globe, elvSRTM_CH);
    
+var imgSWISSTOPO = 
+   {
+      url     : ["http://10.42.2.37/"],
+      layer   : "swissimage", 
+      service : "owg"
+   };
+	
+	var elvDHM =
+	{
+		url     : ["http://10.42.2.37/"],
+      layer   : "DHM25",
+      service : "owg"
+	}
 
+   
+	ogAddImageLayer(globe, imgSWISSTOPO);
+   ogAddElevationLayer(globe, elvDHM);
+   
+   
    // (4) Set the "Render-Callback" function.
    // The callback function will be called everytime a frame is drawn.
    ogSetRenderFunction(ctx, OnRender);
@@ -112,31 +146,31 @@ function main()
    // (7) get the scene and the world
    var scene = ogGetScene(ctx);   
    var world = ogGetWorld(scene);
-   
-   var verts =[];
-   for(var i=0; i<180000;i++)
-   {
-      verts.push(Math.random()*100000);
-      verts.push(Math.random()*100000);
-      verts.push(Math.random()*100000);
-      verts.push(Math.random());
-      verts.push(Math.random());
-      verts.push(Math.random());
-      verts.push(1.0);
-   }
-   var points = {"id"  :  "1",
-                  "Center"  :  [9.821343,46.793029,8000],
-                  "VertexSemantic"  :  "pc",
-                  "Vertices"  :  verts
-                  }
+ 
                   
-      geometrylayer = ogCreateGeometryLayer(world,"ps");
+   geometrylayer = ogCreateGeometryLayer(world,"ps");
       
-      // if no indexbuffer -> then it's a pointsprite !
-      geometry = ogCreateGeometry(geometrylayer, points);
+   // if no indexbuffer -> then it's a pointsprite !
+   //geometry = ogCreateGeometry(geometrylayer, points);
    
-
-  
+   var pcoptions = { "id"               :  "1",
+                     "Center"           :  [7.637986,47.533279,281.261592],
+                     "VertexSemantic"   :  "pc",
+                     "PointUrl"         :  "points2.xyz",
+                     "NumberOfPoints"   :  3000000
+   }
+   
+   //geometry1 = ogCreateGeometry(geometrylayer,pcoptions);
+   
+   
+   geometry1 = ogLoadGeometryAsync(geometrylayer,"result.json");
+   geometry2 = ogLoadGeometryAsync(geometrylayer,"result2.json");
+   geometry3 = ogLoadGeometryAsync(geometrylayer,"result3.json");
+   
+   var cam = ogGetActiveCamera(scene);
+   ogSetPosition(cam,7.636721,47.53327,290);
+   ogSetOrientation(cam,90,0,0);
+   
 }
 //------------------------------------------------------------------------------
 </script>

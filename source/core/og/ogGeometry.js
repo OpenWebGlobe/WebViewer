@@ -69,6 +69,9 @@ function ogGeometry()
    this.options = null;
    /** @type {number} */
    this.layerID = -1; //the id of the geometrylayer containing this geometry.
+   /** @type {ogPointSprite}*/
+   this.ogpointsprite = null;
+   
 }
 //------------------------------------------------------------------------------
 /** @extends {ogObject} */
@@ -186,11 +189,19 @@ ogGeometry.prototype.SetPositionWGS84 = function(lng, lat, elv)
  */
 ogGeometry.prototype.Hide = function()
 {
-   for(var j=0;j<this.meshes_og.length;j++)
+   if(this.ogpointsprite != null)
    {
-      /**@type {ogMeshObject} */
-      var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
-      mesh.Hide();
+      this.ogpointsprite.Hide();
+      
+   }
+   else
+   {
+      for(var j=0;j<this.meshes_og.length;j++)
+      {
+         /**@type {ogMeshObject} */
+         var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+         mesh.Hide();
+      }
    }
 
 }
@@ -201,11 +212,19 @@ ogGeometry.prototype.Hide = function()
  */
 ogGeometry.prototype.Show = function()
 {
-   for(var j=0;j<this.meshes_og.length;j++)
+   
+   if(this.ogpointsprite != null)
    {
-      /**@type {ogMeshObject} */
-      var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
-      mesh.Show();
+      this.ogpointsprite.Show(); 
+   }
+   else
+   {
+      for(var j=0;j<this.meshes_og.length;j++)
+      {
+         /**@type {ogMeshObject} */
+         var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+         mesh.Show();
+      }
    }
 }
 
@@ -243,7 +262,7 @@ ogGeometry.prototype._cbfjsondownload = function()
 ogGeometry.prototype.CreateFromJSONObject = function(jsonobject)
 {
    var mesharray = jsonobject;
-   if(jsonobject['indexbuffer']==null)
+   if(jsonobject['Type']=="pointcloud")
    {
       //if there is no indexbuffer -> display the geometry as pointsprite.
       this.options = jsonobject;
@@ -270,8 +289,6 @@ ogGeometry.prototype.CreateFromJSONObject = function(jsonobject)
       var renderer = this._GetGeometryRenderer();
       this.indexInRendererArray = renderer.AddGeometry(this.meshes);
    }
-      
-
 }
 
 //------------------------------------------------------------------------------
@@ -294,8 +311,26 @@ ogGeometry.prototype.loadGeometryFromJSON = function(url)
    
    var me=this;
    this.http.onreadystatechange = function(){me._cbfjsondownload();};
+   //this.http.onprogress = function(){me._cbfonprogress();}
    this.http.send();  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -2511,3 +2511,8 @@ function ogSetCanvasSizeOffset(scene_id,widthoffset,heightoffset)
   _fncResize(null);
 }
 goog.exportSymbol('ogSetCanvasSizeOffset', ogSetCanvasSizeOffset);
+
+
+
+
+
