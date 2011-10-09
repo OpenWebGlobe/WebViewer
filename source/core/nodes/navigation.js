@@ -142,9 +142,9 @@ function NavigationNode()
       this.matR2 = new mat4();
       this.matCami3d.Cami3d();
       
-      // min altitude is currently 100 m, this can be customized in future.
+      // min altitude is currently 100 m, this can be changed soon...
       /** @type {number} */
-      this.minAltitude = 0;
+      this.minAltitude = 100;
       
       /** @type {ogCamera} */
       this.ogcam = null;

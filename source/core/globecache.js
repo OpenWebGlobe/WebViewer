@@ -134,28 +134,32 @@ GlobeCache.prototype.GetCachedBlock = function(quadcode)
 }
 //------------------------------------------------------------------------------
 /**
- * @description Retrieve maximum level of detail
+ * @description Retrieve maximum level of detail. (Scenes without elevation are allowed)
  */
 GlobeCache.prototype.GetMaxLod = function()
 {
-   var maxlod = 0;
+   var maximagelod = 0;
+   var maxelevationlod = 0;
    
    if (this.elevationlayerlist.length > 0)
    {
       for (var i=0;i<this.elevationlayerlist.length;i++)
       {
-         maxlod = Math.max(maxlod, this.elevationlayerlist[i].GetMaxLod())-1;
-      }
-   }
-   else
-   {
-      for (var i=0;i<this.imagelayerlist.length;i++)
-      {
-         maxlod = Math.max(maxlod, this.imagelayerlist[i].GetMaxLod());
+         maxelevationlod = Math.max(maxelevationlod, this.elevationlayerlist[i].GetMaxLod());
       }
    }
    
-   return maxlod;
+   for (var i=0;i<this.imagelayerlist.length;i++)
+   {
+      maximagelod = Math.max(maximagelod, this.imagelayerlist[i].GetMaxLod());
+   }
+   
+   if (maxelevationlod > 0)
+   {
+      return Math.min(maxelevationlod,maximagelod);  
+   }
+   
+   return maximagelod;
 }
 //------------------------------------------------------------------------------
 
