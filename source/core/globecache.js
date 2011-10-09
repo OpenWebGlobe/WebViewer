@@ -140,9 +140,19 @@ GlobeCache.prototype.GetMaxLod = function()
 {
    var maxlod = 0;
    
-   for (var i=0;i<this.imagelayerlist.length;i++)
+   if (this.elevationlayerlist.length > 0)
    {
-      maxlod = Math.max(maxlod, this.imagelayerlist[i].GetMaxLod());
+      for (var i=0;i<this.elevationlayerlist.length;i++)
+      {
+         maxlod = Math.max(maxlod, this.elevationlayerlist[i].GetMaxLod())-1;
+      }
+   }
+   else
+   {
+      for (var i=0;i<this.imagelayerlist.length;i++)
+      {
+         maxlod = Math.max(maxlod, this.imagelayerlist[i].GetMaxLod());
+      }
    }
    
    return maxlod;
