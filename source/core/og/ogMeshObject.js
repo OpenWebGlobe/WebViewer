@@ -129,14 +129,17 @@ ogMeshObject.prototype.Hide = function()
  * @param {number} lng
  * @param {number} lat
  * @param {number} elv
+ * @param  {number=} yaw
+ * @param  {number=} pitch
+ * @param  {number=} roll
  */
-ogMeshObject.prototype.SetPositionWGS84 = function(lng,lat,elv)
+ogMeshObject.prototype.SetPositionWGS84 = function(lng,lat,elv, yaw, pitch, roll)
 {
    for(var k=0; k<this.surfaces_og.length;k++)
    {
       /** @type {ogSurface} */
       var surf = /** @type {ogSurface} */this.surfaces_og[k];
-      surf.SetPositionWGS84(lng,lat,elv);
+      surf.SetPositionWGS84(lng,lat,elv, yaw, pitch, roll);
    }   
 }
 
@@ -155,3 +158,4 @@ ogMeshObject.prototype.Show = function()
       surf.Show();
    } 
 }
+

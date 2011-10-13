@@ -1076,9 +1076,12 @@ Surface.prototype.UpdateBillboardMatrix = function()
  * @description sets the model matrix as a navigation frame matrix.
  * @param {number} lng the longitude coordinate
  * @param {number} lat the latitude coordinate
- * @param {number} elv the elevation 
+ * @param {number} elv the elevation
+* @param  {number=} yaw
+ * @param  {number=} pitch
+ * @param  {number=} roll
  */
-Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv)
+Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv,yaw,pitch,roll)
 {
    var coords = new GeoCoord(lng, lat,elv);
    var cartesianCoordinates = new Array(3);
@@ -1119,8 +1122,35 @@ Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv)
    var scaledNavMat = new mat4();
    scaledNavMat.Multiply(navMat,scaleMat);
    
-   var rotatedMat = new mat4();
-   rotatedMat.RotationX(-1.57079633);
+   var rotatedMatX = new mat4();
+   var rotatedMatY = new mat4();
+   var rotatedMatZ = new mat4();
+   if(yaw)
+   {
+     rotatedMatX.RotationX(yaw*Math.PI/180); 
+   }
+   else
+   {
+      rotatedMatX.RotationX(-1.57079633);
+   }
+   
+   if(pitch)
+   {
+     rotatedMatY.RotationY(pitch*Math.PI/180); 
+   }
+   
+   if(roll)
+   {
+     rotatedMatZ.RotationZ(roll*Math.PI/180); 
+   }
+
+  var xyrotmat = new mat4();
+  xyrotmat.Multiply(rotatedMatX,rotatedMatY);
+  
+  var rotatedMat = new mat4();
+  rotatedMat.Multiply(xyrotmat,rotatedMatZ);
+  
+   
    
    var scaledRotNavMat = new mat4();
    scaledRotNavMat.Multiply(scaledNavMat,rotatedMat);
@@ -1151,6 +1181,9 @@ Surface.prototype.CopyFrom = function(surface)
    this.indexsemantic = surface.indexsemantic;
    
 }
+
+
+
 
 goog.exportSymbol('Surface', Surface);
 goog.exportProperty(Surface.prototype, 'Draw', Surface.prototype.Draw);

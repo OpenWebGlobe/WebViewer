@@ -172,14 +172,17 @@ ogGeometry.prototype.GetMeshAt = function(index)
  * @param {number} lng
  * @param  {number} lat
  * @param  {number} elv
+ * @param  {number=} yaw
+ * @param  {number=} pitch
+ * @param  {number=} roll
  */
-ogGeometry.prototype.SetPositionWGS84 = function(lng, lat, elv)
+ogGeometry.prototype.SetPositionWGS84 = function(lng, lat, elv, yaw, pitch, roll)
 {
    for(var j=0;j<this.meshes_og.length;j++)
    {
       /**@type {ogMeshObject} */
       var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
-      mesh.SetPositionWGS84(lng,lat,elv);
+      mesh.SetPositionWGS84(lng,lat,elv,yaw,pitch,roll);
    }
 }
 
@@ -227,6 +230,7 @@ ogGeometry.prototype.Show = function()
       }
    }
 }
+
 
 
 //------------------------------------------------------------------------------

@@ -102,10 +102,13 @@ ogSurface.prototype.ogSurface_callbackready = function(surface)
 * @param {number} lng
 * @param {number} lat
 * @param {number} elv
+* @param  {number=} yaw
+* @param  {number=} pitch
+* @param  {number=} roll
 */
-ogSurface.prototype.SetPositionWGS84 = function(lng,lat,elv)
+ogSurface.prototype.SetPositionWGS84 = function(lng, lat, elv, yaw, pitch, roll)
 {  
-   this.surface.SetAsNavigationFrame(lng,lat,elv);
+   this.surface.SetAsNavigationFrame(lng,lat,elv,yaw,pitch,roll);
 }
 //------------------------------------------------------------------------------
 /**
@@ -210,6 +213,7 @@ ogSurface.prototype.Hide = function()
       this.surface.hide = true;
    }
 }
+
 
 
 
