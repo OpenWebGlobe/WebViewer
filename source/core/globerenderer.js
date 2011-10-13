@@ -822,8 +822,112 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
       pickresult["lat"] = gc._wgscoords[1];
       pickresult["elv"] = gc._wgscoords[2];
    }
+ }
+ 
+ //------------------------------------------------------------------------------
+/**
+ * @description PickEllipsoid: Retrieve clicked position (low precision result without elevation)
+ * The result contains the following:
+ *    pickresult.hit: true if there was a hit with terrain
+ *    pickresult.lng: longitude at mouse position
+ *    pickresult.lat: latitude at mouse position
+ *    pickresult.elv: elevation at mouse position (always 0)
+ *    pickresult.x: geocentric cartesian x-coordinate at mouse position
+ *    pickresult.y: geocentric cartesian y-coordinate at mouse position
+ *    pickresult.z: geocentric cartesian z-coordinate at mouse position
+ */
+GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult)
+{
+   var pck = this.engine.GetDirectionMousePos(mx, my, this.matPick);           
+   var candidates = new Array();
+   pickresult["hit"] = false;
+  
+                                       
+   var b2 = WGS84_b_scaled*WGS84_b_scaled;
+   var a2 = WGS84_a_scaled*WGS84_a_scaled;
+   var t0,t1,N,h;
 
+   var D = 2*b2*pck.y*pck.diry*pck.x*pck.dirx + 2*a2*pck.y*pck.diry*pck.z*pck.dirz +
+      2*a2*pck.x*pck.dirx*pck.z*pck.dirz + a2*b2*pck.dirx*pck.dirx -
+      a2*pck.dirx*pck.dirx*pck.z*pck.z - b2*pck.dirx*pck.dirx*pck.y*pck.y -
+      a2*pck.dirz*pck.dirz*pck.x*pck.x + a2*a2*pck.dirz*pck.dirz -
+      a2*pck.dirz*pck.dirz*pck.y*pck.y - b2*pck.diry*pck.diry*pck.x*pck.x +
+      b2*a2*pck.diry*pck.diry - a2*pck.diry*pck.diry*pck.z*pck.z;
+
+   if (D<0)
+   {
+      return;  // NO SOLUTION, LINE DOESN'T INTERSECT ELLIPSOID
+   }
+
+   N  = b2*pck.dirx*pck.dirx + a2*pck.dirz*pck.dirz + b2*pck.diry*pck.diry;
+
+   h = -b2*pck.y*pck.diry
+      -b2*pck.x*pck.dirx
+      -a2*pck.z*pck.dirz;
+
+   t0 = (h + WGS84_b_scaled*Math.sqrt(D)) / N;
+   t1 = (h - WGS84_b_scaled*Math.sqrt(D)) / N;
+
+   var P0 = {x:0,y:0,z:0};
+   var P1 = {x:0,y:0,z:0};
+   P1.x = pck.x + pck.dirx*t0;
+   P1.y = pck.y + pck.diry*t0;
+   P1.z = pck.z + pck.dirz*t0;
    
+   P0.x = pck.x + pck.dirx*t1;
+   P0.y = pck.y + pck.diry*t1;
+   P0.z = pck.z + pck.dirz*t1;
+   
+   var dx2, dy2, dz2;
+
+   dx2 = P1.x-pck.x; dx2*=dx2;
+   dy2 = P1.y-pck.y; dy2*=dy2;
+   dz2 = P1.z-pck.z; dz2*=dz2;
+   var mindist1 = Math.sqrt(dx2 + dy2 + dz2);
+
+   dx2 = P0.x-pck.x; dx2*=dx2;
+   dy2 = P0.y-pck.y; dy2*=dy2;
+   dz2 = P0.z-pck.z; dz2*=dz2;
+   var mindist0 = Math.sqrt(dx2 + dy2 + dz2);
+
+   if (mindist0<mindist1)
+   {
+      if (t0>=0)
+      {
+         pickresult["hit"] = true;
+         pickresult["x"] = P0.x;
+         pickresult["y"] = P0.y;
+         pickresult["z"] = P0.z;
+      }
+      else
+      {
+         return;
+      }
+   }
+   else
+   {
+      if (t0>=0)
+      {
+         pickresult["hit"] = true;
+         pickresult["x"] = P1.x;
+         pickresult["y"] = P1.y;
+         pickresult["z"] = P1.z;
+      }
+      else
+      {
+         return;
+      }
+   }
+
+   if (pickresult["hit"])
+   {
+      // calculate lng/lat/elv
+      var gc = new GeoCoord(0,0,0);
+      gc.FromCartesian(pickresult["x"],pickresult["y"],pickresult["z"]);
+      pickresult["lng"] = gc._wgscoords[0];
+      pickresult["lat"] = gc._wgscoords[1];
+      pickresult["elv"] = gc._wgscoords[2]; // should be around 0
+   }
  }
  
  //-----------------------------------------------------------------------------

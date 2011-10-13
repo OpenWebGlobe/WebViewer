@@ -26,6 +26,7 @@ goog.provide('owg.engine3d');
 goog.require('goog.debug.Logger');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.events.MouseWheelHandler');
 goog.require('owg.Font');
 goog.require('owg.Surface');
 goog.require('owg.SceneGraph');
@@ -734,13 +735,11 @@ engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
    var CoorOnNearPlane = new vec3();   
        CoorOnNearPlane.Set(mx,my,mz);      
    var CoorOnNearPlaneWorld = mvpInv.MultiplyVec3(CoorOnNearPlane);
-       // goog.debug.Logger.getLogger('owg.engine3d').info("engine CoorOnNearPlaneWorld: "+CoorOnNearPlaneWorld.ToString());
 
    var CoorOnFarPlane = new vec3();   
        CoorOnFarPlane.Set(fx,fy,fz);              
    var CoorOnFarPlaneWorld = mvpInv.MultiplyVec3(CoorOnFarPlane);
-       // goog.debug.Logger.getLogger('owg.engine3d').info("engine CoorOnFarPlaneWorld: "+CoorOnFarPlaneWorld.ToString());
-                    
+              
    //direction
    var dirx = CoorOnFarPlaneWorld.Get()[0] - CoorOnNearPlaneWorld.Get()[0];
    var diry = CoorOnFarPlaneWorld.Get()[1] - CoorOnNearPlaneWorld.Get()[1];
@@ -1054,6 +1053,29 @@ engine3d.prototype.PickGlobe = function(mx, my, pickresult)
    if (this.scene)
    {
       this.scene.nodeRenderObject.globerenderer.PickGlobe(mx,my,pickresult);
+   }
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description PickEllipsoid: Retrieve clicked position on ellipsoid (low precision result without elevation)
+ * @param {number} mx
+ * @param {number} my
+ * @param {Object} pickresult
+ * The result contains the following:
+ *    pickresult["hit"]: true if there was a hit with terrain
+ *    pickresult["lng"]: longitude at mouse position
+ *    pickresult["lat"]: latitude at mouse position
+ *    pickresult["elv"]: elevation at mouse position (this is always 0)
+ *    pickresult["x"]: geocentric cartesian x-coordinate at mouse position
+ *    pickresult["y"]: geocentric cartesian y-coordinate at mouse position
+ *    pickresult["z"]: geocentric cartesian z-coordinate at mouse position
+ */
+engine3d.prototype.PickEllipsoid = function(mx, my, pickresult)
+{
+   if (this.scene)
+   {
+      this.scene.nodeRenderObject.globerenderer.PickEllipsoid(mx,my,pickresult);
    }
 }
 

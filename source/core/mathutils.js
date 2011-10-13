@@ -32,13 +32,23 @@ goog.provide('owg.MathUtils');
  */
 var WGS84_a = 6378137.0;
 //------------------------------------------------------------------------------
-// Constants
+/**
+ * @description semi major axis scaled
+ * @type number
+ */
+var WGS84_a_scaled = 0.76033327106634033517126264229568;
 //------------------------------------------------------------------------------
 /**
  * @description semi minor axis [m]
  * @type number
  */
-var WGS84_b = 6356752.314245; 
+var WGS84_b = 6356752.314245;
+//------------------------------------------------------------------------------
+/**
+ * @description semi minor axis scaled
+ * @type number
+ */
+var WGS84_b_scaled = 0.75778401756632537440364055676944;
 //------------------------------------------------------------------------------
 /**
  * @description first numeric exccentrity (squared)
