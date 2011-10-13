@@ -433,7 +433,7 @@ Surface.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcol
                       this.engine.shadermanager.UseShader_PNT(this.engine.matNormal, this.engine.matModelView, this.engine.matProjection);
                       break;
                         
-        case "pc": 
+        case "pc":
                       this.gl.enableVertexAttribArray(0);
                       this.gl.enableVertexAttribArray(1);
                       this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
@@ -1127,7 +1127,7 @@ Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv,yaw,pitch,roll)
    var rotatedMatZ = new mat4();
    if(yaw)
    {
-     rotatedMatX.RotationX(yaw*Math.PI/180); 
+     rotatedMatX.RotationX((pitch*Math.PI/180)); 
    }
    else
    {
@@ -1136,7 +1136,7 @@ Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv,yaw,pitch,roll)
    
    if(pitch)
    {
-     rotatedMatY.RotationY(pitch*Math.PI/180); 
+     rotatedMatY.RotationY((yaw*Math.PI/180)+1.57079633); 
    }
    
    if(roll)
