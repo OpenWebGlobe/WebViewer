@@ -30,6 +30,8 @@ var searchpoi;
 function main()
 {
       var browserName=navigator.appName;
+      //disable contextmenu over canvas
+      document.getElementById("canvas").oncontextmenu = function(event){ event.preventDefault();event.stopPropagation();return false;};
           
       //check for internet explorer users
       if(browserName == "Microsoft Internet Explorer")
@@ -116,7 +118,10 @@ function main()
             //set a poi
             searchpoi = ogCreatePOI(searchpoilayer,poidef);
             checkUrlParameters();
-      
+            
+            //set flyto speed
+            ogSetFlightDuration(scene,6000);
+
       }
 
 }
@@ -272,7 +277,7 @@ function checkUrlParameters()
             <div id="divMenuSearch">
 
                   <input id="txtInput" type="text" size="20" onkeypress="searchFiledKeyPressed(event)">
-                  <input type="button" value="Go" onclick="search()">
+                  <input id="btgo" type="button" value="Go" onclick="search()">
 
             </div>
             <div class="classSeparatorTitle">Boundaries</div>
@@ -308,9 +313,6 @@ function checkUrlParameters()
       <div id="divNavigationManual"></div>
       <canvas id="canvas">
       </canvas>
-   </div>
-
- 
-   
+   </div> 
 </body>
 
