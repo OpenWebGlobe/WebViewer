@@ -112,6 +112,18 @@ ogSurface.prototype.SetPositionWGS84 = function(lng, lat, elv, yaw, pitch, roll)
 }
 //------------------------------------------------------------------------------
 /**
+* @description set position of the surface
+* @param {number} lng
+* @param {number} lat
+* @param {number} elv
+* @param {Array.<{number}>} quat quaternion paramters qx,qy,qz,qw
+*/
+ogSurface.prototype.SetPositionWGS84Quat = function(lng, lat, elv, quat)
+{  
+   this.surface.SetAsNavigationFrameQuat(lng,lat,elv,quat);
+}
+//------------------------------------------------------------------------------
+/**
 * @description parse options
 * @param {SurfaceOptions} options
 * @ignore

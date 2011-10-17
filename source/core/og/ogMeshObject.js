@@ -143,6 +143,24 @@ ogMeshObject.prototype.SetPositionWGS84 = function(lng,lat,elv, yaw, pitch, roll
    }   
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Sets the postion of the whole geometry
+ * @param {number} lng
+ * @param {number} lat
+ * @param {number} elv
+ * @param {Array.<{number}>} quat quaternion paramters qx,qy,qz,qw
+ */
+ogMeshObject.prototype.SetPositionWGS84Quat = function(lng,lat,elv, quat)
+{
+   for(var k=0; k<this.surfaces_og.length;k++)
+   {
+      /** @type {ogSurface} */
+      var surf = /** @type {ogSurface} */this.surfaces_og[k];
+      surf.SetPositionWGS84Quat(lng,lat,elv,quat);
+   }   
+}
+
 
 
 /**

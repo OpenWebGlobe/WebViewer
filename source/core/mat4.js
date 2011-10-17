@@ -678,6 +678,25 @@ mat4.prototype.Cami3d = function()
 
 //------------------------------------------------------------------------------
 /**
+ * @description: Calcs a rotation matrix out of a quaterion
+ *
+ */
+mat4.prototype.FromQuaterion = function(quat)
+{
+   var a = quat[0];
+   var b = quat[1];
+   var c = quat[2];
+   var d = quat[3];
+   
+   //ToDo: ----->-------------->-------------->----------------->------------->------------------->---------------->-><<_--------------->
+   this._values[0] = a*a+b*b-c*c-d*d; this._values[4] = 2*b*c-2*a*d;  this._values[8]  = 2*b*d+2*a*c; this._values[12] = 0;
+   this._values[1] = 2*b*c+2*a*d; this._values[5] = a*a-b*b+c*c-d*d;  this._values[9]  = 2*c*d-2*a*b;  this._values[13] = 0;
+   this._values[2] = 2*b*d-2*a*c; this._values[6] = 2*c*d+2*a*b; this._values[10] = a*a-b*b-c*c+d*d;  this._values[14] = 0;
+   this._values[3] = 0; this._values[7] = 0;  this._values[11] = 0;  this._values[15] = 1;
+}
+
+//------------------------------------------------------------------------------
+/**
  * @description Calculate Inverse Matrix
  * 
  */
