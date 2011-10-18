@@ -89,7 +89,6 @@ GeometryRenderer.prototype.Render = function(vCameraPosition, matModelViewProjec
                      this.engine.gl.enable(this.engine.gl.BLEND);
                      this.engine.gl.depthFunc(this.engine.gl.LEQUAL);
                      this.engine.gl.blendFunc(this.engine.gl.SRC_ALPHA,this.engine.gl.ONE_MINUS_SRC_ALPHA);
-                     this.engine.gl.
                      surface.Draw();
                      this.engine.gl.disable(this.engine.gl.BLEND);
                   }
