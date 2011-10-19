@@ -172,14 +172,35 @@ ogGeometry.prototype.GetMeshAt = function(index)
  * @param {number} lng
  * @param  {number} lat
  * @param  {number} elv
+ * @param  {number=} yaw
+ * @param  {number=} pitch
+ * @param  {number=} roll
  */
-ogGeometry.prototype.SetPositionWGS84 = function(lng, lat, elv)
+ogGeometry.prototype.SetPositionWGS84 = function(lng, lat, elv, yaw, pitch, roll)
 {
    for(var j=0;j<this.meshes_og.length;j++)
    {
       /**@type {ogMeshObject} */
       var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
-      mesh.SetPositionWGS84(lng,lat,elv);
+      mesh.SetPositionWGS84(lng,lat,elv,yaw,pitch,roll);
+   }
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Sets the postion of the whole geometry
+ * @param {number} lng
+ * @param  {number} lat
+ * @param  {number} elv
+ * @param {Array.<{number}>} quat quaternion paramters qx,qy,qz,qw
+ */
+ogGeometry.prototype.SetPositionWGS84Quat = function(lng, lat, elv, quat)
+{
+   for(var j=0;j<this.meshes_og.length;j++)
+   {
+      /**@type {ogMeshObject} */
+      var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+      mesh.SetPositionWGS84Quat(lng,lat,elv,quat);
    }
 }
 
@@ -227,6 +248,7 @@ ogGeometry.prototype.Show = function()
       }
    }
 }
+
 
 
 //------------------------------------------------------------------------------

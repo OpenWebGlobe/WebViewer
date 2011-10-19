@@ -1972,18 +1972,38 @@ goog.exportSymbol('ogDestroyGeometry', ogDestroyGeometry);
 *   @param {number} lng
 *   @param {number} lat
 *   @param {number} elv
+*   @param {number=} yaw
+*   @param {number=} pitch
+*   @param {number=} roll
 */
-function ogSetGeometryPositionWGS84(geometry_id, lng, lat, elv)
+function ogSetGeometryPositionWGS84(geometry_id, lng, lat, elv, yaw, pitch, roll)
 {
    var geometry = /** @type {ogGeometry} */_GetObjectFromId(geometry_id);
    if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
    {
-     return geometry.SetPositionWGS84(lng, lat, elv);
+     return geometry.SetPositionWGS84(lng, lat, elv, yaw, pitch, roll);
    }
    return -1;
 }
 goog.exportSymbol('ogSetGeometryPositionWGS84', ogSetGeometryPositionWGS84);
-
+//------------------------------------------------------------------------------
+/** @description 
+*   @param {number} geometry_id
+*   @param {number} lng
+*   @param {number} lat
+*   @param {number} elv
+*   @param {Array.<{number}>} quat quaternion paramters qx,qy,qz,qw
+*/
+function ogSetGeometryPositionWGS84Quat(geometry_id, lng, lat, elv, quat)
+{
+   var geometry = /** @type {ogGeometry} */_GetObjectFromId(geometry_id);
+   if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
+   {
+     return geometry.SetPositionWGS84Quat(lng, lat, elv, quat);
+   }
+   return -1;
+}
+goog.exportSymbol('ogSetGeometryPositionWGS84Quat', ogSetGeometryPositionWGS84Quat);
 //------------------------------------------------------------------------------
 /** @description gets the number of meshObjects in a geometry. 
 *   @param {number} geometry_id
@@ -2072,7 +2092,6 @@ function ogPickGeometry(scene_id,mx,my)
    return -1;     
 }
 goog.exportSymbol('ogPickGeometry', ogPickGeometry);
-
 //------------------------------------------------------------------------------
 //##############################################################################
 // ** Mesh OBJECT **

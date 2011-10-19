@@ -102,10 +102,25 @@ ogSurface.prototype.ogSurface_callbackready = function(surface)
 * @param {number} lng
 * @param {number} lat
 * @param {number} elv
+* @param  {number=} yaw
+* @param  {number=} pitch
+* @param  {number=} roll
 */
-ogSurface.prototype.SetPositionWGS84 = function(lng,lat,elv)
+ogSurface.prototype.SetPositionWGS84 = function(lng, lat, elv, yaw, pitch, roll)
 {  
-   this.surface.SetAsNavigationFrame(lng,lat,elv);
+   this.surface.SetAsNavigationFrame(lng,lat,elv,yaw,pitch,roll);
+}
+//------------------------------------------------------------------------------
+/**
+* @description set position of the surface
+* @param {number} lng
+* @param {number} lat
+* @param {number} elv
+* @param {Array.<{number}>} quat quaternion paramters qx,qy,qz,qw
+*/
+ogSurface.prototype.SetPositionWGS84Quat = function(lng, lat, elv, quat)
+{  
+   this.surface.SetAsNavigationFrameQuat(lng,lat,elv,quat);
 }
 //------------------------------------------------------------------------------
 /**
@@ -210,6 +225,7 @@ ogSurface.prototype.Hide = function()
       this.surface.hide = true;
    }
 }
+
 
 
 

@@ -29,7 +29,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
 <script type="text/javascript">
 
@@ -136,7 +139,29 @@ function OnKeyDown(ctx,key)
                                  22,23,20]
                      
                   }
-      ]];               
+      ],[
+                  {   
+                     "id"  :  "1",
+                     "Center"  :  [7.66, 46.13, 10000],
+                     "DiffuseMap"  :  "texture.png",
+                     "VertexSemantic"  :  "pc",
+                     "Vertices"  :  [	-100,-100,100,1,0,0,1,
+                                    -100,100,100,1,0,0,1,
+                                    100,-100,100,1,0,0,1,
+                                    100,100,100,1,0,0,1,
+                                    100,-100,100,1,0,0,1,
+                                    100,100,100,1,0,0,1,
+                                    100,-100,-100,1,0,0,1,
+                                    100,100,-100,1,0,0,1],
+                     "IndexSemantic"  :  "LINES",
+                     "Indices"  :  [	3,1,0,
+                                       2,3,0,
+                                       7,5,4,
+                                       6,7,4]
+                     
+                  }
+      ]];
+    
       geometry = ogCreateGeometry(geometrylayer, cube);
    }
    if(key == 51) // 3 - Destroy a geometrylayer
@@ -167,9 +192,26 @@ function OnKeyDown(ctx,key)
    {
       ogShowGeometry(geometry);
    }
+   if(key == 38) // up - Turn Geometry
+   {
+      yaw = yaw+1;
+      ogSetGeometryPositionWGS84(geometry,7.66, 46.13, 10000,yaw,pitch,roll);
+   }
+   if(key == 39) // down - Turn Geometry
+   {
+      pitch = pitch+1;
+      ogSetGeometryPositionWGS84(geometry,7.66, 46.13, 10000,yaw,pitch,roll);
+   }
+   if(key == 40) // rigth - Turn Geometry
+   {
+      roll=roll+1;
+      ogSetGeometryPositionWGS84(geometry,7.66, 46.13, 10000,yaw,pitch,roll);
+   }
    
 }
-
+var yaw = 0;
+var pitch = 0;
+var roll = 0;
 
 //------------------------------------------------------------------------------
 function main()

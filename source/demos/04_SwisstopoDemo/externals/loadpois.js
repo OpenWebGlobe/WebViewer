@@ -59,14 +59,6 @@ poidef = {//icon     :"../images/city.png",
                ,visibilityRange : [5,100] };
  var poi = ogCreatePOI(poilayer,poidef);
 
-poidef = {//icon     :"../images/city.png",
-               text 		:"St. Gallen",
-               position : [9.3636685533198,47.4240213836906,737.9],
-               size 		: 	10,
-               flagpole : false
-               ,visibilityRange : [5,100] };
- var poi = ogCreatePOI(poilayer,poidef);
-
 
 poidef = {//icon     :"../images/city.png",
                text 		:"Luzern",
