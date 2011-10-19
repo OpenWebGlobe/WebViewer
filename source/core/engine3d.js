@@ -720,6 +720,7 @@ engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
    var mvpInv = new mat4();
    mvpInv.Inverse(mvp);
    
+   
    var winx = x;
    var winy = this.height-y-1;
    var winz = 0;
@@ -1057,6 +1058,19 @@ engine3d.prototype.PickGlobe = function(mx, my, pickresult)
 }
 
 //------------------------------------------------------------------------------
+/**
+ * @description UpdatePickMatrix: Updates the pick matrix
+ * @param {mat4} matView
+ */
+engine3d.prototype.UpdatePickMatrix = function(matView)
+{
+   if (this.scene)
+   {
+      var pickmatrix = new mat4();
+      pickmatrix.Multiply(this.matProjection, matView);
+      this.scene.nodeRenderObject.globerenderer.matPick = pickmatrix;
+   }
+}
 /**
  * @description PickEllipsoid: Retrieve clicked position on ellipsoid (low precision result without elevation)
  * @param {number} mx

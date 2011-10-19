@@ -45,14 +45,12 @@ function SceneGraph(engine)
    /** @type {engine3d} */
    this.engine = engine;         // Render Engine
    
-   this.navigation = [new GlobeNavigationNode(), new NavigationNode()];
-   this.navigation[0].SetEngine(engine);
-   this.navigation[0].InitNode();
-   this.navigation[1].SetEngine(engine);
-   this.navigation[1].InitNode();
+   this.navigation = new NavigationNode(); // new GlobeNavigation();
+   this.navigation.SetEngine(engine);
+   this.navigation.InitNode();
    
    // Access Nodes:
-   this.nodeNavigation = this.navigation[1];            // Navigation Node (for view matrix)
+   this.nodeNavigation = this.navigation;               // Navigation Node (for view matrix)
    this.nodeCamera = new CameraNode();                  // Camera Node (for projection matrix)
    this.nodeBeginRender = new BeginRenderNode();        // Begin Render Node (for multipass rendering, currently unsupported)
    this.nodeRenderObject = new RenderObjectNode();      // Render Object Node (render openglobe objects, e.g. the virtual globe)

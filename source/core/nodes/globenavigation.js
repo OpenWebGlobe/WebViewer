@@ -55,7 +55,7 @@ function GlobeNavigationNode()
 
       this._longitude = 7.7744205094639103;
       this._latitude = 47.472720418012834;
-      this._ellipsoidHeight = 10000000;
+      this._ellipsoidHeight = 7500000;
 
       this._state = GlobeNavigationNode.STATES.IDLE;
       this._inputs = 0;
@@ -89,7 +89,11 @@ function GlobeNavigationNode()
       this._nMouseY = 0;
       this._vR = new vec3();
       this._bDragging = false;
+      this._bLClick = false;
+      this._bMouseDelta = false;
       this._dSpeed = 0;
+      this._lng0 = 0;
+      this._lat0 = 0;
 
       this.geocoord = new Array(3);
       this.pos = new GeoCoord(0,0,0);
@@ -154,10 +158,124 @@ function GlobeNavigationNode()
          this.matR1.Multiply(this.matR2, this.matCami3d);
          this.matView.Inverse(this.matR1);
 
-
          ts.SetCompassDirection(yaw);
          ts.SetPosition(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
          ts.SetGeoposition(this._longitude, this._latitude, this._ellipsoidHeight);
+         
+         // update position
+         if (this._state == GlobeNavigationNode.STATES.DRAGGING)
+            {
+               // Left mouse clicked but not yet dragging (Start Drag)
+               if (this._bLClick && !this._bDragging)
+               {
+                     //console.log("CLICK"  + this._nMouseX + ", " + this._nMouseY);
+                     
+                     var pickresult = {};
+                     this.engine.UpdatePickMatrix(this.matView);
+                     this.engine.PickEllipsoid(this._nMouseX, this._nMouseY, pickresult);
+                     if (pickresult["hit"])
+                     {
+                           this._bHit = true;
+                           this._bHitLng = Math.PI*pickresult["lng"]/180;
+                           this._bHitLat = Math.PI*pickresult["lat"]/180;
+                           this._bHitElv = Math.PI*pickresult["elv"]/180;
+                           
+                           this._lng0 = this._bHitLng;
+                           this._lat0 = this._bHitLat;
+                           
+                           //console.log("CLICK at coord:" + this._bHitLng*180/Math.PI + ", " + this._bHitLat*180/Math.PI);
+                     }     
+                     
+                     this._bLClick = false;
+               }
+               
+               if (this._bDragging)
+               {
+                  if (this._bMouseDelta)
+                  {
+                        this._bMouseDelta = false;
+                        //console.log("DRAGGING" + this._nMouseX + ", " + this._nMouseY);
+                        
+                        var lng0 = this._bHitLng;
+                        var lat0 = this._bHitLat;
+                        var oldElv = this._bHitElv;
+                        
+                        var pickresult = {};
+                        this.engine.UpdatePickMatrix(this.matView);
+                        this.engine.PickGlobe(this._nMouseX, this._nMouseY, pickresult);
+                        if (pickresult["hit"])
+                        {                  
+                           var lng1 = Math.PI*pickresult["lng"]/180;
+                           var lat1 = Math.PI*pickresult["lat"]/180;
+                           
+                           //console.log("DRAG to coord: " + lng1*180/Math.PI + ", " + lat1*180/Math.PI);
+                           
+                           this._bHitLng = lng1;
+                           this._bHitLat = lat1;
+                           this._bHitElv = Math.PI*pickresult["elv"]/180;
+                           this._bHit = true;
+                           
+                           var result = {};
+                           MathUtils.InverseGeodeticProblem(lng0, lat0, lng1, lat1, result);
+                           var s = result["s"] * CARTESIAN_SCALE_INV;
+                           var azi = result["azi0"];
+                           
+                           //---------------------------------------------------
+                           
+                        
+                           //var coss = Math.sin(lat0)*Math.sin(lat1)+Math.cos(lat1)*Math.cos(lat0)*Math.cos(lng0-lng1);
+                           //var s = Math.acos(coss)* WGS84_a_scaled;
+                           //var s = 0.0001;
+                           
+                           var f = 1 / this._ellipsoidHeight;
+                           
+                           /*MathUtils.DirectGeodeticProblem(lng0, lat0, s*f, azi, result);
+                           this._longitude = 180*result["lng1"]/Math.PI;
+                           this._latitude = 180*result["lat1"]/Math.PI;*/
+                           
+                           
+                           var lat_rad = Math.PI * this._latitude / 180; // deg2rad
+                           var lng_rad = Math.PI * this._longitude / 180; // deg2rad
+                           var sinlat = Math.sin(lat_rad);
+                           var coslat = Math.cos(lat_rad);
+                           var Rn = WGS84_a / Math.sqrt(1.0 - WGS84_E_SQUARED * sinlat * sinlat);
+                           var Rm = Rn / (1 + WGS84_E_SQUARED2 * coslat * coslat);                  
+                           
+                           var A1 = azi+Math.PI;
+                           var B1 = lat_rad;
+                           var L1 = lng_rad;
+                           
+                           var deltaB = (WGS84_a / Rm) * 1.01*s * Math.cos(A1);
+                           var deltaL = (WGS84_a / Rn) * 1.01*s * Math.sin(A1) / Math.cos(B1);
+                           var A2, B2, L2;
+                           B2 = deltaB + B1;
+                           L2 = deltaL + L1;
+                           
+                           this._longitude = 180 * L2 / Math.PI;
+                           this._latitude = 180 * B2 / Math.PI;
+                           
+                           while (this._longitude > 180)
+                           {
+                              this._longitude -= 180;
+                           }
+                           while (this._longitude < -180)
+                           {
+                              this._longitude += 180;
+                           }
+                           while (this._latitude > 90)
+                           {
+                              this._latitude -= 180;
+                           }
+                           while (this._latitude < -90)
+                           {
+                              this._latitude += 180;
+                           }
+                           
+                        }
+                  }
+               }   
+            } 
+      
       }
       //------------------------------------------------------------------------
       this.OnInit = function()
@@ -385,12 +503,15 @@ function GlobeNavigationNode()
       // EVENT: OnMouseDown
       this.OnMouseDown = function(e)
       {
+         
          this._nMouseX = e.offsetX;
          this._nMouseY = e.offsetY;
          if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
             this._inputs |= GlobeNavigationNode.INPUTS.MOUSE_LEFT; 
             document.body.style.cursor='move';
+            this._bLClick = true;
+            this._bDragging = false;
             
          }
          else if (e.isButton(goog.events.BrowserEvent.MouseButton.MIDDLE))
@@ -409,7 +530,8 @@ function GlobeNavigationNode()
       //------------------------------------------------------------------------
       // EVENT: OnMouseUp
       this.OnMouseUp = function(e)
-      {   
+      {
+         this._bDragging = false;   
          this._nMouseX = e.offsetX;
          this._nMouseY = e.offsetY;
          if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
@@ -417,6 +539,7 @@ function GlobeNavigationNode()
             this._inputs &= ~GlobeNavigationNode.INPUTS.MOUSE_LEFT;
             this._bHit = false;
             document.body.style.cursor='default';
+            this._bLClick = false;
          }
          else if (e.isButton(goog.events.BrowserEvent.MouseButton.MIDDLE))
          {
@@ -434,21 +557,25 @@ function GlobeNavigationNode()
       // EVENT: OnMouseMove
       this.OnMouseMove = function(e)
       {
-         var oldMouseX = this._nMouseX;
-         var oldMouseY = this._nMouseY;
+         if (this._state == GlobeNavigationNode.STATES.DRAGGING)
+         {
+            this._bDragging = true;
+         }
+         else
+         {
+             this._bDragging = false;
+         }
          
+
+         this._bMouseDelta = true;
+         
+        
+      
          this._nMouseX = e.offsetX;
          this._nMouseY = e.offsetY;
          this._OnInputChange();
          
          return this._cancelEvent(e);
-      }
-      //--------------------------------------------------------------------------
-      this.CalcBearing = function(lng1, lat1, lng2, lat2)
-      {
-        var y = Math.sin(lng2-lng1) * Math.cos(lat2);
-        var x = Math.cos(lat1)*Math.sin(lat2) - Math.sin(lat1)*Math.cos(lat2)*Math.cos(lng2-lng1);
-        return Math.atan2(y, x);
       }
       //------------------------------------------------------------------------
       // EVENT: OnTick
@@ -526,110 +653,20 @@ function GlobeNavigationNode()
          }
          
          //---------------------------------------------------------------------
-         // DRAG
-         
-         if (this._state == GlobeNavigationNode.STATES.DRAGGING)
+
+         // Cancel Event
+         this._cancelEvent = function(evt)
          {
-            if (this._bHit)
-            {
-               var lng0 = this._bHitLng;
-               var lat0 = this._bHitLat;
-               var oldElv = this._bHitElv;
-               
-               var pickresult = {};
-               this.engine.PickEllipsoid(this._nMouseX, this._nMouseY, pickresult);
-               if (pickresult["hit"])
-               {                  
-                  var lng1 = Math.PI*pickresult["lng"]/180; // just to make it a little bit more readable..
-                  var lat1 = Math.PI*pickresult["lat"]/180;
-                  
-                  if (Math.abs(lng1-lng0)>0 ||
-                      Math.abs(lat1-lat0)>0)
-                  {
-                        this._bHitLng = lng1;
-                        this._bHitLat = lat1;
-                        this._bHitElv = Math.PI*pickresult["elv"]/180;
-                        this._bHit = true;
-                        
-                        var azi = this.CalcBearing(lng0, lat0, lng1, lat1);
-                  
-                        // calculate length from last to new position
-                        var coss = Math.sin(lat0)*Math.sin(lat1)+Math.cos(lat1)*Math.cos(lat0)*Math.cos(lng0-lng1);
-                        var s = Math.acos(coss)* WGS84_a_scaled;
-                           
-                        //var s = 0.006;
-                        var lat_rad = Math.PI * this._latitude / 180; // deg2rad
-                        var lng_rad = Math.PI * this._longitude / 180; // deg2rad
-                        var sinlat = Math.sin(lat_rad);
-                        var coslat = Math.cos(lat_rad);
-                        var A1 = azi+Math.PI;
-                        var B1 = lat_rad;
-                        var L1 = lng_rad;
-                        var Rn = WGS84_a / Math.sqrt(1.0 - WGS84_E_SQUARED * sinlat * sinlat);
-                        var Rm = Rn / (1 + WGS84_E_SQUARED2 * coslat * coslat);
-                        var deltaB = (WGS84_a / Rm) * s * Math.cos(A1);
-                        var deltaL = (WGS84_a / Rn) * s * Math.sin(A1) / Math.cos(B1);
-                        var A2, B2, L2;
-                        B2 = deltaB + B1;
-                        L2 = deltaL + L1;
-                        
-                        /*console.log("Delta");
-                        console.log(B2);
-                        console.log(L2);*/
-         
-                        this._longitude = 180 * L2 / Math.PI;
-                        this._latitude = 180 * B2 / Math.PI;
-                        
-                        while (this._longitude > 180)
-                        {
-                           this._longitude -= 180;
-                        }
-                        while (this._longitude < -180)
-                        {
-                           this._longitude += 180;
-                        }
-                        while (this._latitude > 90)
-                        {
-                           this._latitude -= 180;
-                        }
-                        while (this._latitude < -90)
-                        {
-                           this._latitude += 180;
-                        }
-                  }
-               }
-               else
-               {
-                  this._bHit = false;      
-               }
-            }
-            else
-            {
-               var pickresult = {};
-               this.engine.PickEllipsoid(this._nMouseX, this._nMouseY, pickresult);
-               if (pickresult["hit"])
-               {
-                  this._bHit = true;
-                  this._bHitLng = Math.PI*pickresult["lng"]/180;
-                  this._bHitLat = Math.PI*pickresult["lat"]/180;
-                  this._bHitElv = Math.PI*pickresult["elv"]/180;
-               }
-            }
+            evt = evt ? evt : window.event;
+            if(evt.stopPropagation)
+               evt.stopPropagation();
+            if(evt.preventDefault)
+               evt.preventDefault();
+            evt.cancelBubble = true;
+            evt.cancel = true;
+            evt.returnValue = false;
+            return false;
          }
-         
-      }
-      // Cancel Event
-      this._cancelEvent = function(evt)
-      {
-         evt = evt ? evt : window.event;
-         if(evt.stopPropagation)
-            evt.stopPropagation();
-         if(evt.preventDefault)
-            evt.preventDefault();
-         evt.cancelBubble = true;
-         evt.cancel = true;
-         evt.returnValue = false;
-         return false;
       }
 }
 goog.inherits(GlobeNavigationNode, NavigationNode);
