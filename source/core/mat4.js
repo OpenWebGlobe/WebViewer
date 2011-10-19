@@ -606,6 +606,48 @@ mat4.prototype.FromQuaterion = function(quat)
    this._values[2] = 2*(x*z-w*y); this._values[6] = 2*(y*z+w*x); this._values[10] = 1-2*(x*x+y*y);  this._values[14] = 0;
    this._values[3] = 0; this._values[7] = 0;  this._values[11] = 0;  this._values[15] = 1;
 }
+//------------------------------------------------------------------------------
+/**
+ * @description: Create rotation matrix from quaterion [x,y,z,w]
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {number} w
+ */
+mat4.prototype.FromQuaternionComponents = function(x,y,z,w)
+{
+  var x2 = x*x;
+  var y2 = y*y;
+  var z2 = z*z;
+  var xy = x*y;
+  var xz = x*z;
+  var yz = y*z;
+  var wx = w*x;
+  var wy = w*y;
+  var wz = w*z;
+
+  this._values[0] = 1 - 2*y2 - 2*z2;  this._values[4] = 2*xy + 2*wz;     this._values[8] = 2*xz - 2*wy;      this._values[12] = 0;
+  this._values[1] = 2*xy - 2*wz;      this._values[5] = 1 - 2*x2 - 2*z2; this._values[9] = 2*yz + 2*wx;      this._values[13] = 0;
+  this._values[2] = 2*xz + 2*wy;      this._values[6] = 2*yz - 2*wx;     this._values[10] = 1 - 2*x2 - 2*y2; this._values[14] = 0;
+  this._values[3] = 0;                this._values[7] = 0;               this._values[11] = 0;               this._values[15] = 1;
+}
+/*mat4.prototype.FromQuaternionComponents = function(x,y,z,w)
+{
+  var x2 = x*x;
+  var y2 = y*y;
+  var z2 = z*z;
+  var xy = x*y;
+  var xz = x*z;
+  var yz = y*z;
+  var wx = w*x;
+  var wy = w*y;
+  var wz = w*z;
+
+  this._values[0] = 1 - 2*y2 - 2*z2;  this._values[1] = 2*xy + 2*wz;     this._values[2] = 2*xz - 2*wy;      this._values[3] = 0;
+  this._values[4] = 2*xy - 2*wz;      this._values[5] = 1 - 2*x2 - 2*z2; this._values[6] = 2*yz + 2*wx;      this._values[7] = 0;
+  this._values[8] = 2*xz + 2*wy;      this._values[9] = 2*yz - 2*wx;     this._values[10] = 1 - 2*x2 - 2*y2; this._values[11] = 0;
+  this._values[12] = 0;               this._values[13] = 0;              this._values[14] = 0;               this._values[15] = 1;
+}*/
 
 //------------------------------------------------------------------------------
 /**

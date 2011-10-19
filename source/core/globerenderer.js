@@ -641,21 +641,59 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
 /**
  * @description PickEllipsoid: Retrieve clicked position (low precision result without elevation)
  * The result contains the following:
- *    pickresult.hit: true if there was a hit with terrain
- *    pickresult.lng: longitude at mouse position
- *    pickresult.lat: latitude at mouse position
- *    pickresult.elv: elevation at mouse position (always 0)
- *    pickresult.x: geocentric cartesian x-coordinate at mouse position
- *    pickresult.y: geocentric cartesian y-coordinate at mouse position
- *    pickresult.z: geocentric cartesian z-coordinate at mouse position
+ *    pickresult["hit"]: true if there was a hit with terrain
+ *    pickresult["lng"]: longitude at mouse position
+ *    pickresult["lat"]: latitude at mouse position
+ *    pickresult["elv"]: elevation at mouse position (always 0)
+ *    pickresult["x"]: geocentric cartesian x-coordinate at mouse position
+ *    pickresult["y"]: geocentric cartesian y-coordinate at mouse position
+ *    pickresult["z"]: geocentric cartesian z-coordinate at mouse position
  */
 GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult)
 {
    var pck = this.engine.GetDirectionMousePos(mx, my, this.matPick);           
    var candidates = new Array();
    pickresult["hit"] = false;
+   
+   var eyex = pck.x;
+   var eyey = pck.y;
+   var eyez = pck.z;
+   var mmx = pck.dirx;
+   var mmy = pck.diry;
+   var mmz = pck.dirz;
+   
+   var zoom2 = eyex*eyex + eyey*eyey + eyez*eyez;
+
+   var a = mmx*mmx+mmy*mmy*mmz*mmz;
+   var b = eyex*mmx + eyey*mmy + eyez*mmz;
+   var root = (b*b) - a*(zoom2 - WGS84_a2_scaled);
+   if(root <= 0)
+   {
+     return;
+     //#todo calc edge coords;
+   }
+   var t = (0.0 - b - Math.sqrt(root)) / a;
+   //return (ab_eye+(m*t)).unit();
+  
+   var px = eyex + mmx * t;
+   var py = eyey + mmy * t;
+   var pz = eyez + mmz * t;
+   var rlen = 1/Math.sqrt(px*px + py*py + pz*pz);
+   
+   
+   pickresult["hit"] = true;
+   pickresult["x"] = px*rlen;
+   pickresult["y"] = py*rlen;
+   pickresult["z"] = pz*rlen;
+   
+   var gc = new GeoCoord(0,0,0);
+   gc.FromCartesian(pickresult["x"],pickresult["y"],pickresult["z"]);
+   pickresult["lng"] = gc._wgscoords[0];
+   pickresult["lat"] = gc._wgscoords[1];
+   pickresult["elv"] = gc._wgscoords[2]; // should be around 0
+   
                              
-   var b2 = WGS84_b_scaled*WGS84_b_scaled;
+   /*var b2 = WGS84_b_scaled*WGS84_b_scaled;
    var a2 = WGS84_a_scaled*WGS84_a_scaled;
    var t0,t1,N,h;
 
@@ -741,6 +779,7 @@ GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult)
       pickresult["lat"] = gc._wgscoords[1];
       pickresult["elv"] = gc._wgscoords[2]; // should be around 0
    }
+   */
  }
  
  //-----------------------------------------------------------------------------
