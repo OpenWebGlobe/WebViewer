@@ -183,8 +183,8 @@ MathUtils.InverseGeodeticProblem = function(lng0, lat0, lng1, lat1, result)
    var dlng = lng1 - lng0;
    var mlat = (lat0 + lat1) / 2;
    var V = Math.sqrt(1 + WGS84_E_SQUARED * Math.sqrt(Math.cos(mlat)));
-   var RNm = WGS84_a / V;
-   var RMm = WGS84_a / (V*V*V);
+   var RNm = WGS84_a_scaled / V;
+   var RMm = WGS84_a_scaled / (V*V*V);
    var x = ((dlng*RNm * Math.cos(mlat)) * (1 + (dlng*dlng*Math.sqrt(Math.sin(mlat)))/24 + dlng*dlng/12));
    var y = (dlat*RMm*(1+(dlng*dlng*Math.sqrt(Math.sin(mlat)))/24-dlat*dlat/24));
    var Am = Math.atan(x / y);
@@ -237,8 +237,8 @@ MathUtils.DirectGeodeticProblem = function(lng0, lat0, s, azi0, result)
       for (var j=0;j<4;j++)
       {
          V = Math.sqrt(1.0 + WGS84_E_SQUARED * Math.sqrt(Math.cos(B)));
-         dB = V*V*V / WGS84_a * Math.cos(A)*dS;
-         dL = V / WGS84_a * Math.sin(A) / Math.cos(B) * dS;
+         dB = V*V*V / WGS84_a_scaled * Math.cos(A)*dS;
+         dL = V / WGS84_a_scaled * Math.sin(A) / Math.cos(B) * dS;
          dA = dL * Math.sin(B);
          switch (j)
          {

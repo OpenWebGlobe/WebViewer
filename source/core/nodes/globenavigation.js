@@ -84,6 +84,7 @@ function GlobeNavigationNode()
       this._bRollAnim = false;
       this._MinElevation = 150.0;
       this._dAccumulatedTick = 0;
+      this._matGlobeRotation = new mat4();
 
       this._nMouseX = 0;
       this._nMouseY = 0;
@@ -127,41 +128,6 @@ function GlobeNavigationNode()
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
-         var yaw = this._yaw;
-         while (yaw > 2 * Math.PI)
-         {
-            yaw -= 2* Math.PI;
-         }
-         while (yaw < 0)
-         {
-            yaw += 2 * Math.PI;
-         }
-         var pitch = this._pitch;
-         if (pitch < -Math.PI / 2)
-         {
-            pitch = -Math.PI / 2;
-         }
-         else if (pitch > Math.PI / 2)
-         {
-            pitch = Math.PI / 2;
-         }
-
-         this.pos.Set(this._longitude, this._latitude, this._ellipsoidHeight);
-         this.pos.ToCartesian(this.geocoord);
-         this._vEye.Set(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
-
-         this.matTrans.Translation(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
-         this.matNavigation.CalcNavigationFrame(this._longitude, this._latitude);
-         this.matBody.CalcBodyFrame(yaw, pitch, this._roll);
-         this.matR1.Multiply(this.matTrans, this.matNavigation);
-         this.matR2.Multiply(this.matR1, this.matBody);
-         this.matR1.Multiply(this.matR2, this.matCami3d);
-         this.matView.Inverse(this.matR1);
-
-         ts.SetCompassDirection(yaw);
-         ts.SetPosition(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
-         ts.SetGeoposition(this._longitude, this._latitude, this._ellipsoidHeight);
-         
          // update position
          if (this._state == GlobeNavigationNode.STATES.DRAGGING)
             {
@@ -217,8 +183,8 @@ function GlobeNavigationNode()
                            
                            var result = {};
                            MathUtils.InverseGeodeticProblem(lng0, lat0, lng1, lat1, result);
-                           var s = result["s"] * CARTESIAN_SCALE_INV;
-                           var azi = result["azi0"];
+                           var s = result["s"];
+                           var azi = result["azi1"];
                            
                            //---------------------------------------------------
                            
@@ -229,10 +195,9 @@ function GlobeNavigationNode()
                            
                            var f = 1 / this._ellipsoidHeight;
                            
-                           /*MathUtils.DirectGeodeticProblem(lng0, lat0, s*f, azi, result);
+                           /*MathUtils.DirectGeodeticProblem(lng0, lat0, s, azi , result);
                            this._longitude = 180*result["lng1"]/Math.PI;
-                           this._latitude = 180*result["lat1"]/Math.PI;*/
-                           
+                           this._latitude = 180*result["lat1"]/Math.PI;*/   
                            
                            var lat_rad = Math.PI * this._latitude / 180; // deg2rad
                            var lng_rad = Math.PI * this._longitude / 180; // deg2rad
@@ -241,12 +206,12 @@ function GlobeNavigationNode()
                            var Rn = WGS84_a / Math.sqrt(1.0 - WGS84_E_SQUARED * sinlat * sinlat);
                            var Rm = Rn / (1 + WGS84_E_SQUARED2 * coslat * coslat);                  
                            
-                           var A1 = azi+Math.PI;
+                           var A1 = azi;
                            var B1 = lat_rad;
                            var L1 = lng_rad;
                            
-                           var deltaB = (WGS84_a / Rm) * 1.01*s * Math.cos(A1);
-                           var deltaL = (WGS84_a / Rn) * 1.01*s * Math.sin(A1) / Math.cos(B1);
+                           var deltaB = (WGS84_a / Rm) * s * Math.cos(A1);
+                           var deltaL = (WGS84_a / Rn) * s * Math.sin(A1) / Math.cos(B1);
                            var A2, B2, L2;
                            B2 = deltaB + B1;
                            L2 = deltaL + L1;
@@ -274,7 +239,44 @@ function GlobeNavigationNode()
                         }
                   }
                }   
-            } 
+            }
+            
+            
+            
+         var yaw = this._yaw;
+         while (yaw > 2 * Math.PI)
+         {
+            yaw -= 2* Math.PI;
+         }
+         while (yaw < 0)
+         {
+            yaw += 2 * Math.PI;
+         }
+         var pitch = this._pitch;
+         if (pitch < -Math.PI / 2)
+         {
+            pitch = -Math.PI / 2;
+         }
+         else if (pitch > Math.PI / 2)
+         {
+            pitch = Math.PI / 2;
+         }
+
+         this.pos.Set(this._longitude, this._latitude, this._ellipsoidHeight);
+         this.pos.ToCartesian(this.geocoord);
+         this._vEye.Set(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
+
+         this.matTrans.Translation(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
+         this.matNavigation.CalcNavigationFrame(this._longitude, this._latitude);
+         this.matBody.CalcBodyFrame(yaw, pitch, this._roll);
+         this.matR1.Multiply(this.matTrans, this.matNavigation);
+         this.matR2.Multiply(this.matR1, this.matBody);
+         this.matR1.Multiply(this.matR2, this.matCami3d);
+         this.matView.Inverse(this.matR1);
+
+         ts.SetCompassDirection(yaw);
+         ts.SetPosition(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
+         ts.SetGeoposition(this._longitude, this._latitude, this._ellipsoidHeight);      
       
       }
       //------------------------------------------------------------------------
