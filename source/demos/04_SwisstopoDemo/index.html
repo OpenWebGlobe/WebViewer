@@ -24,6 +24,9 @@ var world;
 var searchpoilayer;
 var searchpoi;
 
+
+
+
 /**
  * @description set up the virtual globe
  */
@@ -106,7 +109,7 @@ function main()
             ogLoadGeometryAsync(geometrylayer,"models/bulle.json");
             ogLoadGeometryAsync(geometrylayer,"models/epagny.json");
             ogLoadGeometryAsync(geometrylayer,"models/fhnw.json");
-            ogLoadGeometryAsync(geometrylayer,"models/nuerensdorf.json");
+            geo = ogLoadGeometryAsync(geometrylayer,"models/nuerensdorf.json");
             ogLoadGeometryAsync(geometrylayer,"models/psea.json");
             
             searchpoilayer = ogCreatePOILayer(world,"searchedpois");
@@ -121,8 +124,12 @@ function main()
             
             //set flyto speed
             ogSetFlightDuration(scene,6000);
+            
+            
 
       }
+       
+       
 
 }
 
