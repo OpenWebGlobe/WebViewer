@@ -33,6 +33,7 @@ goog.require('owg.owgImageLayer');
 goog.require('owg.i3dElevationLayer');
 goog.require('owg.owgElevationLayer');
 goog.require('owg.GoogleImageLayer');
+goog.require('owg.OYMImageLayer');
 //------------------------------------------------------------------------------
 /**
  * @typedef {{
@@ -182,6 +183,17 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
       if (options["url"] && options["url"].length>0)
       {
          var imgLayer = new GoogleImageLayer();
+         imgLayer.Setup(options["url"]);
+         index = this.imagelayerlist.length;
+         this.imagelayerlist.push(imgLayer);
+         this._UpdateLayers(); 
+      }
+   }
+   else if (options["service"] == "oym")
+   {
+      if (options["url"] && options["url"].length>0)
+      {
+         var imgLayer = new OYMImageLayer();
          imgLayer.Setup(options["url"]);
          index = this.imagelayerlist.length;
          this.imagelayerlist.push(imgLayer);
