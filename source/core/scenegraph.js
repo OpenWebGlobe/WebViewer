@@ -33,6 +33,13 @@ goog.require('owg.RenderNode');
 goog.require('owg.TraversalState');
 goog.require('owg.mat4');
 
+
+/**
+ * @define {string} Navigation mode ('flight' or 'globe').
+ */
+owg.NAVIGATION_MODE = 'flight';
+
+
 //------------------------------------------------------------------------------
 /**
  * Scenegraph Class.
@@ -45,7 +52,14 @@ function SceneGraph(engine)
    /** @type {engine3d} */
    this.engine = engine;         // Render Engine
    
-   this.navigation = new NavigationNode(); /*new GlobeNavigationNode();*/
+   if (owg.NAVIGATION_MODE == 'globe')
+   {
+     this.navigation = new GlobeNavigationNode();
+   }
+   else
+   {
+     this.navigation = new NavigationNode();
+   }
    this.navigation.SetEngine(engine);
    this.navigation.InitNode();
    
