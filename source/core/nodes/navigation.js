@@ -161,6 +161,8 @@ function NavigationNode()
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
+         ts.navigationtype = 0;
+         
          this.pos.Set(this._longitude, this._latitude, this._ellipsoidHeight);
          this.pos.ToCartesian(this.geocoord);
          this._vEye.Set(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
@@ -173,6 +175,8 @@ function NavigationNode()
          this.matR2.Multiply(this.matR1, this.matBody);
          this.matR1.Multiply(this.matR2, this.matCami3d);
          this.matView.Inverse(this.matR1);
+         
+         
          
          
          ts.SetCompassDirection(this._yaw);
