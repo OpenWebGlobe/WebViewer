@@ -55,7 +55,7 @@ goog.require('owg.vec3');
  */
 function mat4()
 {
-   /** @type {!Float32Array} */
+   /** @type {Array.<number>|!Float32Array} */
    this._values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
 }
 
@@ -79,7 +79,7 @@ mat4.prototype.Set = function(oMatrix)
 /**
  * Get Values
  * 
- * @return {!Float32Array} An array with the 16 element values.
+ * @return { Array.<number>|!Float32Array} An array with the 16 element values.
  */
 mat4.prototype.Get = function()
 {

@@ -137,7 +137,7 @@ function GlobeNavigationNode()
          if (this._state == GlobeNavigationNode.STATES.DRAGGING)
          {
             // Start Drag
-            if (this._bLClick && !this._bDragging)
+            if (this._bLClick)
             {
                this._bLClick = false;
                this.arcellipsoid_start(this._nMouseX, this._nMouseY);
@@ -394,7 +394,6 @@ function GlobeNavigationNode()
       // EVENT: OnMouseDown
       this.OnMouseDown = function(e)
       {
-         
          this._nMouseX = e.offsetX;
          this._nMouseY = e.offsetY;
          if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
@@ -402,8 +401,6 @@ function GlobeNavigationNode()
             this._inputs |= GlobeNavigationNode.INPUTS.MOUSE_LEFT; 
             document.body.style.cursor='move';
             this._bLClick = true;
-            this._bDragging = false;
-            
          }
          else if (e.isButton(goog.events.BrowserEvent.MouseButton.MIDDLE))
          {
@@ -422,7 +419,7 @@ function GlobeNavigationNode()
       // EVENT: OnMouseUp
       this.OnMouseUp = function(e)
       {
-         this._bDragging = false;   
+         this._bDragging = true;   
          this._nMouseX = e.offsetX;
          this._nMouseY = e.offsetY;
          if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
@@ -566,7 +563,6 @@ function GlobeNavigationNode()
           this.engine.PickEllipsoid(mx,my, pickresult);
           if (pickresult["hit"])
           {
-                //console.log("click pos= " + pickresult["lng"] + ", " + pickresult["lat"]);
                 this._ab_start.x = pickresult["x"];
                 this._ab_start.y = pickresult["y"];
                 this._ab_start.z = pickresult["z"];
@@ -610,7 +606,6 @@ function GlobeNavigationNode()
                    var replen = sina / Math.sqrt(cross.x*cross.x + cross.y*cross.y + cross.z*cross.z);
                    cross.x = cross.x * replen; cross.y = cross.y * replen; cross.z = cross.z * replen;
                    this._ab_next.FromQuaternionComponents(cross.x,cross.y,cross.z,cosa);
-                   //this._quatmul(this._ab_quat, this._ab_last, this._ab_next);
                    this._ab_quat.Multiply(this._ab_last, this._ab_next);
                    
                    var curgeopos = new GeoCoord(this._longitude, this._latitude, 0);
@@ -622,7 +617,6 @@ function GlobeNavigationNode()
                    
                    var geopos = new GeoCoord(0,0,0);
                    geopos.FromCartesian(newpos._values[0],newpos._values[1], newpos._values[2]);
-                   console.log("new pos= " + geopos.GetLongitude() + ", " + geopos.GetLatitude());
                    
                    this._longitude = geopos.GetLongitude();
                    this._latitude = geopos.GetLatitude();
