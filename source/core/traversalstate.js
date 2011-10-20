@@ -57,6 +57,8 @@ function TraversalState()
    this.navigationlock = 0;
    /** @type {number} */
    this.navigationcommand = TraversalState.NavigationCommand.IDLE;
+   /** @type {number} */
+   this.navigationparam = 0;
 }
 //------------------------------------------------------------------------------
 /** @enum {number} */
