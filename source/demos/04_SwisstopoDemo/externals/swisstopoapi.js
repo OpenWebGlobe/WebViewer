@@ -156,7 +156,8 @@ swisstopoapi.jsoncallback = function(data)
  */
 swisstopoapi.heightcallback = function(data)
 {
-   posdata = swisstopoapi.waitforheight.pop(rawdata[i]);
+   //posdata = swisstopoapi.waitforheight.pop(rawdata[i]);
+   posdata = swisstopoapi.waitforheight.pop();
    posdata.height = data.height;
    
   //set a poi if it's an address....

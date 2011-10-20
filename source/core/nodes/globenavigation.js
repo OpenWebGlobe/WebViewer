@@ -310,25 +310,37 @@ function GlobeNavigationNode()
             this._inputs |= GlobeNavigationNode.INPUTS.MODIFIER_CONTROL;
             return this._cancelEvent(e);
          }
-         else if (e.keyCode == 37 || e.keyCode == 65) // 'LeftArrow' or 'A'
+         else if (e.keyCode == 37 /*|| e.keyCode == 65*/) // 'LeftArrow' or 'A'
          {
             this._inputs |= GlobeNavigationNode.INPUTS.KEY_LEFT;
-            return this._cancelEvent(e);
+            if(e.keyCode != 65)
+            {
+                return this._cancelEvent(e);  
+            }      
          }
-         else if (e.keyCode == 38 || e.keyCode == 87) // 'UpArrow' or 'W'
+         else if (e.keyCode == 38 /*|| e.keyCode == 87*/) // 'UpArrow' or 'W'
          {
             this._inputs |= GlobeNavigationNode.INPUTS.KEY_UP;
-            return this._cancelEvent(e);
+            if(e.keyCode != 87)
+            {
+                return this._cancelEvent(e);  
+            }      
          }
-         else if (e.keyCode == 39 || e.keyCode == 68) // 'RightArrow' or 'D'
+         else if (e.keyCode == 39 /*|| e.keyCode == 68*/) // 'RightArrow' or 'D'
          {
             this._inputs |= GlobeNavigationNode.INPUTS.KEY_RIGHT;
-            return this._cancelEvent(e);
+            if(e.keyCode != 68)
+            {
+                return this._cancelEvent(e);  
+            }      
          }
-         else if (e.keyCode == 40 || e.keyCode == 83) // 'DownArrow' or 'S'
+         else if (e.keyCode == 40 /*|| e.keyCode == 83*/) // 'DownArrow' or 'S'
          {
             this._inputs |= GlobeNavigationNode.INPUTS.KEY_DOWN;
-            return this._cancelEvent(e);
+            if(e.keyCode != 83)
+            {
+                return this._cancelEvent(e);  
+            }      
          }
          this._OnInputChange();
          
@@ -348,25 +360,37 @@ function GlobeNavigationNode()
             this._inputs &= ~GlobeNavigationNode.INPUTS.MODIFIER_CONTROL;
             return this._cancelEvent(e);
          }
-         else if (e.keyCode == 37 || e.keyCode == 65) // 'LeftArrow' or 'A'
+         else if (e.keyCode == 37 /*|| e.keyCode == 65*/) // 'LeftArrow' or 'A'
          {
             this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_LEFT;
-            return this._cancelEvent(e);
+            if(e.keyCode != 65)
+            {
+                return this._cancelEvent(e);  
+            }         
          }
-         else if (e.keyCode == 38 || e.keyCode == 87) // 'UpArrow' or 'W'
+         else if (e.keyCode == 38 /*|| e.keyCode == 87*/) // 'UpArrow' or 'W'
          {
             this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_UP;
-            return this._cancelEvent(e);
+            if(e.keyCode != 87)
+            {
+                return this._cancelEvent(e);  
+            }  
          }
-         else if (e.keyCode == 39 || e.keyCode == 68) // 'RightArrow' or 'D'
+         else if (e.keyCode == 39 /*|| e.keyCode == 68*/) // 'RightArrow' or 'D'
          {
             this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_RIGHT;
-            return this._cancelEvent(e);
+            if(e.keyCode != 68)
+            {
+                return this._cancelEvent(e);  
+            }  
          }
-         else if (e.keyCode == 40 || e.keyCode == 83) // 'DownArrow' or 'S'
+         else if (e.keyCode == 40 /*|| e.keyCode == 83*/) // 'DownArrow' or 'S'
          {
             this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_DOWN;
-            return this._cancelEvent(e);
+            if(e.keyCode != 83)
+            {
+                return this._cancelEvent(e);  
+            } 
          }
          this._OnInputChange();
          

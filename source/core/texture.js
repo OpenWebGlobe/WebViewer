@@ -268,7 +268,7 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
 
          if (!invtexcoord)
          {
-            this.blitMesh.SetBufferPT(
+            this.blitMesh.SetBufferPoi(
                [0,0,0,   0,1,
                 w,0,0,   1,1,
                 w,h,0,   1,0,
@@ -276,7 +276,7 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
           }
           else
           {   
-             this.blitMesh.SetBufferPT(
+             this.blitMesh.SetBufferPoi(
                [0,0,0,   0,0,
                 w,0,0,   1,0,
                 w,h,0,   1,1,
