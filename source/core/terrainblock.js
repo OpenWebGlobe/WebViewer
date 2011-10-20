@@ -71,7 +71,8 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.elevationlayers = 0;
    this._vNormal = new vec3();
    
-   
+   /** @type {mat4} */
+   this.tmpmodel = new mat4();
    
    /** @type {number} */
    this.longitude0  = -180.0;
@@ -569,17 +570,15 @@ TerrainBlock.prototype.Render = function(/*cache*/)
    }
    //---------------------------------------------------------------------------
    
-   
-   var model = new mat4();
-   model.CopyFrom(this.engine.matModel);
+   this.tmpmodel.CopyFrom(this.engine.matModel);
    
    // virtual camera offset: 
-   model._values[12] += this.vOffset[0];
-   model._values[13] += this.vOffset[1];
-   model._values[14] += this.vOffset[2];
+   this.tmpmodel._values[12] += this.vOffset[0];
+   this.tmpmodel._values[13] += this.vOffset[1];
+   this.tmpmodel._values[14] += this.vOffset[2];
    
    this.engine.PushMatrices();
-   this.engine.SetModelMatrix(model);
+   this.engine.SetModelMatrix(this.tmpmodel);
    
    this.mesh.Draw();
    

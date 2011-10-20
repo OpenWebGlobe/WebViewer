@@ -142,9 +142,9 @@ function NavigationNode()
       this.matR2 = new mat4();
       this.matCami3d.Cami3d();
       
-      // min altitude is currently 100 m, this can be customized in future.
+      // min altitude is currently 100 m, this can be changed soon...
       /** @type {number} */
-      this.minAltitude = 0;
+      this.minAltitude = 100;
       
       /** @type {ogCamera} */
       this.ogcam = null;
@@ -484,6 +484,15 @@ function NavigationNode()
             this._longitude = 57.295779513082320876798154814105*L2; // rad2deg
             this._latitude = 57.295779513082320876798154814105*B2; // rad2deg
             this._yaw = A2;
+            
+            /*var result = {};
+            MathUtils.DirectGeodeticProblem(this._longitude*0.017453292519943295769236907684886,
+                                            this._latitude*0.017453292519943295769236907684886,
+                                            deltaSurface*CARTESIAN_SCALE, this._yaw, result);
+            
+            this._longitude = 180*result["lng1"]/Math.PI;
+            this._latitude = 180*result["lat1"]/Math.PI;
+            //this._yaw = result["azi1"];*/            
             
             
             while (this._longitude>180) {this._longitude -=360;}

@@ -57,7 +57,7 @@ function PointSprite(engine)
   
   this.offset = 0;
   this.numofpoints = 0;
-  this.totalnumpoints = 70000000;
+  this.totalnumpoints = 0;
 
   
 }
@@ -75,6 +75,10 @@ PointSprite.prototype.SetCenter = function(lng,lat,elv)
 PointSprite.prototype.SetPoints = function(newpoints)
 {
   this.numofpoints += newpoints.length/7;
+  if(this.totalnumpoints==0)
+  {
+    this.totalnumpoints = this.numofpoints*70;
+  }
  //console.log(this.points.length);
   this.pointdata=null;
   this.pointdata = new Float32Array(newpoints);
@@ -85,7 +89,7 @@ PointSprite.prototype.SetPoints = function(newpoints)
 
 PointSprite.prototype.SetNumberOfPoints = function(numberofpoints)
 {
-  this.totalnumpoints1 = numberofpoints;
+  this.totalnumpoints = numberofpoints;
   
 }
 
@@ -238,11 +242,9 @@ PointSprite.prototype._ToGPU = function()
    }
    else
    {
-    
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER,this.offset,this.pointdata);
     this.offset += (this.pointdata.length)*4;
-
    }
    
     

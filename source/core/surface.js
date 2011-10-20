@@ -180,11 +180,7 @@ function Surface(engine)
    this.newModelMatrix = new mat4();
    
    this.manageTexture = false; // is set to true if the destrox function has to destroy this texture.
-
-   
 }
-
-
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "p"
@@ -199,7 +195,6 @@ Surface.prototype.SetBufferP = function(p)
       this.vertexLength = 3;
    }
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "pnt"
@@ -214,7 +209,6 @@ Surface.prototype.SetBufferPNT = function(pnt)
       this.vertexLength = 8;
    }
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "pc"
@@ -244,7 +238,6 @@ Surface.prototype.SetBufferPT = function(pt)
       this.vertexLength = 5;
    }
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "pnct"
@@ -312,9 +305,7 @@ Surface.prototype.SetIndexBuffer = function(idx,idxsem)
       case "default"       :  break;
       
    }
-   
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Set Texture for this mesh
@@ -331,7 +322,6 @@ Surface.prototype.SetTexture = function(tex)
  */
 Surface.prototype._ToGPU = function()
 {
-   //test vertexbufferdata ungleich null
    // Create VB
     this.vbo = this.gl.createBuffer();
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
@@ -342,9 +332,6 @@ Surface.prototype._ToGPU = function()
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);
     this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.indexbufferdata, this.gl.STATIC_DRAW);
 }
-
-
-
 //------------------------------------------------------------------------------
 /**
  * @description Free all memory, especially the GPU buffers.
@@ -433,7 +420,7 @@ Surface.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcol
                       this.engine.shadermanager.UseShader_PNT(this.engine.matNormal, this.engine.matModelView, this.engine.matProjection);
                       break;
                         
-        case "pc": 
+        case "pc":
                       this.gl.enableVertexAttribArray(0);
                       this.gl.enableVertexAttribArray(1);
                       this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
@@ -1076,9 +1063,12 @@ Surface.prototype.UpdateBillboardMatrix = function()
  * @description sets the model matrix as a navigation frame matrix.
  * @param {number} lng the longitude coordinate
  * @param {number} lat the latitude coordinate
- * @param {number} elv the elevation 
+ * @param {number} elv the elevation
+ * @param  {number=} yaw
+ * @param  {number=} pitch
+ * @param  {number=} roll
  */
-Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv)
+Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv,yaw,pitch,roll)
 {
    var coords = new GeoCoord(lng, lat,elv);
    var cartesianCoordinates = new Array(3);
@@ -1119,14 +1109,102 @@ Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv)
    var scaledNavMat = new mat4();
    scaledNavMat.Multiply(navMat,scaleMat);
    
-   var rotatedMat = new mat4();
-   rotatedMat.RotationX(-1.57079633);
+   var rotatedMatX = new mat4();
+   var rotatedMatY = new mat4();
+   var rotatedMatZ = new mat4();
+   if(yaw)
+   {
+     rotatedMatX.RotationX((pitch*Math.PI/180)); 
+   }
+   else
+   {
+      rotatedMatX.RotationX(-1.57079633);
+   }
+   
+   if(pitch)
+   {
+     rotatedMatY.RotationY((yaw*Math.PI/180)+1.57079633); 
+   }
+   
+   if(roll)
+   {
+     rotatedMatZ.RotationZ(roll*Math.PI/180); 
+   }
+
+  var xyrotmat = new mat4();
+  xyrotmat.Multiply(rotatedMatX,rotatedMatY);
+  
+  var rotatedMat = new mat4();
+  rotatedMat.Multiply(xyrotmat,rotatedMatZ);
+  
+   
    
    var scaledRotNavMat = new mat4();
    scaledRotNavMat.Multiply(scaledNavMat,rotatedMat);
    
    this.modelMatrix = scaledRotNavMat;
    this.UpdateAABB();
+}
+
+/**
+ * @description sets the model matrix as a navigation frame from quaternions
+ * @param {number} lng the longitude coordinate
+ * @param {number} lat the latitude coordinate
+ * @param {number} elv the elevation
+ * @param  {Array.<{number}>} quats
+ */
+Surface.prototype.SetAsNavigationFrameQuat = function(lng,lat,elv,quats)
+{
+   
+      
+   var coords = new GeoCoord(lng, lat,elv);
+   var cartesianCoordinates = new Array(3);
+   coords.ToCartesian(cartesianCoordinates);
+   
+   var matTrans = new mat4();
+   matTrans.Translation(cartesianCoordinates[0],cartesianCoordinates[1],cartesianCoordinates[2]);
+     
+   var mat = new mat4();
+   mat.CalcNavigationFrame(lng,lat);
+   
+   var a = new Float32Array(16);
+   var mmatvals = mat.Get();
+   a[0] = mmatvals[0];
+   a[1] = mmatvals[1];
+   a[2] = mmatvals[2];
+   a[3] = mmatvals[3];
+   a[4] = mmatvals[4];
+   a[5] = mmatvals[5];
+   a[6] = mmatvals[6];
+   a[7] = mmatvals[7];
+   a[8] = mmatvals[8];
+   a[9] = mmatvals[9];
+   a[10] = mmatvals[10];
+   a[11] = mmatvals[11];
+   a[12] = cartesianCoordinates[0];
+   a[13] = cartesianCoordinates[1];
+   a[14] = cartesianCoordinates[2];
+   a[15] = 1;
+   
+   var navMat = new mat4();
+   navMat.Set(a);
+   
+   //scaling because the units of a 3d models are meters
+   var scaleMat = new mat4();
+   scaleMat.Scale(CARTESIAN_SCALE_INV,CARTESIAN_SCALE_INV,CARTESIAN_SCALE_INV)
+   
+   var scaledNavMat = new mat4();
+   scaledNavMat.Multiply(navMat,scaleMat);
+     
+   var rotatedMat = new mat4();
+   rotatedMat.FromQuaterion(quats);
+  
+   var scaledRotNavMat = new mat4();
+   scaledRotNavMat.Multiply(scaledNavMat,rotatedMat);
+   
+   this.modelMatrix = scaledRotNavMat;
+   this.UpdateAABB();
+   
 }
 
 
@@ -1151,6 +1229,9 @@ Surface.prototype.CopyFrom = function(surface)
    this.indexsemantic = surface.indexsemantic;
    
 }
+
+
+
 
 goog.exportSymbol('Surface', Surface);
 goog.exportProperty(Surface.prototype, 'Draw', Surface.prototype.Draw);

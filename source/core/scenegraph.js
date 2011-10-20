@@ -27,7 +27,7 @@ goog.require('owg.BeginRenderNode');
 goog.require('owg.CameraNode');
 goog.require('owg.EndRenderNode');
 goog.require('owg.LogosNode');
-goog.require('owg.NavigationNode');
+goog.require('owg.GlobeNavigationNode');
 goog.require('owg.RenderObjectNode');
 goog.require('owg.RenderNode');
 goog.require('owg.TraversalState');
@@ -45,17 +45,18 @@ function SceneGraph(engine)
    /** @type {engine3d} */
    this.engine = engine;         // Render Engine
    
-   // Access Nodes:
-   this.nodeNavigation = new NavigationNode();     // Navigation Node (for view matrix)
-   this.nodeCamera = new CameraNode();             // Camera Node (for projection matrix)
-   this.nodeBeginRender = new BeginRenderNode();   // Begin Render Node (for multipass rendering, currently unsupported)
-   this.nodeRenderObject = new RenderObjectNode(); // Render Object Node (render openglobe objects, e.g. the virtual globe)
-   this.nodeRender = new RenderNode();             // Generic Rendering Node (currently unused, render custom objects)
-   this.nodeEndRender = new EndRenderNode();       // End Render Node (for multipass rendering, currently unsupported)
-   this.nodeLogos = new LogosNode();               // Node for rendering logos (render openwebglobe logos and navigation compass)
+   this.navigation = new NavigationNode(); /*new GlobeNavigationNode();*/
+   this.navigation.SetEngine(engine);
+   this.navigation.InitNode();
    
-   this.nodeNavigation.SetEngine(engine);
-   this.nodeNavigation.InitNode();
+   // Access Nodes:
+   this.nodeNavigation = this.navigation;               // Navigation Node (for view matrix)
+   this.nodeCamera = new CameraNode();                  // Camera Node (for projection matrix)
+   this.nodeBeginRender = new BeginRenderNode();        // Begin Render Node (for multipass rendering, currently unsupported)
+   this.nodeRenderObject = new RenderObjectNode();      // Render Object Node (render openglobe objects, e.g. the virtual globe)
+   this.nodeRender = new RenderNode();                 // Generic Rendering Node (currently unused, render custom objects)
+   this.nodeEndRender = new EndRenderNode();           // End Render Node (for multipass rendering, currently unsupported)
+   this.nodeLogos = new LogosNode();                   // Node for rendering logos (render openwebglobe logos and navigation compass)
    
    this.nodeCamera.SetEngine(engine);
    this.nodeCamera.InitNode();
@@ -128,7 +129,7 @@ SceneGraph.prototype.Traverse = function()
  */
 SceneGraph.prototype.Render = function()
 {
-   this.nodeNavigation.OnChangeState();         // 设置了ViewMatrix
+   this.nodeNavigation.OnChangeState();         // ViewMatrix
    this.nodeNavigation.OnRender();              // nothing
    
    this.nodeCamera.OnChangeState();             // SetProjectionMatrix
@@ -138,7 +139,7 @@ SceneGraph.prototype.Render = function()
    this.nodeBeginRender.OnRender();             // nothing
        
    this.nodeRenderObject.OnChangeState();       // nothing
-   this.nodeRenderObject.OnRender();            // 主要globerenderer.Render
+   this.nodeRenderObject.OnRender();            // globerenderer.Render
    
    this.nodeRender.OnChangeState();             // nothing
    this.nodeRender.OnRender();                  // nothing
