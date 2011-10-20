@@ -45,6 +45,7 @@ function GlobeNavigationNode()
       this.lastkey = 0;
       this.curtime = 0;
       this.matView = new mat4();
+      this._bLockNavigation = false;
 
       this._vEye = new vec3();
       this._vEye.Set(1,0,0);
@@ -133,8 +134,18 @@ function GlobeNavigationNode()
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
+         ts.navigationtype = 1;
+         if (ts.navigationlock != 0)
+         {
+            this._bLockNavigation = true;
+         }
+         else
+         {
+            this._bLockNavigation = false;
+         }
+         
          // update position
-         if (this._state == GlobeNavigationNode.STATES.DRAGGING)
+         if (this._state == GlobeNavigationNode.STATES.DRAGGING && !this._bLockNavigation)
          {
             // Start Drag
             if (this._bLClick)
@@ -284,6 +295,11 @@ function GlobeNavigationNode()
       // EVENT: OnKeyDown
       this.OnKeyDown = function(e)
       {
+         if (this._bLockNavigation)
+         {
+            return;
+         }
+      
          if (e.keyCode == 16) // 'Shift'
          {
             this._inputs |= GlobeNavigationNode.INPUTS.MODIFIER_SHIFT;
@@ -360,40 +376,50 @@ function GlobeNavigationNode()
       // EVENT: Double click: fly to position
       this.OnMouseDoubleClick = function(e)
       {
-            var pickresult = {};
-            this.engine.PickGlobe(this._nMouseX, this._nMouseY, pickresult);
-            if (pickresult["hit"])
-            {
-                  var targetelv = this._ellipsoidHeight;
-                  if (targetelv>1000000)
-                  {
-                        targetelv = 1000000;
-                        this.engine.FlyTo(pickresult["lng"],pickresult["lat"],targetelv);
-                  }
-                  else if (targetelv>250000)
-                  {
-                        targetelv = 250000;
-                        this.engine.FlyTo(pickresult["lng"],pickresult["lat"],targetelv);
-                  }
-                  else if (targetelv>50000)
-                  {
-                        targetelv = 50000;
-                        this.engine.FlyTo(pickresult["lng"],pickresult["lat"],targetelv);
-                  }
-                  else
-                  {
-                        targetelv = pickresult["elv"] + 5000;
-                        this.engine.FlyTo(pickresult["lng"],pickresult["lat"],targetelv, 0, -90, 0);
-                  }
-                  
-                  
-            }    
+         if (this._bLockNavigation)
+         {
+            return;
+         }
+         
+         var pickresult = {};
+         this.engine.PickGlobe(this._nMouseX, this._nMouseY, pickresult);
+         if (pickresult["hit"])
+         {
+               var targetelv = this._ellipsoidHeight;
+               if (targetelv>1000000)
+               {
+                     targetelv = 1000000;
+                     this.engine.FlyTo(pickresult["lng"],pickresult["lat"],targetelv);
+               }
+               else if (targetelv>250000)
+               {
+                     targetelv = 250000;
+                     this.engine.FlyTo(pickresult["lng"],pickresult["lat"],targetelv);
+               }
+               else if (targetelv>50000)
+               {
+                     targetelv = 50000;
+                     this.engine.FlyTo(pickresult["lng"],pickresult["lat"],targetelv);
+               }
+               else
+               {
+                     targetelv = pickresult["elv"] + 5000;
+                     this.engine.FlyTo(pickresult["lng"],pickresult["lat"],targetelv, 0, -90, 0);
+               }
+               
+               
+         }    
          return this._cancelEvent(e);      
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseDown
       this.OnMouseDown = function(e)
       {
+         if (this._bLockNavigation)
+         {
+            return;
+         }
+         
          this._nMouseX = e.offsetX;
          this._nMouseY = e.offsetY;
          if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
@@ -445,6 +471,11 @@ function GlobeNavigationNode()
       // EVENT: OnMouseMove
       this.OnMouseMove = function(e)
       {
+         if (this._bLockNavigation)
+         {
+            return;
+         }
+         
          if (this._state == GlobeNavigationNode.STATES.DRAGGING)
          {
             this._bDragging = true;

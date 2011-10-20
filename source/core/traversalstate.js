@@ -49,6 +49,12 @@ function TraversalState()
    this.geoposition.longitude = 0;
    this.geoposition.latitude = 0;
    this.geoposition.elevation = 0;
+   
+   // Navigation Type: -1: not set, 0: flight mode, 1: globe mode
+   /** @type {number} */
+   this.navigationtype = -1;
+   /** @type {number} */
+   this.navigationlock = 0;
 } 
 
 //------------------------------------------------------------------------------
