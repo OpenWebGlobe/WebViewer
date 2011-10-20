@@ -6,12 +6,12 @@ TARGETS=\
 	../compiled/deps.js \
 	../compiled/owg-optimized.js \
 	../compiled/owg-optimized.map \
-	../source/demos/03_EnhancedWorldDemo/openwebglobe.js
+	../source/demos/03_WorldDemo/openwebglobe.js
 
 .PHONY: all
 all: $(TARGETS)
 
-../source/demos/03_EnhancedWorldDemo/openwebglobe.js: ../compiled/owg-optimized.js
+../source/demos/03_WorldDemo/openwebglobe.js: ../compiled/owg-optimized.js
 	cp $< $@
 
 ../compiled/deps.js: $(SOURCES) Makefile $(COMPILER_JAR) $(CLOSURE_LIBRARY)
