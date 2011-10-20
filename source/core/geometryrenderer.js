@@ -43,8 +43,12 @@ function GeometryRenderer(engine)
    
    /** @type {ViewFrustum} */
    this.frustum = new ViewFrustum();
-
+   
+   /** @type {number} */
+   this.visibilityDistanceSq = (100000 * CARTESIAN_SCALE_INV)*(100000 * CARTESIAN_SCALE_INV);
 }
+
+
 
 //------------------------------------------------------------------------------
 /**
@@ -56,7 +60,11 @@ GeometryRenderer.prototype.Render = function(vCameraPosition, matModelViewProjec
 {
    // frustum culling etc.
    this.frustum.Update(matModelViewProjection);
-    
+   
+   var x = vCameraPosition.Get()[0]; //ToDo: Expensive implementation !
+   var y = vCameraPosition.Get()[1];
+   var z = vCameraPosition.Get()[2];
+   
     
    for (var i=0;i<this.geometryarray.length;i++)
    {
@@ -80,7 +88,13 @@ GeometryRenderer.prototype.Render = function(vCameraPosition, matModelViewProjec
                var surface = surfaces[k];
                if(!surface.hide)
                {
-                  if(!this.frustum.TestBox(surface.bbmin[0],surface.bbmin[1],surface.bbmin[2],surface.bbmax[0],surface.bbmax[1],surface.bbmax[2]))
+                  //check if poi is in viewdistance
+                  var dx = (surface.bbmin[0]-x);
+                  var dy = (surface.bbmin[1]-y);
+                  var dz = (surface.bbmin[2]-z);
+                  var dis_squared = dx*dx + dy*dy + dz*dz;
+                  var disLimit = surface.visibilityDistance * surface.visibilityDistance;
+                  if(!this.frustum.TestBox(surface.bbmin[0],surface.bbmin[1],surface.bbmin[2],surface.bbmax[0],surface.bbmax[1],surface.bbmax[2]) || dis_squared>disLimit)
                   {
                     // return;   
                   }

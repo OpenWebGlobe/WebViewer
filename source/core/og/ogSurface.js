@@ -165,6 +165,14 @@ ogSurface.prototype.ParseOptions = function(options)
       var failedcbf = function(e){ogSurface.ogSurface_callbackfailed(e);};
       this.surface.CreateFromJSONObject(options["jsonobject"],readycbf,failedcbf);
       this.jsonUrl = options["url"];
+    
+      if(options["jsonobject"]["VisibilityDistance"])
+      {
+         this.surface.visibilityDistance = options["jsonobject"]["VisibilityDistance"]*CARTESIAN_SCALE_INV;
+      }else
+      {
+         this.surface.visibilityDistance = 50000*CARTESIAN_SCALE_INV; //default value for visibility.
+      }
    }   
    if(options["longitude"] && options["latitude"] && options["elevation"])
    {
@@ -172,7 +180,7 @@ ogSurface.prototype.ParseOptions = function(options)
       this.latitude = options["latitude"];
       this.elevation = options["elevation"];
    }
-      
+   
 }
 //------------------------------------------------------------------------------
 /**

@@ -81,6 +81,10 @@ FlyToAnimation.prototype.CalcTrajectory = function(target_lng,target_lat,target_
    // determine the distance between current and target position (great circle distance).
    // this distance is used for P1 and P2 of the bezier curve.
    this.distance = WGS84_a * Math.acos(Math.sin(MathUtils.Deg2Rad(P0_wgs84[1]))*Math.sin(MathUtils.Deg2Rad(P3_wgs84[1]))+Math.cos(MathUtils.Deg2Rad(P0_wgs84[1]))*Math.cos(MathUtils.Deg2Rad(P3_wgs84[1]))*Math.cos(MathUtils.Deg2Rad(P3_wgs84[0]-P0_wgs84[0])));
+   if(isNaN(this.distance))
+   {
+      this.distance = 0;
+   }
 
    // define P1 and P2 - as longer the distance as higher the camera flies.
    var P1_wgs84 = [start_pos.longitude,start_pos.latitude,start_pos.elevation + this.distance/4]; 
