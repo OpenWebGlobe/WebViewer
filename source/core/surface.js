@@ -180,11 +180,7 @@ function Surface(engine)
    this.newModelMatrix = new mat4();
    
    this.manageTexture = false; // is set to true if the destrox function has to destroy this texture.
-
-   
 }
-
-
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "p"
@@ -199,7 +195,6 @@ Surface.prototype.SetBufferP = function(p)
       this.vertexLength = 3;
    }
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "pnt"
@@ -214,7 +209,6 @@ Surface.prototype.SetBufferPNT = function(pnt)
       this.vertexLength = 8;
    }
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "pc"
@@ -244,7 +238,6 @@ Surface.prototype.SetBufferPT = function(pt)
       this.vertexLength = 5;
    }
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "pnct"
@@ -312,9 +305,7 @@ Surface.prototype.SetIndexBuffer = function(idx,idxsem)
       case "default"       :  break;
       
    }
-   
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Set Texture for this mesh
@@ -331,7 +322,6 @@ Surface.prototype.SetTexture = function(tex)
  */
 Surface.prototype._ToGPU = function()
 {
-   //test vertexbufferdata ungleich null
    // Create VB
     this.vbo = this.gl.createBuffer();
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
@@ -342,9 +332,6 @@ Surface.prototype._ToGPU = function()
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);
     this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.indexbufferdata, this.gl.STATIC_DRAW);
 }
-
-
-
 //------------------------------------------------------------------------------
 /**
  * @description Free all memory, especially the GPU buffers.

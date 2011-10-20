@@ -22,7 +22,6 @@
 *******************************************************************************/
 
 goog.provide('owg.mat4');
-
 goog.require('owg.vec3');
 
 /** 
@@ -56,7 +55,7 @@ goog.require('owg.vec3');
  */
 function mat4()
 {
-   /** @type {!Float32Array} */
+   /** @type {Array.<number>|!Float32Array} */
    this._values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
 }
 
@@ -80,7 +79,7 @@ mat4.prototype.Set = function(oMatrix)
 /**
  * Get Values
  * 
- * @return {!Float32Array} An array with the 16 element values.
+ * @return { Array.<number>|!Float32Array} An array with the 16 element values.
  */
 mat4.prototype.Get = function()
 {
@@ -146,7 +145,7 @@ mat4.prototype.Zero = function()
    this._values[2] = 0; this._values[6] = 0; this._values[10] = 0; this._values[14] = 0;
    this._values[3] = 0; this._values[7] = 0; this._values[11] = 0; this._values[15] = 1;
 }
-
+//------------------------------------------------------------------------------
 /**
  * Translation
  * sets the matrix values to a translation matrix.
@@ -163,7 +162,6 @@ mat4.prototype.Translation = function(x,y,z)
    this._values[2] = 0; this._values[6] = 0; this._values[10] = 1; this._values[14] = z;
    this._values[3] = 0; this._values[7] = 0; this._values[11] = 0; this._values[15] = 1;
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Overwrites the Translation values in matrix mat with x,y,z. 
@@ -180,8 +178,6 @@ mat4.prototype.OverwriteTranslation = function(mat,x,y,z)
  mat._values[14] = z;
 
 }
-
-
 //------------------------------------------------------------------------------
 /**
  * Scale
@@ -200,7 +196,6 @@ mat4.prototype.Scale = function(x,y,z)
    
    return true;
 }
-
 //------------------------------------------------------------------------------
 /**
  * RotationX
@@ -253,9 +248,7 @@ mat4.prototype.RotationZ = function(angle)
    this._values[8]  = 0;     this._values[9]  = 0;     this._values[10] = 1;    this._values[11] = 0;
    this._values[12] = 0;      this._values[13] = 0;     this._values[14] = 0;   this._values[15] = 1;
 }
-
-
-
+//------------------------------------------------------------------------------
 /**
  * Creates a LookAt matrix
  * 
@@ -310,92 +303,6 @@ mat4.prototype.LookAt = function(eyex, eyey, eyez, centerx, centery, centerz, up
    this._values[3] = 0;  this._values[7] = 0;  this._values[11] = 0;  this._values[15] = 1;
    
 }
-
-      
-/*mat4.lookAt = function(eye, center, up, dest) {
-        if(!dest) { dest = mat4.create(); }
-        
-        var eyex = eye[0],
-                eyey = eye[1],
-                eyez = eye[2],
-                upx = up[0],
-                upy = up[1],
-                upz = up[2],
-                centerx = center[0],
-                centery = center[1],
-                centerz = center[2];
-
-        if (eyex == centerx && eyey == centery && eyez == centerz) {
-                return mat4.identity(dest);
-        }
-        
-        var z0,z1,z2,x0,x1,x2,y0,y1,y2,len;
-        
-        //vec3.direction(eye, center, z);
-        z0 = eyex - center[0];
-        z1 = eyey - center[1];
-        z2 = eyez - center[2];
-        
-        // normalize (no check needed for 0 because of early return)
-        len = 1/Math.sqrt(z0*z0 + z1*z1 + z2*z2);
-        z0 *= len;
-        z1 *= len;
-        z2 *= len;
-        
-        //vec3.normalize(vec3.cross(up, z, x));
-        x0 = upy*z2 - upz*z1;
-        x1 = upz*z0 - upx*z2;
-        x2 = upx*z1 - upy*z0;
-        len = Math.sqrt(x0*x0 + x1*x1 + x2*x2);
-        if (!len) {
-                x0 = 0;
-                x1 = 0;
-                x2 = 0;
-        } else {
-                len = 1/len;
-                x0 *= len;
-                x1 *= len;
-                x2 *= len;
-        };
-        
-        //vec3.normalize(vec3.cross(z, x, y));
-        y0 = z1*x2 - z2*x1;
-        y1 = z2*x0 - z0*x2;
-        y2 = z0*x1 - z1*x0;
-        
-        len = Math.sqrt(y0*y0 + y1*y1 + y2*y2);
-        if (!len) {
-                y0 = 0;
-                y1 = 0;
-                y2 = 0;
-        } else {
-                len = 1/len;
-                y0 *= len;
-                y1 *= len;
-                y2 *= len;
-        }
-        
-        dest[0] = x0;
-        dest[1] = y0;
-        dest[2] = z0;
-        dest[3] = 0;
-        dest[4] = x1;
-        dest[5] = y1;
-        dest[6] = z1;
-        dest[7] = 0;
-        dest[8] = x2;
-        dest[9] = y2;
-        dest[10] = z2;
-        dest[11] = 0;
-        dest[12] = -(x0*eyex + x1*eyey + x2*eyez);
-        dest[13] = -(y0*eyex + y1*eyey + y2*eyez);
-        dest[14] = -(z0*eyex + z1*eyey + z2*eyez);
-        dest[15] = 1;
-        
-        return dest;
-};
-*/
-
 //------------------------------------------------------------------------------
 /**
  * Multiply
@@ -699,6 +606,48 @@ mat4.prototype.FromQuaterion = function(quat)
    this._values[2] = 2*(x*z-w*y); this._values[6] = 2*(y*z+w*x); this._values[10] = 1-2*(x*x+y*y);  this._values[14] = 0;
    this._values[3] = 0; this._values[7] = 0;  this._values[11] = 0;  this._values[15] = 1;
 }
+//------------------------------------------------------------------------------
+/**
+ * @description: Create rotation matrix from quaterion [x,y,z,w]
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {number} w
+ */
+mat4.prototype.FromQuaternionComponents = function(x,y,z,w)
+{
+  var x2 = x*x;
+  var y2 = y*y;
+  var z2 = z*z;
+  var xy = x*y;
+  var xz = x*z;
+  var yz = y*z;
+  var wx = w*x;
+  var wy = w*y;
+  var wz = w*z;
+
+  this._values[0] = 1 - 2*y2 - 2*z2;  this._values[4] = 2*xy + 2*wz;     this._values[8] = 2*xz - 2*wy;      this._values[12] = 0;
+  this._values[1] = 2*xy - 2*wz;      this._values[5] = 1 - 2*x2 - 2*z2; this._values[9] = 2*yz + 2*wx;      this._values[13] = 0;
+  this._values[2] = 2*xz + 2*wy;      this._values[6] = 2*yz - 2*wx;     this._values[10] = 1 - 2*x2 - 2*y2; this._values[14] = 0;
+  this._values[3] = 0;                this._values[7] = 0;               this._values[11] = 0;               this._values[15] = 1;
+}
+/*mat4.prototype.FromQuaternionComponents = function(x,y,z,w)
+{
+  var x2 = x*x;
+  var y2 = y*y;
+  var z2 = z*z;
+  var xy = x*y;
+  var xz = x*z;
+  var yz = y*z;
+  var wx = w*x;
+  var wy = w*y;
+  var wz = w*z;
+
+  this._values[0] = 1 - 2*y2 - 2*z2;  this._values[1] = 2*xy + 2*wz;     this._values[2] = 2*xz - 2*wy;      this._values[3] = 0;
+  this._values[4] = 2*xy - 2*wz;      this._values[5] = 1 - 2*x2 - 2*z2; this._values[6] = 2*yz + 2*wx;      this._values[7] = 0;
+  this._values[8] = 2*xz + 2*wy;      this._values[9] = 2*yz - 2*wx;     this._values[10] = 1 - 2*x2 - 2*y2; this._values[11] = 0;
+  this._values[12] = 0;               this._values[13] = 0;              this._values[14] = 0;               this._values[15] = 1;
+}*/
 
 //------------------------------------------------------------------------------
 /**
@@ -748,7 +697,6 @@ mat4.prototype.Inverse = function(M)
    this._values[3] = b14; this._values[7] = b24;  this._values[11] = b34;  this._values[15] = b44;
                    
 }
-
 //------------------------------------------------------------------------------
 /**
  * ToString
@@ -763,6 +711,8 @@ mat4.prototype.ToString = function()
          "\n  "+this._values[2]+" "+this._values[6]+" "+this._values[10]+" "+this._values[14]+
          "\n  "+this._values[3]+" "+this._values[7]+" "+this._values[11]+" "+this._values[15]+" ]";      
 }
+
+//------------------------------------------------------------------------------
 
 goog.exportSymbol('mat4', mat4);
 goog.exportProperty(mat4.prototype, 'CalcBodyFrame', mat4.prototype.CalcBodyFrame);
