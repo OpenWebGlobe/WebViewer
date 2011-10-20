@@ -170,6 +170,11 @@ function LogosNode()
             {
                this.texSlider.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
             }
+            
+            
+            ypos = this.engine.height-1-72-128-64-64;
+            this.compassr.Blit(xpos-32, ypos-32,0,this.yaw,0.5,0.5,true);    
+            this.compassbg.Blit(xpos-32, ypos-32,0,0,0.5,0.5,true);
          }
          
          
@@ -182,6 +187,21 @@ function LogosNode()
            this.longitude = ts.geoposition.longitude;
            this.latitude = ts.geoposition.latitude;
            this.elevation = ts.geoposition.elevation;
+           
+           if (this.navigationState == 2)
+           {
+              ts.navigationcommand = TraversalState.NavigationCommand.MOVE_UP;
+              // todo: ts.navigationparam = speed;
+           }
+           else if (this.navigationState == 4)
+           {
+              ts.navigationcommand = TraversalState.NavigationCommand.MOVE_DOWN;
+              // todo: ts.navigationparam = speed;
+           }
+           else
+           {
+              ts.navigationcommand = TraversalState.NavigationCommand.IDLE;
+           }
            
            if (this.navigationState == 0)
            {
@@ -319,6 +339,23 @@ function LogosNode()
          var slider_x1 = slider_x0 + 16;
          var slider_y0 = slider_y1 - 16;
       
+        
+         // move slider
+         if (this.btn && this.navigationState == 6)
+         {
+            this.sliderYPos -= dy;
+            if (this.sliderYPos<-40)
+            {
+               this.sliderYPos = -40;
+            }
+            else if (this.sliderYPos>40)
+            {
+               this.sliderYPos = 40;
+            }
+            
+            return;
+         }
+      
          this.navigationState = 0;
          
          if (this.mouseX > plus_x0 &&
@@ -360,17 +397,6 @@ function LogosNode()
          {
             if (this.btn)
             {   
-               // move slider
-
-               this.sliderYPos -= dy;
-               if (this.sliderYPos<-40)
-               {
-                    this.sliderYPos = -40;
-               }
-               else if (this.sliderYPos>40)
-               {
-                    this.sliderYPos = 40;
-               }
                this.navigationState = 6; // slider pressed
             }
             else
