@@ -55,8 +55,17 @@ function TraversalState()
    this.navigationtype = -1;
    /** @type {number} */
    this.navigationlock = 0;
-} 
-
+   /** @type {number} */
+   this.navigationcommand = TraversalState.NavigationCommand.IDLE;
+}
+//------------------------------------------------------------------------------
+/** @enum {number} */
+TraversalState.NavigationCommand =
+{
+   IDLE: 0,
+   MOVE_DOWN: 1,
+   MOVE_UP: 2
+};
 //------------------------------------------------------------------------------
 /**
  * @description Push a new view matrix to stack

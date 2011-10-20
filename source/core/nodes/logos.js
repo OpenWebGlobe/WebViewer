@@ -188,6 +188,21 @@ function LogosNode()
            this.latitude = ts.geoposition.latitude;
            this.elevation = ts.geoposition.elevation;
            
+           if (this.navigationState == 2)
+           {
+              ts.navigationcommand = TraversalState.NavigationCommand.MOVE_UP;
+              // todo: ts.navigationparam = speed;
+           }
+           else if (this.navigationState == 4)
+           {
+              ts.navigationcommand = TraversalState.NavigationCommand.MOVE_DOWN;
+              // todo: ts.navigationparam = speed;
+           }
+           else
+           {
+              ts.navigationcommand = TraversalState.NavigationCommand.IDLE;
+           }
+           
            if (this.navigationState == 0)
            {
                ts.navigationlock = 0;

@@ -118,9 +118,11 @@ function GlobeNavigationNode()
       this._ab_last = new mat4(); // init with identity!
       this._ab_next = new mat4(); // init with identity!
       this._ab_quat = new mat4(); // init with identity!
-      
-      // min altitude is currently 100 m, this can be customized in future.
-      this.minAltitude = 225;
+
+      this.minAltitude = 1000;
+      this.maxAltitude = 10000000;
+      // external navigation commands
+      this.navigationcommand = TraversalState.NavigationCommand.IDLE;
 
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -134,6 +136,10 @@ function GlobeNavigationNode()
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
+         // read possible navigation command from outside:
+         this.navigationcommand  = ts.navigationcommand;
+         
+         // test if navigation was locked from outside (for example GUI)
          ts.navigationtype = 1;
          if (ts.navigationlock != 0)
          {
@@ -310,37 +316,25 @@ function GlobeNavigationNode()
             this._inputs |= GlobeNavigationNode.INPUTS.MODIFIER_CONTROL;
             return this._cancelEvent(e);
          }
-         else if (e.keyCode == 37 /*|| e.keyCode == 65*/) // 'LeftArrow' or 'A'
+         else if (e.keyCode == 37 || e.keyCode == 65) // 'LeftArrow' or 'A'
          {
             this._inputs |= GlobeNavigationNode.INPUTS.KEY_LEFT;
-            if(e.keyCode != 65)
-            {
-                return this._cancelEvent(e);  
-            }      
+            return this._cancelEvent(e);
          }
-         else if (e.keyCode == 38 /*|| e.keyCode == 87*/) // 'UpArrow' or 'W'
+         else if (e.keyCode == 38 || e.keyCode == 87) // 'UpArrow' or 'W'
          {
             this._inputs |= GlobeNavigationNode.INPUTS.KEY_UP;
-            if(e.keyCode != 87)
-            {
-                return this._cancelEvent(e);  
-            }      
+            return this._cancelEvent(e);
          }
-         else if (e.keyCode == 39 /*|| e.keyCode == 68*/) // 'RightArrow' or 'D'
+         else if (e.keyCode == 39 || e.keyCode == 68) // 'RightArrow' or 'D'
          {
             this._inputs |= GlobeNavigationNode.INPUTS.KEY_RIGHT;
-            if(e.keyCode != 68)
-            {
-                return this._cancelEvent(e);  
-            }      
+            return this._cancelEvent(e);
          }
-         else if (e.keyCode == 40 /*|| e.keyCode == 83*/) // 'DownArrow' or 'S'
+         else if (e.keyCode == 40 || e.keyCode == 83) // 'DownArrow' or 'S'
          {
             this._inputs |= GlobeNavigationNode.INPUTS.KEY_DOWN;
-            if(e.keyCode != 83)
-            {
-                return this._cancelEvent(e);  
-            }      
+            return this._cancelEvent(e);
          }
          this._OnInputChange();
          
@@ -360,37 +354,25 @@ function GlobeNavigationNode()
             this._inputs &= ~GlobeNavigationNode.INPUTS.MODIFIER_CONTROL;
             return this._cancelEvent(e);
          }
-         else if (e.keyCode == 37 /*|| e.keyCode == 65*/) // 'LeftArrow' or 'A'
+         else if (e.keyCode == 37 || e.keyCode == 65) // 'LeftArrow' or 'A'
          {
             this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_LEFT;
-            if(e.keyCode != 65)
-            {
-                return this._cancelEvent(e);  
-            }         
+            return this._cancelEvent(e);
          }
-         else if (e.keyCode == 38 /*|| e.keyCode == 87*/) // 'UpArrow' or 'W'
+         else if (e.keyCode == 38 || e.keyCode == 87) // 'UpArrow' or 'W'
          {
             this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_UP;
-            if(e.keyCode != 87)
-            {
-                return this._cancelEvent(e);  
-            }  
+            return this._cancelEvent(e);
          }
-         else if (e.keyCode == 39 /*|| e.keyCode == 68*/) // 'RightArrow' or 'D'
+         else if (e.keyCode == 39 || e.keyCode == 68) // 'RightArrow' or 'D'
          {
             this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_RIGHT;
-            if(e.keyCode != 68)
-            {
-                return this._cancelEvent(e);  
-            }  
+            return this._cancelEvent(e);
          }
-         else if (e.keyCode == 40 /*|| e.keyCode == 83*/) // 'DownArrow' or 'S'
+         else if (e.keyCode == 40 || e.keyCode == 83) // 'DownArrow' or 'S'
          {
             this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_DOWN;
-            if(e.keyCode != 83)
-            {
-                return this._cancelEvent(e);  
-            } 
+            return this._cancelEvent(e);
          }
          this._OnInputChange();
          
@@ -522,6 +504,26 @@ function GlobeNavigationNode()
       // EVENT: OnTick
       this.OnTick = function(dTick)
       {
+         if (this.navigationcommand == TraversalState.NavigationCommand.MOVE_DOWN)
+         {
+            var speed = this._ellipsoidHeight / 5000;
+            this._ellipsoidHeight -= dTick*speed;
+            if (this._ellipsoidHeight < this.minAltitude)
+            {
+              this._ellipsoidHeight = this.minAltitude;     
+            }
+         }
+         else if (this.navigationcommand == TraversalState.NavigationCommand.MOVE_UP)
+         {
+            var speed = this._ellipsoidHeight / 5000;
+            this._ellipsoidHeight += dTick*speed;
+            if (this._ellipsoidHeight > this.maxAltitude)
+            {
+              this._ellipsoidHeight = this.maxAltitude;     
+            }
+         }
+            
+            
          if (this._inputs & GlobeNavigationNode.INPUTS.KEY_ALL)
          {
             if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == 0)
@@ -681,9 +683,8 @@ function GlobeNavigationNode()
                    this._bHit = false; // clicked outside ellipsoid!
              }
           }
-       }
-       //---------------------------------------------------------------------
-
+      }
+      //---------------------------------------------------------------------
       // Cancel Event
       this._cancelEvent = function(evt)
       {
