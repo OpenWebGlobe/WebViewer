@@ -533,6 +533,10 @@ function GlobeNavigationNode()
               this._ellipsoidHeight = this.maxAltitude;     
             }
          }
+         else if (this.navigationcommand == TraversalState.NavigationCommand.UPDATE_YAW)
+         {
+            this._yaw = this.navigationparam;
+         }
 
          if (this._inputs & GlobeNavigationNode.INPUTS.KEY_ALL || this.navigationcommand == TraversalState.NavigationCommand.ROTATE_EARTH)
          {
