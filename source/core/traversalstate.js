@@ -66,7 +66,8 @@ TraversalState.NavigationCommand =
 {
    IDLE: 0,
    MOVE_DOWN: 1,
-   MOVE_UP: 2
+   MOVE_UP: 2,
+   ROTATE_EARTH: 3
 };
 //------------------------------------------------------------------------------
 /**
