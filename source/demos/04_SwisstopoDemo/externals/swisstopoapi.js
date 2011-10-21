@@ -109,7 +109,7 @@ swisstopoapi.jsoncallback = function(data)
             var lng = CHtoWGSlng(this.bbox[0],this.bbox[1]);
             
             //fly to position and set a poi
-            //get the height of the position - unused
+            //get the height of the position
             swisstopoapi.getJSONP("http://api.geo.admin.ch/height?easting="+this.bbox[0]+"&northing="+this.bbox[1],swisstopoapi.heightcallback);
             this.data.lat = lat;
             this.data.lng = lng;
