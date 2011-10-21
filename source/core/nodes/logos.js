@@ -53,6 +53,8 @@ function LogosNode()
       /** @type {Texture} */
       this.texYawPitchWheel = null;
       /** @type {Texture} */
+      this.texYawPitchAdjust = null;
+      /** @type {Texture} */
       this.texMinus = null;
       /** @type {Texture} */
       this.texMinusOver = null;
@@ -101,6 +103,10 @@ function LogosNode()
       this.guiOffsetY = 48;
       /** @type {number} */
       this.moveangle = 0;
+      /** @type {number} */
+      this.ypdiff = 0;
+      this.ypangle = 0;
+      this.ypstartangle = 0;
       
       /** @type {number} */
       this.sliderYPos = 0;
@@ -133,6 +139,15 @@ function LogosNode()
             var ypos = this.engine.height-1-this.guiOffsetY; 
             
             // wheel 1: pitch + yaw
+            if (this.navigationState == 10)
+            {
+               this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this.ypdiff, 1, 1, true);
+            }
+            else
+            {
+               this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this.ypdiff, 1, 1, true);    
+            }
+            
             this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
             
             // wheel 2: move
@@ -280,6 +295,9 @@ function LogosNode()
           this.texYawPitchWheel = new Texture(this.engine);
           this.texYawPitchWheel.loadTexture(owg.ARTWORK_PATH + "globenavigation/YawPitchWheel.png");
           
+          this.texYawPitchAdjust = new Texture(this.engine);
+          this.texYawPitchAdjust.loadTexture(owg.ARTWORK_PATH + "globenavigation/yaw_pitch_adjust.png");
+          
           this.texMoveWheel_marker = new Texture(this.engine);
           this.texMoveWheel_marker.loadTexture(owg.ARTWORK_PATH + "globenavigation/movewheel_marker.png");
           
@@ -379,7 +397,8 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.HandleGUI = function(mouseX, mouseY, dx, dy)
       {
-            
+         // in future, the layout of the GUI could be stored in a JSON file
+         // but for now, this is hardcoded.
          var plus_x0 = this.engine.width-1-64-this.guiOffsetX;
          var plus_y1 = this.engine.height-1-82-64-this.guiOffsetY;
          var plus_x1 = plus_x0 + 16;
@@ -398,6 +417,10 @@ function LogosNode()
          var movewheel_x0 = this.engine.width-1-64-this.guiOffsetX;
          var movewheel_y0 = this.engine.height-1-82-this.guiOffsetY;
          var movewheel_radius = 27;
+         
+         var ypwheel_x0 = this.engine.width-1-64-this.guiOffsetX;
+         var ypwheel_y0 = this.engine.height-1-this.guiOffsetY;
+         var ypwheel_radius = 41;
          
          // move slider
          if (this.btn && this.navigationState == 6)
@@ -425,6 +448,30 @@ function LogosNode()
               this.moveangle = 360-this.moveangle;
             }
             this.moveangle += 90;
+            return;
+         }
+         
+         if (this.btn && this.navigationState == 10)
+         {
+            // calculate rotation
+            var ddx = this.mouseX-ypwheel_x0;
+            var ddy = this.mouseY-ypwheel_y0;
+            this.ypangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
+            if (ddy<0)
+            {
+              this.ypangle = 360-this.ypangle;
+            }
+            this.ypangle -= 90;
+            
+            if (this.ypangle>360)
+               this.ypangle -= 360;
+            if (this.ypangle<0)
+               this.ypangle += 360;
+               
+            this.ypdiff = this.ypangle-this.ypstartangle;
+            if (this.ypdiff>360) this.ypdiff-=360;
+            if (this.ypdiff<0) this.ypdiff+=360;   
+            
             return;
          }
       
@@ -483,7 +530,7 @@ function LogosNode()
          {
             if (this.btn)
             {   
-               this.navigationState = 8; // movewheel pressed
+               this.navigationState = 8; // movewheel pressed  
             }
             else
             {
@@ -506,6 +553,48 @@ function LogosNode()
          }
          
          
+         if (Math.abs(this.mouseX-ypwheel_x0)<=ypwheel_radius &&
+             Math.abs(this.mouseY-ypwheel_y0)<=ypwheel_radius)
+         {
+            if (this.btn)
+            {   
+               this.navigationState = 10; // yaw pitch wheel pressed
+               var ddx = this.mouseX-ypwheel_x0;
+               var ddy = this.mouseY-ypwheel_y0;
+               this.ypangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
+               if (ddy<0)
+               {
+                  this.ypangle = 360-this.ypangle;
+               }
+               this.ypangle -= 90;
+               if (this.ypangle>360) this.ypangle -= 360;
+               if (this.ypangle<0) this.ypangle += 360;
+               this.ypdiff = this.ypangle-this.ypstartangle;
+               if (this.ypdiff>360) this.ypdiff-=360;
+               if (this.ypdiff<0) this.ypdiff+=360;
+            }
+            else
+            {
+               this.navigationState = 9; // inside yaw pitch wheel
+               // calculate rotation
+               var ddx = this.mouseX-ypwheel_x0;
+               var ddy = this.mouseY-ypwheel_y0;
+               this.ypstartangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
+               if (ddy<0)
+               {
+                  this.ypstartangle = 360-this.ypstartangle;
+               }
+               this.ypstartangle -= 90;
+               this.ypstartangle -= this.ypdiff;
+               
+               // make sure angle is in range [0,360]
+               if (this.ypstartangle>360)
+                  this.ypstartangle -= 360;
+               if (this.ypstartangle<0)
+                  this.ypstartangle += 360;
+            }   
+         }
+
       }
       //------------------------------------------------------------------------
 }
