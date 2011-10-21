@@ -90,6 +90,14 @@ function LogosNode()
       this.mouseY = 0;
       /** @type {number} */
       this.navigationState = 0;
+      
+      /** @type {number} */
+      this.guiOffsetX = 0;
+      /** @type {number} */
+      this.guiOffsetY = 72;
+      /** @type {number} */
+      this.moveangle = 0;
+      
       /** @type {number} */
       this.sliderYPos = 0;
       
@@ -117,16 +125,36 @@ function LogosNode()
          }
          else if (this.navigationtype == 1) // globe navigation
          {
-            var xpos = this.engine.width-1-64;
-            var ypos = this.engine.height-1-72;
-             
+            var xpos = this.engine.width-1-64-this.guiOffsetX;
+            var ypos = this.engine.height-1-this.guiOffsetY; 
+            
+            // wheel 1: pitch + yaw
             this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
+            
+            // wheel 2: move
+            ypos = this.engine.height-1-92-this.guiOffsetY;
+            if (this.navigationState == 7)
+            {
+                // todo: blit movewheel_marker
+                this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true, true, 0.5);    
+            }
+            else if (this.navigationState == 8)
+            {
+                // todo: blit movewheel_marker
+                this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true, true, 0.25);  
+            }
+            else
+            {
+                this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);      
+            }
              
-            ypos = this.engine.height-1-72-128;
+           
+             
+            ypos = this.engine.height-1-92-128-this.guiOffsetY;
             this.texSliderRail.Blit(xpos-8, ypos-64, 0, 0, 1, 1, true);
              
             // PLUS-SYMBOL
-            ypos = this.engine.height-1-72-64;
+            ypos = this.engine.height-1-92-64-this.guiOffsetY;
             if (this.navigationState == 1) // plus mouse over
             {
                this.texPlusOver.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);   
@@ -141,7 +169,7 @@ function LogosNode()
             }
             
             // MINUS SYMBOL
-            ypos = this.engine.height-1-72-128-64;
+            ypos = this.engine.height-1-92-128-64-this.guiOffsetY;
             if (this.navigationState == 3) // minus mouse over
             {
                this.texMinusOver.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
@@ -155,7 +183,7 @@ function LogosNode()
                this.texMinus.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
             }
             // SLIDER
-            ypos = this.engine.height-1-72-128-this.sliderYPos;
+            ypos = this.engine.height-1-92-128-this.sliderYPos-this.guiOffsetY;
             
             
             if (this.navigationState == 5) // slider mouse over
@@ -171,10 +199,9 @@ function LogosNode()
                this.texSlider.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
             }
             
-            
-            ypos = this.engine.height-1-72-128-64-64;
+            /*ypos = this.engine.height-1-72-128-64-64-this.guiOffsetY;
             this.compassr.Blit(xpos-32, ypos-32,0,this.yaw,0.5,0.5,true);    
-            this.compassbg.Blit(xpos-32, ypos-32,0,0,0.5,0.5,true);
+            this.compassbg.Blit(xpos-32, ypos-32,0,0,0.5,0.5,true);*/
          }
          
          
@@ -337,22 +364,26 @@ function LogosNode()
       this.HandleGUI = function(mouseX, mouseY, dx, dy)
       {
             
-         var plus_x0 = this.engine.width-1-64;
-         var plus_y1 = this.engine.height-1-72-64;
+         var plus_x0 = this.engine.width-1-64-this.guiOffsetX;
+         var plus_y1 = this.engine.height-1-92-64-this.guiOffsetY;
          var plus_x1 = plus_x0 + 16;
          var plus_y0 = plus_y1 - 16;
          
-         var minus_x0 = this.engine.width-1-64;
-         var minus_y1 = this.engine.height-1-72-128-64;
+         var minus_x0 = this.engine.width-1-64-this.guiOffsetX;
+         var minus_y1 = this.engine.height-1-92-128-64-this.guiOffsetY;
          var minus_x1 = minus_x0 + 16;
          var minus_y0 = minus_y1 - 16;
          
-         var slider_x0 = this.engine.width-1-64;
-         var slider_y1 = this.engine.height-1-72-128-this.sliderYPos;
+         var slider_x0 = this.engine.width-1-64-this.guiOffsetX;
+         var slider_y1 = this.engine.height-1-92-128-this.sliderYPos-this.guiOffsetY;
          var slider_x1 = slider_x0 + 16;
          var slider_y0 = slider_y1 - 16;
-      
-        
+         
+
+         var movewheel_x0 = this.engine.width-1-64-this.guiOffsetX;
+         var movewheel_y0 = this.engine.height-1-92-this.guiOffsetY;
+         var movewheel_radius = 27;
+         
          // move slider
          if (this.btn && this.navigationState == 6)
          {
@@ -365,7 +396,19 @@ function LogosNode()
             {
                this.sliderYPos = 40;
             }
-            
+            return;
+         }
+         
+         if (this.btn && this.navigationState == 8)
+         {
+            // calculate rotation
+            var ddx = this.mouseX-movewheel_x0;
+            var ddy = this.mouseY-movewheel_y0;
+            this.moveangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
+            if (ddy<0)
+            {
+              this.moveangle = 360-this.moveangle;
+            }
             return;
          }
       
@@ -416,6 +459,33 @@ function LogosNode()
             {
                this.navigationState = 5; // inside slider      
             }
+         }
+         
+         
+         if (Math.abs(this.mouseX-movewheel_x0)<=movewheel_radius &&
+             Math.abs(this.mouseY-movewheel_y0)<=movewheel_radius)
+         {
+            if (this.btn)
+            {   
+               this.navigationState = 8; // movewheel pressed
+            }
+            else
+            {
+               this.navigationState = 7; // inside movewheel
+               // calculate rotation
+               var ddx = this.mouseX-movewheel_x0;
+               var ddy = this.mouseY-movewheel_y0;
+               this.moveangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
+               if (ddy<0)
+               {
+                  this.moveangle = 360-this.moveangle;
+               }
+            }   
+         }
+         else
+         {
+            // reset angle
+            this.moveangle = 0; 
          }
          
          
