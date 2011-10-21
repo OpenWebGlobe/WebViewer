@@ -202,8 +202,8 @@ function engine3d()
    this.vp_h = 0;
    
    // Special Offset for Fullscreen mode
-   this.xoffset = 0;
-   this.yoffset = 0;
+   this.xoffset = 20;
+   this.yoffset = 20;
    
    // Model, View and Projection Matrices
    /** @type {mat4} */

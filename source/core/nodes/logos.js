@@ -162,7 +162,7 @@ function LogosNode()
             ypos = this.engine.height-1-82-64-this.guiOffsetY;
             if (this.navigationState == 1) // plus mouse over
             {
-               this.texPlusOver.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);   
+               this.texPlusOver.Blit(xpos-16,ypos-16, 0, 0, 1, 1, true);   
             }
             else if (this.navigationState == 2) // plus clicked
             {
@@ -330,12 +330,14 @@ function LogosNode()
       {
          if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
-            this.mx = e.offsetX;
-            this.my = this.engine.height-(e.offsetY)-1;
+            var xcorr = e.offsetX-this.engine.context.offsetLeft;
+            var ycorr = e.offsetY-this.engine.context.offsetTop;
+            this.mx = xcorr;
+            this.my = this.engine.height-(ycorr)-1;
             
             
-            this.mouseX = e.offsetX;
-            this.mouseY = this.engine.height-(e.offsetY)-1;
+            this.mouseX = xcorr;
+            this.mouseY = this.engine.height-(ycorr)-1;
             this.btn = true;
             
             if (this.navigationtype == 1)
@@ -349,8 +351,10 @@ function LogosNode()
       {
          if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
-            this.mouseX = e.offsetX;
-            this.mouseY = this.engine.height-(e.offsetY)-1;
+            var xcorr = e.offsetX-this.engine.context.offsetLeft;
+            var ycorr = e.offsetY-this.engine.context.offsetTop;
+            this.mouseX = xcorr;
+            this.mouseY = this.engine.height-(ycorr)-1;
             this.btn = false;
             
             if (this.navigationtype == 1)
@@ -364,10 +368,14 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.OnMouseMove = function(e)
       {
-         var dx = e.offsetX - this.mouseX;
-         var dy = this.engine.height-(e.offsetY)-1 - this.mouseY;   
-         this.mouseX = e.offsetX;
-         this.mouseY = this.engine.height-(e.offsetY)-1;
+
+         var xcorr = e.offsetX-this.engine.context.offsetLeft;
+         var ycorr = e.offsetY-this.engine.context.offsetTop;
+
+         var dx = xcorr - this.mouseX;
+         var dy = this.engine.height-(ycorr)-1 - this.mouseY;   
+         this.mouseX = xcorr;
+         this.mouseY = this.engine.height-(ycorr)-1;
          
          if (this.navigationtype == 1)
          {
@@ -380,23 +388,24 @@ function LogosNode()
       this.HandleGUI = function(mouseX, mouseY, dx, dy)
       {
             
-         var plus_x0 = this.engine.width-1-64-this.guiOffsetX;
-         var plus_y1 = this.engine.height-1-82-64-this.guiOffsetY;
+         var plus_x0 = (this.engine.width-1-64-this.guiOffsetX)-8;
+         var plus_y1 = (this.engine.height-1-82-64-this.guiOffsetY)+8;
          var plus_x1 = plus_x0 + 16;
          var plus_y0 = plus_y1 - 16;
          
-         var minus_x0 = this.engine.width-1-64-this.guiOffsetX;
-         var minus_y1 = this.engine.height-1-82-128-64-this.guiOffsetY;
+         //console.log("mouseX: "+mouseX+" mouseY: "+mouseY+"    this.engine.width: "+this.engine.width+"    this.engine.height: "+this.engine.height);
+         var minus_x0 = this.engine.width-1-64-this.guiOffsetX-8;
+         var minus_y1 = this.engine.height-1-82-128-64-this.guiOffsetY+8;
          var minus_x1 = minus_x0 + 16;
          var minus_y0 = minus_y1 - 16;
          
-         var slider_x0 = this.engine.width-1-64-this.guiOffsetX;
-         var slider_y1 = this.engine.height-1-82-128-this.sliderYPos-this.guiOffsetY;
+         var slider_x0 = this.engine.width-1-64-this.guiOffsetX-8;
+         var slider_y1 = this.engine.height-1-82-128-this.sliderYPos-this.guiOffsetY+8;
          var slider_x1 = slider_x0 + 16;
          var slider_y0 = slider_y1 - 16;
          
-         var movewheel_x0 = this.engine.width-1-64-this.guiOffsetX;
-         var movewheel_y0 = this.engine.height-1-82-this.guiOffsetY;
+         var movewheel_x0 = this.engine.width-1-64-this.guiOffsetX-8;
+         var movewheel_y0 = this.engine.height-1-82-this.guiOffsetY+8;
          var movewheel_radius = 27;
          
          // move slider
