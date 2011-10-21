@@ -49,6 +49,10 @@ function LogosNode()
       /** @type {Texture} */
       this.texMoveWheel = null;
       /** @type {Texture} */
+      this.texMoveWheel_marker = null;
+      /** @type {Texture} */
+      this.texYawPitchWheel = null;
+      /** @type {Texture} */
       this.texMinus = null;
       /** @type {Texture} */
       this.texMinusOver = null;
@@ -94,7 +98,7 @@ function LogosNode()
       /** @type {number} */
       this.guiOffsetX = 0;
       /** @type {number} */
-      this.guiOffsetY = 72;
+      this.guiOffsetY = 48;
       /** @type {number} */
       this.moveangle = 0;
       
@@ -129,19 +133,20 @@ function LogosNode()
             var ypos = this.engine.height-1-this.guiOffsetY; 
             
             // wheel 1: pitch + yaw
-            this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
+            this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
             
             // wheel 2: move
-            ypos = this.engine.height-1-92-this.guiOffsetY;
+            ypos = this.engine.height-1-82-this.guiOffsetY;
             if (this.navigationState == 7)
             {
-                // todo: blit movewheel_marker
-                this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true, true, 0.5);    
+
+                this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
+                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, true, 0.5);
             }
             else if (this.navigationState == 8)
             {
-                // todo: blit movewheel_marker
-                this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true, true, 0.25);  
+                this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
+                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, true, 0.5);
             }
             else
             {
@@ -150,11 +155,11 @@ function LogosNode()
              
            
              
-            ypos = this.engine.height-1-92-128-this.guiOffsetY;
+            ypos = this.engine.height-1-82-128-this.guiOffsetY;
             this.texSliderRail.Blit(xpos-8, ypos-64, 0, 0, 1, 1, true);
              
             // PLUS-SYMBOL
-            ypos = this.engine.height-1-92-64-this.guiOffsetY;
+            ypos = this.engine.height-1-82-64-this.guiOffsetY;
             if (this.navigationState == 1) // plus mouse over
             {
                this.texPlusOver.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);   
@@ -169,7 +174,7 @@ function LogosNode()
             }
             
             // MINUS SYMBOL
-            ypos = this.engine.height-1-92-128-64-this.guiOffsetY;
+            ypos = this.engine.height-1-82-128-64-this.guiOffsetY;
             if (this.navigationState == 3) // minus mouse over
             {
                this.texMinusOver.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
@@ -183,7 +188,7 @@ function LogosNode()
                this.texMinus.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
             }
             // SLIDER
-            ypos = this.engine.height-1-92-128-this.sliderYPos-this.guiOffsetY;
+            ypos = this.engine.height-1-82-128-this.sliderYPos-this.guiOffsetY;
             
             
             if (this.navigationState == 5) // slider mouse over
@@ -238,6 +243,11 @@ function LogosNode()
                 ts.navigationcommand = TraversalState.NavigationCommand.MOVE_DOWN;
               }
            }
+           else if (this.navigationState == 8)
+           {
+                ts.navigationcommand = TraversalState.NavigationCommand.ROTATE_EARTH;
+                ts.navigationparam = this.moveangle;
+           }
            else
            {
               ts.navigationcommand = TraversalState.NavigationCommand.IDLE;
@@ -266,6 +276,12 @@ function LogosNode()
           
           this.texMoveWheel = new Texture(this.engine);
           this.texMoveWheel.loadTexture(owg.ARTWORK_PATH + "globenavigation/MoveWheel.png");
+          
+          this.texYawPitchWheel = new Texture(this.engine);
+          this.texYawPitchWheel.loadTexture(owg.ARTWORK_PATH + "globenavigation/YawPitchWheel.png");
+          
+          this.texMoveWheel_marker = new Texture(this.engine);
+          this.texMoveWheel_marker.loadTexture(owg.ARTWORK_PATH + "globenavigation/movewheel_marker.png");
           
           this.texMinus = new Texture(this.engine);
           this.texMinus.loadTexture(owg.ARTWORK_PATH + "globenavigation/minus.png");
@@ -315,11 +331,11 @@ function LogosNode()
          if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
             this.mx = e.offsetX;
-            this.my = this.engine.height-e.offsetY-1;
+            this.my = this.engine.height-(e.offsetY)-1;
             
             
             this.mouseX = e.offsetX;
-            this.mouseY = this.engine.height-e.offsetY-1;
+            this.mouseY = this.engine.height-(e.offsetY)-1;
             this.btn = true;
             
             if (this.navigationtype == 1)
@@ -334,7 +350,7 @@ function LogosNode()
          if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
             this.mouseX = e.offsetX;
-            this.mouseY = this.engine.height-e.offsetY-1;
+            this.mouseY = this.engine.height-(e.offsetY)-1;
             this.btn = false;
             
             if (this.navigationtype == 1)
@@ -349,9 +365,9 @@ function LogosNode()
       this.OnMouseMove = function(e)
       {
          var dx = e.offsetX - this.mouseX;
-         var dy = this.engine.height-e.offsetY-1 - this.mouseY;   
+         var dy = this.engine.height-(e.offsetY)-1 - this.mouseY;   
          this.mouseX = e.offsetX;
-         this.mouseY = this.engine.height-e.offsetY-1;
+         this.mouseY = this.engine.height-(e.offsetY)-1;
          
          if (this.navigationtype == 1)
          {
@@ -365,23 +381,22 @@ function LogosNode()
       {
             
          var plus_x0 = this.engine.width-1-64-this.guiOffsetX;
-         var plus_y1 = this.engine.height-1-92-64-this.guiOffsetY;
+         var plus_y1 = this.engine.height-1-82-64-this.guiOffsetY;
          var plus_x1 = plus_x0 + 16;
          var plus_y0 = plus_y1 - 16;
          
          var minus_x0 = this.engine.width-1-64-this.guiOffsetX;
-         var minus_y1 = this.engine.height-1-92-128-64-this.guiOffsetY;
+         var minus_y1 = this.engine.height-1-82-128-64-this.guiOffsetY;
          var minus_x1 = minus_x0 + 16;
          var minus_y0 = minus_y1 - 16;
          
          var slider_x0 = this.engine.width-1-64-this.guiOffsetX;
-         var slider_y1 = this.engine.height-1-92-128-this.sliderYPos-this.guiOffsetY;
+         var slider_y1 = this.engine.height-1-82-128-this.sliderYPos-this.guiOffsetY;
          var slider_x1 = slider_x0 + 16;
          var slider_y0 = slider_y1 - 16;
          
-
          var movewheel_x0 = this.engine.width-1-64-this.guiOffsetX;
-         var movewheel_y0 = this.engine.height-1-92-this.guiOffsetY;
+         var movewheel_y0 = this.engine.height-1-82-this.guiOffsetY;
          var movewheel_radius = 27;
          
          // move slider
@@ -409,6 +424,7 @@ function LogosNode()
             {
               this.moveangle = 360-this.moveangle;
             }
+            this.moveangle += 90;
             return;
          }
       
@@ -480,6 +496,7 @@ function LogosNode()
                {
                   this.moveangle = 360-this.moveangle;
                }
+               this.moveangle += 90;
             }   
          }
          else

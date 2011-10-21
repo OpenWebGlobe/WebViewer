@@ -533,8 +533,8 @@ function GlobeNavigationNode()
               this._ellipsoidHeight = this.maxAltitude;     
             }
          }
-            
-         if (this._inputs & GlobeNavigationNode.INPUTS.KEY_ALL)
+
+         if (this._inputs & GlobeNavigationNode.INPUTS.KEY_ALL || this.navigationcommand == TraversalState.NavigationCommand.ROTATE_EARTH)
          {
             if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == 0)
             {
@@ -556,8 +556,18 @@ function GlobeNavigationNode()
                {
                   dY += 1;
                }
-               var deltaYaw = Math.atan2(dY, dX);
-               var p = (this._ellipsoidHeight / 500000.0) * (this._ellipsoidHeight / 500000.0);
+               
+               var deltaYaw;
+               if (this.navigationcommand == TraversalState.NavigationCommand.ROTATE_EARTH)
+               {
+                  deltaYaw = Math.PI*this.navigationparam/180;
+               }
+               else
+               {
+                  deltaYaw = Math.atan2(dY, dX);
+               }
+               
+               var p = this._ellipsoidHeight / 500000.0;
                if (p>10)
                {
                   p=10;
@@ -566,7 +576,7 @@ function GlobeNavigationNode()
                {
                   p=0.001;
                }
-               var deltaSurface = p * dTick / 2550;
+               var deltaSurface = p * dTick / 50000;
                // navigate along geodetic line
                var lat_rad = Math.PI * this._latitude / 180; // deg2rad
                var lng_rad = Math.PI * this._longitude / 180; // deg2rad
