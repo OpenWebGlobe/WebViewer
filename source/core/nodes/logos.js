@@ -190,13 +190,26 @@ function LogosNode()
            
            if (this.navigationState == 2)
            {
-              ts.navigationcommand = TraversalState.NavigationCommand.MOVE_UP;
-              // todo: ts.navigationparam = speed;
+              ts.navigationcommand = TraversalState.NavigationCommand.MOVE_DOWN;
+              ts.navigationparam = 1;
            }
            else if (this.navigationState == 4)
            {
-              ts.navigationcommand = TraversalState.NavigationCommand.MOVE_DOWN;
-              // todo: ts.navigationparam = speed;
+              ts.navigationcommand = TraversalState.NavigationCommand.MOVE_UP;
+              ts.navigationparam = 1;
+           }
+           else if (this.navigationState == 6)
+           {
+              if (this.sliderYPos>0)
+              {
+                ts.navigationcommand = TraversalState.NavigationCommand.MOVE_UP;
+                ts.navigationparam = Math.sqrt(this.sliderYPos) / 4;   
+              }
+              else if (this.sliderYPos<0)
+              {
+                ts.navigationparam = Math.sqrt(-this.sliderYPos) / 4;
+                ts.navigationcommand = TraversalState.NavigationCommand.MOVE_DOWN;
+              }
            }
            else
            {

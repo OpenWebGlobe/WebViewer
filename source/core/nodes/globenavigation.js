@@ -123,6 +123,7 @@ function GlobeNavigationNode()
       this.maxAltitude = 10000000;
       // external navigation commands
       this.navigationcommand = TraversalState.NavigationCommand.IDLE;
+      this.navigationparam = 0;
 
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -138,6 +139,7 @@ function GlobeNavigationNode()
       {
          // read possible navigation command from outside:
          this.navigationcommand  = ts.navigationcommand;
+         this.navigationparam = ts.navigationparam;
          
          // test if navigation was locked from outside (for example GUI)
          ts.navigationtype = 1;
@@ -287,6 +289,15 @@ function GlobeNavigationNode()
                   this._longitude = gc._wgscoords[0];
                   this._latitude = gc._wgscoords[1];
                   this._ellipsoidHeight = gc._wgscoords[2];
+                  
+                  if (this._ellipsoidHeight < this.minAltitude)
+                  {
+                        this._ellipsoidHeight = this.minAltitude;     
+                  }
+                  else if (this._ellipsoidHeight > this.maxAltitude)
+                  {
+                        this._ellipsoidHeight = this.maxAltitude;     
+                  }
                }
             }
             else if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == GlobeNavigationNode.INPUTS.MODIFIER_SHIFT)
@@ -506,7 +517,7 @@ function GlobeNavigationNode()
       {
          if (this.navigationcommand == TraversalState.NavigationCommand.MOVE_DOWN)
          {
-            var speed = this._ellipsoidHeight / 5000;
+            var speed = this.navigationparam * this._ellipsoidHeight / 5000;
             this._ellipsoidHeight -= dTick*speed;
             if (this._ellipsoidHeight < this.minAltitude)
             {
@@ -515,14 +526,13 @@ function GlobeNavigationNode()
          }
          else if (this.navigationcommand == TraversalState.NavigationCommand.MOVE_UP)
          {
-            var speed = this._ellipsoidHeight / 5000;
+            var speed = this.navigationparam * this._ellipsoidHeight / 5000;
             this._ellipsoidHeight += dTick*speed;
             if (this._ellipsoidHeight > this.maxAltitude)
             {
               this._ellipsoidHeight = this.maxAltitude;     
             }
          }
-            
             
          if (this._inputs & GlobeNavigationNode.INPUTS.KEY_ALL)
          {
