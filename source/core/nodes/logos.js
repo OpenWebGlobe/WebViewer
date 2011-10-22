@@ -109,6 +109,8 @@ function LogosNode()
       /** @type {number} */
       this.moveanglenav = 0;
       /** @type {number} */
+      this.ypwheelangle = 0;
+      /** @type {number} */
       this.ypdiff = 0;
       /** @type {number} */
       this.ypangle = 0;
@@ -189,7 +191,21 @@ function LogosNode()
                 this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true);  
             }
             
-            this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
+            if (this.navigationState == LogosNode.GUISTATE.YAWPITCHWHEEL_CLICKED)
+            {
+                this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
+                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.ypwheelangle, 1, 1, true, true, 0.5);
+
+            }
+            else if  (this.navigationState == LogosNode.GUISTATE.YAWPITCHWHEEL_OVER)
+            {
+                  this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
+                  this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.ypwheelangle, 1, 1, true, true, 0.5);
+            }
+            else
+            {
+               this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
+            }
             
             // wheel 2: move
             ypos = this.engine.height-1-82-this.guiOffsetY;
@@ -540,13 +556,27 @@ function LogosNode()
             this.ypangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
             if (ddy<0)
             {
-              this.ypangle = 360-this.ypangle;
+               this.ypangle = 360-this.ypangle;
             }
             this.ypangle -= 90;
             
             this.ypangle = this._adjustAngle(this.ypangle);
             this.ypdiff = this._adjustAngle(this.ypangle-this.ypstartangle);
             return;
+         }
+         
+         if (this.btn && this.navigationState == LogosNode.GUISTATE.YAWPITCHWHEEL_CLICKED)
+         {
+            var ddx = this.mouseX-ypwheel_x0;
+            var ddy = this.mouseY-ypwheel_y0;
+            this.ypwheelangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
+            if (ddy<0)
+            {
+               this.ypwheelangle = 360-this.ypwheelangle;
+            }
+            
+            this.ypwheelangle += 90;
+            this.ypwheelangle = this._adjustAngle(this.ypwheelangle);
          }
       
          this.navigationState = 0;
@@ -640,10 +670,31 @@ function LogosNode()
             if (this.btn)
             {
                   this.navigationState = LogosNode.GUISTATE.YAWPITCHWHEEL_CLICKED;
+                  var ddx = this.mouseX-ypwheel_x0;
+                  var ddy = this.mouseY-ypwheel_y0;
+                  this.ypwheelangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
+                  if (ddy<0)
+                  {
+                     this.ypwheelangle = 360-this.ypwheelangle;
+                  }
+               
+                  this.ypwheelangle += 90;
+                  this.ypwheelangle = this._adjustAngle(this.ypwheelangle);
+                  
             }
             else
             {
                   this.navigationState = LogosNode.GUISTATE.YAWPITCHWHEEL_OVER;
+                  var ddx = this.mouseX-ypwheel_x0;
+                  var ddy = this.mouseY-ypwheel_y0;
+                  this.ypwheelangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
+                  if (ddy<0)
+                  {
+                     this.ypwheelangle = 360-this.ypwheelangle;
+                  }
+               
+                  this.ypwheelangle += 90;
+                  this.ypwheelangle = this._adjustAngle(this.ypwheelangle);
             }
          }
          else if (ypx2 + ypy2<=ypwheel_radius2)
