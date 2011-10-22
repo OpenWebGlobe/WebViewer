@@ -371,11 +371,11 @@ var j=0;
 /**
  * @description Draws the Surface element. Ensure that "toGPU" is called before calling this method.
  * note: this method still needs some optimization
- * @param {boolean=} opt_ranged
- * @param {number=} opt_count
- * @param {number=} opt_offset
- * @param {vec4=} opt_fontcolor
- * @param {vec4=} opt_poicolor
+ * @param {null|boolean=} opt_ranged
+ * @param {null|number=} opt_count
+ * @param {null|number=} opt_offset
+ * @param {null|vec4=} opt_fontcolor
+ * @param {null|vec4=} opt_poicolor
  */
 Surface.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcolor, opt_poicolor)
 {
