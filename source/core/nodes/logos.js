@@ -74,6 +74,8 @@ function LogosNode()
       this.texSliderClicked = null;
       /** @type {Texture} */
       this.texSliderRail = null;
+      /** @type {Texture} */
+      this.texCrosshair = null;
       /** @type {number} */
       this.mx = 0;
       /** @type {number} */
@@ -104,6 +106,8 @@ function LogosNode()
       /** @type {number} */
       this.moveangle = 0;
       /** @type {number} */
+      this.moveanglenav = 0;
+      /** @type {number} */
       this.ypdiff = 0;
       /** @type {number} */
       this.ypangle = 0;
@@ -111,9 +115,15 @@ function LogosNode()
       this.ypstartangle = 0;
       /** @type {number} */
       this.startyaw = 0;
-      
       /** @type {number} */
       this.sliderYPos = 0;
+      /** @type {boolean} */
+      this.bDrawCrosshair = false;
+      /** @type {number} */
+      this.crosshairx = 0;
+      /** @type {number} */
+      this.crosshairy = 0;
+      
       
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -153,6 +163,12 @@ function LogosNode()
          }
          else if (this.navigationtype == 1) // globe navigation
          {
+            
+            if (this.bDrawCrosshair)
+            {
+               this.texCrosshair.Blit(this.crosshairx-24, this.crosshairy-8,0, 0, 1, 1, true, true, 0.75);
+            }
+            
             var xpos = this.engine.width-1-64-this.guiOffsetX;
             var ypos = this.engine.height-1-this.guiOffsetY; 
             
@@ -286,7 +302,7 @@ function LogosNode()
            else if (this.navigationState == 8)
            {
                 ts.navigationcommand = TraversalState.NavigationCommand.ROTATE_EARTH;
-                ts.navigationparam = this.moveangle;
+                ts.navigationparam = this.moveanglenav;
            }
            else if (this.navigationState == 10)
            {
@@ -362,6 +378,9 @@ function LogosNode()
           
           this.texSliderRail = new Texture(this.engine);
           this.texSliderRail.loadTexture(owg.ARTWORK_PATH + "globenavigation/slider_rail.png");
+      
+          this.texCrosshair = new Texture(this.engine);
+          this.texCrosshair.loadTexture(owg.ARTWORK_PATH + "globenavigation/crosshair.png");
       }
       //------------------------------------------------------------------------
       this.OnExit = function()
@@ -413,12 +432,12 @@ function LogosNode()
             }
             
             this.sliderYPos = 0;
+            this.bDrawCrosshair = false;
          }
       }
       //------------------------------------------------------------------------
       this.OnMouseMove = function(e)
       {
-
          var xcorr = e.offsetX-this.engine.context.offsetLeft;
          var ycorr = e.offsetY-this.engine.context.offsetTop;
 
@@ -431,8 +450,6 @@ function LogosNode()
          {
             this.HandleGUI(this.mouseX, this.mouseY, dx, dy);
          }
-
-         
       }
       //------------------------------------------------------------------------
       this.HandleGUI = function(mouseX, mouseY, dx, dy)
@@ -486,11 +503,21 @@ function LogosNode()
             var ddx = this.mouseX-movewheel_x0;
             var ddy = this.mouseY-movewheel_y0;
             this.moveangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
+            this.moveanglenav = this.moveangle;
             if (ddy<0)
             {
               this.moveangle = 360-this.moveangle;
             }
+            else
+            {
+               this.moveanglenav = 360-this.moveanglenav;   
+            }
             this.moveangle += 90;
+            this.moveanglenav += 90;
+            
+            this.moveangle = this._adjustAngle(this.moveangle);
+            this.moveanglenav = this._adjustAngle(this.moveanglenav);
+            
             return;
          }
          
@@ -572,14 +599,23 @@ function LogosNode()
             {
                this.navigationState = 7; // inside movewheel
                // calculate rotation
-               var ddx = this.mouseX-movewheel_x0;
+                var ddx = this.mouseX-movewheel_x0;
                var ddy = this.mouseY-movewheel_y0;
                this.moveangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
+               this.moveanglenav = this.moveangle;
                if (ddy<0)
                {
                   this.moveangle = 360-this.moveangle;
                }
+               else
+               {
+                  this.moveanglenav = 360-this.moveanglenav;   
+               }
                this.moveangle += 90;
+               this.moveanglenav += 90;
+            
+               this.moveangle = this._adjustAngle(this.moveangle);
+               this.moveanglenav = this._adjustAngle(this.moveanglenav);
             }   
          }
          else
