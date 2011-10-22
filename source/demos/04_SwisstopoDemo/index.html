@@ -27,15 +27,26 @@ var world;
 var searchpoilayer;
 var searchpoi;
 
+var searchbox;
+var canv;
+
 /**
  * @description set up the virtual globe
  */
 function main()
 {
       var browserName=navigator.appName;
+      
       //disable contextmenu over canvas
-      document.getElementById("canvas").oncontextmenu = function(event){ event.preventDefault();event.stopPropagation();return false;};
-          
+      canv = document.getElementById("canvas");
+      canv.oncontextmenu = function(event){ event.preventDefault();event.stopPropagation();return false;};
+      canv.onclick = function(event){
+            searchbox.blur();
+            canv.focus();
+            };
+      searchbox = document.getElementById("txtInput");
+      
+      
       //check for internet explorer users
       if(browserName == "Microsoft Internet Explorer")
       {
@@ -63,7 +74,7 @@ function main()
             
             globe = ogCreateGlobe(g_context);
             
-            
+           /* 
             //load blue marble image data
             var imgBlueMarble500 = 
             {
@@ -72,7 +83,7 @@ function main()
             service : "i3d"
             };
             ogAddImageLayer(globe, imgBlueMarble500);
-            
+            */
             //load swissimage data 
             var imgSWISSTOPO = 
             {
@@ -126,14 +137,14 @@ function main()
             ogSetFlightDuration(scene,6000);
             
             
-
+            
       }
        
        
 
 }
 
-function searchFiledKeyPressed(evt)
+function searchBoxKeyPressed(evt)
 {
       if(evt.keyCode==13)
       {
@@ -141,6 +152,7 @@ function searchFiledKeyPressed(evt)
             evt.preventDefault();
             evt.stopPropagation();
       }
+      evt.stopPropagation();
 }
 
 
@@ -174,6 +186,8 @@ function search()
       {
             swisstopoapi.sendQuery(searchtext);
       }
+      searchbox.blur();
+      canv.focus();
 }
 
 
@@ -283,7 +297,7 @@ function checkUrlParameters()
             <div class="classSeparatorTitle">Localisation Search</div>
             <div id="divMenuSearch">
 
-                  <input id="txtInput" type="text" size="20" onkeypress="searchFiledKeyPressed(event)">
+                  <input id="txtInput" type="text" size="20" onkeydown="searchBoxKeyPressed(event)">
                   <input id="btgo" type="button" value="Go" onclick="search()">
 
             </div>
