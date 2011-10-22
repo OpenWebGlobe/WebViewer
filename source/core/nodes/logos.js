@@ -420,6 +420,7 @@ function LogosNode()
          goog.events.listen(context, goog.events.EventType.MOUSEDOWN, this.OnMouseDown, false, this);
          goog.events.listen(context, goog.events.EventType.MOUSEUP, this.OnMouseUp, false, this);
          goog.events.listen(context, goog.events.EventType.MOUSEMOVE, this.OnMouseMove, false, this);
+         goog.events.listen(context, goog.events.EventType.DBLCLICK, this.OnMouseDoubleClick, false, this);
       }
       //------------------------------------------------------------------------
       this.OnMouseDown = function(e)
@@ -477,6 +478,15 @@ function LogosNode()
          {
             this.HandleGUI(this.mouseX, this.mouseY, dx, dy);
          }
+      }
+      //------------------------------------------------------------------------
+      this.OnMouseDoubleClick = function(e)
+      {
+        // double click on dial wheel resets yaw/pitch/roll
+        if (this.navigationState == LogosNode.GUISTATE.YAWPITCHDIAL_OVER)
+        {
+            this.engine.FlyTo(this.longitude, this.latitude,this.elevation,0,-90,0);
+        }
       }
       //------------------------------------------------------------------------
       this.HandleGUI = function(mouseX, mouseY, dx, dy)
