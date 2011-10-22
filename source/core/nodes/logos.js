@@ -195,7 +195,6 @@ function LogosNode()
             {
                 this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
                 this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.ypwheelangle, 1, 1, true, true, 0.5);
-
             }
             else if  (this.navigationState == LogosNode.GUISTATE.YAWPITCHWHEEL_OVER)
             {
@@ -333,6 +332,11 @@ function LogosNode()
                 ts.navigationparam = this.startyaw + this.ypdiff;
                 ts.navigationparam = this._adjustAngle(ts.navigationparam);
                 ts.navigationparam *= Math.PI/180;
+           }
+           else if (this.navigationState == LogosNode.GUISTATE.YAWPITCHWHEEL_CLICKED)
+           {
+                ts.navigationcommand = TraversalState.NavigationCommand.UPDATE_YAWPITCH;
+                ts.navigationparam = Math.PI*this.ypwheelangle/180;
            }
            else
            {
@@ -509,7 +513,8 @@ function LogosNode()
          var ypx2 = Math.abs(this.mouseX-ypwheel_x0); ypx2 *= ypx2;
          var ypy2 = Math.abs(this.mouseY-ypwheel_y0); ypy2 *= ypy2;
          
-         // move slider
+         //---------------------------------------------------------------------
+         // Slider Button Handling when mouse is still clicked
          if (this.btn && this.navigationState == LogosNode.GUISTATE.SLIDERBUTTON_CLICKED)
          {
             this.sliderYPos -= dy;
@@ -524,6 +529,8 @@ function LogosNode()
             return;
          }
          
+         //---------------------------------------------------------------------
+         // Move Wheel Handling when mouse is still clicked
          if (this.btn && this.navigationState == LogosNode.GUISTATE.MOVEWHEEL_CLICKED)
          {
             // calculate rotation
@@ -547,7 +554,8 @@ function LogosNode()
             
             return;
          }
-         
+         //---------------------------------------------------------------------
+         // Yaw Pitch Dial Handling when mouse is still clicked
          if (this.btn && this.navigationState == LogosNode.GUISTATE.YAWPITCHDIAL_CLICKED)
          {
             // calculate rotation
@@ -564,7 +572,8 @@ function LogosNode()
             this.ypdiff = this._adjustAngle(this.ypangle-this.ypstartangle);
             return;
          }
-         
+         //---------------------------------------------------------------------
+         // Yaw Pitch Wheel Handling when mouse is still clicked
          if (this.btn && this.navigationState == LogosNode.GUISTATE.YAWPITCHWHEEL_CLICKED)
          {
             var ddx = this.mouseX-ypwheel_x0;
@@ -577,10 +586,14 @@ function LogosNode()
             
             this.ypwheelangle += 90;
             this.ypwheelangle = this._adjustAngle(this.ypwheelangle);
+            return;
          }
-      
-         this.navigationState = 0;
          
+         //---------------------------------------------------------------------
+         // Reset Navigation State
+         this.navigationState = 0;
+         //---------------------------------------------------------------------
+         // Plus Button Handling
          if (this.mouseX > plus_x0 &&
              this.mouseY > plus_y0 &&
              this.mouseX < plus_x1 &&
@@ -597,6 +610,8 @@ function LogosNode()
             }
          }
          
+         //---------------------------------------------------------------------
+         // Minus Button Handling
          if (this.mouseX > minus_x0 &&
              this.mouseY > minus_y0 &&
              this.mouseX < minus_x1 &&
@@ -613,6 +628,8 @@ function LogosNode()
             }
          }
          
+         //---------------------------------------------------------------------
+         // Slider Handling
          if (this.mouseX > slider_x0 &&
              this.mouseY > slider_y0 &&
              this.mouseX < slider_x1 &&
@@ -628,7 +645,8 @@ function LogosNode()
             }
          }
          
-         
+         //---------------------------------------------------------------------
+         // Move Wheel Handling
          if (mwx2 + mwy2<=movewheel_radius*movewheel_radius)
          {
             if (this.btn)
@@ -664,6 +682,8 @@ function LogosNode()
             this.moveangle = 0; 
          }
          
+         //---------------------------------------------------------------------
+         // Yaw Pitch Wheel and Dial Handling
          if (ypx2 + ypy2<=ypwheel_radius_min2)
          {
             // inside yp button
@@ -734,6 +754,7 @@ function LogosNode()
                this.ypstartangle = this._adjustAngle(this.ypstartangle);
             }   
          }
+         //---------------------------------------------------------------------
 
       }
       //------------------------------------------------------------------------

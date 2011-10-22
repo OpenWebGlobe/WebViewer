@@ -62,6 +62,7 @@ function GlobeNavigationNode()
       this._inputs = 0;
       this._dragOriginMouseX = 0;
       this._dragOriginMouseY = 0;
+      this._bRotationInvalid = true;
       this._dragOriginYaw = 0;
       this._dragOriginPitch = 0;
 
@@ -89,6 +90,12 @@ function GlobeNavigationNode()
 
       this._nMouseX = 0;
       this._nMouseY = 0;
+      this._dx = 0;
+      this._dy = 0;
+      this._nMouseRotationOriginX = 0;
+      this._nMouseRotationOriginY = 0;
+      this._RotationRadius = 0;
+      this._RotationCenter = [];
       this._vR = new vec3();
       this._bDragging = false;
       this._bLClick = false;
@@ -227,7 +234,12 @@ function GlobeNavigationNode()
             else if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == GlobeNavigationNode.INPUTS.MODIFIER_CONTROL)
             {
                state = GlobeNavigationNode.STATES.LOOKING;
-            }
+            }   
+         }
+         
+         if ((this._inputs & GlobeNavigationNode.INPUTS.MOUSE_ALL) == GlobeNavigationNode.INPUTS.MOUSE_MIDDLE)
+         {
+            state = GlobeNavigationNode.STATES.ROTATING;  
          }
          // If the state has changed...
          if (state != this._state)
@@ -246,6 +258,31 @@ function GlobeNavigationNode()
                this._dragOriginMouseY = this._nMouseY;
                this._dragOriginYaw = this._yaw;
                this._dragOriginPitch = this._pitch;
+            }
+            
+            if (this._state == GlobeNavigationNode.STATES.ROTATING)
+            {
+               // enter rotation mode
+               this._nMouseRotationOriginX = this._nMouseX;
+               this._nMouseRotationOriginY = this._nMouseY;
+               var pickresult = {};
+               this.engine.PickGlobe(this._nMouseX, this._nMouseY, pickresult);
+               if (pickresult["hit"])
+               {
+                  this._bRotationInvalid = false;
+                  this.pos.Set(this._longitude, this._latitude, this._ellipsoidHeight);
+                  this.pos.ToCartesian(this.geocoord);
+                  var dx = this.geocoord[0] - pickresult["x"];
+                  var dy = this.geocoord[1] - pickresult["y"];
+                  var dz = this.geocoord[2] - pickresult["z"];
+                  
+                  this._RotationCenter = [pickresult["x"], pickresult["y"], pickresult["z"]];
+                  this._RotationRadius = Math.sqrt(dx*dx+dy*dy*dz*dz);
+               }
+               else
+               {
+                  this._bRotationInvalid = true; // can't do a rotation!
+               }
             }
          }
          // Update according to the current state
@@ -505,6 +542,9 @@ function GlobeNavigationNode()
 
          this._bMouseDelta = true;
          
+         this._dx = e.offsetX - this._nMouseX;
+         this._dy = e.offsetY - this._nMouseY;
+         
          this._nMouseX = e.offsetX;
          this._nMouseY = e.offsetY;
          this._OnInputChange();
@@ -537,6 +577,35 @@ function GlobeNavigationNode()
          {
             this._yaw = this.navigationparam;
          }
+         else if (this.navigationcommand == TraversalState.NavigationCommand.UPDATE_YAWPITCH)
+         {
+            var dpitch = -Math.cos(this.navigationparam);
+            var dyaw = Math.sin(this.navigationparam);
+            
+            // 25 degrees per second
+            this._pitch += dTick / 5000  * dpitch;
+            this._yaw += dTick / 5000 * dyaw;
+            
+            if (this._pitch < -Math.PI/2)
+            {
+               this._pitch = -Math.PI/2;
+            }
+            else if (this._pitch > 0)
+            {
+               this._pitch = 0;
+            }
+         }
+         
+         
+         /*if (this._state == GlobeNavigationNode.STATES.ROTATING)
+         {
+            // do rotation if there is a valid hit point
+            if (!this._bRotationInvalid)
+            {
+            
+              
+            }
+         }*/
 
          if (this._inputs & GlobeNavigationNode.INPUTS.KEY_ALL || this.navigationcommand == TraversalState.NavigationCommand.ROTATE_EARTH)
          {
