@@ -31,6 +31,7 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventType');
 goog.require('owg.ScenegraphNode');
 goog.require('owg.Texture');
+goog.require('owg.vec4');
 
 //------------------------------------------------------------------------
 /**
@@ -123,6 +124,8 @@ function LogosNode()
       this.crosshairx = 0;
       /** @type {number} */
       this.crosshairy = 0;
+      /** @type {vec4} */
+      this.highlightcolor = new vec4(0.7,0.9,1,1);
       
       
       //------------------------------------------------------------------------
@@ -175,11 +178,15 @@ function LogosNode()
             // wheel 1: pitch + yaw
             if (this.navigationState == 10)
             {
-               this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true);
+               this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true, false, 1.0, this.highlightcolor);
+            }
+            else if (this.navigationState == 9)
+            {
+               this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true, false, 1.0, this.highlightcolor);    
             }
             else
             {
-               this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true);    
+                this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true);  
             }
             
             this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
