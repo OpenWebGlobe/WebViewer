@@ -98,7 +98,7 @@ function LogosNode()
       /** @type {number} */
       this.mouseY = 0;
       /** @type {number} */
-      this.navigationState = 0;
+      this.navigationState = LogosNode.GUISTATE.IDLE;
       
       /** @type {number} */
       this.guiOffsetX = 0;
@@ -176,11 +176,11 @@ function LogosNode()
             var ypos = this.engine.height-1-this.guiOffsetY; 
             
             // wheel 1: pitch + yaw
-            if (this.navigationState == 10)
+            if (this.navigationState == LogosNode.GUISTATE.YAWPITCHDIAL_CLICKED)
             {
                this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true, false, 1.0, this.highlightcolor);
             }
-            else if (this.navigationState == 9)
+            else if (this.navigationState == LogosNode.GUISTATE.YAWPITCHDIAL_OVER)
             {
                this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true, false, 1.0, this.highlightcolor);    
             }
@@ -193,13 +193,13 @@ function LogosNode()
             
             // wheel 2: move
             ypos = this.engine.height-1-82-this.guiOffsetY;
-            if (this.navigationState == 7)
+            if (this.navigationState == LogosNode.GUISTATE.MOVEWHEEL_OVER)
             {
 
                 this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
                 this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, true, 0.5);
             }
-            else if (this.navigationState == 8)
+            else if (this.navigationState == LogosNode.GUISTATE.MOVEWHEEL_CLICKED)
             {
                 this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
                 this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, true, 0.5);
@@ -216,11 +216,11 @@ function LogosNode()
              
             // PLUS-SYMBOL
             ypos = this.engine.height-1-82-64-this.guiOffsetY;
-            if (this.navigationState == 1) // plus mouse over
+            if (this.navigationState == LogosNode.GUISTATE.PLUSBUTTON_OVER) // plus mouse over
             {
                this.texPlusOver.Blit(xpos-16,ypos-16, 0, 0, 1, 1, true);   
             }
-            else if (this.navigationState == 2) // plus clicked
+            else if (this.navigationState == LogosNode.GUISTATE.PLUSBUTTON_CLICKED) // plus clicked
             {
                 this.texPlusClicked.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);   
             }
@@ -231,11 +231,11 @@ function LogosNode()
             
             // MINUS SYMBOL
             ypos = this.engine.height-1-82-128-64-this.guiOffsetY;
-            if (this.navigationState == 3) // minus mouse over
+            if (this.navigationState == LogosNode.GUISTATE.MINUSBUTTON_OVER) // minus mouse over
             {
                this.texMinusOver.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
             }
-            else if (this.navigationState == 4) // minus clicked
+            else if (this.navigationState == LogosNode.GUISTATE.MINUSBUTTON_CLICKED) // minus clicked
             {
                this.texMinusClicked.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);     
             }
@@ -247,11 +247,11 @@ function LogosNode()
             ypos = this.engine.height-1-82-128-this.sliderYPos-this.guiOffsetY;
             
             
-            if (this.navigationState == 5) // slider mouse over
+            if (this.navigationState == LogosNode.GUISTATE.SLIDERBUTTON_OVER) // slider mouse over
             {
                this.texSliderOver.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
             }
-            else if (this.navigationState == 6) // slider clicked
+            else if (this.navigationState == LogosNode.GUISTATE.SLIDERBUTTON_CLICKED) // slider clicked
             {
                this.texSliderClicked.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);   
             }
@@ -276,24 +276,24 @@ function LogosNode()
            this.latitude = ts.geoposition.latitude;
            this.elevation = ts.geoposition.elevation;
            
-           if (this.navigationState != 10)
+           if (this.navigationState != LogosNode.GUISTATE.YAWPITCHDIAL_CLICKED)
            {
               // update yaw from navigation if GUI is inactive
               this.startyaw = this.yaw;
               this.ypdiff = 0;
            }
            
-           if (this.navigationState == 2)
+           if (this.navigationState == LogosNode.GUISTATE.PLUSBUTTON_CLICKED)
            {
               ts.navigationcommand = TraversalState.NavigationCommand.MOVE_DOWN;
               ts.navigationparam = 1;
            }
-           else if (this.navigationState == 4)
+           else if (this.navigationState == LogosNode.GUISTATE.MINUSBUTTON_CLICKED)
            {
               ts.navigationcommand = TraversalState.NavigationCommand.MOVE_UP;
               ts.navigationparam = 1;
            }
-           else if (this.navigationState == 6)
+           else if (this.navigationState == LogosNode.GUISTATE.SLIDERBUTTON_CLICKED)
            {
               if (this.sliderYPos>0)
               {
@@ -306,12 +306,12 @@ function LogosNode()
                 ts.navigationcommand = TraversalState.NavigationCommand.MOVE_DOWN;
               }
            }
-           else if (this.navigationState == 8)
+           else if (this.navigationState == LogosNode.GUISTATE.MOVEWHEEL_CLICKED)
            {
                 ts.navigationcommand = TraversalState.NavigationCommand.ROTATE_EARTH;
                 ts.navigationparam = this.moveanglenav;
            }
-           else if (this.navigationState == 10)
+           else if (this.navigationState == LogosNode.GUISTATE.YAWPITCHDIAL_CLICKED)
            {
                 ts.navigationcommand = TraversalState.NavigationCommand.UPDATE_YAW;
                 ts.navigationparam = this.startyaw + this.ypdiff;
@@ -323,7 +323,7 @@ function LogosNode()
               ts.navigationcommand = TraversalState.NavigationCommand.IDLE;
            }
            
-           if (this.navigationState == 0)
+           if (this.navigationState == LogosNode.GUISTATE.IDLE)
            {
                ts.navigationlock = 0;
            }
@@ -479,18 +479,22 @@ function LogosNode()
          var slider_x1 = slider_x0 + 16;
          var slider_y0 = slider_y1 - 16;
          
-         var movewheel_x0 = this.engine.width-1-64-this.guiOffsetX-8;
-         var movewheel_y0 = this.engine.height-1-82-this.guiOffsetY+8;
+         var movewheel_x0 = this.engine.width-1-64-this.guiOffsetX;
+         var movewheel_y0 = this.engine.height-1-82-this.guiOffsetY;
          var movewheel_radius = 27;
+         var mwx2 = Math.abs(this.mouseX-movewheel_x0); mwx2*=mwx2;
+         var mwy2 = Math.abs(this.mouseY-movewheel_y0); mwy2*=mwy2;
          
          var ypwheel_x0 = this.engine.width-1-64-this.guiOffsetX;
          var ypwheel_y0 = this.engine.height-1-this.guiOffsetY;
-         var ypwheel_radius = 41;
-         var ypwheel_radius_min = 27;
+         var ypwheel_radius2 = 40*40;
+         var ypwheel_radius_min2 = 25*25;
          
+         var ypx2 = Math.abs(this.mouseX-ypwheel_x0); ypx2 *= ypx2;
+         var ypy2 = Math.abs(this.mouseY-ypwheel_y0); ypy2 *= ypy2;
          
          // move slider
-         if (this.btn && this.navigationState == 6)
+         if (this.btn && this.navigationState == LogosNode.GUISTATE.SLIDERBUTTON_CLICKED)
          {
             this.sliderYPos -= dy;
             if (this.sliderYPos<-40)
@@ -504,7 +508,7 @@ function LogosNode()
             return;
          }
          
-         if (this.btn && this.navigationState == 8)
+         if (this.btn && this.navigationState == LogosNode.GUISTATE.MOVEWHEEL_CLICKED)
          {
             // calculate rotation
             var ddx = this.mouseX-movewheel_x0;
@@ -528,7 +532,7 @@ function LogosNode()
             return;
          }
          
-         if (this.btn && this.navigationState == 10)
+         if (this.btn && this.navigationState == LogosNode.GUISTATE.YAWPITCHDIAL_CLICKED)
          {
             // calculate rotation
             var ddx = this.mouseX-ypwheel_x0;
@@ -555,11 +559,11 @@ function LogosNode()
             
             if (this.btn)
             {
-               this.navigationState = 2; // plus pressed
+               this.navigationState = LogosNode.GUISTATE.PLUSBUTTON_CLICKED; // plus pressed
             }
             else
             {
-               this.navigationState = 1; // inside plus      
+               this.navigationState = LogosNode.GUISTATE.PLUSBUTTON_OVER; // inside plus      
             }
          }
          
@@ -571,11 +575,11 @@ function LogosNode()
             
             if (this.btn)
             {
-               this.navigationState = 4; // minus pressed
+               this.navigationState = LogosNode.GUISTATE.MINUSBUTTON_CLICKED; // minus pressed
             }
             else
             {
-               this.navigationState = 3; // inside minus      
+               this.navigationState = LogosNode.GUISTATE.MINUSBUTTON_OVER; // inside minus      
             }
          }
          
@@ -586,25 +590,24 @@ function LogosNode()
          {
             if (this.btn)
             {   
-               this.navigationState = 6; // slider pressed
+               this.navigationState = LogosNode.GUISTATE.SLIDERBUTTON_CLICKED; // slider pressed
             }
             else
             {
-               this.navigationState = 5; // inside slider      
+               this.navigationState = LogosNode.GUISTATE.SLIDERBUTTON_OVER; // inside slider      
             }
          }
          
          
-         if (Math.abs(this.mouseX-movewheel_x0)<=movewheel_radius &&
-             Math.abs(this.mouseY-movewheel_y0)<=movewheel_radius)
+         if (mwx2 + mwy2<=movewheel_radius*movewheel_radius)
          {
             if (this.btn)
             {   
-               this.navigationState = 8; // movewheel pressed  
+               this.navigationState = LogosNode.GUISTATE.MOVEWHEEL_CLICKED; // movewheel pressed  
             }
             else
             {
-               this.navigationState = 7; // inside movewheel
+               this.navigationState = LogosNode.GUISTATE.MOVEWHEEL_OVER; // inside movewheel
                // calculate rotation
                 var ddx = this.mouseX-movewheel_x0;
                var ddy = this.mouseY-movewheel_y0;
@@ -631,19 +634,24 @@ function LogosNode()
             this.moveangle = 0; 
          }
          
-         /*if (Math.abs(this.mouseX-ypwheel_x0)<=ypwheel_radius &&
-             Math.abs(this.mouseY-ypwheel_y0)<=ypwheel_radius_min)
+         if (ypx2 + ypy2<=ypwheel_radius_min2)
          {
-            // inside dial button
-            if (this.btn) console.log("inside");
-         }*/
-         if (Math.abs(this.mouseX-ypwheel_x0)<=ypwheel_radius &&
-             Math.abs(this.mouseY-ypwheel_y0)<=ypwheel_radius)
+            // inside yp button
+            if (this.btn)
+            {
+                  this.navigationState = LogosNode.GUISTATE.YAWPITCHWHEEL_CLICKED;
+            }
+            else
+            {
+                  this.navigationState = LogosNode.GUISTATE.YAWPITCHWHEEL_OVER;
+            }
+         }
+         else if (ypx2 + ypy2<=ypwheel_radius2)
          {
             
             if (this.btn)
             {   
-               this.navigationState = 10; // yaw pitch wheel pressed
+               this.navigationState = LogosNode.GUISTATE.YAWPITCHDIAL_CLICKED; // yaw pitch dial pressed
                var ddx = this.mouseX-ypwheel_x0;
                var ddy = this.mouseY-ypwheel_y0;
                this.ypangle = 180*Math.atan2(Math.abs(ddy), ddx)/Math.PI;
@@ -659,7 +667,7 @@ function LogosNode()
             }
             else
             {
-               this.navigationState = 9; // inside yaw pitch wheel
+               this.navigationState = LogosNode.GUISTATE.YAWPITCHDIAL_OVER; // inside yaw pitch dial
                // calculate rotation
                var ddx = this.mouseX-ypwheel_x0;
                var ddy = this.mouseY-ypwheel_y0;
@@ -680,6 +688,25 @@ function LogosNode()
       //------------------------------------------------------------------------
 }
 
+/** @enum {number} */
+LogosNode.GUISTATE = {
+   IDLE: 0,
+   PLUSBUTTON_OVER: 1,
+   PLUSBUTTON_CLICKED: 2,
+   MINUSBUTTON_OVER: 3,
+   MINUSBUTTON_CLICKED: 4,
+   SLIDERBUTTON_OVER: 5,
+   SLIDERBUTTON_CLICKED: 6,
+   MOVEWHEEL_OVER: 7,
+   MOVEWHEEL_CLICKED: 8,
+   YAWPITCHDIAL_OVER: 9,
+   YAWPITCHDIAL_CLICKED: 10,
+   YAWPITCHWHEEL_OVER: 11,
+   YAWPITCHWHEEL_CLICKED: 12
+};
+
+
+//------------------------------------------------------------------------------
 LogosNode.prototype = new ScenegraphNode();
 
 //------------------------------------------------------------------------------
