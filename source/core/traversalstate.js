@@ -68,7 +68,8 @@ TraversalState.NavigationCommand =
    MOVE_DOWN: 1,
    MOVE_UP: 2,
    ROTATE_EARTH: 3,
-   UPDATE_YAW: 4
+   UPDATE_YAW: 4,
+   UPDATE_YAWPITCH: 5 // encoded: sin(a): yaw increase and -cos(a): pitch increase
 };
 //------------------------------------------------------------------------------
 /**

@@ -218,8 +218,9 @@ Texture.prototype.Disable = function()
  * @param {boolean=} opt_blend
  * @param {boolean=} opt_invtexcoord
  * @param {number=} opt_alpha
+ * @param {vec4=} opt_color
  */
-Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley, opt_blend, opt_invtexcoord, opt_alpha)
+Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley, opt_blend, opt_invtexcoord, opt_alpha, opt_color)
 {   
    /** @type {number} */
    var z = opt_z || 0;
@@ -305,7 +306,8 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
          this.engine.gl.blendFunc(this.engine.gl.CONSTANT_ALPHA, this.engine.gl.ONE_MINUS_CONSTANT_ALPHA);
       }
 
-      this.blitMesh.Draw();
+      this.blitMesh.Draw(null, null, null, null, opt_color);
+
 
       if (blend)
       {
