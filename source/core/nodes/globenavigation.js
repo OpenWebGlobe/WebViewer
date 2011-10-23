@@ -122,9 +122,11 @@ function GlobeNavigationNode()
       this._bHitElv = 0;
       this._ab_start = {};
       this._ab_curr = {};
-      this._ab_last = new mat4(); // init with identity!
-      this._ab_next = new mat4(); // init with identity!
-      this._ab_quat = new mat4(); // init with identity!
+      this._ab_last = new mat4();
+      this._ab_next = new mat4();
+      this._ab_quat = new mat4();
+      this._navrotation = new mat4();
+      this._navtotal = new mat4();
 
       this.minAltitude = 1000;
       this.maxAltitude = 10000000;
@@ -167,7 +169,7 @@ function GlobeNavigationNode()
          }
          
          // update position
-         if (this._state == GlobeNavigationNode.STATES.DRAGGING && !this._bLockNavigation)
+         if (this._state == GlobeNavigationNode.STATES.DRAGGING && !this._bLockNavigation && !this.engine.flyto.isMoving)
          {
             // Start Drag
             if (this._bLClick)
@@ -373,7 +375,7 @@ function GlobeNavigationNode()
       // EVENT: OnKeyDown
       this.OnKeyDown = function(e)
       {
-         if (this._bLockNavigation)
+         if (this._bLockNavigation || this.engine.flyto.isMoving)
          {
             return;
          }
@@ -454,7 +456,7 @@ function GlobeNavigationNode()
       // EVENT: Double click: fly to position
       this.OnMouseDoubleClick = function(e)
       {
-         if (this._bLockNavigation)
+         if (this._bLockNavigation || this.engine.flyto.isMoving)
          {
             return;
          }
@@ -496,7 +498,7 @@ function GlobeNavigationNode()
       // EVENT: OnMouseDown
       this.OnMouseDown = function(e)
       {
-         if (this._bLockNavigation)
+         if (this._bLockNavigation || this.engine.flyto.isMoving)
          {
             return;
          }
@@ -552,7 +554,7 @@ function GlobeNavigationNode()
       // EVENT: OnMouseMove
       this.OnMouseMove = function(e)
       {
-         if (this._bLockNavigation)
+         if (this._bLockNavigation || this.engine.flyto.isMoving)
          {
             return;
          }
@@ -724,7 +726,6 @@ function GlobeNavigationNode()
          {
             this._latitude += 180;
          }
-         
       }
        //---------------------------------------------------------------------
        this._quatmul = function(dest, left, right)
@@ -795,6 +796,8 @@ function GlobeNavigationNode()
                    this._ab_next.FromQuaternionComponents(cross.x,cross.y,cross.z,cosa);
                    this._ab_quat.Multiply(this._ab_last, this._ab_next);
                    
+                   // (1) Update position with quaternion
+                   
                    var curgeopos = new GeoCoord(this._longitude, this._latitude, 0);
                    var result = [];
                    curgeopos.ToCartesian(result);
@@ -807,6 +810,10 @@ function GlobeNavigationNode()
                    
                    this._longitude = geopos.GetLongitude();
                    this._latitude = geopos.GetLatitude();
+                   
+                   // (2) update yaw
+                   // #todo
+
              }
              else
              {
