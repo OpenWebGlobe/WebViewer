@@ -823,7 +823,6 @@ function ogSetInPositionFunction(context_id,cbfInPosition)
 }
 goog.exportSymbol('ogSetInPositionFunction',ogSetInPositionFunction);
 //------------------------------------------------------------------------------
-
 /**
  * @description Set callback function for the end render event
  * @param {number} context_id id of the context
@@ -846,6 +845,17 @@ function ogExec()
    // in JavaScript ogExec is not required. This function is just empty.
 }
 goog.exportSymbol('ogExec', ogExec);
+//------------------------------------------------------------------------------
+/**
+* @description set the directory where artwork is located.
+*              This function must be called before any other initialization
+*              
+* @param {string} directory This is a directory where the artwork is located
+*/
+function ogSetArtworkDirectory(directory)
+{
+   owg.ARTWORK_PATH = directory;
+}
 //##############################################################################
 // ** SCENE-OBJECT **
 //##############################################################################

@@ -30,7 +30,7 @@ goog.require('owg.mat4');
 
 
 /**
- * @define {string} Path to artwork, including trailing slash.
+ * @type {string} Path to artwork, including trailing slash.
  */
 owg.ARTWORK_PATH = "art/";
 
