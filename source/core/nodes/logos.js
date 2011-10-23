@@ -171,7 +171,7 @@ function LogosNode()
             
             if (this.bDrawCrosshair)
             {
-               this.texCrosshair.Blit(this.crosshairx-24, this.crosshairy-8,0, 0, 1, 1, true, true, 0.75);
+               this.texCrosshair.Blit(this.crosshairx-16, this.crosshairy-16,0, 0, 1, 1, true, true, 0.75);
             }
             
             var xpos = this.engine.width-1-64-this.guiOffsetX;

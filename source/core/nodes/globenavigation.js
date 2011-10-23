@@ -503,8 +503,9 @@ function GlobeNavigationNode()
             return;
          }
          
-         this._nMouseX = e.offsetX;
-         this._nMouseY = e.offsetY;
+         this._nMouseX = e.offsetX-this.engine.context.offsetLeft;
+         this._nMouseY = e.offsetY-this.engine.context.offsetTop;
+         
          if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
             this._inputs |= GlobeNavigationNode.INPUTS.MOUSE_LEFT; 
@@ -529,8 +530,9 @@ function GlobeNavigationNode()
       this.OnMouseUp = function(e)
       {
          this._bDragging = true;   
-         this._nMouseX = e.offsetX;
-         this._nMouseY = e.offsetY;
+         this._nMouseX = e.offsetX-this.engine.context.offsetLeft;
+         this._nMouseY = e.offsetY-this.engine.context.offsetTop;
+         
          if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
          {
             this._inputs &= ~GlobeNavigationNode.INPUTS.MOUSE_LEFT;
@@ -571,11 +573,11 @@ function GlobeNavigationNode()
 
          this._bMouseDelta = true;
          
-         this._dx = e.offsetX - this._nMouseX;
-         this._dy = e.offsetY - this._nMouseY;
+         this._dx = (e.offsetX - this.engine.context.offsetLeft) - this._nMouseX;
+         this._dy = (e.offsetY - this.engine.context.offsetTop) - this._nMouseY;
          
-         this._nMouseX = e.offsetX;
-         this._nMouseY = e.offsetY;
+         this._nMouseX = e.offsetX - this.engine.context.offsetLeft;
+         this._nMouseY = e.offsetY - this.engine.context.offsetTop;
          this._OnInputChange();
          
          return this._cancelEvent(e);
