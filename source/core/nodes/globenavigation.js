@@ -259,6 +259,11 @@ function GlobeNavigationNode()
                this._yaw = this._dragOriginYaw + 45 * Math.PI * this._fSpeed * (this._nMouseX - this._dragOriginMouseX) / (180 * this.engine.height);
                this._pitch = this._dragOriginPitch + 45 * Math.PI * this._fSpeed * (this._dragOriginMouseY - this._nMouseY) / (180 * this.engine.height);
             }
+            else if (this._state == GlobeNavigationNode.STATES.ROTATING)
+            {
+               this.crosshairdelay = 0;
+               this.crosshair = false;
+            }
             // ...and enter the new
             this._state = state;
             if (this._state == GlobeNavigationNode.STATES.LOOKING)
@@ -638,15 +643,15 @@ function GlobeNavigationNode()
             }
          }
                   
-         /*if (this._state == GlobeNavigationNode.STATES.ROTATING)
+         if (this._state == GlobeNavigationNode.STATES.ROTATING)
          {
             // do rotation if there is a valid hit point
             if (!this._bRotationInvalid)
             {
-            
-              
+               this.crosshairpos = [this._nMouseRotationOriginX, this._nMouseRotationOriginY];
+               this.crosshairdelay = 500;   
             }
-         }*/
+         }
 
          if (this._inputs & GlobeNavigationNode.INPUTS.KEY_ALL || this.navigationcommand == TraversalState.NavigationCommand.ROTATE_EARTH)
          {
@@ -772,7 +777,7 @@ function GlobeNavigationNode()
              this.engine.PickEllipsoid(mx,my, pickresult);
              if (pickresult["hit"])
              {
-                   this._ab_curr.x = pickresult["x"];
+                this._ab_curr.x = pickresult["x"];
                    this._ab_curr.y = pickresult["y"];
                    this._ab_curr.z = pickresult["z"];
                    this._bHit = true;
@@ -798,8 +803,7 @@ function GlobeNavigationNode()
                    this._ab_next.FromQuaternionComponents(cross.x,cross.y,cross.z,cosa);
                    this._ab_quat.Multiply(this._ab_last, this._ab_next);
                    
-                   // (1) Update position with quaternion
-                   
+                   // Update position
                    var curgeopos = new GeoCoord(this._longitude, this._latitude, 0);
                    var result = [];
                    curgeopos.ToCartesian(result);
@@ -812,10 +816,6 @@ function GlobeNavigationNode()
                    
                    this._longitude = geopos.GetLongitude();
                    this._latitude = geopos.GetLatitude();
-                   
-                   // (2) update yaw
-                   // #todo
-
              }
              else
              {
