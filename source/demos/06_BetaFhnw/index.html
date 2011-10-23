@@ -49,6 +49,7 @@ function main()
       }
       else
       {
+            
             document.getElementById("divMenuLeft").style.visibility='visible';
             document.getElementById("divNavigationManual").style.visibility = 'visible';
             resizeCanvas();
@@ -89,8 +90,8 @@ function main()
             world = ogGetWorld(scene);
             
             //create the poilayer and load the pois from loadpois.js   
-            layer = ogCreatePOILayer(world,"poilayer");
-            loadpois(layer);
+            //layer = ogCreatePOILayer(world,"poilayer");
+            //loadpois(layer);
             
             ogSetCanvasSizeOffset(scene,250,125);
             

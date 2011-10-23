@@ -44,14 +44,19 @@ function OnRender(context)
 
 function main()
 {
-   // (1) create an OpenWebGlobe context using canvas
+	// (1) Specify where artwork is located.
+	// This must be a directory and end with "/". It is recommended
+	// to have it relative to this html (to prevent cross origin issues).
+	ogSetArtworkDirectory("../../../art/");
+	
+   // (2) create an OpenWebGlobe context using canvas
    // first parameter is canvas-id and second is "fullscreen"
    var ctx = ogCreateContextFromCanvas("canvas", true);
    
-   // (2) Create a virtual globe
+   // (3) Create a virtual globe
    var globe = ogCreateGlobe(ctx);
    
-   // (3) Add image and an elevation layers
+   // (4) Add image and an elevation layers
    
    var imgBlueMarble500 = 
    {
@@ -79,11 +84,11 @@ function main()
    ogAddImageLayer(globe, imgLandsat_CH);
    ogAddElevationLayer(globe, elvSRTM_CH);
 
-   // (4) Set the "Render-Callback" function.
+   // (5) Set the "Render-Callback" function.
    // The callback function will be called everytime a frame is drawn.
    ogSetRenderFunction(ctx, OnRender);
    
-   // (5) Set the background color
+   // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1); 
 }
 //------------------------------------------------------------------------------
