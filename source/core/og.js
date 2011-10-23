@@ -856,6 +856,7 @@ function ogSetArtworkDirectory(directory)
 {
    owg.ARTWORK_PATH = directory;
 }
+goog.exportSymbol('ogSetArtworkDirectory', ogSetArtworkDirectory);
 //##############################################################################
 // ** SCENE-OBJECT **
 //##############################################################################
