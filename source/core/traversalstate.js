@@ -33,10 +33,16 @@ goog.require('owg.mat4');
  */
 function TraversalState()
 {
+   //---------------------------------------------------------------------------
+   // MATRIX STACKS
    this.MatrixStackView = new Array();
    this.MatrixStackModel = new Array();
    this.MatrixStackProjection = new Array();
    
+   //---------------------------------------------------------------------------
+   // CAMERA
+   //    x,y,z: position in cartesian coordinates
+   /** @type {Object} */
    this.camera = new Object();
    /** @type {number} */
    this.camera.x = 0;
@@ -44,32 +50,52 @@ function TraversalState()
    this.camera.y = 0;
    /** @type {number} */
    this.camera.z = 0;
-   
+   // -- camera position in longitude, latitude, elevation
+   /** @type {Object} */
    this.geoposition = new Object();
+   /** @type {number} */
    this.geoposition.longitude = 0;
+   /** @type {number} */
    this.geoposition.latitude = 0;
+   /** @type {number} */
    this.geoposition.elevation = 0;
-   
-   // Navigation Type: -1: not set, 0: flight mode, 1: globe mode
+   //---------------------------------------------------------------------------
+   // Set crosshair to true to show a crosshair at crosshairpos (mouse coord)
+   /** @type {boolean} */
+   this.crosshair = false;
+   /** @type {Array.<number>} */
+   this.crosshairpos = [0,0];
+   //---------------------------------------------------------------------------
+   // NAVIGATION TYPE
+   // -1: not set, 0: flight mode, 1: globe mode
+   // (in future there will be an enum for this)
    /** @type {number} */
    this.navigationtype = -1;
+   //---------------------------------------------------------------------------
+   // NAVIGATION LOCK. The standard navigation can be locked if this is set
+   // to another value than 0. Mouse, Keyboard interaction will be ignored.
    /** @type {number} */
    this.navigationlock = 0;
+   //---------------------------------------------------------------------------
+   // NAVIGATION COMMANDS
+   // Certain avigation commands can be sent using the traversal state
+   // A navigation command can have parameters
    /** @type {number} */
    this.navigationcommand = TraversalState.NavigationCommand.IDLE;
    /** @type {number} */
    this.navigationparam = 0;
+   //--------------------------------------------------------------------------
 }
 //------------------------------------------------------------------------------
 /** @enum {number} */
 TraversalState.NavigationCommand =
 {
-   IDLE: 0,
-   MOVE_DOWN: 1,
-   MOVE_UP: 2,
-   ROTATE_EARTH: 3,
-   UPDATE_YAW: 4,
-   UPDATE_YAWPITCH: 5 // encoded: sin(a): yaw increase and -cos(a): pitch increase
+   IDLE: 0,           // don't do anything
+   MOVE_DOWN: 1,      // move in opposite compass direction (no param)
+   MOVE_UP: 2,        // move in current compass direction (no param)
+   ROTATE_EARTH: 3,   // param: angle for earth rotation
+   UPDATE_YAW: 4,     // param: new yaw value
+   UPDATE_YAWPITCH: 5 // param: sin(a): yaw increase and -cos(a): pitch increase
 };
 //------------------------------------------------------------------------------
 /**

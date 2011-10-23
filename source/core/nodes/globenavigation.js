@@ -131,6 +131,9 @@ function GlobeNavigationNode()
       // external navigation commands
       this.navigationcommand = TraversalState.NavigationCommand.IDLE;
       this.navigationparam = 0;
+      this.crosshair = false;
+      this.crosshairpos = [0,0];
+      this.crosshairdelay = 0; // time to show crosshair in milliseconds
 
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -147,6 +150,10 @@ function GlobeNavigationNode()
          // read possible navigation command from outside:
          this.navigationcommand  = ts.navigationcommand;
          this.navigationparam = ts.navigationparam;
+         
+         ts.crosshair = this.crosshair;
+         ts.crosshairpos[0] = this.crosshairpos[0];
+         ts.crosshairpos[1] = this.crosshairpos[1];
          
          // test if navigation was locked from outside (for example GUI)
          ts.navigationtype = 1;
@@ -301,9 +308,26 @@ function GlobeNavigationNode()
             if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == 0)
             {
                var pickresult = {};
-               this.engine.PickGlobe(this._nMouseX, this._nMouseY, pickresult);
+               var mx, my;
+               
+               // if crosshair is still displayed, zoom into there, otherwise use
+               // current mouse position.
+               if (this.crosshairdelay>0)
+               {
+                  mx = this.crosshairpos[0];
+                  my = this.crosshairpos[1];
+               }
+               else
+               {
+                  mx = this._nMouseX;
+                  my = this._nMouseY;
+               }
+               
+               this.engine.PickGlobe(mx, my, pickresult);
                if (pickresult["hit"])
                {
+                  this.crosshairpos = [mx, my];
+                  this.crosshairdelay = 500;
                   this.pos.Set(this._longitude, this._latitude, this._ellipsoidHeight);
                   this.pos.ToCartesian(this.geocoord);
                   var dx = this.geocoord[0] - pickresult["x"];
@@ -439,6 +463,7 @@ function GlobeNavigationNode()
          this.engine.PickGlobe(this._nMouseX, this._nMouseY, pickresult);
          if (pickresult["hit"])
          {
+               this.engine.SetFlightDuration(2000);
                var targetelv = this._ellipsoidHeight;
                if (targetelv>1000000)
                {
@@ -461,6 +486,8 @@ function GlobeNavigationNode()
                      this.engine.FlyTo(pickresult["lng"],pickresult["lat"],targetelv, 0, -90, 0);
                }
                
+               this.crosshairpos = [this._nMouseX, this._nMouseY];
+               this.crosshairdelay = 2500; 
                
          }    
          return this._cancelEvent(e);      
@@ -596,7 +623,17 @@ function GlobeNavigationNode()
             }
          }
          
-         
+         if (this.crosshairdelay>0)
+         {
+            this.crosshair = true;
+            this.crosshairdelay -= dTick;
+            if (this.crosshairdelay<=0)
+            {
+               this.crosshairdelay = 0;
+               this.crosshair = false;
+            }
+         }
+                  
          /*if (this._state == GlobeNavigationNode.STATES.ROTATING)
          {
             // do rotation if there is a valid hit point

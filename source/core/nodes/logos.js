@@ -291,6 +291,10 @@ function LogosNode()
            this.latitude = ts.geoposition.latitude;
            this.elevation = ts.geoposition.elevation;
            
+           this.bDrawCrosshair = ts.crosshair;
+           this.crosshairx = ts.crosshairpos[0];
+           this.crosshairy = this.engine.height-ts.crosshairpos[1]-1;
+           
            if (this.navigationState != LogosNode.GUISTATE.YAWPITCHDIAL_CLICKED)
            {
               // update yaw from navigation if GUI is inactive
@@ -460,7 +464,6 @@ function LogosNode()
             }
             
             this.sliderYPos = 0;
-            this.bDrawCrosshair = false;
          }
       }
       //------------------------------------------------------------------------
