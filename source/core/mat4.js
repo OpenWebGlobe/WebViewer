@@ -549,7 +549,7 @@ mat4.prototype.CalcNavigationFrame2 = function(lng_deg, lat_deg)
 
 //------------------------------------------------------------------------------
 /**
- * @description calc body frame, yaw, pitch and roll are in RAD
+ * @description calc body frame (ZYX Rotation Matrix), yaw, pitch and roll are in RAD
  *
  * @param {number} yaw
  * @param {number} pitch
@@ -568,6 +568,38 @@ mat4.prototype.CalcBodyFrame = function(yaw, pitch, roll)
    this._values[1] = cosPitch*sinYaw;  this._values[5] = cosRoll*cosYaw+sinRoll*sinPitch*sinYaw;   this._values[9]  = -sinRoll*cosYaw+cosRoll*sinPitch*sinYaw; this._values[13] = 0;
    this._values[2] = -sinPitch;        this._values[6] = sinRoll*cosPitch;                         this._values[10] = cosRoll*cosPitch;                        this._values[14] = 0;
    this._values[3] = 0;                this._values[7] = 0;                                        this._values[11] = 0;                                       this._values[15] = 1;
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @param {Object} result holding the result
+ *
+ * result["yaw"]    yaw angle [rad]
+ * result["pitch"]  pitch angle [rad]
+ * result["roll"]   roll angle [rad]
+ **/
+mat4.prototype.ExtractEulerAngles = function(result)
+{
+   var r11 = this._values[0];
+   var r12 = this._values[4];
+   var r21 = this._values[1];
+   var r22 = this._values[5];
+   var r31 = this._values[2];
+   var r32 = this._values[6];
+   var r33 = this._values[10];
+   
+   if (Math.abs(r11)<0.000001 &&
+       Math.abs(r21)<0.000001)
+   {
+      result["pitch"] = -Math.PI/2;
+      result["roll"] = 0;
+      result["yaw"] = Math.atan2(r12,r22);
+      return;
+   }
+   
+   result["pitch"] = Math.atan2(-r31,Math.sqrt(r11*r11+r21*r21));
+   result["roll"] = Math.atan2(r21,r11);
+   result["yaw"] = Math.atan2(r32,r33);
 }
 
 //------------------------------------------------------------------------------
