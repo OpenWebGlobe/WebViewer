@@ -460,6 +460,13 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
       window.requestAnimFrame(fncTimer, this.context); // request first frame
    }
    
+	//disable context menu on canvas
+	this.context.oncontextmenu = function(event)
+	{
+		event.preventDefault();
+		event.stopPropagation();
+		return false;
+	};
 
   
 }
