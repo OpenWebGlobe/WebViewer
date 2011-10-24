@@ -32,6 +32,7 @@ goog.require('owg.mat4');
 goog.require('owg.NavigationNode');
 goog.require('owg.ScenegraphNode');
 goog.require('owg.vec3');
+goog.require('owg.Mercator');
 
 /**
  * Navigation Node. Setup view matrix using Google Earth-style navigation
@@ -96,6 +97,11 @@ function GlobeNavigationNode()
       this._nMouseRotationOriginY = 0;
       this._RotationRadius = 0;
       this._RotationCenter = [];
+      this._RotationCenterWGS84 = [];
+      this._RotationCenterCart = [];
+      this._CirclePositionCart = [];
+      this._RotationPhi = 0;
+      this._RotationPhiStart = 0;
       this._vR = new vec3();
       this._bDragging = false;
       this._bLClick = false;
@@ -279,19 +285,50 @@ function GlobeNavigationNode()
                // enter rotation mode
                this._nMouseRotationOriginX = this._nMouseX;
                this._nMouseRotationOriginY = this._nMouseY;
-               var pickresult = {};
-               this.engine.PickGlobe(this._nMouseX, this._nMouseY, pickresult);
-               if (pickresult["hit"])
+               var circleposition_pickresult = {};
+               var rotationorigin_pickresult = {};
+               this.engine.PickGlobe(this.engine.width/2, this.engine.height/2, circleposition_pickresult);
+               this.engine.PickGlobe(this._nMouseRotationOriginX, this._nMouseRotationOriginY, rotationorigin_pickresult);
+               if (circleposition_pickresult["hit"] && rotationorigin_pickresult["hit"])
                {
                   this._bRotationInvalid = false;
-                  this.pos.Set(this._longitude, this._latitude, this._ellipsoidHeight);
-                  this.pos.ToCartesian(this.geocoord);
-                  var dx = this.geocoord[0] - pickresult["x"];
-                  var dy = this.geocoord[1] - pickresult["y"];
-                  var dz = this.geocoord[2] - pickresult["z"];
                   
-                  this._RotationCenter = [pickresult["x"], pickresult["y"], pickresult["z"]];
-                  this._RotationRadius = Math.sqrt(dx*dx+dy*dy*dz*dz);
+                  // To solve this very easy, the rotation is done in mercator projection
+                  // this way we can do it in 2D and just change the elevation / radius if needed.
+                 
+                  // (1) store the rotation center in mercator, WGS84 and in geocentric cartesian coordinates
+                  Mercator.WGS84ToMercator(rotationorigin_pickresult["lng"], rotationorigin_pickresult["lat"], this._RotationCenter);
+                  this._RotationCenterWGS84 = [ rotationorigin_pickresult["lng"], rotationorigin_pickresult["lat"], rotationorigin_pickresult["elv"] ]; 
+                  this._RotationCenterCart = [rotationorigin_pickresult["x"], rotationorigin_pickresult["y"], rotationorigin_pickresult["z"] ];
+                  this._CirclePositionCart = [circleposition_pickresult["x"], circleposition_pickresult["y"], circleposition_pickresult["z"] ];
+                   
+                  this._RotationCenter[2] = rotationorigin_pickresult["elv"]; // elevation stored in [m]
+                  // (2) calculate radius
+                  //     (2.1) project current position to mercator
+                  var curpos = [0,0];
+                  Mercator.WGS84ToMercator(this._longitude, this._latitude, curpos);
+                  //     (2.2) now we have the radius (we are in 2D now!)
+                  var dx = curpos[0] - this._RotationCenter[0];
+                  var dy = curpos[1] - this._RotationCenter[1];
+                  this._RotationRadius = Math.sqrt(dx*dx+dy*dy);
+                  
+                  // now we have to rotate around the CIRCLE with center (cx,cy)=(this._RotationCenter[0],this._RotationCenter[1])
+                  // and radius r = this._RotationRadius
+                  //
+                  // x = cx + r*cos(phi)
+                  // y = cy + r*sin(phi)    phi in ]0,2pi]
+                  //
+                  //
+                  // phi must be increased/decreased to walk around the circle
+                  // just calculate the initial phi:
+                  this._RotationPhi = Math.atan2(dx,dy) /*- Math.PI*/;
+                  while (this._RotationPhi < 0)
+                    this._RotationPhi += 2*Math.PI;
+                  while (this._RotationPhi >= 2*Math.PI)
+                    this._RotationPhi -= 2*Math.PI;
+                    
+                  this._RotationPhiStart = this._RotationPhi;  
+                                    
                }
                else
                {
@@ -649,7 +686,77 @@ function GlobeNavigationNode()
             if (!this._bRotationInvalid)
             {
                this.crosshairpos = [this._nMouseRotationOriginX, this._nMouseRotationOriginY];
-               this.crosshairdelay = 500;   
+               this.crosshairdelay = 500;
+               
+               var xx = this._RotationCenter[0] + this._RotationRadius*Math.cos(this._RotationPhi);
+               var yy = this._RotationCenter[1] + this._RotationRadius*Math.sin(this._RotationPhi);
+               
+            
+               var dx = this._CirclePositionCart[0] - this._RotationCenterCart[0];
+               var dy = this._CirclePositionCart[1] - this._RotationCenterCart[1];
+               var dz = this._CirclePositionCart[2] - this._RotationCenterCart[2];
+               var rr = Math.sqrt(dx*dx+dy*dy+dz*dz);
+               
+               var xnewlookat = this._RotationCenter[0] + rr*Math.cos(this._RotationPhi-this._RotationPhiStart);
+               var ynewlookat = this._RotationCenter[1] + rr*Math.sin(this._RotationPhi-this._RotationPhiStart);
+                
+               var pos = [];
+               Mercator.MercatorToWGS84(xx, yy, pos);
+               this._longitude = pos[0];
+               this._latitude = pos[1];
+               
+               Mercator.MercatorToWGS84(xnewlookat, ynewlookat, pos);
+               var gc = new GeoCoord(pos[0],pos[1],0);
+               var xnewlookatCart = [];
+               gc.ToCartesian(xnewlookatCart);
+               
+               //----------------------------------------------------
+               // lookat rotation center (this._RotationCenterCart)
+               // Get the geocentric cartesian camera position
+               var geocord = new GeoCoord(this._longitude,this._latitude,this._ellipsoidHeight);
+               var cc = [];
+               geocord.ToCartesian(cc);
+               var vcc = new vec3(cc[0], cc[1], cc[2]);
+               //var vtc = new vec3(this._RotationCenterCart[0],this._RotationCenterCart[1],this._RotationCenterCart[2]);
+               var vtc = new vec3(xnewlookatCart[0],xnewlookatCart[1],xnewlookatCart[2]);
+               var vec = vtc.Copy();
+               vec.Sub(vcc);
+               var navframe = new mat4();
+               navframe.CalcNavigationFrame(this._longitude,this._latitude);
+               var trans = new mat4();
+               trans.Translation(cc[0],cc[1],cc[2]);
+               var navigationMatrix = new mat4();
+               navigationMatrix.Multiply(trans,navframe);
+               navigationMatrix.Transpose();   
+               var vn = navigationMatrix.MultiplyVec3(vec);
+               vn.Normalize();
+               var vals = vn.Get();
+               var x = vals[0];
+               var y = vals[1];
+               var z = vals[2];
+               var a = Math.sqrt(1-z*z);
+               var yaw = Math.acos(x/a);
+               if(y<0 && x>0)
+               {
+                  yaw = 2*Math.PI-yaw;
+               }
+               if(y<0 && x<0)
+               {
+                  yaw = 2*Math.PI-yaw;
+               }
+               var pitch = -(Math.PI/2-(Math.acos(z)));
+               if(z<-0.9)
+               {
+                  yaw=Math.PI+yaw;
+                  pitch=-pitch;
+               }
+               this._yaw = yaw;
+               this._pitch = pitch;
+               // end lookat
+               //----------------------------------------------------
+               
+               // todo: update rotation according to mouse delta (increase if dx>0 and decrease if dx<0)
+               this._RotationPhi += dTick / 1000;
             }
          }
 
