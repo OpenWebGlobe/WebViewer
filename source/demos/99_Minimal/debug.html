@@ -14,28 +14,21 @@
 	   ogSetArtworkDirectory("../../../art/");
 		var context = ogCreateContextFromCanvas("canvas", true);
 		var globe = ogCreateGlobe(context);
-		/*ogAddImageLayer(globe, {
+		ogAddImageLayer(globe, {
 			url: ["http://www.openwebglobe.org/data/img"],
 			layer: "World500",
 			service: "i3d"
-		});*/
-		ogAddImageLayer(globe, 
-      {
-		  url     : ["http://khm0.google.com", "http://khm1.google.com"],
-		  service : "goo"
 		});
-		ogAddElevationLayer(globe,
-		     {
-		        url: ["http://10.42.2.37"],
-		        layer: "ASTRBJ",
-		        service: "owg"
-		     }
-		  );
-		
-		
-		var scene = ogGetScene(context);
-		var camera = ogGetActiveCamera(scene);
-		ogSetPosition(camera, 116.348, 40.23, 1000);
+		ogAddImageLayer(globe, {
+			url: ["http://www.openwebglobe.org/data/img"],
+			layer: "LandsatCH",
+			service: "i3d"
+		});
+		ogAddElevationLayer(globe, {
+			url: ["http://www.openwebglobe.org/data/elv"],
+			layer: "SRTM",
+			service: "i3d"
+		});
 	</script>
 	</body>
 </html>
