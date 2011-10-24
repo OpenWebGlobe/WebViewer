@@ -396,7 +396,6 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    this._Optimize(); // Optimize Planet: Remove Hidden Tiles!
    
    
-   
    for (var i=0;i<this.lstFrustum.length;i++)
    {
       this.lstFrustum[i].Render();   
@@ -463,6 +462,13 @@ GlobeRenderer.prototype._Divide = function()
 GlobeRenderer.prototype._SubDivide = function()
 {
    var i = this.iterator.cnt;
+   
+   if (this.lstFrustum[i].quadcode.length == this.maxlod)
+   {
+      this.iterator.cnt++;
+      return;
+   }
+   
    if (this.lstFrustum[i].IsAvailable())
    {
       if (this._CalcErrorMetric(i))

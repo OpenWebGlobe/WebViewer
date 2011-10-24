@@ -252,7 +252,7 @@ function _cbfOnElevationTileReady(quadcode, mesh, layer)
  * @private
  */
 function _cbfOnElevationTileFailed(quadcode, terrainblock, layer)
-{  
+{
    terrainblock.mesh = null;
    terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
    terrainblock.MergeImages();

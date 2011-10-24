@@ -109,7 +109,7 @@ function owgElevationLayer()
    {
       if (this.dsi.nLevelofDetail)
       {
-         return this.dsi.nLevelofDetail-1;
+         return this.dsi.nLevelofDetail;
       }
       else
       {
@@ -120,7 +120,7 @@ function owgElevationLayer()
    
    this.Contains = function(quadcode)
    {
-      if (quadcode.length > this.dsi.nLevelofDetail-1)
+      if (quadcode.length > this.dsi.nLevelofDetail)
       {
          return false;
       }
