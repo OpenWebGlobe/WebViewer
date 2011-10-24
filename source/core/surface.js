@@ -1151,7 +1151,7 @@ Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv,yaw,pitch,roll)
  * @param {number} lng the longitude coordinate
  * @param {number} lat the latitude coordinate
  * @param {number} elv the elevation
- * @param  {Array.<{number}>} quats
+ * @param  {Array.<number>} quats
  */
 Surface.prototype.SetAsNavigationFrameQuat = function(lng,lat,elv,quats)
 {
@@ -1197,8 +1197,12 @@ Surface.prototype.SetAsNavigationFrameQuat = function(lng,lat,elv,quats)
    scaledNavMat.Multiply(navMat,scaleMat);
      
    var rotatedMat = new mat4();
-   rotatedMat.FromQuaterion(quats);
-  
+   if(quats.length>3)
+   {
+   rotatedMat.FromQuaternionComponents(quats[0],quats[1],quats[2],quats[3]);   
+   }
+
+
    var scaledRotNavMat = new mat4();
    scaledRotNavMat.Multiply(scaledNavMat,rotatedMat);
    
