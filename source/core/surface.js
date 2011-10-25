@@ -1195,19 +1195,21 @@ Surface.prototype.SetAsNavigationFrameQuat = function(lng,lat,elv,quats)
    
    var scaledNavMat = new mat4();
    scaledNavMat.Multiply(navMat,scaleMat);
-     
+   
    var rotatedMat = new mat4();
-   if(quats.length>3)
-   {
    rotatedMat.FromQuaternionComponents(quats[0],quats[1],quats[2],quats[3]);   
-   }
-
-
+   
    var scaledRotNavMat = new mat4();
    scaledRotNavMat.Multiply(scaledNavMat,rotatedMat);
-   
+     
    this.modelMatrix = scaledRotNavMat;
    this.UpdateAABB();
+   
+   
+   
+   //var a={};
+   //rotatedMat.ExtractEulerAngles(a);
+   //console.log("a.yaw: "+a.roll*180/Math.PI+" a.pitch: "+a.yaw*180/Math.PI+" a.roll: "+a.pitch*180/Math.PI)
    
 }
 

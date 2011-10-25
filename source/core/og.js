@@ -1080,7 +1080,7 @@ goog.exportSymbol('ogGetPosition', ogGetPosition);
 
 //------------------------------------------------------------------------------
 /**
- * @description get the orientation of the active camera
+ * @description set the orientation of the active camera
  * @param {number} camera_id
  * @param {number} yaw
  * @param {number} pitch
@@ -1106,7 +1106,26 @@ function ogSetOrientation(camera_id,yaw,pitch,roll)
    return null;
 }
 goog.exportSymbol('ogSetOrientation', ogSetOrientation);
-
+//------------------------------------------------------------------------------
+/**
+ * @description set the orientation of the active camera using a quaternion
+ * @param {number} camera_id
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {number} w
+ */
+function ogSetOrientationFromQuaternion(camera_id,x,y,z,w)
+{
+   /** @type {ogCamera} */
+   var cam = /** @type {ogCamera} */ _GetObjectFromId(camera_id);
+   if (cam && cam.type == OG_OBJECT_CAMERA)
+   {  
+     return cam.SetOrientationFromQuaternion(x,y,z,w); 
+   }
+   return null;
+}
+goog.exportSymbol('ogSetOrientationFromQuaternion', ogSetOrientationFromQuaternion);
 //------------------------------------------------------------------------------
 /**
  * @description get the orientation of the active camera

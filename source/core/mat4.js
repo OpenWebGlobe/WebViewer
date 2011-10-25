@@ -596,7 +596,7 @@ mat4.prototype.ExtractEulerAngles = function(result)
       result["yaw"] = Math.atan2(r12,r22);
       return;
    }
-   
+  
    result["pitch"] = Math.atan2(-r31,Math.sqrt(r11*r11+r21*r21));
    result["roll"] = Math.atan2(r21,r11);
    result["yaw"] = Math.atan2(r32,r33);
@@ -616,26 +616,40 @@ mat4.prototype.Cami3d = function()
 }
 
 //------------------------------------------------------------------------------
+mat4.prototype.CamViewFrustum = function()
+{
+   this._values[0] = 0; this._values[4] = 1;  this._values[8]  = 0; this._values[12] = 0;
+   this._values[1] = 1; this._values[5] = 0;  this._values[9]  = 0;  this._values[13] = 0;
+   this._values[2] = 0; this._values[6] = 0; this._values[10] = -1;  this._values[14] = 0;
+   this._values[3] = 0; this._values[7] = 0;  this._values[11] = 0;  this._values[15] = 1;
+}
+
+//------------------------------------------------------------------------------
 /**
  * @description: Calcs a rotation matrix out of a quaterion
  *
  */
-mat4.prototype.FromQuaterion = function(quat)
+mat4.prototype.FromQuaternion = function(quat)
 {
    var x = quat[0];
    var y = quat[1];
    var z = quat[2];
    var w = quat[3];
    
-   //ToDo: ----->-------------->-------------->----------------->------------->------------------->---------------->-><<_--------------->
-  /* this._values[0] = a*a+b*b-c*c-d*d; this._values[4] = 2*b*c-2*a*d;  this._values[8]  = 2*b*d+2*a*c; this._values[12] = 0;
-   this._values[1] = 2*b*c+2*a*d; this._values[5] = a*a-b*b+c*c-d*d;  this._values[9]  = 2*c*d-2*a*b;  this._values[13] = 0;
-   this._values[2] = 2*b*d-2*a*c; this._values[6] = 2*c*d+2*a*b; this._values[10] = a*a-b*b-c*c+d*d;  this._values[14] = 0;
-   this._values[3] = 0; this._values[7] = 0;  this._values[11] = 0;  this._values[15] = 1;*/
-  
+   var w2 = w*w;
+   var x2 = x*x;
+   var y2 = y*y;
+   var z2 = z*z;
+
+  /*--------------
    this._values[0] =1-2*(y*y+z*z); this._values[4] = 2*(x*y-w*z);  this._values[8]  = 2*(x*z+w*y); this._values[12] = 0;
    this._values[1] = 2*(x*y+w*z); this._values[5] = 1-2*(x*x+z*z);  this._values[9]  = 2*(y*z-w*x);  this._values[13] = 0;
    this._values[2] = 2*(x*z-w*y); this._values[6] = 2*(y*z+w*x); this._values[10] = 1-2*(x*x+y*y);  this._values[14] = 0;
+   this._values[3] = 0; this._values[7] = 0;  this._values[11] = 0;  this._values[15] = 1;
+  */
+   this._values[0] = w2+x2-y2-z2; this._values[4] = 2*(x*y-w*z);  this._values[8]  = 2*(x*z+w*y); this._values[12] = 0;
+   this._values[1] = 2*(x*y+w*z); this._values[5] = w2-x2+y2-z2;  this._values[9]  = 2*(y*z-w*x);  this._values[13] = 0;
+   this._values[2] = 2*(x*z-w*y); this._values[6] = 2*(y*z+w*x); this._values[10] = w2-x2-y2+z2;  this._values[14] = 0;
    this._values[3] = 0; this._values[7] = 0;  this._values[11] = 0;  this._values[15] = 1;
 }
 //------------------------------------------------------------------------------
@@ -744,6 +758,49 @@ mat4.prototype.ToString = function()
          "\n  "+this._values[3]+" "+this._values[7]+" "+this._values[11]+" "+this._values[15]+" ]";      
 }
 
+
+/*mat4.prototype.ExtractEulerAnglesXYZ = function(result)
+{
+   var r00 = this._values[0];
+   var r01 = this._values[4];
+   var r02 = this._values[8];
+   var r03 = this._values[12]
+   var r10 = this._values[1];
+   var r11 = this._values[5];
+   var r20 = this._values[2];
+   var r21 = this._values[6];
+   var r22 = this._values[10];
+   
+   var pi2 = Math.PI/2;
+   
+   var thetaX = 0;
+   var thetaY = 0;
+   var thetaZ = 0;
+   
+   var thetaY = Math.asin(r02);
+   if(thetaY < pi2)
+   {
+      if(thetaY> -pi2)
+      {
+      thetaX = Math.atan2(-r12,r22);
+      thetaZ = Math.atan2(-r01,r00);
+      
+      }
+      else
+      {
+         thetaX = -Math.atan2(r10,r11);
+         thetaZ = 0;
+      }
+   }
+   else
+   {
+      thetaX = Math.atan2(r10,r11);
+      thetaZ = 0;
+   }
+   
+   console.log("ThetaX: "+thetaX+" ThetaY: "+thetaY+" ThetaZ: "+thetaZ);
+}
+*/
 //------------------------------------------------------------------------------
 
 goog.exportSymbol('mat4', mat4);

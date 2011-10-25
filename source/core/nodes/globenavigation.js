@@ -122,6 +122,12 @@ function GlobeNavigationNode()
       this.matR2 = new mat4();
       this.matCami3d.Cami3d();
       
+      this._bQuaternionMode = false;
+      this._qx = 0;
+      this._qy = 0;
+      this._qz = 0;
+      this._qw = 1;
+      
       this._bHit = false;
       this._bHitLng = 0;
       this._bHitLat = 0;
@@ -198,10 +204,21 @@ function GlobeNavigationNode()
 
          this.matTrans.Translation(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
          this.matNavigation.CalcNavigationFrame(this._longitude, this._latitude);
-         this.matBody.CalcBodyFrame(this._yaw, this._pitch, this._roll);
+         if (this._bQuaternionMode)
+         {
+            this.matBody.FromQuaternionComponents(this._qx, this._qy, this._qz, this._qw);
+            this.matCami3d.CamViewFrustum();
+         }
+         else
+         {
+            this.matBody.CalcBodyFrame(this._yaw, this._pitch, this._roll);
+            
+         }
+         
          this.matR1.Multiply(this.matTrans, this.matNavigation);
          this.matR2.Multiply(this.matR1, this.matBody);
          this.matR1.Multiply(this.matR2, this.matCami3d);
+
          this.matView.Inverse(this.matR1);
 
          ts.SetCompassDirection(this._yaw);
@@ -840,6 +857,24 @@ function GlobeNavigationNode()
          {
             this._latitude += 180;
          }
+      }
+      //------------------------------------------------------------------------
+      this.SetOrientation = function(yaw, pitch, roll)
+      {
+         //this._bLockNavigation = false;
+         this._yaw = yaw;
+         this._pitch = pitch;
+         this._roll = roll;
+      }
+      //------------------------------------------------------------------------
+      this.SetOrientationFromQuaternion = function(x, y, z, w)
+      {
+         //this._bLockNavigation = true;
+         this._bQuaternionMode = true;
+         this._qx = x;
+         this._qy = y;
+         this._qz = z;
+         this._qw = w;
       }
        //---------------------------------------------------------------------
        this._quatmul = function(dest, left, right)

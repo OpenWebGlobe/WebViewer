@@ -566,6 +566,11 @@ NavigationNode.prototype.SetOrientation = function(yaw, pitch, roll)
 }
    
 //------------------------------------------------------------------------------
+NavigationNode.prototype.SetOrientationFromQuaternion = function(x, y, z, w)
+{
+   var xx = x;
+}
+//------------------------------------------------------------------------------
 
 NavigationNode.prototype.GetOrientation = function()
 {

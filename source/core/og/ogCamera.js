@@ -145,8 +145,19 @@ ogCamera.prototype.GetOrientation = function()
    return ori;
    //return {"yaw":this.yaw,"pitch":this.pitch,"roll":this.roll};
 }
-
-
+//------------------------------------------------------------------------------
+/**
+ * @description sets the camera orientation using a quaternion
+ */
+ogCamera.prototype.SetOrientationFromQuaternion = function(x,y,z,w)
+{
+    if(this == this.parent.activecamera)
+   {
+      var navnode = this._GetNavigationNode();
+      navnode.SetOrientationFromQuaternion(x,y,z,w);
+   }
+}
+//------------------------------------------------------------------------------
 ogCamera.prototype._GetNavigationNode = function()
 {
    /** @type {NavigationNode} */
@@ -164,10 +175,10 @@ ogCamera.prototype._GetNavigationNode = function()
    {
       if (engine.scene.nodeNavigation)
       {
-         var navnode = engine.scene.nodeNavigation;
+         navigationNode = engine.scene.nodeNavigation;
       }
    }
-   return navnode;
+   return navigationNode;
 }
 
 
