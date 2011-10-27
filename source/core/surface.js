@@ -471,7 +471,14 @@ Surface.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcol
                       }
                       this.engine.shadermanager.UseShader_Poi(this.engine.matModelViewProjection,opt_poicolor);
                       break;
-                             
+                     
+        case "pt_chroma": 
+                      this.gl.enableVertexAttribArray(0);
+                      this.gl.enableVertexAttribArray(1);
+                      this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
+                      this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
+                      this.engine.shadermanager.UseShader_PT_chroma(this.engine.matModelViewProjection, this.engine.matModel);
+                      break;                     
              
         default:       
                       alert("unknown surface mode!!");

@@ -1393,6 +1393,22 @@ function ogSetRenderQuality(world_id,quality)
    }
 }
 goog.exportSymbol('ogSetRenderQuality', ogSetRenderQuality);
+//------------------------------------------------------------------------------
+/**
+* @description set render effect
+* @param {number} world_id
+* @param {number} rendereffect
+* @param {Object=} opt_param
+*/
+function ogSetRenderEffect(world_id, rendereffect, opt_param)
+{
+   var world = /** @type ogWorld */ _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      world.SetRenderEffect(rendereffect,opt_param);
+   } 
+}
+goog.exportSymbol('ogSetRenderEffect', ogSetRenderEffect);
 //##############################################################################
 // ** TEXTURE-OBJECT **
 //##############################################################################

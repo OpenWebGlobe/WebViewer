@@ -83,6 +83,11 @@ var OG_OBJECT_POINTSPRITE           = 23;
 //* @constant
 var OG_OBJECT_INVALID               = 65535;
 
+//* @constant
+var OG_RENDEREFFECT_RGB             = 0;
+//* @constant
+var OG_RENDEREFFECT_CHROMADEPTH     = 1;
+
 goog.exportSymbol('OG_OBJECT_CONTEXT', OG_OBJECT_CONTEXT);
 goog.exportSymbol('OG_OBJECT_SCENE', OG_OBJECT_SCENE);
 goog.exportSymbol('OG_OBJECT_WORLD', OG_OBJECT_WORLD);
@@ -108,6 +113,8 @@ goog.exportSymbol('OG_OBJECT_BILLBOARDLAYER', OG_OBJECT_BILLBOARDLAYER);
 goog.exportSymbol('OG_OBJECT_AOEIMAGELAYER', OG_OBJECT_AOEIMAGELAYER);
 goog.exportSymbol('OG_OBJECT_AOEIMAGE', OG_OBJECT_AOEIMAGE);
 goog.exportSymbol('OG_OBJECT_INVALID', OG_OBJECT_INVALID);
+goog.exportSymbol('OG_RENDEREFFECT_RGB', OG_RENDEREFFECT_RGB);
+goog.exportSymbol('OG_RENDEREFFECT_CHROMADEPTH', OG_RENDEREFFECT_CHROMADEPTH);
 
 //------------------------------------------------------------------------------
 // SCENE TYPES

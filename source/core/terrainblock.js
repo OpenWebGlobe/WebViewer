@@ -580,6 +580,15 @@ TerrainBlock.prototype.Render = function(/*cache*/)
    this.engine.PushMatrices();
    this.engine.SetModelMatrix(this.tmpmodel);
    
+   if (this.engine.scene.nodeRenderObject.globerenderer.GetRenderEffect() == GlobeRenderer.RenderEffect.RGB)
+   {
+      this.mesh.mode = "pt";
+   }
+   else if (this.engine.scene.nodeRenderObject.globerenderer.GetRenderEffect() == GlobeRenderer.RenderEffect.CHROMADEPTH)
+   {
+      this.mesh.mode = "pt_chroma";
+   }
+   
    this.mesh.Draw();
    
    this.engine.PopMatrices();

@@ -92,7 +92,6 @@ function GlobeRenderer(engine)
    this.quality = 1.0; //0.75; // quality parameter, reduce for lower quality
    
    // current view frustum (for view frustum culling)
-   
    this.frustum = new ViewFrustum();
    this.vDir = new Array(3);
    
@@ -102,8 +101,11 @@ function GlobeRenderer(engine)
    this.southpole = new Surface(this.engine);
    this.northpolecolor = [8/255,24/255,58/255]; 
    this.southpolecolor = [1,1,1];
+   
+   this.rendereffect = GlobeRenderer.RenderEffect.RGB;
+   /** @type {Object} */
+   this.renderparam = {};
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Add an image layer
@@ -984,5 +986,55 @@ GlobeRenderer.prototype.AltitudeAboveGround = function()
    
 }
  //-----------------------------------------------------------------------------
- 
- 
+ /**
+ * @description Set Render Effect
+ * @param {number} rendereffect
+ */
+GlobeRenderer.prototype.SetRenderEffect = function(rendereffect)
+{
+   this.rendereffect = rendereffect;
+}
+//------------------------------------------------------------------------------
+ /**
+ * @description Set Render param for special effect
+ * @param {Object=} param
+ */
+GlobeRenderer.prototype.SetRenderParam = function(param)
+{
+   if (param !=null)
+   {
+      this.renderparam = param;
+   }
+   else
+   {
+      this.renderparam = {};
+   }
+}
+//-----------------------------------------------------------------------------
+/**
+* @description Get Render Effect
+* @return {number}
+*/
+GlobeRenderer.prototype.GetRenderEffect = function()
+{
+   return this.rendereffect;
+}
+//------------------------------------------------------------------------------
+ /**
+ * @description Get Render param for special effect
+ * @return {Object} param
+ */
+GlobeRenderer.prototype.GetRenderParam = function()
+{
+   return this.renderparam;
+}
+//------------------------------------------------------------------------------
+// Render Effects, special shaders for terrain
+//
+/** @enum {number} */
+GlobeRenderer.RenderEffect =
+{
+   RGB: 0,           // render globe using normal shader
+   CHROMADEPTH: 1    // render globe using chroma depth elevation
+};
+//------------------------------------------------------------------------------

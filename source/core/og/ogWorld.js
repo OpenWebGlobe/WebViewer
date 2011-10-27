@@ -142,3 +142,33 @@ ogWorld.prototype.SetRenderQuality = function(quality)
          renderer.quality = quality;
       }
 }
+//------------------------------------------------------------------------------
+/** @description set render effect
+ *  @param {number} rendereffect
+ *  @param {Object=} param
+ */
+ogWorld.prototype.SetRenderEffect = function(rendereffect, param)
+{
+   /** @type {ogContext} */
+   var context = /** @type ogContext */this.parent.parent;
+   /** @type {engine3d} */
+   var engine = context.engine;
+      
+   /** @type {GlobeRenderer} */
+   var renderer = engine.scene.nodeRenderObject.globerenderer;
+   
+   switch (rendereffect)
+   {
+      case OG_RENDEREFFECT_RGB:
+         renderer.SetRenderEffect(GlobeRenderer.RenderEffect.RGB);
+         renderer.SetRenderParam(param);
+         break;
+      case OG_RENDEREFFECT_CHROMADEPTH:
+         renderer.SetRenderEffect(GlobeRenderer.RenderEffect.CHROMADEPTH);
+         renderer.SetRenderParam(param);
+         break;
+      default:
+         return;
+   }
+}
+//------------------------------------------------------------------------------

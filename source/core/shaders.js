@@ -114,6 +114,14 @@ function ShaderManager(gl)
    this.vs_point = null;
    /** @type WebGLShader */
    this.fs_point = null;
+   
+   // Special Effects for Globe rendering
+   /** @type WebGLProgram */
+   this.program_pt_chroma = null;
+   /** @type WebGLShader */
+   this.vs_pt_chroma = null;
+   /** @type WebGLShader */
+   this.fs_pt_chroma = null;
 }
 
 //------------------------------------------------------------------------------
@@ -173,6 +181,22 @@ ShaderManager.prototype.UseShader_PT = function(modelviewprojection)
       this.gl.useProgram(this.program_pt);
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt, "matMVP"), false, modelviewprojection.Get());
       this.gl.uniform1i(this.gl.getUniformLocation(this.program_pt, "uTexture"), 0);   
+   }    
+}
+//------------------------------------------------------------------------------
+/**
+ *  
+ * @param {mat4} modelviewprojection
+ * @param {mat4} model
+ */
+ShaderManager.prototype.UseShader_PT_chroma = function(modelviewprojection, model)
+{
+   if (this.program_pt_chroma)
+   {
+      this.gl.useProgram(this.program_pt_chroma);
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt_chroma, "matM"), false, model.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt_chroma, "matMVP"), false, modelviewprojection.Get());
+      this.gl.uniform1i(this.gl.getUniformLocation(this.program_pt_chroma, "uTexture"), 0);   
    }    
 }
 //------------------------------------------------------------------------------
@@ -351,7 +375,7 @@ ShaderManager.prototype.InitShader_PT = function()
 {
    var src_vertexshader_PT= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n}\n";
    var src_fragmentshader_PT= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\nvoid main()\n{\n   gl_FragColor = texture2D(uTexture, vTexCoord);\n}\n\n";
-  
+     
    this.vs_pt = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PT);
    this.fs_pt = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_PT);
    
@@ -378,6 +402,46 @@ ShaderManager.prototype.InitShader_PT = function()
       }
    }
   
+}
+//------------------------------------------------------------------------------
+/**
+ *  Initializes the point,texture
+ *  internal use
+ */
+ShaderManager.prototype.InitShader_PT_chroma = function()
+{
+   // Variant 1: Chroma-Depth View Frustum
+   //var src_vertexshader_PT_chroma= "uniform mat4 matMVP;\nvarying float w_val;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   w_val = clamp((gl_Position.z-0.00001)/0.0055,0.0,1.0);; vTexCoord = aTexCoord;\n}\n";
+   
+   // Variant 2: Chroma-Depth Elevation
+   var src_vertexshader_PT_chroma= "uniform mat4 matM;uniform mat4 matMVP;\nvarying float w_val;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{gl_Position = matMVP * vec4(aPosition,1.0);\nvec4 xyz = matM * vec4(aPosition,1.0);\nfloat x = xyz.x*8388607.0;\nfloat y = xyz.y*8388607.0;\nfloat z = xyz.z*8388607.0;\nfloat sq, lat, sinlat, coslat, sinlat2, Rn, elevation;\nsq = sqrt(x*x+y*y);\n lat = atan(z,sq);\n      for (int i=0;i<2;i++)\n{\nsinlat = sin(lat);\ncoslat = cos(lat);\nsinlat2 = sinlat*sinlat;\nRn = 6378137.0 / sqrt(1.0-0.0066943799*sinlat2);\n   elevation = sq / coslat - Rn;\nlat = atan(z/sq, 1.0-(Rn*0.0066943799)/(Rn+elevation));\n}\nw_val = 1.0-clamp(abs(elevation)/4000.0,0.0,1.0); vTexCoord = aTexCoord;\n}\n";
+   var src_fragmentshader_PT_chroma = "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying float w_val;\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\nvoid main()\n{\n   float depth = w_val;\nfloat depth2 = depth*depth;\nvec4 rgb;\n if (depth < 0.5) { rgb.g = 1.6*depth2+1.2*depth; } else { rgb.g = 3.2*depth2-6.8*depth+3.6; rgb.b = depth2*-4.8+9.2*depth-3.4; }\nrgb.a=1.0;\ndepth = depth/0.9;\ndepth2 = depth2/0.81;\nrgb.r = -2.14*depth2*depth2 -1.07*depth2*depth + 0.133*depth2 +0.0667*depth +1.0;\ngl_FragColor = texture2D(uTexture, vTexCoord)*rgb;\n\n}\n\n";
+   
+   this.vs_pt_chroma = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PT_chroma);
+   this.fs_pt_chroma = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_PT_chroma);
+   
+   if (this.vs_pt_chroma && this.fs_pt_chroma)
+   {
+      // create program object
+      this.program_pt_chroma = this.gl.createProgram();
+      
+      // attach our two shaders to the program
+      this.gl.attachShader(this.program_pt_chroma, this.vs_pt_chroma);
+      this.gl.attachShader(this.program_pt_chroma, this.fs_pt_chroma);
+      
+      // setup attributes
+      this.gl.bindAttribLocation(this.program_pt_chroma, 0, "aPosition"); 
+      this.gl.bindAttribLocation(this.program_pt_chroma, 1, "aTexCoord");
+
+      
+      // linking
+      this.gl.linkProgram(this.program_pt_chroma);
+      if (!this.gl.getProgramParameter(this.program_pt_chroma, this.gl.LINK_STATUS)) 
+      {
+          alert(this.gl.getProgramInfoLog(this.program_pt_chroma));
+          return;
+      }
+   }
 } 
 //------------------------------------------------------------------------------
 /**
@@ -546,6 +610,8 @@ ShaderManager.prototype.InitShaders = function()
    this.InitShader_Font();
    this.InitShader_Poi();
    this.InitShader_Point();
+   this.InitShader_PT_chroma();
+   
 } 
 //------------------------------------------------------------------------------
 /**
