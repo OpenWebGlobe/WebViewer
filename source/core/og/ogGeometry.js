@@ -109,12 +109,20 @@ ogGeometry.prototype._OnDestroy = function()
    var renderer = this._GetGeometryRenderer();
    renderer.RemoveGeometry(this.indexInRendererArray);
 
-   for(var j=0;j<this.meshes_og.length;j++)
+   if(this.ogpointsprite!=null)
    {
-      var mesh_og = /** @type {ogMeshObject}*/ this.meshes_og[j];
-      mesh_og.UnregisterObject();
+      this.ogpointsprite.UnregisterObject();
    }
-   this.geometryarray = null;   
+   else
+   {
+         for(var j=0;j<this.meshes_og.length;j++)
+      {
+         var mesh_og = /** @type {ogMeshObject}*/ this.meshes_og[j];
+         mesh_og.UnregisterObject();
+      }
+      this.geometryarray = null;  
+   }
+ 
 }
 
 
