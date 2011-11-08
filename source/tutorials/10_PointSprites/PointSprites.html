@@ -109,8 +109,8 @@ function main()
       service : "i3d"
    };
    
-  // ogAddImageLayer(globe, imgBlueMarble500);
-  // ogAddElevationLayer(globe, elvSRTM_CH);
+   //ogAddImageLayer(globe, imgBlueMarble500);
+   //ogAddElevationLayer(globe, elvSRTM_CH);
    
 var imgSWISSTOPO = 
    {
@@ -152,8 +152,8 @@ var imgSWISSTOPO =
       
    // if no indexbuffer -> then it's a pointsprite !
    //geometry = ogCreateGeometry(geometrylayer, points);
-   /*
-   var pcoptions = { "id"               :  "1",
+   
+  /* var pcoptions = { "id"               :  "1",
                      "Center"           :  [7.637986,47.533279,281.261592],
                      "VertexSemantic"   :  "pc",
                      "PointUrl"         :  "all.xyz",
@@ -162,15 +162,15 @@ var imgSWISSTOPO =
    }
    
    geometry1 = ogCreateGeometry(geometrylayer,pcoptions);
-   */
+  */
    
-   geometry1 = ogLoadGeometryAsync(geometrylayer,"armasuissesmall.json");
+     geometry1 = ogLoadGeometryAsync(geometrylayer,"armasuissesmall.json");
   // geometry2 = ogLoadGeometryAsync(geometrylayer,"armasuisse/2160_pointCloud_proc.json");
   // geometry3 = ogLoadGeometryAsync(geometrylayer,"armasuisse/2200_pointCloud_proc.json");
   
    var cam = ogGetActiveCamera(scene);
    //ogSetPosition(cam,7.636721,47.53327,290);
-   ogSetPosition(cam,7.600430,46.762335,573.846993);
+   ogSetPosition(cam,7.600430,46.762335,700);
    ogSetOrientation(cam,90,0,0);
    
 }

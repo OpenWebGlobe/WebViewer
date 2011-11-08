@@ -140,7 +140,7 @@ function GlobeNavigationNode()
       this._navrotation = new mat4();
       this._navtotal = new mat4();
 
-      this.minAltitude = 1000;
+      this.minAltitude = 1;
       this.maxAltitude = 10000000;
       // external navigation commands
       this.navigationcommand = TraversalState.NavigationCommand.IDLE;
@@ -302,11 +302,9 @@ function GlobeNavigationNode()
                // enter rotation mode
                this._nMouseRotationOriginX = this._nMouseX;
                this._nMouseRotationOriginY = this._nMouseY;
-               var circleposition_pickresult = {};
                var rotationorigin_pickresult = {};
-               this.engine.PickGlobe(this.engine.width/2, this.engine.height/2, circleposition_pickresult);
                this.engine.PickGlobe(this._nMouseRotationOriginX, this._nMouseRotationOriginY, rotationorigin_pickresult);
-               if (circleposition_pickresult["hit"] && rotationorigin_pickresult["hit"])
+               if (rotationorigin_pickresult["hit"])
                {
                   this._bRotationInvalid = false;
                   
@@ -317,9 +315,8 @@ function GlobeNavigationNode()
                   Mercator.WGS84ToMercator(rotationorigin_pickresult["lng"], rotationorigin_pickresult["lat"], this._RotationCenter);
                   this._RotationCenterWGS84 = [ rotationorigin_pickresult["lng"], rotationorigin_pickresult["lat"], rotationorigin_pickresult["elv"] ]; 
                   this._RotationCenterCart = [rotationorigin_pickresult["x"], rotationorigin_pickresult["y"], rotationorigin_pickresult["z"] ];
-                  this._CirclePositionCart = [circleposition_pickresult["x"], circleposition_pickresult["y"], circleposition_pickresult["z"] ];
-                   
                   this._RotationCenter[2] = rotationorigin_pickresult["elv"]; // elevation stored in [m]
+                  
                   // (2) calculate radius
                   //     (2.1) project current position to mercator
                   var curpos = [0,0];
@@ -338,14 +335,13 @@ function GlobeNavigationNode()
                   //
                   // phi must be increased/decreased to walk around the circle
                   // just calculate the initial phi:
-                  this._RotationPhi = Math.atan2(dx,dy) /*- Math.PI*/;
-                  while (this._RotationPhi < 0)
+                  this._RotationPhi = 0;//Math.atan2(dx,dy) /*+ Math.PI/2*/;
+                  /*if (this._RotationPhi < 0)
                     this._RotationPhi += 2*Math.PI;
-                  while (this._RotationPhi >= 2*Math.PI)
-                    this._RotationPhi -= 2*Math.PI;
+                  if (this._RotationPhi >= 2*Math.PI)
+                    this._RotationPhi -= 2*Math.PI;*/
                     
-                  this._RotationPhiStart = this._RotationPhi;  
-                                    
+                  this._RotationPhiStart = this._RotationPhi;   
                }
                else
                {
@@ -437,6 +433,11 @@ function GlobeNavigationNode()
          if (this._bLockNavigation || this.engine.flyto.isMoving)
          {
             return;
+         }
+         
+         if (e.keyCode == 66)
+         {
+            this._bQuaternionMode = false;
          }
       
          if (e.keyCode == 16) // 'Shift'
@@ -707,35 +708,25 @@ function GlobeNavigationNode()
                
                var xx = this._RotationCenter[0] + this._RotationRadius*Math.cos(this._RotationPhi);
                var yy = this._RotationCenter[1] + this._RotationRadius*Math.sin(this._RotationPhi);
-               
-            
-               var dx = this._CirclePositionCart[0] - this._RotationCenterCart[0];
-               var dy = this._CirclePositionCart[1] - this._RotationCenterCart[1];
-               var dz = this._CirclePositionCart[2] - this._RotationCenterCart[2];
-               var rr = Math.sqrt(dx*dx+dy*dy+dz*dz);
-               
-               var xnewlookat = this._RotationCenter[0] + rr*Math.cos(this._RotationPhi-this._RotationPhiStart);
-               var ynewlookat = this._RotationCenter[1] + rr*Math.sin(this._RotationPhi-this._RotationPhiStart);
-                
+                   
                var pos = [];
                Mercator.MercatorToWGS84(xx, yy, pos);
                this._longitude = pos[0];
                this._latitude = pos[1];
                
-               Mercator.MercatorToWGS84(xnewlookat, ynewlookat, pos);
+               /*Mercator.MercatorToWGS84(xnewlookat, ynewlookat, pos);
                var gc = new GeoCoord(pos[0],pos[1],0);
                var xnewlookatCart = [];
-               gc.ToCartesian(xnewlookatCart);
+               gc.ToCartesian(xnewlookatCart);*/
                
                //----------------------------------------------------
                // lookat rotation center (this._RotationCenterCart)
                // Get the geocentric cartesian camera position
-               var geocord = new GeoCoord(this._longitude,this._latitude,this._ellipsoidHeight);
+               /*var geocord = new GeoCoord(this._longitude,this._latitude,this._ellipsoidHeight);
                var cc = [];
                geocord.ToCartesian(cc);
                var vcc = new vec3(cc[0], cc[1], cc[2]);
-               //var vtc = new vec3(this._RotationCenterCart[0],this._RotationCenterCart[1],this._RotationCenterCart[2]);
-               var vtc = new vec3(xnewlookatCart[0],xnewlookatCart[1],xnewlookatCart[2]);
+               var vtc = new vec3(this._RotationCenterCart[0],this._RotationCenterCart[1],this._RotationCenterCart[2]);
                var vec = vtc.Copy();
                vec.Sub(vcc);
                var navframe = new mat4();
@@ -768,13 +759,39 @@ function GlobeNavigationNode()
                   pitch=-pitch;
                }
                this._yaw = yaw;
-               this._pitch = pitch;
+               this._pitch = pitch;*/
                // end lookat
                //----------------------------------------------------
                
-               // todo: update rotation according to mouse delta (increase if dx>0 and decrease if dx<0)
-               this._RotationPhi += dTick / 1000;
+               // update rotation according to mouse delta x (increase if dx>0 and decrease if dx<0)
+               // update elevation according to mouse delta y
+               var mouse_dx = (this._nMouseX - this._nMouseRotationOriginX) / this.engine.width;
+               var mouse_dy = (this._nMouseRotationOriginY - this._nMouseY) / this.engine.height;
+               
+               var sx = 0;
+               if (mouse_dx>0) sx=1;
+               else if (mouse_dx<0) sx=-1;
+               var sy = 0;
+               if (mouse_dy>0) sy=1;
+               else if (mouse_dy<0) sy=-1;
+            
+               /*var angleincrease = sx*mouse_dx*mouse_dx * dTick / 250;
+               this._RotationPhi += angleincrease;
+               if (this._RotationPhi < 0)
+                    this._RotationPhi += 2*Math.PI;
+                  if (this._RotationPhi >= 2*Math.PI)
+                    this._RotationPhi -= 2*Math.PI;*/
+                     
+                    
+               //this._ellipsoidHeight += sy*mouse_dy*mouse_dy*dTick * this._ellipsoidHeight / 500;
+               
+               if (this._ellipsoidHeight < this.minAltitude)
+               {
+                  this._ellipsoidHeight = this.minAltitude;     
+               }
             }
+            return;
+            
          }
 
          if (this._inputs & GlobeNavigationNode.INPUTS.KEY_ALL || this.navigationcommand == TraversalState.NavigationCommand.ROTATE_EARTH)
@@ -867,14 +884,38 @@ function GlobeNavigationNode()
          this._roll = roll;
       }
       //------------------------------------------------------------------------
-      this.SetOrientationFromQuaternion = function(x, y, z, w)
+      this.SetOrientationFromQuaternion = function(qx, qy, qz, qw)
       {
-         //this._bLockNavigation = true;
          this._bQuaternionMode = true;
-         this._qx = x;
-         this._qy = y;
-         this._qz = z;
-         this._qw = w;
+         this._qx = qx; this._qy = qy; this._qz = qz; this._qw = qw;
+         
+         var a = qx;
+         qx = qy;
+         qy = a;
+         
+         var test_singularity = qx*qy + qz*qw;
+         if (test_singularity > 0.499) // singularity at north pole
+         {    
+               this._yaw = 2 * Math.atan2(qx,qw);
+               this._pitch = Math.PI/2;
+               this._roll = 0;
+               return;
+         }
+         if (test_singularity < -0.499) // singularity at south pole
+         { 
+               this._yaw = -2 * Math.atan2(qx,qw);
+               this._pitch = - Math.PI/2;
+               this._roll = 0;
+               return;
+         }
+         var qx2 = qx*qx;
+         var qy2 = qy*qy;
+         var qz2 = qz*qz;
+         this._yaw = Math.atan2(2*qy*qw-2*qx*qz , 1 - 2*qy2 - 2*qz2);
+         this._pitch = Math.asin(2*test_singularity);
+         this._roll = Math.atan2(2*qx*qw-2*qy*qz , 1 - 2*qx2 - 2*qz2)
+        /* console.log("yaw: "+this._yaw*180/Math.PI+"  pitch:  "+this._pitch*180/Math.PI+"  roll:  "+this._roll*180/Math.PI);
+         console.log("qx: "+qx+"  qy  "+qy+"  qz:  "+qz+"  w:  "+qw);*/
       }
        //---------------------------------------------------------------------
        this._quatmul = function(dest, left, right)

@@ -129,7 +129,7 @@ PointSprite.prototype.SetAsNavigationFrame = function(lng,lat,elv)
      matTrans.Translation(cartesianCoordinates[0],cartesianCoordinates[1],cartesianCoordinates[2]);
        
      var mat = new mat4();
-     mat.CalcNavigationFrame(lng,lat);
+     mat.CalcNavigationFrameZUp(lng,lat);
      
      var a = new Float32Array(16);
      var mmatvals = mat.Get();
@@ -161,7 +161,7 @@ PointSprite.prototype.SetAsNavigationFrame = function(lng,lat,elv)
      scaledNavMat.Multiply(navMat,scaleMat);
      
      var rotatedMat = new mat4();
-     rotatedMat.RotationX(-1.57079633);
+     //rotatedMat.RotationX(-1.57079633);
      
      var scaledRotNavMat = new mat4();
      scaledRotNavMat.Multiply(scaledNavMat,rotatedMat);

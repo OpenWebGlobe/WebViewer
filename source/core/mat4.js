@@ -549,6 +549,29 @@ mat4.prototype.CalcNavigationFrame2 = function(lng_deg, lat_deg)
 
 //------------------------------------------------------------------------------
 /**
+ * @description calc navigation frame, lng and lat in degree!
+ *
+ * @param {number} lng_deg
+ * @param {number} lat_deg
+ */
+mat4.prototype.CalcNavigationFrameZUp = function(lng_deg, lat_deg)
+{
+   var lng = lng_deg*0.017453292519943295769236907684886;
+   var lat = lat_deg*0.017453292519943295769236907684886;
+   
+   var sinlat = Math.sin(lat);
+   var sinlng = Math.sin(lng);
+   var coslat = Math.cos(lat);
+   var coslng = Math.cos(lng);
+   
+   this._values[0] = -sinlng;          this._values[4] = -sinlat*coslng;   this._values[8]  = coslat*coslng;         this._values[12] = 0;
+   this._values[1] = coslng;           this._values[5] = -sinlat*sinlng;   this._values[9]  = coslat*sinlng;         this._values[13] = 0;
+   this._values[2] = 0;                this._values[6] = coslat;           this._values[10] = sinlat;               this._values[14] = 0;
+   this._values[3] = 0;                this._values[7] = 0;                this._values[11] = 0;                     this._values[15] = 1;
+}
+
+//------------------------------------------------------------------------------
+/**
  * @description calc body frame (ZYX Rotation Matrix), yaw, pitch and roll are in RAD
  *
  * @param {number} yaw
