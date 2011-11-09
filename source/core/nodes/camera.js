@@ -34,6 +34,9 @@ goog.require('owg.mat4');
 function CameraNode()
 {
       this.matProjection = new mat4();
+      this.near = 0.00001;
+      this.far = 10.0;
+      this.fov = 45;
    
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -50,7 +53,7 @@ function CameraNode()
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
-         this.CreatePerspectiveProjection(45, 0.00001, 10.0);
+         this.CreatePerspectiveProjection(this.fov, this.near , this.far);
          ts.OverwriteProjectionMatrix(this.matProjection);
       }
       
