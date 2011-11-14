@@ -93,15 +93,6 @@ function GlobeNavigationNode()
       this._nMouseY = 0;
       this._dx = 0;
       this._dy = 0;
-      this._nMouseRotationOriginX = 0;
-      this._nMouseRotationOriginY = 0;
-      this._RotationRadius = 0;
-      this._RotationCenter = [];
-      this._RotationCenterWGS84 = [];
-      this._RotationCenterCart = [];
-      this._CirclePositionCart = [];
-      this._RotationPhi = 0;
-      this._RotationPhiStart = 0;
       this._vR = new vec3();
       this._bDragging = false;
       this._bLClick = false;
@@ -280,10 +271,17 @@ function GlobeNavigationNode()
             }   
          }
          
-         if ((this._inputs & GlobeNavigationNode.INPUTS.MOUSE_ALL) == GlobeNavigationNode.INPUTS.MOUSE_MIDDLE)
+         //---------------------------------------------------------------------
+         /*if ((this._inputs & GlobeNavigationNode.INPUTS.MOUSE_ALL) == GlobeNavigationNode.INPUTS.MOUSE_MIDDLE)
          {
             state = GlobeNavigationNode.STATES.ROTATING;  
+         }*/
+         //---------------------------------------------------------------------
+         if ((this._inputs & GlobeNavigationNode.INPUTS.MOUSE_ALL) == GlobeNavigationNode.INPUTS.MOUSE_RIGHT)
+         {
+            state = GlobeNavigationNode.STATES.LOOKING;
          }
+         //---------------------------------------------------------------------
          // If the state has changed...
          if (state != this._state)
          {
@@ -293,11 +291,10 @@ function GlobeNavigationNode()
                this._yaw = this._dragOriginYaw + 45 * Math.PI * this._fSpeed * (this._nMouseX - this._dragOriginMouseX) / (180 * this.engine.height);
                this._pitch = this._dragOriginPitch + 45 * Math.PI * this._fSpeed * (this._dragOriginMouseY - this._nMouseY) / (180 * this.engine.height);
             }
-            else if (this._state == GlobeNavigationNode.STATES.ROTATING)
+            /*else if (this._state == GlobeNavigationNode.STATES.ROTATING)
             {
-               this.crosshairdelay = 0;
-               this.crosshair = false;
-            }
+
+            }*/
             // ...and enter the new
             this._state = state;
             if (this._state == GlobeNavigationNode.STATES.LOOKING)
@@ -308,57 +305,9 @@ function GlobeNavigationNode()
                this._dragOriginPitch = this._pitch;
             }
             
-            if (this._state == GlobeNavigationNode.STATES.ROTATING)
+            /*if (this._state == GlobeNavigationNode.STATES.ROTATING)
             {
-               // enter rotation mode
-               this._nMouseRotationOriginX = this._nMouseX;
-               this._nMouseRotationOriginY = this._nMouseY;
-               var rotationorigin_pickresult = {};
-               this.engine.PickGlobe(this._nMouseRotationOriginX, this._nMouseRotationOriginY, rotationorigin_pickresult);
-               if (rotationorigin_pickresult["hit"])
-               {
-                  this._bRotationInvalid = false;
-                  
-                  // To solve this very easy, the rotation is done in mercator projection
-                  // this way we can do it in 2D and just change the elevation / radius if needed.
-                 
-                  // (1) store the rotation center in mercator, WGS84 and in geocentric cartesian coordinates
-                  Mercator.WGS84ToMercator(rotationorigin_pickresult["lng"], rotationorigin_pickresult["lat"], this._RotationCenter);
-                  this._RotationCenterWGS84 = [ rotationorigin_pickresult["lng"], rotationorigin_pickresult["lat"], rotationorigin_pickresult["elv"] ]; 
-                  this._RotationCenterCart = [rotationorigin_pickresult["x"], rotationorigin_pickresult["y"], rotationorigin_pickresult["z"] ];
-                  this._RotationCenter[2] = rotationorigin_pickresult["elv"]; // elevation stored in [m]
-                  
-                  // (2) calculate radius
-                  //     (2.1) project current position to mercator
-                  var curpos = [0,0];
-                  Mercator.WGS84ToMercator(this._longitude, this._latitude, curpos);
-                  //     (2.2) now we have the radius (we are in 2D now!)
-                  var dx = curpos[0] - this._RotationCenter[0];
-                  var dy = curpos[1] - this._RotationCenter[1];
-                  this._RotationRadius = Math.sqrt(dx*dx+dy*dy);
-                  
-                  // now we have to rotate around the CIRCLE with center (cx,cy)=(this._RotationCenter[0],this._RotationCenter[1])
-                  // and radius r = this._RotationRadius
-                  //
-                  // x = cx + r*cos(phi)
-                  // y = cy + r*sin(phi)    phi in ]0,2pi]
-                  //
-                  //
-                  // phi must be increased/decreased to walk around the circle
-                  // just calculate the initial phi:
-                  this._RotationPhi = 0;//Math.atan2(dx,dy) /*+ Math.PI/2*/;
-                  /*if (this._RotationPhi < 0)
-                    this._RotationPhi += 2*Math.PI;
-                  if (this._RotationPhi >= 2*Math.PI)
-                    this._RotationPhi -= 2*Math.PI;*/
-                    
-                  this._RotationPhiStart = this._RotationPhi;   
-               }
-               else
-               {
-                  this._bRotationInvalid = true; // can't do a rotation!
-               }
-            }
+            }*/
          }
          // Update according to the current state
          if (this._state == GlobeNavigationNode.STATES.LOOKING)
@@ -590,7 +539,6 @@ function GlobeNavigationNode()
          else if (e.isButton(goog.events.BrowserEvent.MouseButton.RIGHT))
          {
             this._inputs |= GlobeNavigationNode.INPUTS.MOUSE_RIGHT;
-            return false;
          }
          this._OnInputChange();
          
@@ -709,101 +657,10 @@ function GlobeNavigationNode()
             }
          }
                   
-         if (this._state == GlobeNavigationNode.STATES.ROTATING)
+         /*if (this._state == GlobeNavigationNode.STATES.ROTATING)
          {
-            // do rotation if there is a valid hit point
-            if (!this._bRotationInvalid)
-            {
-               this.crosshairpos = [this._nMouseRotationOriginX, this._nMouseRotationOriginY];
-               this.crosshairdelay = 500;
-               
-               var xx = this._RotationCenter[0] + this._RotationRadius*Math.cos(this._RotationPhi);
-               var yy = this._RotationCenter[1] + this._RotationRadius*Math.sin(this._RotationPhi);
-                   
-               var pos = [];
-               Mercator.MercatorToWGS84(xx, yy, pos);
-               this._longitude = pos[0];
-               this._latitude = pos[1];
-               
-               /*Mercator.MercatorToWGS84(xnewlookat, ynewlookat, pos);
-               var gc = new GeoCoord(pos[0],pos[1],0);
-               var xnewlookatCart = [];
-               gc.ToCartesian(xnewlookatCart);*/
-               
-               //----------------------------------------------------
-               // lookat rotation center (this._RotationCenterCart)
-               // Get the geocentric cartesian camera position
-               /*var geocord = new GeoCoord(this._longitude,this._latitude,this._ellipsoidHeight);
-               var cc = [];
-               geocord.ToCartesian(cc);
-               var vcc = new vec3(cc[0], cc[1], cc[2]);
-               var vtc = new vec3(this._RotationCenterCart[0],this._RotationCenterCart[1],this._RotationCenterCart[2]);
-               var vec = vtc.Copy();
-               vec.Sub(vcc);
-               var navframe = new mat4();
-               navframe.CalcNavigationFrame(this._longitude,this._latitude);
-               var trans = new mat4();
-               trans.Translation(cc[0],cc[1],cc[2]);
-               var navigationMatrix = new mat4();
-               navigationMatrix.Multiply(trans,navframe);
-               navigationMatrix.Transpose();   
-               var vn = navigationMatrix.MultiplyVec3(vec);
-               vn.Normalize();
-               var vals = vn.Get();
-               var x = vals[0];
-               var y = vals[1];
-               var z = vals[2];
-               var a = Math.sqrt(1-z*z);
-               var yaw = Math.acos(x/a);
-               if(y<0 && x>0)
-               {
-                  yaw = 2*Math.PI-yaw;
-               }
-               if(y<0 && x<0)
-               {
-                  yaw = 2*Math.PI-yaw;
-               }
-               var pitch = -(Math.PI/2-(Math.acos(z)));
-               if(z<-0.9)
-               {
-                  yaw=Math.PI+yaw;
-                  pitch=-pitch;
-               }
-               this._yaw = yaw;
-               this._pitch = pitch;*/
-               // end lookat
-               //----------------------------------------------------
-               
-               // update rotation according to mouse delta x (increase if dx>0 and decrease if dx<0)
-               // update elevation according to mouse delta y
-               var mouse_dx = (this._nMouseX - this._nMouseRotationOriginX) / this.engine.width;
-               var mouse_dy = (this._nMouseRotationOriginY - this._nMouseY) / this.engine.height;
-               
-               var sx = 0;
-               if (mouse_dx>0) sx=1;
-               else if (mouse_dx<0) sx=-1;
-               var sy = 0;
-               if (mouse_dy>0) sy=1;
-               else if (mouse_dy<0) sy=-1;
-            
-               /*var angleincrease = sx*mouse_dx*mouse_dx * dTick / 250;
-               this._RotationPhi += angleincrease;
-               if (this._RotationPhi < 0)
-                    this._RotationPhi += 2*Math.PI;
-                  if (this._RotationPhi >= 2*Math.PI)
-                    this._RotationPhi -= 2*Math.PI;*/
-                     
-                    
-               //this._ellipsoidHeight += sy*mouse_dy*mouse_dy*dTick * this._ellipsoidHeight / 500;
-               
-               if (this._ellipsoidHeight < this.minAltitude)
-               {
-                  this._ellipsoidHeight = this.minAltitude;     
-               }
-            }
-            return;
-            
-         }
+      
+         }*/
 
          if (this._inputs & GlobeNavigationNode.INPUTS.KEY_ALL || this.navigationcommand == TraversalState.NavigationCommand.ROTATE_EARTH)
          {
