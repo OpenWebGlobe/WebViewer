@@ -631,18 +631,22 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
       
    var tmin = 1e20;
    pickresult["hit"] = false;
+   pickresult["numhits"] = candidates.length;
+   
    for (var i=0;i<candidates.length;i++)
    {
       var r = candidates[i].mesh.TestRayIntersection(pointDir.x,pointDir.y,pointDir.z,pointDir.dirx,pointDir.diry,pointDir.dirz);
       if (r)
       {
-         pickresult["hit"] = true;
          if (r.t < tmin)
          {
+            pickresult["hit"] = true;
             tmin = r.t;
          }
       }
    }
+   
+   pickresult["tmin"] = tmin;
    
    if (pickresult["hit"])
    {
