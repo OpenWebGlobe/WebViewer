@@ -151,7 +151,7 @@ function GlobeNavigationNode()
       }
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
-      {
+      {      
          if (this._ellipsoidHeight < 2000)
          {
             this.engine.scene.nodeCamera.near = 0.0000001;
@@ -819,7 +819,8 @@ function GlobeNavigationNode()
                 this._bHit = false; // clicked outside ellipsoid!
           }       
        }
-       //---------------------------------------------------------------------
+      
+       //-----------------------------------------------------------------------
        this.arcellipsoid_drag = function(mx, my)
        {
           if (this._bHit)

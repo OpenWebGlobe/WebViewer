@@ -721,13 +721,13 @@ engine3d.prototype.GetTextSize = function(txt)
  * @param {number} x the screen x coordinate
  * @param {number} y the screen y coordinate
  * @param {mat4} mvp the model-view-projection matrix.
+ * @param {boolean} normalize_dir true if direction should be normalized
  */
-engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
+engine3d.prototype.GetDirectionMousePos = function(x, y, mvp, normalize_dir)
 {
    var mvpInv = new mat4();
    mvpInv.Inverse(mvp);
-   
-   
+
    var winx = x;
    var winy = this.height-y-1;
    var winz = 0;
@@ -754,13 +754,15 @@ engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
    var dirz = CoorOnFarPlaneWorld.Get()[2] - CoorOnNearPlaneWorld.Get()[2];
             
    //normalize direction
-   var a = Math.sqrt(dirx*dirx+diry*diry+dirz*dirz);
-       a = Math.abs(a);
-              
-   dirx/=a;
-   diry/=a;
-   dirz/=a;
-
+   
+   if (normalize_dir)
+   {
+      var a = Math.sqrt(dirx*dirx+diry*diry+dirz*dirz);
+      dirx/=a;
+      diry/=a;
+      dirz/=a;
+   }
+   
    var res = CoorOnNearPlaneWorld.Get();
    var pointAndDir = {};
    pointAndDir.x = res[0];   

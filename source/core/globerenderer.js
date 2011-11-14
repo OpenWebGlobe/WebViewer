@@ -611,7 +611,7 @@ GlobeRenderer.prototype._Optimize = function()
  */
 GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
 {
-   var pointDir = this.engine.GetDirectionMousePos(mx, my, this.matPick);           
+   var pointDir = this.engine.GetDirectionMousePos(mx, my, this.matPick, true);           
    var candidates = new Array();
   
    for (var i=0;i<this.lstFrustum.length;i++)
@@ -675,7 +675,22 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
  */
 GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult)
 {
-   var pck = this.engine.GetDirectionMousePos(mx, my, this.matPick);           
+   var radius = 1.0;
+   var pickresult2 = {};
+   this.PickGlobe(mx, my, pickresult2);
+   if (pickresult2["hit"])
+   {
+      radius = Math.sqrt(pickresult2["x"]*pickresult2["x"] +
+               pickresult2["y"]*pickresult2["y"] +
+               pickresult2["z"]*pickresult2["z"]);
+      
+   }
+   else
+   {
+      return;
+   }
+   
+   var pck = this.engine.GetDirectionMousePos(mx, my, this.matPick, true);           
    var candidates = new Array();
    pickresult["hit"] = false;
    
@@ -687,29 +702,31 @@ GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult)
    var mmz = pck.dirz;
    
    var zoom2 = eyex*eyex + eyey*eyey + eyez*eyez;
+   var zoom = Math.sqrt(zoom2);
 
-   var a = mmx*mmx+mmy*mmy*mmz*mmz;
+   var a = mmx*mmx + mmy*mmy + mmz*mmz;
    var b = eyex*mmx + eyey*mmy + eyez*mmz;
-   var root = (b*b) - a*(zoom2 - WGS84_b2_scaled);
+   
+   var root = (b*b) - a*(zoom2 - radius*radius);
+   
    if(root <= 0)
    {
-       // todo: edge case
        return;
    }
    else
    {
       var t = (0.0 - b - Math.sqrt(root)) / a;
+      
      
       var px = eyex + mmx * t;
       var py = eyey + mmy * t;
       var pz = eyez + mmz * t;
-      var rlen = 1/Math.sqrt(px*px + py*py + pz*pz);
-      
+      var rl = 1/Math.sqrt(px*px + py*py + pz*pz);
       
       pickresult["hit"] = true;
-      pickresult["x"] = px*rlen;
-      pickresult["y"] = py*rlen;
-      pickresult["z"] = pz*rlen;
+      pickresult["x"] = px*rl;
+      pickresult["y"] = py*rl;
+      pickresult["z"] = pz*rl;
    }
    
    var gc = new GeoCoord(0,0,0);
@@ -717,7 +734,6 @@ GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult)
    pickresult["lng"] = gc._wgscoords[0];
    pickresult["lat"] = gc._wgscoords[1];
    pickresult["elv"] = gc._wgscoords[2]; // should be around 0
-   
  }
  
  //-----------------------------------------------------------------------------

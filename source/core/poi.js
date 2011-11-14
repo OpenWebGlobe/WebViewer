@@ -322,12 +322,12 @@ Poi.prototype.Pick = function(mx,my)
    
    if(this.iconMesh)
    {
-      var ray = this.engine.GetDirectionMousePos(mx,my,this.engine.matModelViewProjection);
+      var ray = this.engine.GetDirectionMousePos(mx,my,this.engine.matModelViewProjection, true);
       hiticon = this.iconMesh.TestRayIntersection(ray.x,ray.y,ray.z,ray.dirx,ray.diry,ray.dirz);
    }
    if(this.textMesh)
    {
-      var ray = this.engine.GetDirectionMousePos(mx,my,this.engine.matModelViewProjection);
+      var ray = this.engine.GetDirectionMousePos(mx,my,this.engine.matModelViewProjection, true);
       hittext = this.textMesh.TestRayIntersection(ray.x,ray.y,ray.z,ray.dirx,ray.diry,ray.dirz);
    }
 
