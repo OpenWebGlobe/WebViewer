@@ -55,16 +55,19 @@ goog.require('owg.vec3');
  */
 function mat4()
 {
-   /** @type {Array.<number>|!Float32Array} */
-   this._values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
+   /** @type {Array.<number>} */
+   this._values = new Array(16);
+   this.Identity();
+   /** @type {Float32Array} */
+   this._float32values = new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
 }
 
 //------------------------------------------------------------------------------
 /**
- * Set Values
- * @param {Array.<number>|Float32Array} oMatrix an array of any type containing 16 values 
+ * Set Values from an Array
+ * @param {Array.<number>} oMatrix an array of any type containing 16 values 
  */
-mat4.prototype.Set = function(oMatrix)
+mat4.prototype.SetFromArray = function(oMatrix)
 {
    if (oMatrix.length == 16)
    {
@@ -77,9 +80,25 @@ mat4.prototype.Set = function(oMatrix)
 
 //------------------------------------------------------------------------------
 /**
+ * Convert Matrix to a Float32Array and return it.
+ * (convert from double precision to single precision)
+ * @return {Float32Array} 
+ */
+mat4.prototype.ToFloat32Array = function()
+{
+   for (var i = 0; i < 16; i++)
+   {
+      this._float32values[i] = this._values[i];
+   }
+   
+   return this._float32values;
+}
+
+//------------------------------------------------------------------------------
+/**
  * Get Values
  * 
- * @return { Array.<number>|!Float32Array} An array with the 16 element values.
+ * @return {Array.<number>} An array with the 16 element values.
  */
 mat4.prototype.Get = function()
 {
@@ -202,7 +221,7 @@ mat4.prototype.Scale = function(x,y,z)
  * sets the matrix to a x-rotation matrix.
  *
  * 
- * @param {number} angle the rotation angle in degrees.
+ * @param {number} angle the rotation angle in radiant.
  */
 mat4.prototype.RotationX = function(angle)
 {
@@ -220,7 +239,7 @@ mat4.prototype.RotationX = function(angle)
  * sets the matrix to a y-rotation matrix.
  *
  * 
- * @param {number} angle the rotation angle in degrees.
+ * @param {number} angle the rotation angle in radiant.
  */ 
 mat4.prototype.RotationY = function(angle)
 {
@@ -237,7 +256,7 @@ mat4.prototype.RotationY = function(angle)
  * RotationZ
  * sets the matrix to a z-rotation matrix.
  * 
- * @param {number} angle the rotation angle in degrees.
+ * @param {number} angle the rotation angle in radiant.
  */ 
 mat4.prototype.RotationZ = function(angle)
 {   
@@ -700,23 +719,6 @@ mat4.prototype.FromQuaternionComponents = function(x,y,z,w)
   this._values[2] = 2*xz + 2*wy;      this._values[6] = 2*yz - 2*wx;     this._values[10] = 1 - 2*x2 - 2*y2; this._values[14] = 0;
   this._values[3] = 0;                this._values[7] = 0;               this._values[11] = 0;               this._values[15] = 1;
 }
-/*mat4.prototype.FromQuaternionComponents = function(x,y,z,w)
-{
-  var x2 = x*x;
-  var y2 = y*y;
-  var z2 = z*z;
-  var xy = x*y;
-  var xz = x*z;
-  var yz = y*z;
-  var wx = w*x;
-  var wy = w*y;
-  var wz = w*z;
-
-  this._values[0] = 1 - 2*y2 - 2*z2;  this._values[1] = 2*xy + 2*wz;     this._values[2] = 2*xz - 2*wy;      this._values[3] = 0;
-  this._values[4] = 2*xy - 2*wz;      this._values[5] = 1 - 2*x2 - 2*z2; this._values[6] = 2*yz + 2*wx;      this._values[7] = 0;
-  this._values[8] = 2*xz + 2*wy;      this._values[9] = 2*yz - 2*wx;     this._values[10] = 1 - 2*x2 - 2*y2; this._values[11] = 0;
-  this._values[12] = 0;               this._values[13] = 0;              this._values[14] = 0;               this._values[15] = 1;
-}*/
 
 //------------------------------------------------------------------------------
 /**
@@ -847,7 +849,7 @@ goog.exportProperty(mat4.prototype, 'RotationX', mat4.prototype.RotationX);
 goog.exportProperty(mat4.prototype, 'RotationY', mat4.prototype.RotationY);
 goog.exportProperty(mat4.prototype, 'RotationZ', mat4.prototype.RotationZ);
 goog.exportProperty(mat4.prototype, 'Scale', mat4.prototype.Scale);
-goog.exportProperty(mat4.prototype, 'Set', mat4.prototype.Set);
+goog.exportProperty(mat4.prototype, 'SetFromArray', mat4.prototype.SetFromArray);
 goog.exportProperty(mat4.prototype, 'ToString', mat4.prototype.ToString);
 goog.exportProperty(mat4.prototype, 'Translation', mat4.prototype.Translation);
 goog.exportProperty(mat4.prototype, 'Transpose', mat4.prototype.Transpose);

@@ -10,7 +10,7 @@
 #                              / ____|  __ \| |/ /                             #
 #                             | (___ | |  | | ' /                              #
 #                              \___ \| |  | |  <                               #
-#                              ____) | |__| | . \                             #
+#                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
 #                              (c) 2010-2011 by                                #
@@ -538,32 +538,32 @@ engine3d.prototype.GetViewport = function()
 //------------------------------------------------------------------------------
 /**
  * @description Set projection matrix
- * @param{mat4} mat4 The projection matrix to copy from.
+ * @param{mat4} projmat The projection matrix to copy from.
  */
-engine3d.prototype.SetProjectionMatrix = function(mat4)
+engine3d.prototype.SetProjectionMatrix = function(projmat)
 {
-   this.matProjection.CopyFrom(mat4);
+   this.matProjection.CopyFrom(projmat);
    this._UpdateMatrices();
 }  
 //------------------------------------------------------------------------------
 /**
  * @description set view matrix
- * @param{mat4} mat4 The view matrix to copy from.
+ * @param{mat4} viewmat The view matrix to copy from.
  */
-engine3d.prototype.SetViewMatrix = function(mat4)  
+engine3d.prototype.SetViewMatrix = function(viewmat)  
 {
-   this.matView.CopyFrom(mat4);
+   this.matView.CopyFrom(viewmat);
    this._UpdateMatrices();
 }      
 
 //------------------------------------------------------------------------------
 /**
  * @description Set model matrix
- * @param{mat4} mat4 The model matrix to copy from.
+ * @param{mat4} modelmat The model matrix to copy from.
  */
-engine3d.prototype.SetModelMatrix = function(mat4)
+engine3d.prototype.SetModelMatrix = function(modelmat)
 {
-   this.matModel.CopyFrom(mat4);
+   this.matModel.CopyFrom(modelmat);
    this._UpdateMatrices();
 } 
 

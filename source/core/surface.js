@@ -1053,7 +1053,7 @@ Surface.prototype.SetAsBillboard= function(x,y,z,translationX,translationY,trans
    this.billboardCenterTrans[1] = translationY || 0;
    this.billboardCenterTrans[2] = translationZ || 0;
    
-   bbmat.Set([view[0],view[4],view[8],0,view[1],view[5],view[9],0,view[2],view[6],view[10],0,this.billboardPos[0],this.billboardPos[1],this.billboardPos[2],1]);
+   bbmat.SetFromArray([view[0],view[4],view[8],0,view[1],view[5],view[9],0,view[2],view[6],view[10],0,this.billboardPos[0],this.billboardPos[1],this.billboardPos[2],1]);
    var transMat = new mat4();
    transMat.Translation(this.billboardCenterTrans[0],this.billboardCenterTrans[1],this.billboardCenterTrans[2]);
    var newBbmat = new mat4();
@@ -1092,7 +1092,7 @@ Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv,yaw,pitch,roll)
    var mat = new mat4();
    mat.CalcNavigationFrame(lng,lat);
    
-   var a = new Float32Array(16);
+   var a = new Array(16);
    var mmatvals = mat.Get();
    a[0] = mmatvals[0];
    a[1] = mmatvals[1];
@@ -1112,7 +1112,7 @@ Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv,yaw,pitch,roll)
    a[15] = 1;
    
    var navMat = new mat4();
-   navMat.Set(a);
+   navMat.SetFromArray(a);
    
    //scaling because the units of a 3d models are meters
    var scaleMat = new mat4();
@@ -1179,7 +1179,7 @@ Surface.prototype.SetAsNavigationFrameQuat = function(lng,lat,elv,quats)
    var mat = new mat4();
    mat.CalcNavigationFrame(lng,lat);
    
-   var a = new Float32Array(16);
+   var a = new Array(16);
    var mmatvals = mat.Get();
    a[0] = mmatvals[0];
    a[1] = mmatvals[1];
@@ -1199,7 +1199,7 @@ Surface.prototype.SetAsNavigationFrameQuat = function(lng,lat,elv,quats)
    a[15] = 1;
    
    var navMat = new mat4();
-   navMat.Set(a);
+   navMat.SetFromArray(a);
    
    //scaling because the units of a 3d models are meters
    var scaleMat = new mat4();

@@ -249,8 +249,7 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
        
        if(angle > 0)
        {
-         model.Set(new Float32Array([Math.cos(angle)*scalex, Math.sin(angle)*scaley,0,0,-Math.sin(angle)*scalex,Math.cos(angle)*scaley,0,0,0,0,1,0,-Math.cos(angle)*scalex*xr + Math.sin(angle)*scalex*yr + scalex*xr + x,-Math.cos(angle)*scaley*yr - Math.sin(angle)*scaley*xr + scaley*yr + y,z,1]));
-
+         model.SetFromArray([Math.cos(angle)*scalex, Math.sin(angle)*scaley,0,0,-Math.sin(angle)*scalex,Math.cos(angle)*scaley,0,0,0,0,1,0,-Math.cos(angle)*scalex*xr + Math.sin(angle)*scalex*yr + scalex*xr + x,-Math.cos(angle)*scaley*yr - Math.sin(angle)*scaley*xr + scaley*yr + y,z,1]);
        }
        else
        {
