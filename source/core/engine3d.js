@@ -1173,6 +1173,28 @@ engine3d.prototype.AltitudeAboveEllipsoid = function()
    
    return 0;
 }
+ //-----------------------------------------------------------------------------
+ /**
+ * @description Returns the elevation at specified position.
+ * @param {number} lng
+ * @param {number} lat
+ * @return {Object}
+ *   return["hasvalue"] true, if there is a valid value
+ *   return["elevation"] : elevation at specified position
+ *   return["lod"] : level of detail at position 
+ */
+engine3d.prototype.GetElevationAt = function(lng, lat)
+{
+   if (this.scene)
+   {
+      return this.scene.nodeRenderObject.globerenderer.GetElevationAt(lng, lat);
+   }
+   var oFailed = {};
+   oFailed["hasvalue"] = false;
+   oFailed["elevation"] = 0;
+   oFailed["lod"] = -1;
+   return oFailed;
+}
 
 //------------------------------------------------------------------------------
 /**
@@ -1264,3 +1286,4 @@ goog.exportProperty(engine3d.prototype, 'SetResizeCallback', engine3d.prototype.
 goog.exportProperty(engine3d.prototype, 'SetTimerCallback', engine3d.prototype.SetTimerCallback);
 goog.exportProperty(engine3d.prototype, 'SetViewMatrix', engine3d.prototype.SetViewMatrix);
 goog.exportProperty(engine3d.prototype, 'SetViewport', engine3d.prototype.SetViewport);
+goog.exportProperty(engine3d.prototype, 'GetElevationAt', engine3d.prototype.GetElevationAt);

@@ -706,7 +706,7 @@ GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult)
 
    var a = mmx*mmx + mmy*mmy + mmz*mmz;
    var b = eyex*mmx + eyey*mmy + eyez*mmz;
-   
+      
    var root = (b*b) - a*(zoom2 - radius*radius);
    
    if(root <= 0)
@@ -735,6 +735,91 @@ GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult)
    pickresult["lat"] = gc._wgscoords[1];
    pickresult["elv"] = gc._wgscoords[2]; // should be around 0
  }
+ 
+ //-----------------------------------------------------------------------------
+ /**
+ * @description Returns the elevation at specified position.
+ * @param {number} lng
+ * @param {number} lat
+ * @return {Object}
+ *   return["hasvalue"] true, if there is a valid value
+ *   return["elevation"] : elevation at specified position
+ *   return["lod"] : level of detail at position 
+ */
+GlobeRenderer.prototype.GetElevationAt = function(lng, lat)
+{
+   var result = {};
+   result["hasvalue"] = false;
+   result["elevation"] = 0;
+   result["lod"] = -1;
+   
+   var pos0 = [0,0,0];
+   var pos1 = [0,0,0];
+   var gc = new GeoCoord(lng,lat,0);
+   gc.ToCartesian(pos1);
+   gc.Set(lng, lat, -1);
+   gc.ToCartesian(pos0);
+   
+   var x,y,z;
+   x = pos0[0];
+   y = pos0[1];
+   z = pos0[2];
+   dirx = pos1[0] - pos0[0];
+   diry = pos1[1] - pos0[1];
+   dirz = pos1[2] - pos0[2];
+   var len = Math.sqrt(dirx*dirx+diry*diry+dirz*dirz);
+   dirx = dirx / len;
+   diry = diry / len;
+   dirz = dirz / len;
+   
+   var candidates = new Array();
+  
+   for (var i=0;i<this.lstFrustum.length;i++)
+   {
+      var bbmin = this.lstFrustum[i].mesh.bbmin;
+      var bbmax = this.lstFrustum[i].mesh.bbmax;
+      
+      var res = this.lstFrustum[i].mesh.aabb.HitBox(x,y,z,
+                                          dirx,diry,dirz,
+                                          bbmin[0],bbmin[1],bbmin[2],bbmax[0],bbmax[1],bbmax[2]);
+                                          
+      if (res)
+      {
+         candidates.push(this.lstFrustum[i]);
+      }                                    
+   }
+      
+   var tmin = 1e20;
+   
+   for (var i=0;i<candidates.length;i++)
+   {
+      var r = candidates[i].mesh.TestRayIntersection(x,y,z,dirx,diry,dirz);
+      if (r)
+      {
+         if (r.t < tmin)
+         {
+            result["hasvalue"] = true;
+            result["lod"] = candidates[i].mesh.lod;
+            tmin = r.t;
+         }
+      }
+   }
+   
+   if (result["hasvalue"])
+   {
+      result["x"] = x + tmin*dirx;
+      result["y"] = y + tmin*diry;
+      result["z"] = z + tmin*dirz;
+      
+      var gc2 = new GeoCoord(0,0,0);
+      gc2.FromCartesian(result["x"],result["y"],result["z"]);
+      result["lng"] = gc2._wgscoords[0];
+      result["lat"] = gc2._wgscoords[1];
+      result["elevation"] = gc2._wgscoords[2];
+   }
+   
+   return result;
+}
  
  //-----------------------------------------------------------------------------
 /**
@@ -977,9 +1062,9 @@ GlobeRenderer.prototype.AltitudeAboveGround = function()
       var r = candidates[i].mesh.TestRayIntersection(campos[0],campos[1],campos[2],dir[0], dir[1], dir[2]);
       if (r)
       {
-         hit = true;
          if (r.t < tmin)
          {
+            hit = true;
             tmin = r.t;
          }
       }

@@ -85,7 +85,6 @@ function GlobeNavigationNode()
       this._roll_increase = 0;
       this._roll_decrease = 0;
       this._bRollAnim = false;
-      this._MinElevation = 150.0;
       this._dAccumulatedTick = 0;
       this._matGlobeRotation = new mat4();
 
@@ -131,7 +130,7 @@ function GlobeNavigationNode()
       this._navrotation = new mat4();
       this._navtotal = new mat4();
 
-      this.minAltitude = 1;
+      this.minAltitude = 15;
       this.maxAltitude = 10000000;
       // external navigation commands
       this.navigationcommand = TraversalState.NavigationCommand.IDLE;
@@ -139,6 +138,9 @@ function GlobeNavigationNode()
       this.crosshair = false;
       this.crosshairpos = [0,0];
       this.crosshairdelay = 0; // time to show crosshair in milliseconds
+
+      this.bElevationChanged = false;
+      this.bElevationLock = false;
 
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -366,15 +368,29 @@ function GlobeNavigationNode()
                   gc.FromCartesian(this.geocoord[0] + dx, this.geocoord[1] + dy, this.geocoord[2] + dz);
                   this._longitude = gc._wgscoords[0];
                   this._latitude = gc._wgscoords[1];
-                  this._ellipsoidHeight = gc._wgscoords[2];
+                  if (!this.bElevationLock)
+                  {
+                        this._ellipsoidHeight = gc._wgscoords[2];
+                  }
+                  else
+                  {
+                     if (gc._wgscoords[2]>this._ellipsoidHeight)
+                     {
+                        this._ellipsoidHeight = gc._wgscoords[2];      
+                     }
+                  }
+                  
+                  this.bElevationChanged = true;
                   
                   if (this._ellipsoidHeight < this.minAltitude)
                   {
-                        this._ellipsoidHeight = this.minAltitude;     
+                        this._ellipsoidHeight = this.minAltitude;
+                        this.bElevationChanged = true;
                   }
                   else if (this._ellipsoidHeight > this.maxAltitude)
                   {
-                        this._ellipsoidHeight = this.maxAltitude;     
+                        this._ellipsoidHeight = this.maxAltitude;
+                        this.bElevationChanged = true;
                   }
                }
             }
@@ -608,11 +624,16 @@ function GlobeNavigationNode()
          if (this.navigationcommand == TraversalState.NavigationCommand.MOVE_DOWN)
          {
             var speed = this.navigationparam * this._ellipsoidHeight / 5000;
-            this._ellipsoidHeight -= dTick*speed;
+            
+            if (!this.bElevationLock)
+            {
+               this._ellipsoidHeight -= dTick*speed;
+            }
             if (this._ellipsoidHeight < this.minAltitude)
             {
-              this._ellipsoidHeight = this.minAltitude;     
+              this._ellipsoidHeight = this.minAltitude;
             }
+            this.bElevationChanged = true;
          }
          else if (this.navigationcommand == TraversalState.NavigationCommand.MOVE_UP)
          {
@@ -620,8 +641,9 @@ function GlobeNavigationNode()
             this._ellipsoidHeight += dTick*speed;
             if (this._ellipsoidHeight > this.maxAltitude)
             {
-              this._ellipsoidHeight = this.maxAltitude;     
+              this._ellipsoidHeight = this.maxAltitude;
             }
+            this.bElevationChanged = true;
          }
          else if (this.navigationcommand == TraversalState.NavigationCommand.UPDATE_YAW)
          {
@@ -742,6 +764,30 @@ function GlobeNavigationNode()
          {
             this._latitude += 180;
          }
+         
+         if (this.bElevationChanged)
+         {
+            
+            this.bElevationChanged = false;
+            var elevationQuery = this.engine.GetElevationAt(this._longitude, this._latitude);
+            if (elevationQuery["hasvalue"])
+            {
+               if ((this._ellipsoidHeight - this.minAltitude) < elevationQuery["elevation"])
+               {
+                  this._ellipsoidHeight =  elevationQuery["elevation"] + this.minAltitude;
+                  this.bElevationChanged = true;
+               }   
+               this.bElevationLock = false;
+            }
+            else
+            {
+               if (this._ellipsoidHeight<5000)
+               {
+                  this.bElevationLock = true;
+                  this.bElevationChanged = true;
+               }
+            }
+         }
       }
       //------------------------------------------------------------------------
       this.SetOrientation = function(yaw, pitch, roll)
@@ -785,94 +831,97 @@ function GlobeNavigationNode()
         /* console.log("yaw: "+this._yaw*180/Math.PI+"  pitch:  "+this._pitch*180/Math.PI+"  roll:  "+this._roll*180/Math.PI);
          console.log("qx: "+qx+"  qy  "+qy+"  qz:  "+qz+"  w:  "+qw);*/
       }
-       //---------------------------------------------------------------------
-       this._quatmul = function(dest, left, right)
-       {
-          dest._values[0] = left._values[0]*right._values[0] + left._values[1]*right._values[4] + left._values[2] *right._values[8];
-          dest._values[1] = left._values[0]*right._values[1] + left._values[1]*right._values[5] + left._values[2] *right._values[9];
-          dest._values[2] = left._values[0]*right._values[2] + left._values[1]*right._values[6] + left._values[2] *right._values[10];
-          dest._values[4] = left._values[4]*right._values[0] + left._values[5]*right._values[4] + left._values[6] *right._values[8];
-          dest._values[5] = left._values[4]*right._values[1] + left._values[5]*right._values[5] + left._values[6] *right._values[9];
-          dest._values[6] = left._values[4]*right._values[2] + left._values[5]*right._values[6] + left._values[6] *right._values[10];
-          dest._values[8] = left._values[8]*right._values[0] + left._values[9]*right._values[4] + left._values[10]*right._values[8];
-          dest._values[9] = left._values[8]*right._values[1] + left._values[9]*right._values[5] + left._values[10]*right._values[9];
-          dest._values[10]= left._values[8]*right._values[2] + left._values[9]*right._values[6] + left._values[10]*right._values[10];
-
-       }
-       //---------------------------------------------------------------------
-       this.arcellipsoid_start = function(mx, my)
-       {
-          // store current rotation
-          this._ab_last.CopyFrom(this._ab_quat);
-          
-          var pickresult = {};
-          this.engine.PickEllipsoid(mx,my, pickresult);
-          if (pickresult["hit"])
-          {
-                this._ab_start.x = pickresult["x"];
-                this._ab_start.y = pickresult["y"];
-                this._ab_start.z = pickresult["z"];
-                this._bHit = true;
-          }
-          else
-          {
-                this._bHit = false; // clicked outside ellipsoid!
-          }       
-       }
+      //------------------------------------------------------------------------
+      this._quatmul = function(dest, left, right)
+      {
+         dest._values[0] = left._values[0]*right._values[0] + left._values[1]*right._values[4] + left._values[2] *right._values[8];
+         dest._values[1] = left._values[0]*right._values[1] + left._values[1]*right._values[5] + left._values[2] *right._values[9];
+         dest._values[2] = left._values[0]*right._values[2] + left._values[1]*right._values[6] + left._values[2] *right._values[10];
+         dest._values[4] = left._values[4]*right._values[0] + left._values[5]*right._values[4] + left._values[6] *right._values[8];
+         dest._values[5] = left._values[4]*right._values[1] + left._values[5]*right._values[5] + left._values[6] *right._values[9];
+         dest._values[6] = left._values[4]*right._values[2] + left._values[5]*right._values[6] + left._values[6] *right._values[10];
+         dest._values[8] = left._values[8]*right._values[0] + left._values[9]*right._values[4] + left._values[10]*right._values[8];
+         dest._values[9] = left._values[8]*right._values[1] + left._values[9]*right._values[5] + left._values[10]*right._values[9];
+         dest._values[10]= left._values[8]*right._values[2] + left._values[9]*right._values[6] + left._values[10]*right._values[10];
+      }
+      //------------------------------------------------------------------------
+      this.arcellipsoid_start = function(mx, my)
+      {
+         // store current rotation
+         this._ab_last.CopyFrom(this._ab_quat);
+         
+         var pickresult = {};
+         this.engine.PickEllipsoid(mx,my, pickresult);
+         if (pickresult["hit"])
+         {
+            this._ab_start.x = pickresult["x"];
+            this._ab_start.y = pickresult["y"];
+            this._ab_start.z = pickresult["z"];
+            this._bHit = true;
+         }
+         else
+         {
+            this._bHit = false; // clicked outside ellipsoid!
+         }       
+      }
       
-       //-----------------------------------------------------------------------
-       this.arcellipsoid_drag = function(mx, my)
-       {
-          if (this._bHit)
-          {
-             var pickresult = {};
-             this.engine.PickEllipsoid(mx,my, pickresult);
-             if (pickresult["hit"])
-             {
-                this._ab_curr.x = pickresult["x"];
-                   this._ab_curr.y = pickresult["y"];
-                   this._ab_curr.z = pickresult["z"];
-                   this._bHit = true;
+      //------------------------------------------------------------------------
+      this.arcellipsoid_drag = function(mx, my)
+      {
+         if (this._bHit)
+         {
+            var pickresult = {};
+            this.engine.PickEllipsoid(mx,my, pickresult);
+            if (pickresult["hit"])
+            {  
+               this._ab_curr.x = pickresult["x"];
+               this._ab_curr.y = pickresult["y"];
+               this._ab_curr.z = pickresult["z"];
+               this._bHit = true;
                    
-                   // avoid division 0
-                   if (this._ab_curr.x == this._ab_start.x &&
-                       this._ab_curr.y == this._ab_start.y &&
-                       this._ab_curr.z == this._ab_start.z)
-                   {
-                      this._ab_quat.CopyFrom(this._ab_last);
-                      return;
-                   }
+               // avoid division 0
+               if (this._ab_curr.x == this._ab_start.x &&
+                   this._ab_curr.y == this._ab_start.y &&
+                   this._ab_curr.z == this._ab_start.z)
+                  {
+                     this._ab_quat.CopyFrom(this._ab_last);
+                     return;
+                  }
+                  
+                  var cos2a = this._ab_start.x*this._ab_curr.x+this._ab_start.y*this._ab_curr.y+this._ab_start.z*this._ab_curr.z;
+                  var sina = Math.sqrt((1.0 - cos2a)*0.5);
+                  var cosa = Math.sqrt((1.0 + cos2a)*0.5);
+                  
+                  var cross = {};
+                  cross.x = (this._ab_start.y * this._ab_curr.z  - this._ab_start.z * this._ab_curr.y);
+                  cross.y = (this._ab_curr.x  * this._ab_start.z - this._ab_start.x * this._ab_curr.z);
+                  cross.z = (this._ab_start.x * this._ab_curr.y  - this._ab_start.y * this._ab_curr.x);
+                 
+                  var replen = sina / Math.sqrt(cross.x*cross.x + cross.y*cross.y + cross.z*cross.z);
+                  cross.x = cross.x * replen; cross.y = cross.y * replen; cross.z = cross.z * replen;
+                  this._ab_next.FromQuaternionComponents(cross.x,cross.y,cross.z,cosa);
+                  this._ab_quat.Multiply(this._ab_last, this._ab_next);
                    
-                   var cos2a = this._ab_start.x*this._ab_curr.x+this._ab_start.y*this._ab_curr.y+this._ab_start.z*this._ab_curr.z;
-                   var sina = Math.sqrt((1.0 - cos2a)*0.5);
-                   var cosa = Math.sqrt((1.0 + cos2a)*0.5);
-                   var cross = {};
-                   cross.x = (this._ab_start.y * this._ab_curr.z  - this._ab_start.z * this._ab_curr.y);
-                   cross.y = (this._ab_curr.x  * this._ab_start.z - this._ab_start.x * this._ab_curr.z);
-                   cross.z = (this._ab_start.x * this._ab_curr.y  - this._ab_start.y * this._ab_curr.x);
-                   var replen = sina / Math.sqrt(cross.x*cross.x + cross.y*cross.y + cross.z*cross.z);
-                   cross.x = cross.x * replen; cross.y = cross.y * replen; cross.z = cross.z * replen;
-                   this._ab_next.FromQuaternionComponents(cross.x,cross.y,cross.z,cosa);
-                   this._ab_quat.Multiply(this._ab_last, this._ab_next);
+                  // Update position
+                  var curgeopos = new GeoCoord(this._longitude, this._latitude, this._ellipsoidHeight);
+                  var result = [];
+                  curgeopos.ToCartesian(result);
                    
-                   // Update position
-                   var curgeopos = new GeoCoord(this._longitude, this._latitude, 0);
-                   var result = [];
-                   curgeopos.ToCartesian(result);
+                  var v3 = new vec3(result[0], result[1], result[2]);
+                  var newpos = this._ab_quat.MultiplyVec3(v3);
                    
-                   var v3 = new vec3(result[0], result[1], result[2]);
-                   var newpos = this._ab_quat.MultiplyVec3(v3);
+                  var geopos = new GeoCoord(0,0,0);
+                  geopos.FromCartesian(newpos._values[0],newpos._values[1], newpos._values[2]);
                    
-                   var geopos = new GeoCoord(0,0,0);
-                   geopos.FromCartesian(newpos._values[0],newpos._values[1], newpos._values[2]);
-                   
-                   this._longitude = geopos.GetLongitude();
-                   this._latitude = geopos.GetLatitude();
-             }
-             else
-             {
-                   this._bHit = false; // clicked outside ellipsoid!
-             }
+                  this._longitude = geopos.GetLongitude();
+                  this._latitude = geopos.GetLatitude();
+                  this.bElevationChanged = true;
+                  
+            }
+            else
+            {
+                  this._bHit = false; // clicked outside ellipsoid!
+            }
           }
       }
       //---------------------------------------------------------------------

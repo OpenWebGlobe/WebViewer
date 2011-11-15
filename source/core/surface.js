@@ -180,6 +180,9 @@ function Surface(engine)
    this.newModelMatrix = new mat4();
    
    this.manageTexture = false; // is set to true if the destrox function has to destroy this texture.
+   
+   /** @type number */
+   this.lod = -1;
 }
 //------------------------------------------------------------------------------
 /**
