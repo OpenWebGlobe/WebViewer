@@ -3,11 +3,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
-<title>geo.admin.ch 3D Viewer</title>
+<title>geo.admin.ch Demo 3D Viewer</title>
 
 <link rel="stylesheet" type="text/css" href="styles/styles.css">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
-<script type="text/javascript" src="externals/openwebglobe_0.5.3.js"></script>
+<script type="text/javascript" src="externals/openwebglobe_0.7.0.js"></script>
 <script type="text/javascript" src="externals/wgs84_ch1903.js"></script>
 <script type="text/javascript" src="externals/swisstopoapi.js"></script>
 <script type="text/javascript" src="externals/loadpois.js"></script>
@@ -121,7 +121,56 @@ function main()
             ogLoadGeometryAsync(geometrylayer,"models/epagny.json");
             ogLoadGeometryAsync(geometrylayer,"models/fhnw.json");
             geo = ogLoadGeometryAsync(geometrylayer,"models/nuerensdorf.json");
-            ogLoadGeometryAsync(geometrylayer,"models/psea.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj1.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj2.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj3.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj4.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj5.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj6.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj7.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj8.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj9.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj10.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj11.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj12.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj13.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj14.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj15.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj17.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj18.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj19.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj20.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj21.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj24.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj25.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj27.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj28.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj30.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj31.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj32.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj34.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj36.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj37.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj38.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj39.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj40.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj41.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj44.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj45.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj47.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj48.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj50.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj52.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj54.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj55.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj56.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj58.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj59.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj61.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj63.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj66.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj67.json");
+			ogLoadGeometryAsync(geometrylayer,"models/epfl/obj68.json");
             
             searchpoilayer = ogCreatePOILayer(world,"searchedpois");
             poidef = { icon     : "images/point.png",
