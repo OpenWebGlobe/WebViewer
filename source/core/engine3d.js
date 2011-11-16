@@ -10,7 +10,7 @@
 #                              / ____|  __ \| |/ /                             #
 #                             | (___ | |  | | ' /                              #
 #                              \___ \| |  | |  <                               #
-#                              ____) | |__| | . \                             #
+#                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
 #                              (c) 2010-2011 by                                #
@@ -538,32 +538,32 @@ engine3d.prototype.GetViewport = function()
 //------------------------------------------------------------------------------
 /**
  * @description Set projection matrix
- * @param{mat4} mat4 The projection matrix to copy from.
+ * @param{mat4} projmat The projection matrix to copy from.
  */
-engine3d.prototype.SetProjectionMatrix = function(mat4)
+engine3d.prototype.SetProjectionMatrix = function(projmat)
 {
-   this.matProjection.CopyFrom(mat4);
+   this.matProjection.CopyFrom(projmat);
    this._UpdateMatrices();
 }  
 //------------------------------------------------------------------------------
 /**
  * @description set view matrix
- * @param{mat4} mat4 The view matrix to copy from.
+ * @param{mat4} viewmat The view matrix to copy from.
  */
-engine3d.prototype.SetViewMatrix = function(mat4)  
+engine3d.prototype.SetViewMatrix = function(viewmat)  
 {
-   this.matView.CopyFrom(mat4);
+   this.matView.CopyFrom(viewmat);
    this._UpdateMatrices();
 }      
 
 //------------------------------------------------------------------------------
 /**
  * @description Set model matrix
- * @param{mat4} mat4 The model matrix to copy from.
+ * @param{mat4} modelmat The model matrix to copy from.
  */
-engine3d.prototype.SetModelMatrix = function(mat4)
+engine3d.prototype.SetModelMatrix = function(modelmat)
 {
-   this.matModel.CopyFrom(mat4);
+   this.matModel.CopyFrom(modelmat);
    this._UpdateMatrices();
 } 
 
@@ -721,13 +721,13 @@ engine3d.prototype.GetTextSize = function(txt)
  * @param {number} x the screen x coordinate
  * @param {number} y the screen y coordinate
  * @param {mat4} mvp the model-view-projection matrix.
+ * @param {boolean} normalize_dir true if direction should be normalized
  */
-engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
+engine3d.prototype.GetDirectionMousePos = function(x, y, mvp, normalize_dir)
 {
    var mvpInv = new mat4();
    mvpInv.Inverse(mvp);
-   
-   
+
    var winx = x;
    var winy = this.height-y-1;
    var winz = 0;
@@ -754,13 +754,15 @@ engine3d.prototype.GetDirectionMousePos = function(x, y, mvp)
    var dirz = CoorOnFarPlaneWorld.Get()[2] - CoorOnNearPlaneWorld.Get()[2];
             
    //normalize direction
-   var a = Math.sqrt(dirx*dirx+diry*diry+dirz*dirz);
-       a = Math.abs(a);
-              
-   dirx/=a;
-   diry/=a;
-   dirz/=a;
-
+   
+   if (normalize_dir)
+   {
+      var a = Math.sqrt(dirx*dirx+diry*diry+dirz*dirz);
+      dirx/=a;
+      diry/=a;
+      dirz/=a;
+   }
+   
    var res = CoorOnNearPlaneWorld.Get();
    var pointAndDir = {};
    pointAndDir.x = res[0];   
@@ -1171,6 +1173,28 @@ engine3d.prototype.AltitudeAboveEllipsoid = function()
    
    return 0;
 }
+ //-----------------------------------------------------------------------------
+ /**
+ * @description Returns the elevation at specified position.
+ * @param {number} lng
+ * @param {number} lat
+ * @return {Object}
+ *   return["hasvalue"] true, if there is a valid value
+ *   return["elevation"] : elevation at specified position
+ *   return["lod"] : level of detail at position 
+ */
+engine3d.prototype.GetElevationAt = function(lng, lat)
+{
+   if (this.scene)
+   {
+      return this.scene.nodeRenderObject.globerenderer.GetElevationAt(lng, lat);
+   }
+   var oFailed = {};
+   oFailed["hasvalue"] = false;
+   oFailed["elevation"] = 0;
+   oFailed["lod"] = -1;
+   return oFailed;
+}
 
 //------------------------------------------------------------------------------
 /**
@@ -1262,3 +1286,4 @@ goog.exportProperty(engine3d.prototype, 'SetResizeCallback', engine3d.prototype.
 goog.exportProperty(engine3d.prototype, 'SetTimerCallback', engine3d.prototype.SetTimerCallback);
 goog.exportProperty(engine3d.prototype, 'SetViewMatrix', engine3d.prototype.SetViewMatrix);
 goog.exportProperty(engine3d.prototype, 'SetViewport', engine3d.prototype.SetViewport);
+goog.exportProperty(engine3d.prototype, 'GetElevationAt', engine3d.prototype.GetElevationAt);

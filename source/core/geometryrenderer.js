@@ -148,7 +148,7 @@ GeometryRenderer.prototype.RemoveGeometry = function(index)
  */
 GeometryRenderer.prototype.PickSurface = function(mx,my)
 {
-   var ray = this.engine.GetDirectionMousePos(mx,my,this.engine.matModelViewProjection);
+   var ray = this.engine.GetDirectionMousePos(mx,my,this.engine.matModelViewProjection, true);
    var t = 10000;
    var nearestSurface = null;
     

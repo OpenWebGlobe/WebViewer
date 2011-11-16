@@ -235,6 +235,7 @@ function _cbfOnElevationTileReady(quadcode, mesh, layer)
 {
    var terrainblock = mesh.caller;
    terrainblock.mesh = mesh;
+   terrainblock.mesh.lod = terrainblock.quadcode.length;
    terrainblock.vOffset = mesh.offset;
    
    terrainblock.vTilePoints[0].Set(mesh.bbmin[0], mesh.bbmin[1], mesh.bbmin[2]);
@@ -366,6 +367,7 @@ TerrainBlock.prototype.CalcDistanceTo = function(vWhere)
 TerrainBlock.prototype._CreateElevationMesh = function()
 {
    this.mesh = new Surface(this.engine);
+   this.mesh.lod = this.quadcode.length;
    
    var blocksize = 9;
    var elevationdata = new Array(blocksize*blocksize);

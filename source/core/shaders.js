@@ -135,7 +135,7 @@ ShaderManager.prototype.UseShader_P = function(modelviewprojection,color)
    if (this.vs_p && this.fs_p)
    {
       this.gl.useProgram(this.program_p);
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_p, "matMVP"),false,modelviewprojection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_p, "matMVP"),false,modelviewprojection.ToFloat32Array());
       this.gl.uniform4fv(this.gl.getUniformLocation(this.program_p, "uColor"), color.Get());
    }   
 }
@@ -150,9 +150,9 @@ ShaderManager.prototype.UseShader_PNT = function(normalmatrix, modelview, projec
    if (this.program_pnt)
    {
       this.gl.useProgram(this.program_pnt);
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matModelView"), false, modelview.Get());
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matProjection"), false, projection.Get());
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matNormal"), false, normalmatrix.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matModelView"), false, modelview.ToFloat32Array());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matProjection"), false, projection.ToFloat32Array());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matNormal"), false, normalmatrix.ToFloat32Array());
       this.gl.uniform1i(this.gl.getUniformLocation(this.program_pnt, "uTexture"),0);
    }   
 }
@@ -166,7 +166,7 @@ ShaderManager.prototype.UseShader_PC = function(modelviewprojection)
    if (this.program_pc)
    {
       this.gl.useProgram(this.program_pc);
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pc, "matMVP"), false, modelviewprojection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pc, "matMVP"), false, modelviewprojection.ToFloat32Array());
    }    
 }
 //------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ ShaderManager.prototype.UseShader_PT = function(modelviewprojection)
    if (this.program_pt)
    {
       this.gl.useProgram(this.program_pt);
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt, "matMVP"), false, modelviewprojection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt, "matMVP"), false, modelviewprojection.ToFloat32Array());
       this.gl.uniform1i(this.gl.getUniformLocation(this.program_pt, "uTexture"), 0);   
    }    
 }
@@ -194,8 +194,8 @@ ShaderManager.prototype.UseShader_PT_chroma = function(modelviewprojection, mode
    if (this.program_pt_chroma)
    {
       this.gl.useProgram(this.program_pt_chroma);
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt_chroma, "matM"), false, model.Get());
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt_chroma, "matMVP"), false, modelviewprojection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt_chroma, "matM"), false, model.ToFloat32Array());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt_chroma, "matMVP"), false, modelviewprojection.ToFloat32Array());
       this.gl.uniform1i(this.gl.getUniformLocation(this.program_pt_chroma, "uTexture"), 0);   
    }    
 }
@@ -209,7 +209,7 @@ ShaderManager.prototype.UseShader_PNCT = function(modelviewprojection)
    if (this.program_pnct)
    {
       this.gl.useProgram(this.program_pnct);
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnct, "matMVP"), false, modelviewprojection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnct, "matMVP"), false, modelviewprojection.ToFloat32Array());
    }    
 }
 //------------------------------------------------------------------------------
@@ -222,7 +222,7 @@ ShaderManager.prototype.UseShader_Font = function(modelviewprojection, fontcolor
    if (this.program_font)
    {
       this.gl.useProgram(this.program_font);
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_font, "matMVP"),false,modelviewprojection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_font, "matMVP"),false,modelviewprojection.ToFloat32Array());
       this.gl.uniform4fv(this.gl.getUniformLocation(this.program_font, "uColor"), fontcolor.Get());  
    }    
 }
@@ -236,7 +236,7 @@ ShaderManager.prototype.UseShader_Poi = function(modelviewprojection, color)
    if (this.program_poi)
    {
       this.gl.useProgram(this.program_poi);
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_poi, "matMVP"),false,modelviewprojection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_poi, "matMVP"),false,modelviewprojection.ToFloat32Array());
       this.gl.uniform4fv(this.gl.getUniformLocation(this.program_poi, "uColor"), color.Get());  
    }    
 }
@@ -250,8 +250,8 @@ ShaderManager.prototype.UseShader_Point = function(modelviewprojection, invmatmo
    if (this.program_point)
    {
       this.gl.useProgram(this.program_point);
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_point, "matMVP"),false,modelviewprojection.Get());
-      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_point, "matInvMVP"),false,invmatmodelviewprojection.Get());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_point, "matMVP"),false,modelviewprojection.ToFloat32Array());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_point, "matInvMVP"),false,invmatmodelviewprojection.ToFloat32Array());
    }    
 }
 //------------------------------------------------------------------------------

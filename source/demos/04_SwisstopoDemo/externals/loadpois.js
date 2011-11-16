@@ -44,7 +44,7 @@ poidef = {//icon     :"../images/city.png",
 
 poidef = {//icon     :"../images/city.png",
                text 		:"Lausanne",
-               position : [6.652439268513288,46.51361360319844,372.0],
+               position : [6.652439268513288,46.51361360319844,400.0],
                size 		: 	10,
                flagpole : false
                ,visibilityRange : [5,100] };

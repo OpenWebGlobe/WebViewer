@@ -131,7 +131,7 @@ PointSprite.prototype.SetAsNavigationFrame = function(lng,lat,elv)
      var mat = new mat4();
      mat.CalcNavigationFrameZUp(lng,lat);
      
-     var a = new Float32Array(16);
+     var a = new Array(16);
      var mmatvals = mat.Get();
      a[0] = mmatvals[0];
      a[1] = mmatvals[1];
@@ -151,7 +151,7 @@ PointSprite.prototype.SetAsNavigationFrame = function(lng,lat,elv)
      a[15] = 1;
      
      var navMat = new mat4();
-     navMat.Set(a);
+     navMat.SetFromArray(a);
      
      //scaling because the units of a 3d models are meters
      var scaleMat = new mat4();

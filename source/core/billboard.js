@@ -203,7 +203,7 @@ Billboard.prototype.Pick = function(mx,my)
 {
    if(this.surface)
    {
-      var ray = this.engine.GetDirectionMousePos(mx,my,this.engine.matModelViewProjection);
+      var ray = this.engine.GetDirectionMousePos(mx,my,this.engine.matModelViewProjection, true);
       var hitbillboard = this.surface.TestRayIntersection(ray.x,ray.y,ray.z,ray.dirx,ray.diry,ray.dirz);
    }
   
