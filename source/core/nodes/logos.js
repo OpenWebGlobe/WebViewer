@@ -156,8 +156,8 @@ function LogosNode()
          {
             if (this.btn)
             {
-               this.compassr.Blit(this.mx-64, this.my-64,0,this.yaw,1,1,true);    
-               this.compassbg.Blit(this.mx-64, this.my-64,0,0,1,1,true);
+               this.compassr.Blit(this.mx-64, this.my-64,0,this.yaw,1,1,true, false);    
+               this.compassbg.Blit(this.mx-64, this.my-64,0,0,1,1,true, false);
             }
             
             // draw position
@@ -171,7 +171,7 @@ function LogosNode()
             
             if (this.bDrawCrosshair)
             {
-               this.texCrosshair.Blit(this.crosshairx-16, this.crosshairy-16,0, 0, 1, 1, true, true, 0.75);
+               this.texCrosshair.Blit(this.crosshairx-16, this.crosshairy-16,0, 0, 1, 1, true, false, 0.75);
             }
             
             var xpos = this.engine.width-1-64-this.guiOffsetX;
@@ -188,22 +188,22 @@ function LogosNode()
             }
             else
             {
-                this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true);  
+                this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true, false);  
             }
             
             if (this.navigationState == LogosNode.GUISTATE.YAWPITCHWHEEL_CLICKED)
             {
-                this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
-                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.ypwheelangle, 1, 1, true, true, 0.5);
+                this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true, false);
+                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.ypwheelangle, 1, 1, true, false, 0.5);
             }
             else if  (this.navigationState == LogosNode.GUISTATE.YAWPITCHWHEEL_OVER)
             {
-                  this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
-                  this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.ypwheelangle, 1, 1, true, true, 0.5);
+                  this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true, false);
+                  this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.ypwheelangle, 1, 1, true, false, 0.5);
             }
             else
             {
-               this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
+               this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true, false);
             }
             
             // wheel 2: move
@@ -212,51 +212,51 @@ function LogosNode()
             {
 
                 this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
-                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, true, 0.5);
+                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, false, 0.5);
             }
             else if (this.navigationState == LogosNode.GUISTATE.MOVEWHEEL_CLICKED)
             {
                 this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
-                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, true, 0.5);
+                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, false, 0.5);
             }
             else
             {
-                this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);      
+                this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true, false);      
             }
              
            
              
             ypos = this.engine.height-1-82-128-this.guiOffsetY;
-            this.texSliderRail.Blit(xpos-8, ypos-64, 0, 0, 1, 1, true);
+            this.texSliderRail.Blit(xpos-8, ypos-64, 0, 0, 1, 1, true, false);
              
             // PLUS-SYMBOL
             ypos = this.engine.height-1-82-64-this.guiOffsetY;
             if (this.navigationState == LogosNode.GUISTATE.PLUSBUTTON_OVER) // plus mouse over
             {
-               this.texPlusOver.Blit(xpos-16,ypos-16, 0, 0, 1, 1, true);   
+               this.texPlusOver.Blit(xpos-16,ypos-16, 0, 0, 1, 1, true, false);   
             }
             else if (this.navigationState == LogosNode.GUISTATE.PLUSBUTTON_CLICKED) // plus clicked
             {
-                this.texPlusClicked.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);   
+                this.texPlusClicked.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true, false);   
             }
             else // plus not selected
             {
-               this.texPlus.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
+               this.texPlus.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true, false);
             }
             
             // MINUS SYMBOL
             ypos = this.engine.height-1-82-128-64-this.guiOffsetY;
             if (this.navigationState == LogosNode.GUISTATE.MINUSBUTTON_OVER) // minus mouse over
             {
-               this.texMinusOver.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
+               this.texMinusOver.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true, false);
             }
             else if (this.navigationState == LogosNode.GUISTATE.MINUSBUTTON_CLICKED) // minus clicked
             {
-               this.texMinusClicked.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);     
+               this.texMinusClicked.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true, false);     
             }
             else // minus not selected
             {
-               this.texMinus.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
+               this.texMinus.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true, false);
             }
             // SLIDER
             ypos = this.engine.height-1-82-128-this.sliderYPos-this.guiOffsetY;
@@ -264,20 +264,20 @@ function LogosNode()
             
             if (this.navigationState == LogosNode.GUISTATE.SLIDERBUTTON_OVER) // slider mouse over
             {
-               this.texSliderOver.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
+               this.texSliderOver.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true, false);
             }
             else if (this.navigationState == LogosNode.GUISTATE.SLIDERBUTTON_CLICKED) // slider clicked
             {
-               this.texSliderClicked.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);   
+               this.texSliderClicked.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true, false);   
             }
             else
             {
-               this.texSlider.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true);
+               this.texSlider.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true, false);
             }
             
             /*ypos = this.engine.height-1-72-128-64-64-this.guiOffsetY;
-            this.compassr.Blit(xpos-32, ypos-32,0,this.yaw,0.5,0.5,true);    
-            this.compassbg.Blit(xpos-32, ypos-32,0,0,0.5,0.5,true);*/
+            this.compassr.Blit(xpos-32, ypos-32,0,this.yaw,0.5,0.5,true, false);    
+            this.compassbg.Blit(xpos-32, ypos-32,0,0,0.5,0.5,true, false);*/
          }
          
          

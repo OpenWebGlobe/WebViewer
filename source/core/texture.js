@@ -371,7 +371,7 @@ Texture.prototype.LoadNoDataTexture = function()
  */
 Texture.prototype.LoadLogo = function()
 {
-   this.loadTexture("sphere64.png");
+   this.loadTexture(owg.ARTWORK_PATH + "sphere64.png");
 }
 //------------------------------------------------------------------------------
 /**
