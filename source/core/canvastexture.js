@@ -245,6 +245,7 @@ CanvasTexture.prototype.DrawIconToCanvas = function(imgurl,iconstyle)
               
       //load poi icon
       var image = new Image();
+      image["crossOrigin"] = 'anonymous';
       var context = this.ctx;
       var canvasTextureClass = this;
       image.onload = function() 
