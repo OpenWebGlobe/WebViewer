@@ -7,7 +7,7 @@
 
 <link rel="stylesheet" type="text/css" href="styles/styles.css">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
-<script type="text/javascript" src="externals/openwebglobe_0.5.3.js"></script>
+<script type="text/javascript" src="externals/openwebglobe_0.7.3.js"></script>
 <script type="text/javascript" src="externals/loadpois.js"></script>
 
 
@@ -50,8 +50,8 @@ function main()
       else
       {
             
+			ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
             document.getElementById("divMenuLeft").style.visibility='visible';
-            document.getElementById("divNavigationManual").style.visibility = 'visible';
             resizeCanvas();
             g_context = ogCreateContextFromCanvas("canvas", true);
             
@@ -95,8 +95,6 @@ function main()
             
             ogSetCanvasSizeOffset(scene,250,125);
             
-            document.body.onclick = function(){ document.getElementById("divNavigationManual").style.visibility = 'hidden';
-            document.body.onclick = null;}
       
             geometrylayer = ogCreateGeometryLayer(world,"buildings");
 

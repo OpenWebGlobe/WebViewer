@@ -194,12 +194,12 @@ function LogosNode()
             if (this.navigationState == LogosNode.GUISTATE.YAWPITCHWHEEL_CLICKED)
             {
                 this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true, false);
-                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.ypwheelangle, 1, 1, true, true, 0.5);
+                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.ypwheelangle, 1, 1, true, false, 0.5);
             }
             else if  (this.navigationState == LogosNode.GUISTATE.YAWPITCHWHEEL_OVER)
             {
                   this.texYawPitchWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true, false);
-                  this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.ypwheelangle, 1, 1, true, true, 0.5);
+                  this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.ypwheelangle, 1, 1, true, false, 0.5);
             }
             else
             {
@@ -212,12 +212,12 @@ function LogosNode()
             {
 
                 this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
-                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, true, 0.5);
+                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, false, 0.5);
             }
             else if (this.navigationState == LogosNode.GUISTATE.MOVEWHEEL_CLICKED)
             {
                 this.texMoveWheel.Blit(xpos-32, ypos-32, 0, 0, 1, 1, true);
-                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, true, 0.5);
+                this.texMoveWheel_marker.Blit(xpos-32, ypos-32, 0, this.moveangle, 1, 1, true, false, 0.5);
             }
             else
             {
@@ -378,7 +378,7 @@ function LogosNode()
           this.texYawPitchAdjust.loadTexture(owg.ARTWORK_PATH + "globenavigation/yaw_pitch_adjust.png");
           
           this.texMoveWheel_marker = new Texture(this.engine);
-          this.texMoveWheel_marker.loadTexture(owg.ARTWORK_PATH + "globenavigation/movewheel_marker.png");
+          this.texMoveWheel_marker.loadTexture(owg.ARTWORK_PATH + "globenavigation/movewheel_marker.png", null, null, true);
           
           this.texMinus = new Texture(this.engine);
           this.texMinus.loadTexture(owg.ARTWORK_PATH + "globenavigation/minus.png");
