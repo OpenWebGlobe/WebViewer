@@ -470,9 +470,34 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
 
   
 }
-
-
-
+//------------------------------------------------------------------------------
+/**
+ * @description Called when engine is destroyed
+ */
+//------------------------------------------------------------------------------
+engine3d.prototype.OnDestroy = function()
+{
+   this.cbfInit = null;
+   this.cbfTimer = null;
+   this.cbfRender = null;
+   this.cbfMouseClicked = null;
+   this.cbfMouseReleased = null;
+   this.cbfMouseMoved = null;
+   this.cbfMouseWheel = null;
+   this.cbfKeyPressed = null;
+   this.cbfKeyReleased = null;
+   this.cbfResize = null;
+   this.gl = null;       
+   this.context = null;
+   this.shadermanager = null;
+   this.vecMeshes = [];
+   this.vecTextures = [];
+   this.systemfont = null;
+   this.scene = null;
+   this.poimanager = null;
+   this.texturemanager = null;
+   goog.events.listen(window, goog.events.EventType.RESIZE, null, false, this);
+}
 //------------------------------------------------------------------------------
 /**
  * @description Sets the clear color
@@ -1287,3 +1312,4 @@ goog.exportProperty(engine3d.prototype, 'SetTimerCallback', engine3d.prototype.S
 goog.exportProperty(engine3d.prototype, 'SetViewMatrix', engine3d.prototype.SetViewMatrix);
 goog.exportProperty(engine3d.prototype, 'SetViewport', engine3d.prototype.SetViewport);
 goog.exportProperty(engine3d.prototype, 'GetElevationAt', engine3d.prototype.GetElevationAt);
+goog.exportProperty(engine3d.prototype, 'OnDestroy', engine3d.prototype.OnDestroy);

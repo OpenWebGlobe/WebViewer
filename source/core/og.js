@@ -425,6 +425,21 @@ function ogCreateContextFromCanvas(sCanvasId, fullscreen, cbfInit, cbfExit, cbfR
 }
 goog.exportSymbol('ogCreateContextFromCanvas', ogCreateContextFromCanvas);
 //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+/** @description destroy context (free all memory)
+*   @param {number} context_id the context to be destroyed
+*/
+function ogDestroyContext(context_id)
+{
+   /** @type {ogContext} */
+   var context = /** @type {ogContext} */ _GetObjectFromId(context_id);
+   if (context && context.type == OG_OBJECT_CONTEXT)
+   {
+      context.UnregisterObject();
+   }
+}
+goog.exportSymbol('ogDestroyContext', ogDestroyContext);
+//------------------------------------------------------------------------------
 /**
  * @description Get width of context
  * @param {number} context_id id of the context
