@@ -132,13 +132,13 @@ Texture.prototype.loadTexture = function(url, opt_callbackready, opt_callbackfai
    var cbr = opt_callbackready;
    var cbf = opt_callbackfailed;
    this.texture.image = new Image();
+   this.texture.image["crossOrigin"] = 'anonymous';
    this.texture.image.onload = function()
    {
       _cbHandleLoadedTexture(curgl, texture, cbr, thismat);
       thismat.ready = true;
    }
-   this.texture.image.crossOrigin = '';
-   this.texture.image.src = url;
+   
    this.texture.image.onerror = function()
    {
       goog.debug.Logger.getLogger('owg.Texture').warning("***FAILED DOWNLOADING: " + url);
@@ -148,6 +148,7 @@ Texture.prototype.loadTexture = function(url, opt_callbackready, opt_callbackfai
          cbf(thismat);
       }
    }
+   this.texture.image.src = url;
    return this.texture;
 }
 //------------------------------------------------------------------------------
