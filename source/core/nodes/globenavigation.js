@@ -793,6 +793,8 @@ function GlobeNavigationNode()
       this.SetOrientation = function(yaw, pitch, roll)
       {
          //this._bLockNavigation = false;
+         this._bQuaternionMode = false;
+         this.matCami3d.Cami3d();
          this._yaw = yaw;
          this._pitch = pitch;
          this._roll = roll;
