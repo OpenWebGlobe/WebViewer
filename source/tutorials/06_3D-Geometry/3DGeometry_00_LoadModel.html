@@ -40,35 +40,12 @@ var geometrylayer = null;
 var hidden = false;
 
 //------------------------------------------------------------------------------
-// Render-Event: called every frame:
-function OnRender(context)
-{  
-   ogSetTextColor(context, 0,1,0);
-   
-}
-//------------------------------------------------------------------------------
-// Mouse-Down-Event: Called when a mouse button is pressed
-function OnMouseDown(context, button, mx, my)
-{
-  if(button==2)
-  {
-      if(hidden)
-      {
-         ogShowGeometryLayer(geometrylayer);
-         hidden = false;
-      }
-      else
-      {
-         ogHideGeometryLayer(geometrylayer);
-         hidden = true;
-      }
-   
-  }
-}
-
-//------------------------------------------------------------------------------
 function main()
 {
+   // (0) Set location of Artwork directory. Because of CORS this can't be local
+   // if you want to open this using file://...
+   ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
+   
    // (1) create an OpenWebGlobe context using canvas
    // first parameter is canvas-id and second is "fullscreen"
    var ctx = ogCreateContextFromCanvas("canvas", true);
@@ -103,13 +80,6 @@ function main()
    ogAddImageLayer(globe, imgLandsat_CH);
    ogAddElevationLayer(globe, elvSRTM_CH);
    
-   // (4) Set the "Render-Callback" function.
-   // The callback function will be called everytime a frame is drawn.
-   ogSetRenderFunction(ctx, OnRender);
-   
-   // (5) Set the mouse down function. 
-   ogSetMouseDownFunction(ctx, OnMouseDown);
-   
    // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
    
@@ -130,15 +100,10 @@ function main()
 
 
    //create the first 3d model                   
-   var geometry1 = ogLoadGeometryAsync(geometrylayer,"torus.json");
+   var geometry1 = ogLoadGeometryAsync(geometrylayer,"cubepc.json");
+   ogFlyToLookAtPosition(scene, 7.66, 46.13, 8000, 1000,30,-45,0);
 
 
-   //create the second 3d model                      
-  // var geometry2 = ogLoadGeometryAsync(geometrylayer,"torus.json");
-/*
-   //create the third 3d model
-   geometry3 = ogLoadGeometryAsync(geometrylayer,"torus.json");
-*/
 }
 //------------------------------------------------------------------------------
    

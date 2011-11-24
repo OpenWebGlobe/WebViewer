@@ -391,7 +391,8 @@ ogContext.prototype.GetTextSize = function(text)
  */
 ogContext.prototype._OnDestroy = function()
 {
-   // #todo 
+   this.engine.OnDestroy();
+   this.engine = null;
 }
 //------------------------------------------------------------------------------
 
