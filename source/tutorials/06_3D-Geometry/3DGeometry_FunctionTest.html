@@ -216,6 +216,10 @@ var roll = 0;
 //------------------------------------------------------------------------------
 function main()
 {
+   // (0) Set location of Artwork directory. Because of CORS this can't be local
+   // if you want to open this using file://...
+   ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
+   
    // (1) create an OpenWebGlobe context using canvas
    // first parameter is canvas-id and second is "fullscreen"
    var ctx = ogCreateContextFromCanvas("canvas", true);

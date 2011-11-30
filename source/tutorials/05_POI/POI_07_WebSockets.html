@@ -110,6 +110,10 @@ function OnNewPosition(positionstring)
 //------------------------------------------------------------------------------
 function main()
 {
+   // (0) Set location of Artwork directory. Because of CORS this can't be local
+   // if you want to open this using file://...
+   ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
+
    // (1) create an OpenWebGlobe context using canvas
    // first parameter is canvas-id and second is "fullscreen"
    ctx = ogCreateContextFromCanvas("canvas", true);

@@ -117,8 +117,8 @@ function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_frameb
 /**
  * Loads the Texture image.
  * @param {string} url The url to download the image
- * @param {function()=} opt_callbackready An optional callback called when texture is ready. Has the texture class as param.
- * @param {function(Texture)=} opt_callbackfailed An optional callback called when texture failed. Has the texture class as param.
+ * @param {null|function()=} opt_callbackready An optional callback called when texture is ready. Has the texture class as param.
+ * @param {null|function(Texture)=} opt_callbackfailed An optional callback called when texture failed. Has the texture class as param.
  * @param {boolean=} opt_flip Flip texture image on load
  */
 Texture.prototype.loadTexture = function(url, opt_callbackready, opt_callbackfailed, opt_flip)
@@ -132,13 +132,12 @@ Texture.prototype.loadTexture = function(url, opt_callbackready, opt_callbackfai
    var cbr = opt_callbackready;
    var cbf = opt_callbackfailed;
    this.texture.image = new Image();
+   this.texture.image["crossOrigin"] = 'anonymous';
    this.texture.image.onload = function()
    {
       _cbHandleLoadedTexture(curgl, texture, cbr, thismat);
       thismat.ready = true;
    }
-   this.texture.image.crossOrigin = 'anonymous';
-   this.texture.image.src = url;
    this.texture.image.onerror = function()
    {
       goog.debug.Logger.getLogger('owg.Texture').warning("***FAILED DOWNLOADING: " + url);
@@ -148,6 +147,7 @@ Texture.prototype.loadTexture = function(url, opt_callbackready, opt_callbackfai
          cbf(thismat);
       }
    }
+   this.texture.image.src = url;
    return this.texture;
 }
 //------------------------------------------------------------------------------
@@ -228,7 +228,7 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
    var scalex = opt_scalex || 1;
    var scaley = opt_scaley || 1;
    var blend = opt_blend || false;
-   var invtexcoord = opt_invtexcoord || false;
+   var invtexcoord = opt_invtexcoord ||false;
    var alpha = opt_alpha || 1.0;
    
    if (this.ready)
@@ -370,7 +370,7 @@ Texture.prototype.LoadNoDataTexture = function()
  */
 Texture.prototype.LoadLogo = function()
 {
-   this.loadTexture("sphere64.png");
+   this.loadTexture(owg.ARTWORK_PATH + "sphere64.png");
 }
 //------------------------------------------------------------------------------
 /**
