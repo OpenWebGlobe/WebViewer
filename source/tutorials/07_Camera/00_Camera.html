@@ -30,13 +30,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 
-<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
 -->
 
-<!--
+
 <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>-->
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
 
 
@@ -67,9 +67,11 @@ function OnKeyDown(ctx,key)
    
    // get the current position
    var currentpos = ogGetPosition(scene);
+   console.log("longitude: "+currentpos.longitude+" latitude: "+currentpos.latitude+" elevation: "+currentpos.elevation);
    
    // get the current orientation
    var currentorientation = ogGetOrientation(scene);
+   console.log("yaw: "+currentorientation.yaw+" pitch: "+currentorientation.pitch+" roll: "+currentorientation.roll);
    
    var lng = currentpos.longitude;
    var lat = currentpos.latitude;
