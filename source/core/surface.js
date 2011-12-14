@@ -1171,14 +1171,10 @@ Surface.prototype.SetAsNavigationFrame = function(lng,lat,elv,yaw,pitch,roll)
 Surface.prototype.SetAsNavigationFrameQuat = function(lng,lat,elv,quats)
 {
    
-      
    var coords = new GeoCoord(lng, lat,elv);
    var cartesianCoordinates = new Array(3);
    coords.ToCartesian(cartesianCoordinates);
    
-   var matTrans = new mat4();
-   matTrans.Translation(cartesianCoordinates[0],cartesianCoordinates[1],cartesianCoordinates[2]);
-     
    var mat = new mat4();
    mat.CalcNavigationFrame(lng,lat);
    
@@ -1204,28 +1200,54 @@ Surface.prototype.SetAsNavigationFrameQuat = function(lng,lat,elv,quats)
    var navMat = new mat4();
    navMat.SetFromArray(a);
    
+ 
+   //sensor 2 owg transformation -----------------------------------------------
+   var sensor2owg = new mat4();
+   sensor2owg.SetFromArray([1,0,0,0,0,0,1,0,0,-1,0,0,0,0,0,1]);
+   sensor2owg.Transpose();
+   
+   // get rotation matrix out of quaternion
+   var rotfromquat = new mat4();
+   rotfromquat.FromQuaternionComponents(quats[0],quats[1],quats[2],quats[3]);
+   rotfromquat.Transpose();
+   //rotfromquat is in sensor system
+   
+   //convert rotation matrix into owg system
+   var rotfromquatowg = new mat4();
+   rotfromquatowg.Multiply(sensor2owg,rotfromquat);
+   //rotfromquatowg is rotation matrix in owg system
+
+   //matTransSensor2Owg = sens2owg * rot_in_owg_system
+   var matTransSensor2Owg = new mat4();
+   matTransSensor2Owg.Multiply(sensor2owg,rotfromquatowg);
+   
+   
+   //beni edit-->
+   var rotc = new mat4();
+   rotc.SetFromArray([0,-1,0,0,  1,0,0,0,  0,0,1,0,  0,0,0,1]);
+   rotc.Transpose();
+   
+   var matfinal = new mat4();
+   matfinal.Multiply(rotc,matTransSensor2Owg);
+   
+   var navrotmat = new mat4();
+   navrotmat.Multiply(navMat,matfinal);
+   //beni edit finished...
+   /*
+   var navrotmat = new mat4();
+   navrotmat.Multiply(navMat,matTransSensor2Owg);
+   */
    //scaling because the units of a 3d models are meters
    var scaleMat = new mat4();
    scaleMat.Scale(CARTESIAN_SCALE_INV,CARTESIAN_SCALE_INV,CARTESIAN_SCALE_INV)
    
-   var scaledNavMat = new mat4();
-   scaledNavMat.Multiply(navMat,scaleMat);
    
-   var rotatedMat = new mat4();
-   rotatedMat.FromQuaternionComponents(quats[0],quats[1],quats[2],quats[3]);   
+   var scaledNavRotMat = new mat4();
+   scaledNavRotMat.Multiply(navrotmat,scaleMat);
    
-   var scaledRotNavMat = new mat4();
-   scaledRotNavMat.Multiply(scaledNavMat,rotatedMat);
-     
-   this.modelMatrix = scaledRotNavMat;
+   
+   this.modelMatrix = scaledNavRotMat;
    this.UpdateAABB();
-   
-   
-   
-   //var a={};
-   //rotatedMat.ExtractEulerAngles(a);
-   //console.log("a.yaw: "+a.roll*180/Math.PI+" a.pitch: "+a.yaw*180/Math.PI+" a.roll: "+a.pitch*180/Math.PI)
-   
 }
 
 
