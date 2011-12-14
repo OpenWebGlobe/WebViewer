@@ -62,7 +62,7 @@ function GoogleImageLayer()
       this.quadtree.QuadKeyToTileCoord(quadcode, res);
       
       //http://khm1.google.com/kh/v=89&x=3&y=5&z=4&s=Galile
-      var sFilename = this.servers[this.curserver] + "/kh/v=89&x=" + 
+      var sFilename = this.servers[this.curserver] + "/kh/v=101&x=" + 
                       res.x + "&y=" + 
                       res.y + "&z=" +
                       res.lod + "&s=" + this.subs[this.sub];
