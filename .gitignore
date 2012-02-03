@@ -6,6 +6,7 @@
 # komodo editor project:
 /OpenWebGlobe.komodoproject
 /.komodotools
+/.idea
 
 # build server:
 /cloc.exe

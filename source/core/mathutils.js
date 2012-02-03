@@ -24,7 +24,7 @@
 goog.provide('owg.MathUtils');
 
 //------------------------------------------------------------------------------
-// Constants
+// Planet Definition
 //------------------------------------------------------------------------------
 /**
  * @description semi major axis [m]
@@ -111,6 +111,31 @@ var LNG_RAD0 = 0;
  * @author Benjamin Loesch, benjamin.loesch@fhnw.ch
  */
 var MathUtils = {};
+
+//------------------------------------------------------------------------------
+
+/**
+ * @description set axis of the ellipsoid, the default (WGS84) is
+ *   a = 6378137.0 and b=6356752.314245
+ *   (Call this for visualization of other planets/moons etc.)
+ * @param {number} semi_a semi major axis
+ * @param {number} semi_b semi minor axis
+ */
+MathUtils.SetEllipsoid=function(semi_a,semi_b)
+{ 
+   WGS84_a = semi_a;
+   WGS84_a_scaled = WGS84_a*CARTESIAN_SCALE_INV;
+   WGS84_a2_scaled = WGS84_a_scaled*WGS84_a_scaled;
+   WGS84_b = semi_b;
+   WGS84_b_scaled = WGS84_b*CARTESIAN_SCALE_INV;
+   WGS84_b2_scaled = WGS84_b_scaled*WGS84_b_scaled;
+   var bdiva = (WGS84_b/WGS84_a);
+   var adivb = 1 / bdiva;
+   WGS84_E_SQQ = bdiva*bdiva;
+   WGS84_E_SQUARED = 1-WGS84_E_SQQ; //  1-(b/a)^2
+   WGS84_E_SQUARED2 =  adivb*adivb-1; //(a/b)^2-1
+   WGS84_E = Math.sqrt(WGS84_E_SQUARED); 
+}
 
 //------------------------------------------------------------------------------
 /**
