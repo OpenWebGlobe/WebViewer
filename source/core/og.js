@@ -1087,6 +1087,7 @@ function ogGetPosition(scene_id)
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
      var cam = scene.activecamera;
+     cam.SetCurrentPositionAsCameraPosition();
      return cam.GetPosition(); 
    }
    return null;
@@ -1153,6 +1154,7 @@ function ogGetOrientation(scene_id)
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
      var cam = scene.activecamera;
+     cam.SetCurrentPositionAsCameraPosition();
      return cam.GetOrientation();
    }
    return null;

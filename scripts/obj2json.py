@@ -35,6 +35,7 @@ if len(sys.argv) < 2:
    print('--calccenter')
    print('--flipxy')
    print('--integer')
+   print('--flipxz')
    print('\nexample: obj2json.py --source bla.obj --calccenter')
    sys.exit()
    
@@ -44,6 +45,7 @@ bSource = 0
 bCalccenter = 0
 bFlipxy = 0
 bInteger = 0
+bFlipxz = 0
 
 id = 1
 lng = 0
@@ -65,6 +67,8 @@ for i in range(1,len(sys.argv)):
         bFlipxy = 1
     if sys.argv[i] == ('--integer'):
         bInteger = 1
+    if sys.argv[i] == ('--flipxz'):
+		  bFlipxz = 1
  
  
 if (bSource == 0):
@@ -79,7 +83,10 @@ if (bCalccenter):
     
 if (bFlipxy):
     print('flipping x and y!')
-   
+
+if (bFlipxz):
+    print('flipping x and z!')
+
 color = ",1,0,0,1" #set color
 
 
@@ -209,8 +216,12 @@ for ilbiterator in ilb:
             newx = float(tokens2[0])
             newy = float(tokens2[1])
             newz = float(tokens2[2])
+
         if bFlipxy:
             s = str(newy) + ',' + str(-newz) + ',' + str(newx)
+				
+        elif bFlipxz:
+				s = str(newz) + ',' + str(newy) + ',' + str(newx)
         else:        
             s = str(newx) + ',' + str(newy) + ',' + str(newz)
         
@@ -221,8 +232,13 @@ for ilbiterator in ilb:
             
             if bFlipxy:
                 s = s + ',' + str(normaly) + ',' + str(-normalz) + ',' + str(normalx)
-            else:        
-                s = s + ',' + str(normalx) + ',' + str(normaly) + ',' + str(normalz)
+					 
+            elif bFlipxz:
+				    s = s + ',' + str(normalz) + ',' + str(normaly) + ',' + str(normalx)
+					 
+            else:
+                s= s + ',' + str(normalx) + ',' + str(normaly) + ',' + str(normalz)
+
             for i in range(6,len(tokens2)):
                 s = s + ','
                 s = s + tokens2[i]

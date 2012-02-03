@@ -720,6 +720,67 @@ mat4.prototype.FromQuaternionComponents = function(x,y,z,w)
   this._values[3] = 0;                this._values[7] = 0;               this._values[11] = 0;               this._values[15] = 1;
 }
 
+
+
+//------------------------------------------------------------------------------
+/**
+ * @description Rot2Quat
+ * Rotation Matrix to Quaternion
+ */
+mat4.prototype.Rot2Quat = function()
+{
+   var m00 = this._values[0];
+   var m01 = this._values[4];
+   var m02 = this._values[8];
+   var m10 = this._values[1];
+   var m11 = this._values[5];
+   var m12 = this._values[9];
+   var m20 = this._values[2];
+   var m21 = this._values[6];
+   var m22 = this._values[10];
+  
+   
+   
+   var tr = m00 + m11 + m22
+   var S;
+   var qw;
+   var qx;
+   var qy;
+   var qz;
+   
+   if (tr > 0) { 
+   S = Math.sqrt(tr+1.0) * 2;  //S=4*qw 
+   qw = 0.25 * S;
+   qx = (m21 - m12) / S;
+   qy = (m02 - m20) / S; 
+   qz = (m10 - m01) / S; 
+   } else if ((m00 > m11)&(m00 > m22)) { 
+   S = Math.sqrt(1.0 + m00 - m11 - m22) * 2; // S=4*qx 
+   qw = (m21 - m12) / S;
+   qx = 0.25 * S;
+   qy = (m01 + m10) / S; 
+   qz = (m02 + m20) / S; 
+   } else if (m11 > m22) { 
+   S = Math.sqrt(1.0 + m11 - m00 - m22) * 2; // S=4*qy
+   qw = (m02 - m20) / S;
+   qx = (m01 + m10) / S; 
+   qy = 0.25 * S;
+   qz = (m12 + m21) / S; 
+   } else { 
+   S = Math.sqrt(1.0 + m22 - m00 - m11) * 2; // S=4*qz
+   qw = (m10 - m01) / S;
+   qx = (m02 + m20) / S;
+   qy = (m12 + m21) / S;
+   qz = 0.25 * S;
+   }
+   
+   return [qx,qy,qz,qw];
+}
+
+
+
+
+
 //------------------------------------------------------------------------------
 /**
  * @description Calculate Inverse Matrix
@@ -828,6 +889,7 @@ mat4.prototype.ToString = function()
 */
 //------------------------------------------------------------------------------
 
+
 goog.exportSymbol('mat4', mat4);
 goog.exportProperty(mat4.prototype, 'CalcBodyFrame', mat4.prototype.CalcBodyFrame);
 goog.exportProperty(mat4.prototype, 'CalcNavigationFrame', mat4.prototype.CalcNavigationFrame);
@@ -854,3 +916,15 @@ goog.exportProperty(mat4.prototype, 'ToString', mat4.prototype.ToString);
 goog.exportProperty(mat4.prototype, 'Translation', mat4.prototype.Translation);
 goog.exportProperty(mat4.prototype, 'Transpose', mat4.prototype.Transpose);
 goog.exportProperty(mat4.prototype, 'Zero', mat4.prototype.Zero);
+goog.exportProperty(mat4.prototype, 'CalcNavigationFrame2', mat4.prototype.CalcNavigationFrame2);
+goog.exportProperty(mat4.prototype, 'CalcNavigationFrameZUp', mat4.prototype.CalcNavigationFrameZUp);
+goog.exportProperty(mat4.prototype, 'ExtractEulerAngles', mat4.prototype.ExtractEulerAngles);
+goog.exportProperty(mat4.prototype, 'CamViewFrustum', mat4.prototype.CamViewFrustum);
+goog.exportProperty(mat4.prototype, 'FromQuaternion', mat4.prototype.FromQuaternion);
+goog.exportProperty(mat4.prototype, 'FromQuaternionComponents', mat4.prototype.FromQuaternionComponents);
+goog.exportProperty(mat4.prototype, 'Rot2Quat', mat4.prototype.Rot2Quat);
+
+
+
+
+

@@ -138,7 +138,6 @@ Texture.prototype.loadTexture = function(url, opt_callbackready, opt_callbackfai
       _cbHandleLoadedTexture(curgl, texture, cbr, thismat);
       thismat.ready = true;
    }
-   
    this.texture.image.onerror = function()
    {
       goog.debug.Logger.getLogger('owg.Texture').warning("***FAILED DOWNLOADING: " + url);
