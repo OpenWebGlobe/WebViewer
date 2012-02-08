@@ -156,7 +156,7 @@ function LogosNode()
          {
             if (this.btn)
             {
-               this.compassr.Blit(this.mx-64, this.my-64,0,this.yaw,1,1,true, false);    
+               this.compassr.Blit(this.mx-64, this.my-64,0,this.yaw,1,1,true, false);
                this.compassbg.Blit(this.mx-64, this.my-64,0,0,1,1,true, false);
             }
             
@@ -175,20 +175,21 @@ function LogosNode()
             }
             
             var xpos = this.engine.width-1-64-this.guiOffsetX;
-            var ypos = this.engine.height-1-this.guiOffsetY; 
-            
+            var ypos = this.engine.height-1-this.guiOffsetY;
+
+            var adj = this._adjustAngle(this.ypdiff + this.startyaw );
             // wheel 1: pitch + yaw
             if (this.navigationState == LogosNode.GUISTATE.YAWPITCHDIAL_CLICKED)
             {
-               this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true, false, 1.0, this.highlightcolor);
+                this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, adj, 1, 1, true, false, 1.0, this.highlightcolor);
             }
             else if (this.navigationState == LogosNode.GUISTATE.YAWPITCHDIAL_OVER)
             {
-               this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true, false, 1.0, this.highlightcolor);    
+                this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, adj, 1, 1, true, false, 1.0, this.highlightcolor);
             }
             else
             {
-                this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, this._adjustAngle(this.ypdiff + this.startyaw ), 1, 1, true, false);  
+                this.texYawPitchAdjust.Blit(xpos-64, ypos-64, 0, adj, 1, 1, true, false);
             }
             
             if (this.navigationState == LogosNode.GUISTATE.YAWPITCHWHEEL_CLICKED)
