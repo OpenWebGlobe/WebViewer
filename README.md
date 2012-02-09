@@ -13,7 +13,6 @@ University of Applied Sciences Northwestern Switzerland.
 http://wiki.openwebglobe.org/doku.php?id=webgl
 
 
-
 Getting started
 ===============
 
@@ -46,6 +45,12 @@ On windows you may have to adjust the Python Path in "scripts/setup.bat".
 3) If you are using the Komodo Editor or IDE, you can download the Komodo integration.
 Go into the scripts directory and start "download_komodo_integration.py". This works for Windows/Linux and MacOS X.
 You can get Komodo editor here: [Komodo Editor](http://www.activestate.com/komodo-edit)
+
+CORS - Cross Origin Resource Sharing
+====================================
+
+For security reasons CORS must be used when downloading textures. During development this can be annoying.
+When using Firefox you can disable "security.fileuri.strict_origin_policy" in about:config and you can install the addon "Force CORS" from here: [Force CORS AddOn](https://addons.mozilla.org/en-US/firefox/addon/forcecors/)
 
 
 License
