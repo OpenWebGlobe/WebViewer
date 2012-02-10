@@ -42,10 +42,12 @@ goog.require('owg.ogPOILayer');
 goog.require('owg.ogGeometryLayer');
 goog.require('owg.ogBillboard');
 goog.require('owg.ogBillboardLayer');
-goog.require('owg.FlyToAnimation'); //ToDo: not an og object---> ok?
+goog.require('owg.FlyToAnimation');
 goog.require('owg.ogPointSprite');
 goog.require('goog.debug.Logger');
 goog.require('owg.ogAoeImageLayer');
+goog.require('goog.debug.Logger');
+goog.require('goog.debug.FancyWindow');
 
 //------------------------------------------------------------------------------
 //* @ignore
@@ -2593,8 +2595,45 @@ function ogSetCanvasSizeOffset(scene_id,widthoffset,heightoffset)
   _fncResize(null);
 }
 goog.exportSymbol('ogSetCanvasSizeOffset', ogSetCanvasSizeOffset);
-
-
-
-
-
+//------------------------------------------------------------------------------
+/**
+ * @description Open Debugger Window
+ */
+function ogDebug()
+{
+   var debugWindow = new goog.debug.FancyWindow();
+   debugWindow.setEnabled(true);
+   debugWindow.init();
+}
+goog.exportSymbol('ogDebug', ogDebug);
+//------------------------------------------------------------------------------
+/**
+ * @description Warning log message.
+ * @param {string} text
+ */
+function ogWarning(text)
+{
+   goog.debug.Logger.getLogger('warning').warning(text);
+}
+goog.exportSymbol('ogWarning', ogWarning);
+//------------------------------------------------------------------------------
+/**
+ * @description Warning log message.
+ * @param {string} text
+ */
+function ogError(text)
+{
+   goog.debug.Logger.getLogger('error').error(text);
+}
+goog.exportSymbol('ogError', ogError);
+//------------------------------------------------------------------------------
+/**
+ * @description Log message.
+ * @param {string} text
+ */
+function ogLog(text)
+{
+   goog.debug.Logger.getLogger('message').info(text);
+}
+goog.exportSymbol('ogLog', ogLog);
+//------------------------------------------------------------------------------

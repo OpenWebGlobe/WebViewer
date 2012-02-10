@@ -101,6 +101,9 @@ function GlobeRenderer(engine)
    this.southpole = new Surface(this.engine);
    this.northpolecolor = [8/255,24/255,58/255]; 
    this.southpolecolor = [1,1,1];
+
+   /** @type {number} */
+   this.radius = 1.0;
    
    this.rendereffect = GlobeRenderer.RenderEffect.RGB;
    /** @type {Object} */
@@ -673,21 +676,23 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
  *    pickresult["y"]: geocentric cartesian y-coordinate at mouse position
  *    pickresult["z"]: geocentric cartesian z-coordinate at mouse position
  */
-GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult)
+GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult, initialize)
 {
-   var radius = 1.0;
-   var pickresult2 = {};
-   this.PickGlobe(mx, my, pickresult2);
-   if (pickresult2["hit"])
+   if (initialize)
    {
-      radius = Math.sqrt(pickresult2["x"]*pickresult2["x"] +
-               pickresult2["y"]*pickresult2["y"] +
-               pickresult2["z"]*pickresult2["z"]);
-      
-   }
-   else
-   {
-      return;
+      var pickresult2 = {};
+      this.PickGlobe(mx, my, pickresult2);
+      if (pickresult2["hit"])
+      {
+         this.radius = Math.sqrt(pickresult2["x"]*pickresult2["x"] +
+                  pickresult2["y"]*pickresult2["y"] +
+                  pickresult2["z"]*pickresult2["z"]);
+
+      }
+      else
+      {
+         return;
+      }
    }
    
    var pck = this.engine.GetDirectionMousePos(mx, my, this.matPick, true);           
@@ -706,8 +711,8 @@ GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult)
 
    var a = mmx*mmx + mmy*mmy + mmz*mmz;
    var b = eyex*mmx + eyey*mmy + eyez*mmz;
-      
-   var root = (b*b) - a*(zoom2 - radius*radius);
+
+   var root = (b*b) - a*(zoom2 - this.radius*this.radius);
    
    if(root <= 0)
    {
@@ -734,6 +739,7 @@ GlobeRenderer.prototype.PickEllipsoid = function(mx, my, pickresult)
    pickresult["lng"] = gc._wgscoords[0];
    pickresult["lat"] = gc._wgscoords[1];
    pickresult["elv"] = gc._wgscoords[2]; // should be around 0
+
  }
  
  //-----------------------------------------------------------------------------

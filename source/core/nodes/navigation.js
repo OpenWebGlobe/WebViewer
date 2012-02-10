@@ -309,6 +309,11 @@ function NavigationNode()
 
          this._nMouseX = e.offsetX;
          this._nMouseY = e.offsetY;
+
+         if (e.isButton(goog.events.BrowserEvent.MouseButton.MIDDLE))
+         {
+            return false;
+         }
          
       }
       //------------------------------------------------------------------------
@@ -326,6 +331,11 @@ function NavigationNode()
          this._dSpeed = 0.0;
          this._fSurfacePitchSpeed = 0;
          this._fYawSpeed = 0;
+
+         if (e.isButton(goog.events.BrowserEvent.MouseButton.MIDDLE))
+         {
+            return false;
+         }
       }
       //------------------------------------------------------------------------
       // EVENT: OnMouseMove

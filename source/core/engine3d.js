@@ -1119,11 +1119,11 @@ engine3d.prototype.UpdatePickMatrix = function(matView)
  *    pickresult["y"]: geocentric cartesian y-coordinate at mouse position
  *    pickresult["z"]: geocentric cartesian z-coordinate at mouse position
  */
-engine3d.prototype.PickEllipsoid = function(mx, my, pickresult)
+engine3d.prototype.PickEllipsoid = function(mx, my, pickresult, initialize)
 {
    if (this.scene)
    {
-      this.scene.nodeRenderObject.globerenderer.PickEllipsoid(mx,my,pickresult);
+      this.scene.nodeRenderObject.globerenderer.PickEllipsoid(mx,my,pickresult,initialize);
    }
 }
 
