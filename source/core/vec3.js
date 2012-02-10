@@ -54,8 +54,11 @@ function vec3(opt_x, opt_y, opt_z)
    /** @type number*/
    var z = opt_z || 0;
    
-   /** @type {!Float32Array} */
-   this._values = new Float32Array([x, y, z]);
+   /** @type {Array.<number>} */
+   this._values = [x, y, z];
+
+   /** @type {Float32Array} */
+   this._float32values = new Float32Array([x, y, z]);
 }
 
 //------------------------------------------------------------------------------
@@ -75,9 +78,23 @@ vec3.prototype.Set = function(x,y,z)
 
 //------------------------------------------------------------------------------
 /**
+ * Get Values as Float32Array
+ *
+ * @return {Float32Array} returns a float32 array with all values [r,g,b,a]
+ */
+vec3.prototype.ToFloat32Array = function()
+{
+   this._float32values[0] = this._values[0];
+   this._float32values[1] = this._values[1];
+   this._float32values[2] = this._values[2];
+
+   return this._float32values;
+}
+//------------------------------------------------------------------------------
+/**
  * Returns the values as array
  *
- * @return {!Float32Array}
+ * @return {Array.<number>}
  */
 vec3.prototype.Get = function()
 {

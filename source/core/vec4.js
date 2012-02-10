@@ -28,9 +28,7 @@ goog.provide('owg.vec4');
 //Set(r,g,b,a)         
 //Get                   returns the values as array
 
-
-
-
+//------------------------------------------------------------------------------
 /** 
  * 
  * @class vec4
@@ -54,11 +52,14 @@ function vec4(opt_x,opt_y,opt_z,opt_w)
    var z = opt_z || 0;
    /** @type number*/
    var w = opt_w || 0;
-   
-   /** @type {!Float32Array} */
-   this._values = new Float32Array([x, y, z, w]);
-}
 
+   /** @type {Array.<number>} */
+   this._values = [x, y, z, w];
+
+   /** @type {Float32Array} */
+   this._float32values = new Float32Array([x, y, z, w]);
+}
+//------------------------------------------------------------------------------
 /**
  * Set Values
  *
@@ -74,17 +75,33 @@ vec4.prototype.Set = function(r,g,b,a)
       this._values[2]=b;
       this._values[3]=a;
 }
+//------------------------------------------------------------------------------
+/**
+ * Get Values as Float32Array
+ *
+ * @return {Float32Array} returns a float32 array with all values [r,g,b,a]
+ */
+vec4.prototype.ToFloat32Array = function()
+{
+   this._float32values[0] = this._values[0];
+   this._float32values[1] = this._values[1];
+   this._float32values[2] = this._values[2];
+   this._float32values[3] = this._values[3];
 
+   return this._float32values;
+}
+
+//------------------------------------------------------------------------------
 /**
  * Get Values 
  *
- * @return {!Float32Array} returns an array with all values [r,g,b,a]
+ * @return {Array.<number>} returns an array with all values [r,g,b,a]
  */
 vec4.prototype.Get = function()
 {
    return this._values;
 }
-
+//------------------------------------------------------------------------------
 /**
  * ToString
  *
@@ -94,7 +111,7 @@ vec4.prototype.ToString = function()
 {
    return "["+this._values[0]+","+this._values[1]+","+this._values[2]+","+this._values[3]+"]";
 }
-
+//------------------------------------------------------------------------------
 goog.exportSymbol('vec4', vec4);
 goog.exportProperty(vec4.prototype, 'Get', vec4.prototype.Get);
 goog.exportProperty(vec4.prototype, 'Set', vec4.prototype.Set);
