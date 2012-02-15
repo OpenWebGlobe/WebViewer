@@ -1118,7 +1118,7 @@ function ogSetOrientation(camera_id,yaw,pitch,roll)
             {
                yaw = 360 + yaw;
             }
-            
+
      return cam.SetOrientation(yaw,pitch,roll); 
    }
    return null;
@@ -2623,7 +2623,7 @@ goog.exportSymbol('ogWarning', ogWarning);
  */
 function ogError(text)
 {
-   goog.debug.Logger.getLogger('error').error(text);
+   goog.debug.Logger.getLogger('error').severe(text);
 }
 goog.exportSymbol('ogError', ogError);
 //------------------------------------------------------------------------------
