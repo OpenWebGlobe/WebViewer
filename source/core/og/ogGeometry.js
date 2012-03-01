@@ -71,6 +71,8 @@ function ogGeometry()
    this.layerID = -1; //the id of the geometrylayer containing this geometry.
    /** @type {ogPointSprite}*/
    this.ogpointsprite = null;
+   /** @type {ogEarthPolyline}*/
+   this.ogearthpolyline = null;
    
 }
 //------------------------------------------------------------------------------
@@ -95,6 +97,10 @@ ogGeometry.prototype.ParseOptions = function(options)
    if(options["jsonobject"])
    {
       this.CreateFromJSONObject(options["jsonobject"]);
+   }
+   if(options["type"] == "EarthPolyline")
+   {
+      this.CreateEarthPolyLine(options);
    }
 }
 
@@ -345,6 +351,16 @@ ogGeometry.prototype.loadGeometryFromJSON = function(url)
    this.http.send();  
 }
 
+
+
+ogGeometry.prototype.CreateEarthPolyLine = function(options)
+{
+ 
+   this.ogearthpolyline = _CreateObject(OG_OBJECT_EARTHPOLYLINE,this,this.options)
+   //add to geometry renderer...
+   var renderer = this._GetGeometryRenderer();
+   this.indexInRendererArray = renderer.AddGeometry(this.ogearthpolyline.earthpolyline);
+}
 
 
 

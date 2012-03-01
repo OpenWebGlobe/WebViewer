@@ -81,6 +81,8 @@ var OG_OBJECT_AOEIMAGE              = 65534;
 //* @constant
 var OG_OBJECT_POINTSPRITE           = 23;
 //* @constant
+var OG_OBJECT_EARTHPOLYLINE         = 24;
+//* @constant
 var OG_OBJECT_INVALID               = 65535;
 
 //* @constant
