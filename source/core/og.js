@@ -2601,6 +2601,27 @@ function ogSetFlightDuration(scene_id,timespan)
    }
 }
 goog.exportSymbol('ogSetFlightDuration', ogSetFlightDuration);
+//------------------------------------------------------------------------------
+/**
+ * @description Break flyto cycle
+ *
+ * @param {number} scene_id the scene id.
+ */
+function ogStopFlyTo(scene_id)
+{
+    var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+    /** @type {ogContext} */
+    var context =  /** @type ogContext */scene.parent;
+    // Get the engine
+    /** @type {engine3d} */
+    var engine = context.engine;
+
+    if(engine)
+    {
+        engine.StopFlyTo();
+    }
+}
+goog.exportSymbol('ogStopFlyTo', ogStopFlyTo);
 
 //------------------------------------------------------------------------------
 /** 
