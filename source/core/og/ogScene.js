@@ -93,6 +93,9 @@ ogScene.prototype.Pick = function(mx, my)
    result[1] = pickresult["lng"];
    result[2] = pickresult["lat"];
    result[3] = pickresult["elv"];
+   result[4] = pickresult["x"];
+   result[5] = pickresult["y"];
+   result[6] = pickresult["z"];
    
    return result;
 }

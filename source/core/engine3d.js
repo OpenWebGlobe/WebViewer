@@ -799,7 +799,34 @@ engine3d.prototype.GetDirectionMousePos = function(x, y, mvp, normalize_dir)
    
    return pointAndDir; 
 }
+//------------------------------------------------------------------------------
+/**
+ * @description cartesian coordinate to window coord inate.
+ * @param {number} x the world x coordinate
+ * @param {number} y the world y coordinate
+ * @param {number} z the world z coordinate
+ */
+engine3d.prototype.WorldToWindow = function(x,y,z)
+{
+   var matViewProjection = new mat4();
+   matViewProjection.Multiply(this.matProjection, this.matModelView);
 
+   var v = new vec3(x,y,z);
+   var res = matViewProjection.MultiplyVec3(v);  // (-1,-1)-(+1,+1)
+
+   var xw = res._values[0];
+   var yw = -res._values[1];
+   var zw = res._values[2];
+
+   xw = (xw + 1)*0.5;
+   yw = (yw + 1)*0.5;
+   zw = (zw + 1)*0.5;
+
+   xw = Math.floor(xw*this.width + 0.5);
+   yw = Math.floor(yw*this.height-1 + 0.5);
+   return [xw, yw, zw];
+}
+//------------------------------------------------------------------------------
 /**
  * @description Request an animation frame compatibility wrapper.
  * @see http://www.khronos.org/webgl/wiki/FAQ#What_is_the_recommended_way_to_implement_a_rendering_loop.3F

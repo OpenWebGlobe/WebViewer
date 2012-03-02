@@ -975,7 +975,7 @@ function ogPickGlobe(scene_id, mx, my)
       return scene.Pick(mx, my);
    }
    
-   return [false,0,0,0];
+   return [false,0,0,0,0,0,0];
 }
 goog.exportSymbol('ogPickGlobe', ogPickGlobe);
 //------------------------------------------------------------------------------
@@ -2519,7 +2519,6 @@ function ogFlyTo(scene_id,lng,lat,elv,yaw,pitch,roll)
    }
 }
 goog.exportSymbol('ogFlyTo', ogFlyTo);
-
 //------------------------------------------------------------------------------
 /** 
  * @description The camera moves to a LookAt Position "distance" away from the
@@ -2636,4 +2635,22 @@ function ogLog(text)
    goog.debug.Logger.getLogger('message').info(text);
 }
 goog.exportSymbol('ogLog', ogLog);
+//------------------------------------------------------------------------------
+function ogWorldToWindow(scene_id,x,y,z)
+{
+   var res;
+   /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+      var context =  /** @type ogContext */scene.parent;
+      // Get the engine
+      /** @type {engine3d} */
+      var engine = context.engine;
+
+      res = engine.WorldToWindow(x,y,z);
+   }
+   return (res || null);
+}
+goog.exportSymbol('ogWorldToWindow', ogWorldToWindow);
 //------------------------------------------------------------------------------
