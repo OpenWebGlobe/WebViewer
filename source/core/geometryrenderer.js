@@ -77,6 +77,15 @@ GeometryRenderer.prototype.Render = function(vCameraPosition, matModelViewProjec
             pointsprite.Draw();
          }
       }
+      else if(this.geometryarray[i] instanceof EarthPolyline)
+      {
+         /** @type {EarthPolyline}*/
+         var earthpolyline = /** @type {EarthPolyline}*/this.geometryarray[i];
+         if(!earthpolyline.hide)
+         {
+            earthpolyline.Draw();
+         }
+      }
       else
       {
          var meshes = this.geometryarray[i];

@@ -1306,6 +1306,15 @@ engine3d.prototype.SetFlightDuration = function(timespan)
   this.flyto.SetFlightDuration(timespan);
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Break fly to animation cycle
+ */
+engine3d.prototype.StopFlyTo = function()
+{
+    this.flyto.StopFlyTo();
+}
+
 
 goog.exportSymbol('engine3d', engine3d);
 goog.exportProperty(engine3d.prototype, 'AltitudeAboveEllipsoid', engine3d.prototype.AltitudeAboveEllipsoid);

@@ -44,6 +44,7 @@ goog.require('owg.ogBillboard');
 goog.require('owg.ogBillboardLayer');
 goog.require('owg.FlyToAnimation');
 goog.require('owg.ogPointSprite');
+goog.require('owg.ogEarthPolyline');
 goog.require('goog.debug.Logger');
 goog.require('owg.ogAoeImageLayer');
 goog.require('goog.debug.Logger');
@@ -179,6 +180,10 @@ function _CreateObject(typ, parent, options)
    else if (typ ==  OG_OBJECT_POINTSPRITE)
    {
       newobject = new ogPointSprite();
+   }
+   else if (typ ==  OG_OBJECT_EARTHPOLYLINE)
+   {
+      newobject = new ogEarthPolyline();
    }
    
    if (newobject != null)
@@ -2157,6 +2162,31 @@ function ogPickGeometry(scene_id,mx,my)
    return -1;     
 }
 goog.exportSymbol('ogPickGeometry', ogPickGeometry);
+
+//------------------------------------------------------------------------------
+/** @description Returns the id of a picked geometry or -1
+ *  @param {number} layer_id
+ *  @param {Array.<number>} wgs84coord 
+ *  @param {Object} options
+ *  @returns {number} the geometry_id
+ */
+function ogCreatePolylineWGS84(layer_id,wgs84coord,options)
+{
+   /** @type {ogGeometryLayer} */
+   var layer = /** @type {ogGeometryLayer} */ _GetObjectFromId(layer_id);
+   if( layer && layer.type == OG_OBJECT_GEOMETRYLAYER)
+   {
+      options["coords"] = wgs84coord;
+      options["type"] = "EarthPolyline";
+      var geometry = _CreateObject(OG_OBJECT_GEOMETRY, layer.parent.parent, options);
+      layer.AddGeometry(geometry);
+      return geometry.id;
+   }
+   return -1;
+}
+goog.exportSymbol('ogCreatePolylineWGS84', ogCreatePolylineWGS84);
+
+
 //------------------------------------------------------------------------------
 //##############################################################################
 // ** Mesh OBJECT **
@@ -2570,6 +2600,27 @@ function ogSetFlightDuration(scene_id,timespan)
    }
 }
 goog.exportSymbol('ogSetFlightDuration', ogSetFlightDuration);
+//------------------------------------------------------------------------------
+/**
+ * @description Break flyto cycle
+ *
+ * @param {number} scene_id the scene id.
+ */
+function ogStopFlyTo(scene_id)
+{
+    var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+    /** @type {ogContext} */
+    var context =  /** @type ogContext */scene.parent;
+    // Get the engine
+    /** @type {engine3d} */
+    var engine = context.engine;
+
+    if(engine)
+    {
+        engine.StopFlyTo();
+    }
+}
+goog.exportSymbol('ogStopFlyTo', ogStopFlyTo);
 
 //------------------------------------------------------------------------------
 /** 
