@@ -84,6 +84,12 @@ ScenegraphNode.prototype.InitNode = function()
    this.OnInit();
 }
 
+//------------------------------------------------------------------------------
+
+ScenegraphNode.prototype.OnDestroy = function()
+{
+   this.OnExit();
+}
 
 
 
