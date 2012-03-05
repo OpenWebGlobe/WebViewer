@@ -2687,6 +2687,13 @@ function ogLog(text)
 }
 goog.exportSymbol('ogLog', ogLog);
 //------------------------------------------------------------------------------
+/**
+ * @description get screen coordinates from cartesian world coordinates
+ * @param {number} scene_id the scene id.
+ * @param {number} x coordinate
+ * @param {number} y coordinate
+ * @param {number} z coordinate
+ */
 function ogWorldToWindow(scene_id,x,y,z)
 {
    var res;
@@ -2704,4 +2711,22 @@ function ogWorldToWindow(scene_id,x,y,z)
    return (res || null);
 }
 goog.exportSymbol('ogWorldToWindow', ogWorldToWindow);
+//------------------------------------------------------------------------------
+/**
+ * @description Calculate metrical distance between to points  in WGS84
+ * @param {number} lng0
+ * @param {number} lat0
+ * @param {number} lng1
+ * @param {number} lat1
+ */
+function ogCalcDistanceWGS84(lng0,lat0,lng1,lat1)
+{
+    var distance = WGS84_a * Math.acos(Math.sin(MathUtils.Deg2Rad(lat0))*Math.sin(MathUtils.Deg2Rad(lat1))+Math.cos(MathUtils.Deg2Rad(lat0))*Math.cos(MathUtils.Deg2Rad(lat1))*Math.cos(MathUtils.Deg2Rad(lng1-lng0)));
+    if(isNaN(distance))
+    {
+        distance = 0;
+    }
+    return distance;
+}
+goog.exportSymbol('ogCalcDistanceWGS84', ogCalcDistanceWGS84);
 //------------------------------------------------------------------------------

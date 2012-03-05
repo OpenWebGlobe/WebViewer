@@ -381,8 +381,8 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    
    if (bFullscreen)
    {
-         this.xoffset = 20; //document.body.scrollLeft - document.body.clientLeft;
-         this.yoffset = 20; //document.body.scrollTop - document.body.clientTop;
+         this.xoffset = 0; //document.body.scrollLeft - document.body.clientLeft;
+         this.yoffset = 0; //document.body.scrollTop - document.body.clientTop;
          canvas.width = window.innerWidth-this.xoffset;
          canvas.height = window.innerHeight-this.yoffset;
          this.bFullscreen = true;
