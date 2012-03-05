@@ -110,9 +110,9 @@ SceneGraph.prototype.Traverse = function()
    this.traversalstate.PushProjection(this.matProj);
    
    this.nodeNavigation.OnTraverse(this.traversalstate);    // Navigation Node (for view matrix)
-   this.nodeCamera.OnTraverse(this.traversalstate);        // ÐÞ¸ÄÁËtraversalstateµÄPerspectiveProjectionÎª(45, 0.00001, 10.0)    
+   this.nodeCamera.OnTraverse(this.traversalstate);        // ï¿½Þ¸ï¿½ï¿½ï¿½traversalstateï¿½ï¿½PerspectiveProjectionÎª(45, 0.00001, 10.0)    
    this.nodeBeginRender.OnTraverse(this.traversalstate);   // Begin Render Node (for multipass rendering, currently unsupported)
-   this.nodeRenderObject.OnTraverse(this.traversalstate);  // ÐÞ¸ÄÁËcameraµÄposition
+   this.nodeRenderObject.OnTraverse(this.traversalstate);  // ï¿½Þ¸ï¿½ï¿½ï¿½cameraï¿½ï¿½position
    this.nodeRender.OnTraverse(this.traversalstate);        // Generic Rendering Node (currently unused, render custom objects)  
    this.nodeEndRender.OnTraverse(this.traversalstate);     // End Render Node (for multipass rendering, currently unsupported)
    this.nodeLogos.OnTraverse(this.traversalstate);         // logo      
@@ -152,6 +152,50 @@ SceneGraph.prototype.Render = function()
 }
 
 //------------------------------------------------------------------------------
+/**
+ * @description Destroy Scenegraph - free all memory
+ */
+SceneGraph.prototype.Destroy = function()
+{
+   if (this.nodeNavigation)
+   {
+      this.nodeNavigation.OnDestroy();
+      this.nodeNavigation = null;
+   }
+
+   if (this.nodeCamera)
+   {
+      this.nodeCamera.OnDestroy();
+      this.nodeCamera = null;
+   }
+
+   if (this.nodeBeginRender)
+   {
+      this.nodeBeginRender.OnDestroy();
+      this.nodeBeginRender = null;
+   }
+
+   if (this.nodeRenderObject)
+   {
+      this.nodeRenderObject.OnDestroy();
+      this.nodeRenderObject = null;
+   }
+   if (this.nodeRender)
+   {
+      this.nodeRender.OnDestroy();
+      this.nodeRender = null;
+   }
+   if (this.nodeEndRender)
+   {
+      this.nodeEndRender.OnDestroy();
+      this.nodeEndRender = null;
+   }
+   if (this.nodeLogos)
+   {
+      this.nodeLogos.OnDestroy();
+      this.nodeLogos = null;
+   }
+}
 
 
 

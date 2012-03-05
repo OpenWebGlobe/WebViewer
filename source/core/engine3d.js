@@ -468,7 +468,9 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
 		return false;
 	};
 
-  
+
+   goog.events.listen(window, goog.events.EventType.UNLOAD, this.OnDestroy, false, this);
+
 }
 //------------------------------------------------------------------------------
 /**
@@ -487,6 +489,10 @@ engine3d.prototype.OnDestroy = function()
    this.cbfKeyPressed = null;
    this.cbfKeyReleased = null;
    this.cbfResize = null;
+
+   this.scenegraph.Destroy();
+   this.scenegraph = null;
+
    this.gl = null;       
    this.context = null;
    this.shadermanager = null;

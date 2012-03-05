@@ -140,7 +140,7 @@ GlobeCache.prototype.GetMaxLod = function()
 {
    var maximagelod = 0;
    var maxelevationlod = 0;
-   
+
    if (this.elevationlayerlist.length > 0)
    {
       for (var i=0;i<this.elevationlayerlist.length;i++)
@@ -148,17 +148,17 @@ GlobeCache.prototype.GetMaxLod = function()
          maxelevationlod = Math.max(maxelevationlod, this.elevationlayerlist[i].GetMaxLod());
       }
    }
-   
+
    for (var i=0;i<this.imagelayerlist.length;i++)
    {
       maximagelod = Math.max(maximagelod, this.imagelayerlist[i].GetMaxLod());
    }
-   
+
    if (maxelevationlod > 0)
    {
-      return Math.min(maxelevationlod,maximagelod);  
+      return Math.min(maxelevationlod,maximagelod);
    }
-   
+
    return maximagelod;
 }
 //------------------------------------------------------------------------------

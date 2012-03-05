@@ -417,7 +417,24 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.OnExit = function()
       {
-      
+         this.compassbg.Destroy();
+         this.compassr.Destroy();
+         this.texMoveWheel.Destroy();
+         this.texYawPitchWheel.Destroy();
+         this.texYawPitchAdjust.Destroy();
+         this.texMoveWheel_marker.Destroy();
+         this.texMinus.Destroy();
+         this.texMinusOver.Destroy();
+         this.texMinusClicked.Destroy();
+         this.texPlus.Destroy();
+         this.texPlusOver.Destroy();
+         this.texPlusClicked.Destroy();
+         this.texSlider.Destroy();
+         this.texSliderOver.Destroy();
+         this.texSliderClicked.Destroy();
+         this.texSliderRail.Destroy();
+         this.texCrosshair.Destroy();
+
       }
       //------------------------------------------------------------------------
       this.OnRegisterEvents = function(context)
