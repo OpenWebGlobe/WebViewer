@@ -172,8 +172,11 @@ TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlay
       for (var i=0;i<imagelayerlist.length;i++)
       {
          this.images[i] = null;
-         if (imagelayerlist[i].Contains(this.quadcode))
-         { 
+         var lod = this.quadcode.length;
+         /** @type {boolean} */
+         var inlod = (lod <= imagelayerlist[i].usermaxlod || imagelayerlist[i].usermaxlod == -1) && (lod >= imagelayerlist[i].userminlod || imagelayerlist[i].userminlod == -1);
+         if (imagelayerlist[i].Contains(this.quadcode) && inlod)
+         {
             imagelayerlist[i].RequestTile(this.engine, this.quadcode, i, _cbfOnImageTileReady, _cbfOnImageTileFailed, caller);
          }
          else

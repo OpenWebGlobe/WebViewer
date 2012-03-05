@@ -57,6 +57,17 @@ function ImageLayer()
     * @description Returns the max level of detail supported by this dataset
     */
    this.GetMaxLod = function(){return 0;}
+
+   /**
+    * @description user set minimum lod
+    * @type{number}
+    */
+   this.userminlod = -1;
+   /**
+    * @description user set minimum lod
+    * @type{number}
+    */
+   this.usermaxlod = -1;
    
    /**
    * @description Test if specified quadcode exists in this layer. 

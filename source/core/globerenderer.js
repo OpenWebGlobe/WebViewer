@@ -138,74 +138,120 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
 {
    /** @type {number} */
    var index = -1;
-   
-   if (options["service"] == "i3d")
+
+   if (goog.isDef(options["service"]))
    {
-      // i3d tile service
-      if (options["url"] && options["layer"])
+      // i3d tile layout (deprecated)
+      if (options["service"] == "i3d")
       {
-         if (options["url"].length>0)
+         // i3d tile service
+         if (goog.isDef(options["url"]) && goog.isDef(options["layer"]))
          {
-            /** @type {string} */
-            var url = options["url"][0];
-            /** @type {string} */
+            if (options["url"].length>0)
+            {
+               /** @type {string} */
+               var url = options["url"][0];
+               /** @type {string} */
+               var layer = options["layer"];
+
+               // Create i3d layer:
+               var imgLayer = new i3dImageLayer();
+               if (goog.isDef(options["minlod"]))
+               {
+                  imgLayer.userminlod = options["minlod"];
+               }
+               if (goog.isDef(options["maxlod"]))
+               {
+                  imgLayer.usermaxlod = options["maxlod"];
+               }
+               imgLayer.Setup(url, layer, options["transparency"]);
+               index = this.imagelayerlist.length;
+               this.imagelayerlist.push(imgLayer);
+               this._UpdateLayers();
+            }
+         }
+      }
+      // OpenStreetMap tile layout
+      else if (options["service"] == "osm")
+      {
+         if (goog.isDef(options["url"]) && options["url"].length>0)
+         {
+            var imgLayer = new OSMImageLayer();
+            if (goog.isDef(options["minlod"]))
+            {
+               imgLayer.userminlod = options["minlod"];
+            }
+            if (goog.isDef(options["maxlod"]))
+            {
+               imgLayer.usermaxlod = options["maxlod"];
+            }
+            imgLayer.Setup(options["url"]);
+            index = this.imagelayerlist.length;
+            this.imagelayerlist.push(imgLayer);
+            this._UpdateLayers();
+         }
+      }
+      // OpenWebGlobe tile layout
+      else if (options["service"] == "owg")
+      {
+         if (goog.isDef(options["url"]) && options["url"].length>0)
+         {
             var layer = options["layer"];
-            
-            // Create i3d layer:
-            var imgLayer = new i3dImageLayer();
-            imgLayer.Setup(url, layer, options["transparency"]);
+            var imgLayer = new owgImageLayer();
+            if (goog.isDef(options["minlod"]))
+            {
+               imgLayer.userminlod = options["minlod"];
+            }
+            if (goog.isDef(options["maxlod"]))
+            {
+               imgLayer.usermaxlod = options["maxlod"];
+            }
+            imgLayer.Setup(options["url"], layer, options["transparency"]);
+            index = this.imagelayerlist.length;
+            this.imagelayerlist.push(imgLayer);
+            this._UpdateLayers();
+         }
+      }
+      // Google tile layout
+      else if (options["service"] == "goo")
+      {
+         if (goog.isDef(options["url"]) && options["url"].length>0)
+         {
+            var imgLayer = new GoogleImageLayer();
+            if (goog.isDef(options["minlod"]))
+            {
+               imgLayer.userminlod = options["minlod"];
+            }
+            if (goog.isDef(options["maxlod"]))
+            {
+               imgLayer.usermaxlod = options["maxlod"];
+            }
+            imgLayer.Setup(options["url"]);
+            index = this.imagelayerlist.length;
+            this.imagelayerlist.push(imgLayer);
+            this._UpdateLayers();
+         }
+      }
+      else if (options["service"] == "oym")
+      {
+         if (goog.isDef(options["url"]) && options["url"].length>0)
+         {
+            var imgLayer = new OYMImageLayer();
+            if (goog.isDef(options["minlod"]))
+            {
+               imgLayer.userminlod = options["minlod"];
+            }
+            if (goog.isDef(options["maxlod"]))
+            {
+               imgLayer.usermaxlod = options["maxlod"];
+            }
+            imgLayer.Setup(options["url"]);
             index = this.imagelayerlist.length;
             this.imagelayerlist.push(imgLayer);
             this._UpdateLayers();
          }
       }
    }
-   else if (options["service"] == "osm")
-   {
-      if (options["url"] && options["url"].length>0)
-      {
-         var imgLayer = new OSMImageLayer();
-         imgLayer.Setup(options["url"]);
-         index = this.imagelayerlist.length;
-         this.imagelayerlist.push(imgLayer);
-         this._UpdateLayers(); 
-      }
-   }
-   else if (options["service"] == "owg")
-   {
-      if (options["url"] && options["url"].length>0)
-      {
-         var layer = options["layer"];
-         var imgLayer = new owgImageLayer();
-         imgLayer.Setup(options["url"], layer, options["transparency"]);
-         index = this.imagelayerlist.length;
-         this.imagelayerlist.push(imgLayer);
-         this._UpdateLayers(); 
-      }
-   }
-   else if (options["service"] == "goo")
-   {
-      if (options["url"] && options["url"].length>0)
-      {
-         var imgLayer = new GoogleImageLayer();
-         imgLayer.Setup(options["url"]);
-         index = this.imagelayerlist.length;
-         this.imagelayerlist.push(imgLayer);
-         this._UpdateLayers(); 
-      }
-   }
-   else if (options["service"] == "oym")
-   {
-      if (options["url"] && options["url"].length>0)
-      {
-         var imgLayer = new OYMImageLayer();
-         imgLayer.Setup(options["url"]);
-         index = this.imagelayerlist.length;
-         this.imagelayerlist.push(imgLayer);
-         this._UpdateLayers(); 
-      }
-   }
-
    return index;
 }
 
