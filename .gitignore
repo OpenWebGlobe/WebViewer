@@ -3,7 +3,7 @@
 /compiled/owg-optimized.js
 /compiled/owg-optimized.map
 
-# komodo editor project:
+# editors
 /OpenWebGlobe.komodoproject
 /.komodotools
 /.idea
@@ -12,6 +12,9 @@
 /cloc.exe
 /code_stats.bat
 
-#internal tests
+# internal tests
 /source/tests
+
+# MacOS
+.DS_Store
 
