@@ -117,7 +117,7 @@ function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_frameb
 /**
  * Loads the Texture image.
  * @param {string} url The url to download the image
- * @param {null|function()=} opt_callbackready An optional callback called when texture is ready. Has the texture class as param.
+ * @param {null|function(Texture)=} opt_callbackready An optional callback called when texture is ready. Has the texture class as param.
  * @param {null|function(Texture)=} opt_callbackfailed An optional callback called when texture failed. Has the texture class as param.
  * @param {boolean=} opt_flip Flip texture image on load
  */

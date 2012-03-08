@@ -719,8 +719,8 @@ Surface.prototype.cbfTextureLoadCallback_failed = function()
 /**
  * @description Load surface-data from a JSON file.
  * @param {string} url the url to the JSON file.
- * @param {function()=} opt_callbackready optional function called when surface finished download
- * @param {function()=} opt_callbackfailed optional function called when surface failed download
+ * @param {function(Surface)=} opt_callbackready optional function called when surface finished download
+ * @param {function(Surface)=} opt_callbackfailed optional function called when surface failed download
  */
 Surface.prototype.loadFromJSON = function(url, opt_callbackready, opt_callbackfailed)
 {

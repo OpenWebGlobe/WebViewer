@@ -933,7 +933,7 @@ engine3d.prototype._resize = function(w,h)
 //------------------------------------------------------------------------------
 /**
  * @description sets the init callback function
- * @param {function()} f init callback handler.
+ * @param {function(engine3d)} f init callback handler.
  */
 engine3d.prototype.SetInitCallback = function(f)
 {
@@ -943,7 +943,7 @@ engine3d.prototype.SetInitCallback = function(f)
 //------------------------------------------------------------------------------
 /**
  * @description sets the timer callback function
- * @param {?function()} f timer callback handler.
+ * @param {?function(number, engine3d)} f timer callback handler.
  */
 engine3d.prototype.SetTimerCallback = function(f)
 {
@@ -954,7 +954,7 @@ engine3d.prototype.SetTimerCallback = function(f)
 /**
  * @description sets the render callback function
  *
- * @param {function()} f render callback handler.
+ * @param {function(engine3d)} f render callback handler.
  */
 engine3d.prototype.SetRenderCallback = function(f)
 {
@@ -1057,7 +1057,7 @@ engine3d.prototype.SetMouseWheelCallback = function(opt_f)
 /**
  * @description sets the resize callback function
  *
- * @param {function()} f resize callback handler.
+ * @param {function(number, number, engine3d)} f resize callback handler.
  */
 engine3d.prototype.SetResizeCallback = function(f)
 {
