@@ -490,8 +490,8 @@ engine3d.prototype.OnDestroy = function()
    this.cbfKeyReleased = null;
    this.cbfResize = null;
 
-   this.scenegraph.Destroy();
-   this.scenegraph = null;
+   this.scene.Destroy();
+   this.scene = null;
 
    this.gl = null;       
    this.context = null;
