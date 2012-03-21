@@ -23,13 +23,10 @@
 
 goog.provide('owg.SceneGraph');
 
-goog.require('owg.BeginRenderNode');
 goog.require('owg.CameraNode');
-goog.require('owg.EndRenderNode');
 goog.require('owg.LogosNode');
 goog.require('owg.GlobeNavigationNode');
 goog.require('owg.RenderObjectNode');
-goog.require('owg.RenderNode');
 goog.require('owg.TraversalState');
 goog.require('owg.mat4');
 
@@ -65,7 +62,7 @@ function SceneGraph(engine)
    this.nodeLogos.InitNode();
    
    this.traversalstate = new TraversalState();
-   
+
    // init matrices
    this.matModel = new mat4(); // model matrix
    this.matView = new mat4(); // view matrix
