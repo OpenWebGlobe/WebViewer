@@ -82,7 +82,6 @@ Billboard.prototype.Create = function(canvas)
     case "[object HTMLVideoElement]":   this.meshWidth = canvas.videoWidth;
                                         this.meshHeight = canvas.videoHeight;
                                         break;
-    
    }
    
    //set canvas as texture
