@@ -76,7 +76,7 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.OnInit = function()
       {
-            this.globerenderer = new GlobeRenderer(this.engine, false);
+            this.globerenderer = new GlobeRenderer(this.engine, true); // true: enable render to texture
             this.poirenderer = new PoiRenderer(this.engine);
             this.geometryrenderer = new GeometryRenderer(this.engine);
             this.billboardrenderer = new BillboardRenderer(this.engine);
