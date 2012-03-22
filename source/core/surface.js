@@ -144,14 +144,20 @@ function Surface(engine)
    this.jsonUrl = null;
    /** @type {?function()} */
    this.cbfJSONLoad = null;
-   
+
+   /** @type {vec4} */
    this.defaultfontcolor = new vec4();
    this.defaultfontcolor.Set(1,1,1,1);
-   
+
+   /** @type {vec4} */
    this.defaultpoicolor = new vec4();
    this.defaultpoicolor.Set(1,1,1,1);
-   
-   
+
+   /** @type {vec4} */
+   this.solidcolor = new vec4();
+   this.solidcolor.Set(0,0,0,1);
+
+   /** @type {TriangleIntersector} */
    this.intersector = new TriangleIntersector();
    
    /** @type {?Array.<number>} */
@@ -160,10 +166,10 @@ function Surface(engine)
    this.bbmax = null;
    /** @type {?Array} */
    this.offset = null;
-   /** @type {?number} */
-   this.curtainindex = null;
-   
-   
+   /** @type {number} */
+   this.curtainindex = 0;
+
+   /** @type {AABB} */
    this.aabb = new AABB();
    
    /** @type {?mat4} */
@@ -297,7 +303,7 @@ Surface.prototype.SetIndexBuffer = function(idx,idxsem)
    this.numindex = idx.length;
    this.Ready = true;
    var indexoverhead = 0;
-   if (this.curtainindex)
+   if (this.curtainindex >0)
    {
       indexoverhead = this.curtainindex;
    }
@@ -414,9 +420,10 @@ Surface.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcol
          
    switch (this.mode) 
    {
-       case "p":      this.gl.enableVertexAttribArray(0);
-                      this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 8*4, 0*4); // position
-                      break;
+       case "p":
+          this.gl.enableVertexAttribArray(0);
+          this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 3*4, 0*4); // position
+          this.engine.shadermanager.UseShader_P(this.engine.matModelViewProjection, this.solidcolor);
                        
        case "pnt": 
                       this.gl.enableVertexAttribArray(0);
@@ -558,7 +565,118 @@ Surface.prototype.Draw = function(opt_ranged, opt_count, opt_offset, opt_fontcol
       this.gl.disableVertexAttribArray(2);
       this.gl.disableVertexAttribArray(3);  
 }
+//------------------------------------------------------------------------------
+/**
+ * @description Draws the Surface element using the p-shader
+ * @param {null|boolean=} opt_ranged
+ * @param {null|number=} opt_count
+ * @param {null|number=} opt_offset
+ * @param {null|vec4=} opt_fontcolor
+ * @param {null|vec4=} opt_poicolor
+ */
+Surface.prototype.DrawSolid = function(opt_ranged, opt_count, opt_offset, opt_fontcolor, opt_poicolor)
+{
+   if (!this.Ready)
+   {
+      return;  // not yet loaded
+   }
 
+   var count = opt_count || 0;
+   var offset = opt_offset || 0;
+
+   // this will be changed, but for now the draw function creates the GPU buffers.
+   if (this.vbo == null)
+   {
+      this._ToGPU();
+   }
+
+   // setup interleaved VBO and IBO
+   this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
+   this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);
+
+   if(this.modelMatrix)
+   {
+      this.engine.PushMatrices();
+      this.newModelMatrix.Multiply(this.modelMatrix,this.engine.matModel);
+      this.engine.SetModelMatrix(this.newModelMatrix);
+   }
+
+   switch (this.mode)
+   {
+      case "p":
+         this.gl.enableVertexAttribArray(0);
+         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 3*4, 0*4); // position
+         this.engine.shadermanager.UseShader_P(this.engine.matModelViewProjection, this.solidcolor);
+         break;
+
+      case "pnt":
+         this.gl.enableVertexAttribArray(0);
+         this.gl.enableVertexAttribArray(1);
+         this.gl.enableVertexAttribArray(2);
+         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 8*4, 0*4); // position
+         this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 8*4, 3*4); // normal
+         this.gl.vertexAttribPointer(2, 2, this.gl.FLOAT, false, 8*4, 6*4); // texcoord
+         this.engine.shadermanager.UseShader_P(this.engine.matModelViewProjection, this.solidcolor);
+         break;
+
+      case "pc":
+         this.gl.enableVertexAttribArray(0);
+         this.gl.enableVertexAttribArray(1);
+         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
+         this.gl.vertexAttribPointer(1, 4, this.gl.FLOAT, false, 7*4, 3*4); // color
+         this.engine.shadermanager.UseShader_P(this.engine.matModelViewProjection, this.solidcolor);
+         break;
+
+      case "pt":
+         this.gl.enableVertexAttribArray(0);
+         this.gl.enableVertexAttribArray(1);
+         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5*4, 0*4); // position
+         this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5*4, 3*4); // texture
+         this.engine.shadermanager.UseShader_P(this.engine.matModelViewProjection, this.solidcolor);
+         break;
+
+      case "pnct":
+         this.gl.enableVertexAttribArray(0);
+         this.gl.enableVertexAttribArray(1);
+         this.gl.enableVertexAttribArray(2);
+         this.gl.enableVertexAttribArray(3);
+         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 12*4, 0*4); // position
+         this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 12*4, 3*4); // normal
+         this.gl.vertexAttribPointer(2, 4, this.gl.FLOAT, false, 12*4, 6*4); // color
+         this.gl.vertexAttribPointer(3, 2, this.gl.FLOAT, false, 12*4, 10*4); // texture
+         this.engine.shadermanager.UseShader_P(this.engine.matModelViewProjection, this.solidcolor);
+         break;
+   }
+
+   switch(this.indexsemantic)
+   {
+      case "TRIANGLES":
+         if(opt_ranged)
+         {
+            this.gl.drawElements(this.gl.TRIANGLES, count, this.gl.UNSIGNED_SHORT, offset);
+         }
+         else
+         {
+            this.gl.drawElements(this.gl.TRIANGLES, this.numindex, this.gl.UNSIGNED_SHORT, 0);
+         }
+         break;
+      case "TRIANGLESTRIP":
+         if(opt_ranged)
+         {
+            this.gl.drawElements(this.gl.TRIANGLE_STRIP, count, this.gl.UNSIGNED_SHORT, offset);
+         }
+         else
+         {
+            this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.numindex, this.gl.UNSIGNED_SHORT, 0);
+         }
+         break;
+   }
+
+   this.gl.disableVertexAttribArray(0);
+   this.gl.disableVertexAttribArray(1);
+   this.gl.disableVertexAttribArray(2);
+   this.gl.disableVertexAttribArray(3);
+}
 //------------------------------------------------------------------------------
 /** 
  * @description download callback
@@ -671,6 +789,22 @@ Surface.prototype.CreateFromJSONObject = function(jsonobject,readycbf,failedcbf,
    
    
    surface.numindex = jsonobject['Indices'].length;         // number of elements of index vector
+
+   /*if (this.curtainindex>0)
+   {
+      var val = 0;
+      for (var i=0;i<this.indexbufferdata.length;i++)
+      {
+         if (this.indexbufferdata[i] >= this.curtainindex)
+         {
+            val = i;
+            break;
+         }
+      }
+      this.numindex = Math.floor(val/3)*3;
+      this.curtainindex = 0;
+   }*/
+
    if(!surface.manageTexture) //if there is a async texture load started set the ready flag in texture callback
    {
       surface.ready =true;  

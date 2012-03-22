@@ -497,12 +497,21 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
       gl.enable(gl.DEPTH_TEST);
       gl.frontFace(gl.CCW);
       gl.cullFace(gl.BACK);
+
+      for (var i=0;i<this.lstFrustum.length;i++)
+      {
+         this.lstFrustum[i].Render(false);
+      }
+   }
+   else
+   {
+      for (var i=0;i<this.lstFrustum.length;i++)
+      {
+         this.lstFrustum[i].Render(false);
+      }
    }
 
-   for (var i=0;i<this.lstFrustum.length;i++)
-   {
-      this.lstFrustum[i].Render();
-   }
+
    
    var northTiles=[];
    var southTiles=[];
@@ -553,8 +562,6 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    if (this.bRenderTexture)
    {
       this.engine.PopRenderTarget();
-
-      //this.texture.Blit(0,4, 0, 0, 1, 1, true, true, 1.0);
       this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
    }
 

@@ -132,7 +132,7 @@ function ShaderManager(gl)
  */
 ShaderManager.prototype.UseShader_P = function(modelviewprojection,color)
 {
-   if (this.vs_p && this.fs_p)
+   if (this.program_p)
    {
       this.gl.useProgram(this.program_p);
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_p, "matMVP"),false,modelviewprojection.ToFloat32Array());

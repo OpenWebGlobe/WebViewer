@@ -528,71 +528,88 @@ TerrainBlock.prototype._CreateElevationMesh = function()
 
 //------------------------------------------------------------------------------
 /**
- * @description Render a terrain block. Requires model and view matrix for
- * some voodoo with floating point precision.
+ * @description Render a terrain block.
+ * @param {boolean} nomaterial set to true for rendering without material
  */
-TerrainBlock.prototype.Render = function(/*cache*/)
+TerrainBlock.prototype.Render = function(nomaterial)
 {
-   if (this.bPostCreation)
+   if (nomaterial)
    {
-      this.bPostCreation = false;
-      this.texture = new Texture(this.engine, true, 256, 256);
-     
-      this.engine.PushRenderTarget(this.texture);
+      this.tmpmodel.CopyFrom(this.engine.matModel);
 
-      for (var i=0;i<this.images.length;i++)
+      // virtual camera offset:
+      this.tmpmodel._values[12] += this.vOffset[0];
+      this.tmpmodel._values[13] += this.vOffset[1];
+      this.tmpmodel._values[14] += this.vOffset[2];
+      this.engine.PushMatrices();
+      this.engine.SetModelMatrix(this.tmpmodel);
+      this.mesh.DrawSolid();
+
+      this.engine.PopMatrices();
+   }
+   else
+   {
+      if (this.bPostCreation)
       {
-         if (this.images[i] != null)
+         this.bPostCreation = false;
+         this.texture = new Texture(this.engine, true, 256, 256);
+
+         this.engine.PushRenderTarget(this.texture);
+
+         for (var i=0;i<this.images.length;i++)
          {
-            if (this.images[i].transparency < 1.0)
+            if (this.images[i] != null)
             {
-               this.images[i].Blit(0,0,0, 0,1,1,true, true, this.images[i].transparency);
+               if (this.images[i].transparency < 1.0)
+               {
+                  this.images[i].Blit(0,0,0, 0,1,1,true, true, this.images[i].transparency);
+               }
+               else
+               {
+                  this.images[i].Blit(0,0,0, 0,1,1,true, true, 1.0);
+               }
             }
-            else
-            {
-               this.images[i].Blit(0,0,0, 0,1,1,true, true, 1.0);
-            } 
-         } 
-      }
-
-      this.engine.PopRenderTarget();
-        
-      for (var i=0;i<this.images.length;i++)
-      {
-         if (this.images[i] != null)
-         {
-            this.images[i].Destroy();
          }
+
+         this.engine.PopRenderTarget();
+
+         for (var i=0;i<this.images.length;i++)
+         {
+            if (this.images[i] != null)
+            {
+               this.images[i].Destroy();
+            }
+         }
+
+         this.images = null;
+         this.mesh.SetTexture(this.texture);
       }
-         
-      this.images = null;
-      this.mesh.SetTexture(this.texture);
 
-   }
-   //---------------------------------------------------------------------------
+      //------------------------------------------------------------------------
 
-   this.tmpmodel.CopyFrom(this.engine.matModel);
-   
-   // virtual camera offset: 
-   this.tmpmodel._values[12] += this.vOffset[0];
-   this.tmpmodel._values[13] += this.vOffset[1];
-   this.tmpmodel._values[14] += this.vOffset[2];
-   
-   this.engine.PushMatrices();
-   this.engine.SetModelMatrix(this.tmpmodel);
-   
-   if (this.engine.scene.nodeRenderObject.globerenderer.GetRenderEffect() == GlobeRenderer.RenderEffect.RGB)
-   {
-      this.mesh.mode = "pt";
+      this.tmpmodel.CopyFrom(this.engine.matModel);
+
+      // virtual camera offset:
+      this.tmpmodel._values[12] += this.vOffset[0];
+      this.tmpmodel._values[13] += this.vOffset[1];
+      this.tmpmodel._values[14] += this.vOffset[2];
+
+      this.engine.PushMatrices();
+      this.engine.SetModelMatrix(this.tmpmodel);
+
+      if (this.engine.scene.nodeRenderObject.globerenderer.GetRenderEffect() == GlobeRenderer.RenderEffect.RGB)
+      {
+         this.mesh.mode = "pt";
+      }
+      else if (this.engine.scene.nodeRenderObject.globerenderer.GetRenderEffect() == GlobeRenderer.RenderEffect.CHROMADEPTH)
+      {
+         this.mesh.mode = "pt_chroma";
+      }
+
+      this.mesh.Draw();
+
+      this.engine.PopMatrices();
    }
-   else if (this.engine.scene.nodeRenderObject.globerenderer.GetRenderEffect() == GlobeRenderer.RenderEffect.CHROMADEPTH)
-   {
-      this.mesh.mode = "pt_chroma";
-   }
-   
-   this.mesh.Draw();
-   
-   this.engine.PopMatrices();
    
 }
 //------------------------------------------------------------------------------
