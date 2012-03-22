@@ -61,9 +61,9 @@ function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_frameb
    this.failed = false;    // is true when texture creation / download failed
    /** @type {Surface} */
    this.blitMesh = null;   // optional mesh used for blitting
-   /** @type {?number} */
+   /** @type {number} */
    this.width = 0;
-   /** @type {?number} */
+   /** @type {number} */
    this.height = 0; 
    
    /** @type {?WebGLFramebuffer} */
@@ -71,6 +71,8 @@ function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_frameb
    /** @type {boolean} */
    this.usedAsRenderTarget = false;
 
+   /** @type {boolean} */
+   this.flip = false;
 
    /** @type {number} */
    var nWidth = opt_framebufferWidth || 0;
@@ -169,8 +171,17 @@ Texture.prototype._DestroyFBO = function()
 Texture.prototype.loadTexture = function(url, opt_callbackready, opt_callbackfailed, opt_flip)
 {
    // preparations
+   if (goog.isDef(opt_flip))
+   {
+      this.flip = opt_flip;
+   }
+   else
+   {
+      this.flip = false;
+   }
+
    this.texture = this.gl.createTexture();
-   this.flip = opt_flip;
+
    var texture=this.texture;
    var curgl = this.gl;
    var thismat = this;
@@ -204,10 +215,7 @@ function _cbHandleLoadedTexture(gl, textureobject, cb, TextureClass)
 {
    // Create texture:
    gl.bindTexture(gl.TEXTURE_2D, textureobject);
-   if (TextureClass.flip)
-   {
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-   }
+   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, TextureClass.flip);
    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureobject.image);
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -269,27 +277,36 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
 {   
    /** @type {number} */
    var z = opt_z || 0;
+   /** @type {number} */
    var angle = opt_angle || 0;
+   /** @type {number} */
    var scalex = opt_scalex || 1;
+   /** @type {number} */
    var scaley = opt_scaley || 1;
+   /** @type {boolean} */
    var blend = opt_blend || false;
+   /** @type {boolean} */
    var invtexcoord = opt_invtexcoord ||false;
+   /** @type {number} */
    var alpha = opt_alpha || 1.0;
    
    if (this.ready)
    {
-      
+      /** @type {number} */
       var w = this.width;
+      /** @type {number} */
       var h = this.height;
-      
+
+      /** @type {number} */
       var xr = this.width/2;
+      /** @type {number} */
       var yr = this.height/2;
       this.engine.PushMatrices();
       this.engine.SetOrtho2D();
 
-      //deg 2 rad
       angle = MathUtils.Deg2Rad(angle);
-      
+
+      /** @type {mat4} */
       var model = new mat4();
        
        if(angle > 0)
@@ -299,6 +316,7 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
        else
        {
          model.Translation(x,y,z);
+         /** @type {mat4} */
          var scaleMat = new mat4();
          scaleMat.Scale(scalex, scaley, 1.0);
          model.Multiply(model, scaleMat);
