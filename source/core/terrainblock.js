@@ -331,7 +331,7 @@ TerrainBlock.prototype.GetBlockSize = function()
 //------------------------------------------------------------------------------
 /**
 * @description Calc exact distance to another point
-* @param {vec3} vWhere The position to measure to
+* @param {Array.<number>} vWhere The position to measure to
 */
 TerrainBlock.prototype.CalcDistanceTo = function(vWhere)
 {

@@ -73,28 +73,25 @@ function GlobeRenderer(engine, rendertotexture)
    this.imagelayerlist = new Array();
    /** @type {Array.<ElevationLayer>} */
    this.elevationlayerlist = new Array();
-
+   /** @type {MercatorQuadtree} */
    this.quadtree = new MercatorQuadtree();
    /** @type {number} */
    this.cachesize = 1000;
    /** @type {GlobeCache} */
    this.globecache = null;
-   /** @type {Array} */
+   /** @type {Array.<TerrainBlock>} */
    this.lstFrustum = [];
    /** @type {number} */
    this.lastalt = 0;
-
    /** @type {boolean} */
    this.bRenderTexture = rendertotexture;
-
    /** @type {Texture} */
    this.texture = null;
-
    /** @type {Object} */
    this.iterator = new Object();
    /** @type {number} */
    this.iterator.cnt = 0;
-
+   /** @type {vec3} */
    this.cameraposition = null;
    /** @type {number} */
    this.maxlod = 0;
@@ -102,12 +99,17 @@ function GlobeRenderer(engine, rendertotexture)
    this.quality = 1.0; //0.75; // quality parameter, reduce for lower quality
 
    // current view frustum (for view frustum culling)
+   /** @type {ViewFrustum} */
    this.frustum = new ViewFrustum();
+
    this.vDir = new Array(3);
 
+   /** @type {mat4} */
    this.matPick = new mat4(); // stored mvp matrix for picking
 
+   /** @type {Surface} */
    this.northpole = new Surface(this.engine);
+   /** @type {Surface} */
    this.southpole = new Surface(this.engine);
    this.northpolecolor = [8/255,24/255,58/255]; 
    this.southpolecolor = [1,1,1];
@@ -444,6 +446,8 @@ GlobeRenderer.prototype._UpdateLayers = function()
 //------------------------------------------------------------------------------
 /**
  * @description Render function
+ * @param {vec3} vCameraPosition
+ * @param {mat4} matModelViewProjection
  */
 GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
 {
@@ -569,6 +573,7 @@ GlobeRenderer.prototype._Divide = function()
 //------------------------------------------------------------------------------
 GlobeRenderer.prototype._SubDivide = function()
 {
+   /** @type {number} */
    var i = this.iterator.cnt;
    
    if (this.lstFrustum[i].quadcode.length == this.maxlod)
@@ -582,10 +587,13 @@ GlobeRenderer.prototype._SubDivide = function()
       if (this._CalcErrorMetric(i))
       {
          var quadcode = this.lstFrustum[i].quadcode;
-         
+         /** @type {TerrainBlock} */
          var tb0 = this.globecache.RequestBlock(quadcode+"0");
+         /** @type {TerrainBlock} */
          var tb1 = this.globecache.RequestBlock(quadcode+"1");
+         /** @type {TerrainBlock} */
          var tb2 = this.globecache.RequestBlock(quadcode+"2");
+         /** @type {TerrainBlock} */
          var tb3 = this.globecache.RequestBlock(quadcode+"3");
          
          if (tb0.IsAvailable() &&
@@ -610,7 +618,9 @@ var SURFACE_NORMAL_THRESHOLD = 0.4;
 //------------------------------------------------------------------------------
 GlobeRenderer.prototype._CalcErrorMetric = function(i)
 {
+   /** @type {number} */
    var min_depth = 3;
+   /** @type {number} */
    var max_depth = this.maxlod; // max lod of dataset
    
    var bVisible = true;

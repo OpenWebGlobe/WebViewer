@@ -68,6 +68,7 @@ GlobeCache.prototype.Destroy = function()
  * @description Returns true if cache is ready to be used.
  * Please note that for some tile services creation of cache needs async requests.
  * You can't make tile requests before this function returns true.
+ * @return {boolean}
  */
 GlobeCache.prototype.IsReady = function()
 {
@@ -104,11 +105,13 @@ GlobeCache.prototype.IsReady = function()
  * @description Request a new Terrainblock. This is async. 
  * Always returns a terrain block (possibly marked as not ready)
  * @param {string} quadcode
+ * @return {TerrainBlock}
  */
 //------------------------------------------------------------------------------
 GlobeCache.prototype.RequestBlock = function(quadcode)
 {
-   var terrainblock = this.cache.getItem(quadcode);
+   /** @type {TerrainBlock} */
+   var terrainblock = /** @type {TerrainBlock} */ this.cache.getItem(quadcode);
    
    if (terrainblock == null)
    {
@@ -126,19 +129,24 @@ GlobeCache.prototype.RequestBlock = function(quadcode)
  * This doesn't force downloading a block if not available.
  * Returns terrain block or null.
  * @param {string} quadcode
+ * @return {TerrainBlock}
  */
 GlobeCache.prototype.GetCachedBlock = function(quadcode)
 {
-   var terrainblock = this.cache.getItem(quadcode);
+   /** @type {TerrainBlock} */
+   var terrainblock = /** @type {TerrainBlock} */ this.cache.getItem(quadcode);
    return terrainblock;
 }
 //------------------------------------------------------------------------------
 /**
  * @description Retrieve maximum level of detail. (Scenes without elevation are allowed)
+ * @return {number}
  */
 GlobeCache.prototype.GetMaxLod = function()
 {
+   /** @type {number} */
    var maximagelod = 0;
+   /** @type {number} */
    var maxelevationlod = 0;
 
    if (this.elevationlayerlist.length > 0)
