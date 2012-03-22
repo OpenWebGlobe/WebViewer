@@ -487,11 +487,9 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    if (this.bRenderTexture)
    {
       this.engine.PushRenderTarget(this.texture);
-
-
-      // clear texture:
+      // clear render target - todo: move this code to engine3d
       gl.clearColor(0.0, 0.0, 0.0, 0.0);
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
       gl.enable(gl.DEPTH_TEST);
       gl.frontFace(gl.CCW);
       gl.cullFace(gl.BACK);
