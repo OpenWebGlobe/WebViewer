@@ -235,7 +235,7 @@ ogAoeImage.prototype._UpdateTerrainBlocks = function()
       
       var tbtexture = tb.texture;
       var mergedtexture = new Texture(tb.engine, true, 256, 256);
-      mergedtexture.EnableRenderToTexture();
+      engine.PushRenderTarget(mergedtexture);
       tbtexture.Blit(0, 0, 0, 0, 1, 1,true, true, 1.0);
       var x, y, scalex, scaley;
       x = (this.longitude0 - lng0) * 256.0 / (lng1 - lng0);
@@ -244,15 +244,14 @@ ogAoeImage.prototype._UpdateTerrainBlocks = function()
       scaley = ((this.latitude1 - this.latitude0)/this.texture.height) / ((lat1 - lat0)/ 256);
       
       this.texture.Blit(x, y, 0, 0, scalex, scaley, true, true, 1.0);
-      
-      mergedtexture.DisableRenderToTexture();
+      engine.PopRenderTarget();
+
       mesh.SetTexture(mergedtexture);
       mesh.vOffset0 = tb.vOffset[0];
       mesh.vOffset1 = tb.vOffset[1];
       mesh.vOffset2 = tb.vOffset[2];
       this.meshes[tb.quadcode] = mesh;
       this.drawmeshes[tb.quadcode] =  mesh;
-    
    }
    
 }

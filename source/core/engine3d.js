@@ -218,6 +218,9 @@ function engine3d()
    this.matModelViewProjection = new mat4();
    /** @type {mat4} */
    this.matNormal = new mat4();
+
+   /** @type {Array.<Texture>} */
+   this.RenderTargetStack = new Array();
    
    // Engine Traversal State
    /** @type {TraversalState} */
@@ -299,7 +302,7 @@ var GET_A_WEBGL_BROWSER = '' +
  * @type {string}
  */
 var OTHER_PROBLEM = '' +
-  "It doesn't appear your computer can support WebGL.<br/>" +
+  "It doesn't appear your browser supports WebGL.<br/>" +
   '<a href="http://get.webgl.org/troubleshooting/">Click here for more information.</a>';
 
 /**
@@ -328,7 +331,7 @@ var setupWebGL = function(canvas)
   }
 
   var context = create3DContext(canvas);
-  if (!context)
+  if (goog.isNull(context))
   {
     showLink(OTHER_PROBLEM);
   }
@@ -697,7 +700,9 @@ engine3d.prototype.CreateScene = function()
    }
    else if (this.worldtype == 1) // wgs84
    {
-      this.scene = new SceneGraph(this);   
+      this.scene = new SceneGraph(this);
+      // call resize here to initialize the scenegraph: todo: move to scenegraph (don't call renderobject direcly)
+      this.scene.nodeRenderObject.DoResize(this.width,this.height);
    }
    else if (this.worldtype == 2)
    {
@@ -927,6 +932,11 @@ engine3d.prototype._resize = function(w,h)
    {
 		var engine = this;
       this.cbfResize(w, h, engine);
+   }
+
+   if (this.scene)
+   {
+      this.scene.nodeRenderObject.DoResize(w,h); // todo: move to scenegraph
    }
 }
 
@@ -1320,7 +1330,47 @@ engine3d.prototype.StopFlyTo = function()
 {
     this.flyto.StopFlyTo();
 }
+//------------------------------------------------------------------------------
+/**
+ * @description Set Current Render Target (must be texture)
+ * @param {Texture} texture
+*/
+engine3d.prototype.PushRenderTarget = function(texture)
+{
+   this.RenderTargetStack.push(texture);
+   texture._EnableRenderToTexture();
 
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Reset Render Target
+ */
+engine3d.prototype.PopRenderTarget = function()
+{
+   if (this.RenderTargetStack.length < 1)
+   {
+      ogError("Fatal error with render target stack. PushRenderTarget/PopRenderTarget do not correspond.");
+      return;
+   }
+
+   /** @type {Texture} */
+   var texture = this.RenderTargetStack.pop();
+
+   var l = this.RenderTargetStack.length;
+
+   if (l>0)
+   {
+      /** @type {Texture} */
+      var activetarget = this.RenderTargetStack[l-1];
+      activetarget._EnableRenderToTexture();
+   }
+   else
+   {
+      // If render target stack is empty we render to screen. (_DisableRenderToTexture binds to screen.)
+      texture._DisableRenderToTexture();
+   }
+}
+//------------------------------------------------------------------------------
 
 goog.exportSymbol('engine3d', engine3d);
 goog.exportProperty(engine3d.prototype, 'AltitudeAboveEllipsoid', engine3d.prototype.AltitudeAboveEllipsoid);

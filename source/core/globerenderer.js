@@ -24,6 +24,7 @@
 goog.provide('owg.GlobeRenderer');
 
 goog.require('goog.debug.Logger');
+goog.require('owg.Texture');
 goog.require('owg.GlobeCache');
 goog.require('owg.MercatorQuadtree');
 goog.require('owg.OSMImageLayer');
@@ -60,8 +61,11 @@ var ElevationLayerOptions;
  * @constructor
  * @description Rendering the virtual globe...
  * @author Martin Christen, martin.christen@fhnw.ch
+ *
+ * @param {engine3d} engine
+ * @param {boolean} rendertotexture true if render to texture is enabled
  */
-function GlobeRenderer(engine)
+function GlobeRenderer(engine, rendertotexture)
 {
    /** @type {engine3d} */
    this.engine = engine;
@@ -79,24 +83,30 @@ function GlobeRenderer(engine)
    this.lstFrustum = [];
    /** @type {number} */
    this.lastalt = 0;
-   
+
+   /** @type {boolean} */
+   this.bRenderTexture = rendertotexture;
+
+   /** @type {Texture} */
+   this.texture = null;
+
    /** @type {Object} */
    this.iterator = new Object();
    /** @type {number} */
    this.iterator.cnt = 0;
-   
+
    this.cameraposition = null;
    /** @type {number} */
    this.maxlod = 0;
    /** @type {number} */
    this.quality = 1.0; //0.75; // quality parameter, reduce for lower quality
-   
+
    // current view frustum (for view frustum culling)
    this.frustum = new ViewFrustum();
    this.vDir = new Array(3);
-   
+
    this.matPick = new mat4(); // stored mvp matrix for picking
-   
+
    this.northpole = new Surface(this.engine);
    this.southpole = new Surface(this.engine);
    this.northpolecolor = [8/255,24/255,58/255]; 
@@ -108,6 +118,30 @@ function GlobeRenderer(engine)
    this.rendereffect = GlobeRenderer.RenderEffect.RGB;
    /** @type {Object} */
    this.renderparam = {};
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Free all memory
+ */
+GlobeRenderer.prototype.Destroy = function()
+{
+   if (this.globecache)
+   {
+      this.globecache.Destroy();  // free memory of old cache, especally GPU memory!
+      this.globecache = null;
+   }
+
+   if (this.northpole)
+   {
+      this.northpole.Destroy();
+      this.northpole = null;
+   }
+
+   if (this.southpole)
+   {
+      this.southpole.Destroy();
+      this.southpole = null;
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -413,6 +447,9 @@ GlobeRenderer.prototype._UpdateLayers = function()
  */
 GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
 {
+   /** @type {WebGLRenderingContext} */
+   var gl = this.engine.gl;
+
    this.matPick.CopyFrom(matModelViewProjection);  // copy last mvp for pick-event
    
    this.frustum.Update(matModelViewProjection);
@@ -445,11 +482,24 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    
    this._Divide();  // Subdivide Planet
    this._Optimize(); // Optimize Planet: Remove Hidden Tiles!
-   
-   
+
+
+   if (this.bRenderTexture)
+   {
+      this.engine.PushRenderTarget(this.texture);
+
+
+      // clear texture:
+      gl.clearColor(0.0, 0.0, 0.0, 0.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.enable(gl.DEPTH_TEST);
+      gl.frontFace(gl.CCW);
+      gl.cullFace(gl.BACK);
+   }
+
    for (var i=0;i<this.lstFrustum.length;i++)
    {
-      this.lstFrustum[i].Render();   
+      this.lstFrustum[i].Render();
    }
    
    var northTiles=[];
@@ -496,7 +546,16 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    if(southTiles.length>3)
    {
      this._GenerateSouthPole(southTiles); 
-   } 
+   }
+
+   if (this.bRenderTexture)
+   {
+      this.engine.PopRenderTarget();
+
+      //this.texture.Blit(0,4, 0, 0, 1, 1, true, true, 1.0);
+      this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
+   }
+
 }
 //------------------------------------------------------------------------------
 
@@ -1195,3 +1254,22 @@ GlobeRenderer.RenderEffect =
    CHROMADEPTH: 1    // render globe using chroma depth elevation
 };
 //------------------------------------------------------------------------------
+/**
+ * @description Called when canvas is resized.
+ * @param w
+ * @param h
+ */
+GlobeRenderer.prototype.DoResize = function(w,h)
+{
+   if (this.bRenderTexture)
+   {
+      if (this.texture == null)
+      {
+         this.texture = new Texture(this.engine, true, w, h, true);
+      }
+      else
+      {
+         this.texture.UpdateFBO(w, h, true);
+      }
+   }
+}

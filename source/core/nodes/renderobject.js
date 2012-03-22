@@ -76,7 +76,7 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.OnInit = function()
       {
-            this.globerenderer = new GlobeRenderer(this.engine);
+            this.globerenderer = new GlobeRenderer(this.engine, false);
             this.poirenderer = new PoiRenderer(this.engine);
             this.geometryrenderer = new GeometryRenderer(this.engine);
             this.billboardrenderer = new BillboardRenderer(this.engine);
@@ -86,12 +86,22 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.OnExit = function()
       {
-      
+         this.globerenderer.Destroy(); // free all memory
+         this.globerenderer = null;
       }
-      
+
+      //------------------------------------------------------------------------
+      this.DoResize = function(w,h)
+      {
+         if (this.globerenderer)
+         {
+            this.globerenderer.DoResize(w,h);
+         }
+      }
       //------------------------------------------------------------------------
       this.OnRegisterEvents = function(context)
       {
+
       }
       //------------------------------------------------------------------------
 }

@@ -535,15 +535,10 @@ TerrainBlock.prototype.Render = function(/*cache*/)
 {
    if (this.bPostCreation)
    {
-      //---------------------------------------------------------------------------
-      // render to target only works during "Render Loop". Therefore it has to be put here
-      // #Todo: This must be cleaned up and moved to a blitter functionality
-      // within the engine
-      
       this.bPostCreation = false;
       this.texture = new Texture(this.engine, true, 256, 256);
      
-      this.texture.EnableRenderToTexture();     
+      this.engine.PushRenderTarget(this.texture);
 
       for (var i=0;i<this.images.length;i++)
       {
@@ -559,8 +554,8 @@ TerrainBlock.prototype.Render = function(/*cache*/)
             } 
          } 
       }
-         
-      this.texture.DisableRenderToTexture();
+
+      this.engine.PopRenderTarget();
         
       for (var i=0;i<this.images.length;i++)
       {
@@ -572,9 +567,10 @@ TerrainBlock.prototype.Render = function(/*cache*/)
          
       this.images = null;
       this.mesh.SetTexture(this.texture);
+
    }
    //---------------------------------------------------------------------------
-   
+
    this.tmpmodel.CopyFrom(this.engine.matModel);
    
    // virtual camera offset: 

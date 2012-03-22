@@ -45,8 +45,9 @@ owg.ARTWORK_PATH = "art/";
  * @param {boolean=} opt_useAsRenderTarget
  * @param {number=} opt_framebufferWidth
  * @param {number=} opt_framebufferHeight
+ * @param {boolean=} opt_depthbuffer
  */
-function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_framebufferHeight)
+function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_framebufferHeight, opt_depthbuffer)
 {
    /** @type {engine3d} */
    this.engine = engine;   // pointer to the engine
@@ -69,50 +70,91 @@ function Texture(engine, opt_useAsRenderTarget, opt_framebufferWidth, opt_frameb
    this.rttFrameBuffer = null; //used if this texture is used as a render target
    /** @type {boolean} */
    this.usedAsRenderTarget = false;
-     
-   if(opt_useAsRenderTarget)   // texture is used as render target.
+
+
+   /** @type {number} */
+   var nWidth = opt_framebufferWidth || 0;
+   /** @type {number} */
+   var nHeight = opt_framebufferHeight || 0;
+   /** @type {boolean} */
+   var bDepthbuffer = opt_depthbuffer || false;
+
+   if (opt_useAsRenderTarget)   // texture is used as render target.
    {
-         /** @type {WebGLFramebuffer} */
-        this.rttFramebuffer = this.gl.createFramebuffer();
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.rttFramebuffer);
-        this.rttFramebuffer.width = opt_framebufferWidth || 0;
-        this.rttFramebuffer.height = opt_framebufferHeight || 0;
-
-        this.texture = this.gl.createTexture();
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-        
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-     
-        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.rttFramebuffer.width, this.rttFramebuffer.height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
-
-        var renderbuffer = this.gl.createRenderbuffer();
-        this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, renderbuffer);
-        //this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, this.rttFramebuffer.width, this.rttFramebuffer.height);
-
-        this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.texture, 0);
-        //this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, renderbuffer);
-
-        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-        this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null);
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
-        
-        this.ready = true;
-        this.usedAsRenderTarget = true;
-        if(opt_framebufferWidth)
-        {
-         this.width = opt_framebufferWidth;
-        }
-        
-        if(opt_framebufferHeight)
-        {
-        this.height = opt_framebufferHeight;
-        }
+      this.UpdateFBO(nWidth, nHeight, bDepthbuffer);
    }
 }
+//------------------------------------------------------------------------------
+/** @description create or recreate FBO
+ *
+ * @param {number} nWidth
+ * @param {number} nHeight
+ * @param {boolean} bDepthBuffer
+ */
+Texture.prototype.UpdateFBO = function(nWidth, nHeight, bDepthBuffer)
+{
+   this._DestroyFBO();
 
+   this.rttFramebuffer = this.gl.createFramebuffer();
+   this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.rttFramebuffer);
+   this.rttFramebuffer.width = nWidth;
+   this.rttFramebuffer.height = nHeight;
+
+   this.texture = this.gl.createTexture();
+   this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+
+   this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+   this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+   this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+   this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+
+   this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.rttFramebuffer.width, this.rttFramebuffer.height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
+
+   this.renderbuffer = this.gl.createRenderbuffer();
+   this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.renderbuffer);
+   if (bDepthBuffer)
+   {
+      this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, this.rttFramebuffer.width, this.rttFramebuffer.height);
+   }
+
+   this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.texture, 0);
+
+   if (bDepthBuffer)
+   {
+      this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, this.renderbuffer);
+   }
+
+   this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+   this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null);
+   this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+
+   this.ready = true;
+   this.usedAsRenderTarget = true;
+   this.width = nWidth;
+   this.height = nHeight;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description destroy FBO: Free all memory
+ */
+Texture.prototype._DestroyFBO = function()
+{
+   if (this.rttFramebuffer != null)
+   {
+      this.gl.deleteRenderbuffer(this.renderbuffer);
+      this.renderbuffer = null;
+      this.gl.deleteFramebuffer(this.rttFramebuffer);
+      this.rttFramebuffer = null;
+      this.gl.deleteTexture(this.texture);
+      this.texture = null;
+
+      if (this.blitMesh)
+      {
+         this.blitMesh.Destroy();
+         this.blitMesh = null;
+      }
+   }
+}
 //------------------------------------------------------------------------------
 /**
  * Loads the Texture image.
@@ -337,11 +379,7 @@ Texture.prototype.Destroy = function()
       this.blitMesh = null;
    }
    
-   if (this.rttFramebuffer)
-   {
-      this.engine.gl.deleteFramebuffer(this.rttFramebuffer);
-      this.rttFramebuffer = null;
-   }
+   this._DestroyFBO();
 
 }
 //------------------------------------------------------------------------------
@@ -390,32 +428,32 @@ Texture.prototype.LoadCompassRose = function()
 {
    this.loadTexture(owg.ARTWORK_PATH + "flightnavigation/cmpr.png");
 }
+//------------------------------------------------------------------------------
 /**
  * @description Binds the internal framebuffer if this texture is used as render target
+ * In most cases this shoulnd't called directy. Use engine->PushRenderTarget(texture)
  */
-Texture.prototype.EnableRenderToTexture = function()
+Texture.prototype._EnableRenderToTexture = function()
 {
    if(this.usedAsRenderTarget)
    {
       this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.rttFramebuffer);      
       this.gl.viewport(0, 0, this.rttFramebuffer.width, this.rttFramebuffer.height);
-      this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
-      this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
    }  
 }
+//------------------------------------------------------------------------------
 /**
  * @description unbinds the internal framebuffer if this texture is used as render target
+ * In most cases this shoulnd't called directy. Use engine->PopRenderTarget()
  */
-Texture.prototype.DisableRenderToTexture = function()
+Texture.prototype._DisableRenderToTexture = function()
 {
     //this.gl.bindTexture(this.gl.TEXTURE_2D, rttTexture);
     this.gl.bindTexture(this.gl.TEXTURE_2D, null);      
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null); 
     this.gl.viewport(0, 0, this.engine.width, this.engine.height);
 }
-
-
-
+//------------------------------------------------------------------------------
 /**
  * @description copies the texture
  * param {Texture} texture
@@ -434,5 +472,5 @@ Texture.prototype.DisableRenderToTexture = function()
 goog.exportSymbol('Texture', Texture);
 goog.exportProperty(Texture.prototype, 'CopyFrom', Texture.prototype.CopyFrom);
 goog.exportProperty(Texture.prototype, 'Blit', Texture.prototype.Blit);
-goog.exportProperty(Texture.prototype, 'EnableRenderToTexture', Texture.prototype.EnableRenderToTexture);
-goog.exportProperty(Texture.prototype, 'DisableRenderToTexture', Texture.prototype.DisableRenderToTexture);
+goog.exportProperty(Texture.prototype, '_EnableRenderToTexture', Texture.prototype._EnableRenderToTexture);
+goog.exportProperty(Texture.prototype, '_DisableRenderToTexture', Texture.prototype._DisableRenderToTexture);
