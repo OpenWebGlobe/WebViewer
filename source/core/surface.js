@@ -1452,7 +1452,6 @@ Surface.prototype.SolidCube = function(center,dimension,opt_color)
 
    /** @type {ObjectJSON} */
    var object = {"VertexSemantic" : "", "Vertices" : null, "IndexSemantic":"", "Indices":null};
-   object["id"] = "0";
    object["VertexSemantic"]  = "p";
    object["Vertices"] =  [-0.5*w+cx,-0.5*h+cy,-0.5*d+cz,
                           -0.5*w+cx,-0.5*h+cy, 0.5*d+cz,
@@ -1478,9 +1477,39 @@ Surface.prototype.SolidCube = function(center,dimension,opt_color)
    }
 
    this.CreateFromJSONObject(object, null, null);
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Create a Solid Blit Mesh. which can be used for screen space algorithms
+ * @param {Array.<number>} opt_color optional color r,g,b,a in range [0,1], for example [0.0,1.0,0.5,0.5]. The color may have 3 (RGB) or 4 (RGBA) components.
+ */
+Surface.prototype.SolidBlitMesh = function(opt_color)
+{
+   var z = 0;
+   /** @type {ObjectJSON} */
+   var object = {"VertexSemantic" : "", "Vertices" : null, "IndexSemantic":"", "Indices":null};
+   object["VertexSemantic"]  = "p";
+   object["Vertices"] =  [-1,-1, z,
+                           1,-1, z,
+                           1, 1, z,
+                          -1, 1, z];
 
+   object["IndexSemantic"] = "TRIANGLES";
+   object["Indices"] = [0,1,3,1,2,3];
 
+   if (goog.isDef(opt_color))
+   {
+      if (opt_color.length == 4)
+      {
+         this.solidcolor.Set(opt_color[0], opt_color[1], opt_color[2], opt_color[3]);
+      }
+      else if (opt_color.length == 3)
+      {
+         this.solidcolor.Set(opt_color[0], opt_color[1], opt_color[2], 1);
+      }
+   }
 
+   this.CreateFromJSONObject(object, null, null);
 }
 //------------------------------------------------------------------------------
 
