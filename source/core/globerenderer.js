@@ -13,7 +13,7 @@
 #                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
-#                              (c) 2010-2011 by                                #
+#                              (c) 2010-2012 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
 #                     Institute of Geomatics Engineering                       #
 #                           martin.christen@fhnw.ch                            #
@@ -491,12 +491,7 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    if (this.bRenderTexture)
    {
       this.engine.PushRenderTarget(this.texture);
-      // clear render target - todo: move this code to engine3d
-      gl.clearColor(0.0, 0.0, 0.0, 0.0);
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-      gl.enable(gl.DEPTH_TEST);
-      gl.frontFace(gl.CCW);
-      gl.cullFace(gl.BACK);
+      this.engine.SetupDepthTextureTarget();
 
       for (var i=0;i<this.lstFrustum.length;i++)
       {
@@ -511,8 +506,6 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
       }
    }
 
-
-   
    var northTiles=[];
    var southTiles=[];
    for (var i=0;i<this.lstFrustum.length;i++)
@@ -564,7 +557,6 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
       this.engine.PopRenderTarget();
       this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
    }
-
 }
 //------------------------------------------------------------------------------
 
