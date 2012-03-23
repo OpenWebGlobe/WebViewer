@@ -571,7 +571,7 @@ engine3d.prototype.SetupDepthTextureTarget = function()
  * (Note: This code will partially move to vectorrenderer.js in future)
  * @param {Array.<Surface>} geometryarray
  * @param {Array.<Surface>} bboxarray
- * @param {boolean=} enable blending
+ * @param {boolean=} opt_bBlend
  */
 engine3d.prototype.VectorRenderer = function(geometryarray, bboxarray, opt_bBlend)
 {
