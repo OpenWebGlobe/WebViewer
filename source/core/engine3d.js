@@ -13,7 +13,7 @@
 #                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
-#                              (c) 2010-2011 by                                #
+#                              (c) 2010-2012 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
 #                     Institute of Geomatics Engineering                       #
 #                           martin.christen@fhnw.ch                            #
@@ -352,7 +352,7 @@ var create3DContext = function(canvas)
   {
      try
       {
-         context = canvas.getContext(names[ii]);
+         context = canvas.getContext(names[ii], { antialias: false });
       }
       catch(e) {}
       if (context)
@@ -493,8 +493,11 @@ engine3d.prototype.OnDestroy = function()
    this.cbfKeyReleased = null;
    this.cbfResize = null;
 
-   this.scene.Destroy();
-   this.scene = null;
+   if (this.scene)
+   {
+      this.scene.Destroy();
+      this.scene = null;
+   }
 
    this.gl = null;       
    this.context = null;
@@ -534,17 +537,98 @@ engine3d.prototype.GetClearColor = function(color)
 {
    return {r: this.bg_r, g: this.bg_g, b: this.bg_b, a: this.bg_a};
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Clear color and depth buffer (using current clear color)
  */
 engine3d.prototype.Clear = function()
 {
-   this.gl.clearColor(this.bg_r, this.bg_g, this.bg_b, this.bg_a);
-   this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+   /** @type {WebGLRenderingContext} */
+   var gl = this.gl;
+   gl.clearColor(this.bg_r, this.bg_g, this.bg_b, this.bg_a);
+   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
+//------------------------------------------------------------------------------
+/**
+ * @description Initialize Render-Target
+ */
+engine3d.prototype.SetupDepthTextureTarget = function()
+{
+   /** @type {WebGLRenderingContext} */
+   var gl = this.gl;
+   gl.clearColor(0.0, 0.0, 0.0, 0.0);
+   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+   gl.enable(gl.DEPTH_TEST);
+   gl.frontFace(gl.CCW);
+   gl.cullFace(gl.BACK);
 
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Render Geometry on Terrain,
+ * based on Schneider, M. and Klein, R. (2007) "Efficient and Accurate Rendering
+ * of Vector Data on Virtual Landscapes", in Proceedings of WSCG.
+ * (Note: This code will partially move to vectorrenderer.js in future)
+ * @param {Array.<Surface>} geometryarray
+ * @param {Array.<Surface>} bboxarray
+ * @param {boolean=} enable blending
+ */
+engine3d.prototype.VectorRenderer = function(geometryarray, bboxarray, opt_bBlend)
+{
+   /** @type {WebGLRenderingContext} */
+   var gl = this.gl;
+
+   gl.clear(gl.STENCIL_BUFFER_BIT);
+
+   /** @type {boolean} */
+   var bBlend = opt_bBlend || false;
+
+   gl.colorMask(false, false, false, false);
+   gl.enable(gl.CULL_FACE);
+   gl.enable(gl.DEPTH_TEST);
+   gl.depthMask(false);
+   gl.depthFunc(gl.GEQUAL);
+   gl.enable(gl.STENCIL_TEST);
+   gl.stencilFunc(gl.ALWAYS, 0, 0);
+   gl.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
+   gl.cullFace(gl.FRONT);
+   // First Pass:
+   for (var i=0;i<geometryarray.length;i++)
+   {
+      geometryarray[i].Draw();
+   }
+
+   gl.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);
+   gl.cullFace(gl.BACK);
+
+   // Second Pass:
+   for (var i=0;i<geometryarray.length;i++)
+   {
+      geometryarray[i].Draw();
+   }
+
+   gl.depthMask(true);
+   gl.colorMask(true, true, true, true);
+   gl.cullFace(gl.FRONT);
+   gl.stencilFunc(gl.NOTEQUAL, 0, 1);
+   gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
+
+   if (bBlend) { gl.enable(gl.BLEND); }
+   gl.disable(gl.DEPTH_TEST);
+
+   for (var i=0;i<bboxarray.length;i++)
+   {
+      bboxarray[i].Draw();
+   }
+
+   if (bBlend) { gl.disable(gl.BLEND); }
+
+   gl.enable(gl.DEPTH_TEST);
+   gl.enable(gl.CULL_FACE);
+   gl.cullFace(gl.BACK);
+   gl.depthFunc(gl.LESS);
+   gl.disable(gl.STENCIL_TEST);
+}
 //------------------------------------------------------------------------------
 /**
  * @description Set Viewport
