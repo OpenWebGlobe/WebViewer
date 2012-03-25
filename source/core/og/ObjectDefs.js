@@ -13,7 +13,7 @@
 #                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
-#                              (c) 2010-2011 by                                #
+#                              (c) 2010-2012 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
 #                     Institute of Geomatics Engineering                       #
 #                           martin.christen@fhnw.ch                            #
@@ -46,45 +46,47 @@ var OG_OBJECT_GEOMETRYLAYER         = 7;
 //* @constant
 var OG_OBJECT_VOXELLAYER            = 8;
 //* @constant
-var OG_OBJECT_IMAGE                 = 9;
+var OG_OBJECT_VECTORLAYER           = 9;
 //* @constant
-var OG_OBJECT_TEXTURE               = 10;
+var OG_OBJECT_IMAGE                 = 10;
 //* @constant
-var OG_OBJECT_PIXELBUFFER           = 11;
+var OG_OBJECT_TEXTURE               = 11;
 //* @constant
-var OG_OBJECT_GEOMETRY              = 12;
+var OG_OBJECT_PIXELBUFFER           = 12;
 //* @constant
-var OG_OBJECT_MESH                  = 13;
+var OG_OBJECT_GEOMETRY              = 13;
 //* @constant
-var OG_OBJECT_SURFACE               = 14;
+var OG_OBJECT_MESH                  = 14;
 //* @constant
-var OG_OBJECT_CAMERA                = 15;
+var OG_OBJECT_SURFACE               = 15;
 //* @constant
-var OG_OBJECT_TEXT                  = 16;
+var OG_OBJECT_VECTOR                = 16;
 //* @constant
-var OG_OBJECT_BINARYDATA            = 17;
+var OG_OBJECT_CAMERA                = 17;
 //* @constant
-var OG_OBJECT_LIGHT                 = 18;
+var OG_OBJECT_TEXT                  = 18;
 //* @constant
-var OG_OBJECT_NAVIGATIONCONTROLLER  = 19;
+var OG_OBJECT_BINARYDATA            = 19;
 //* @constant
-var OG_OBJECT_POI                   = 20;
+var OG_OBJECT_LIGHT                 = 20;
 //* @constant
-var OG_OBJECT_BILLBOARD             = 21;
+var OG_OBJECT_NAVIGATIONCONTROLLER  = 21;
 //* @constant
-var OG_OBJECT_BILLBOARDLAYER        = 22;
-
+var OG_OBJECT_POI                   = 22;
+//* @constant
+var OG_OBJECT_BILLBOARD             = 23;
+//* @constant
+var OG_OBJECT_BILLBOARDLAYER        = 24;
 //* @constant
 var OG_OBJECT_AOEIMAGELAYER         = 65533;
 //* @constant
 var OG_OBJECT_AOEIMAGE              = 65534;
 //* @constant
-var OG_OBJECT_POINTSPRITE           = 23;
+var OG_OBJECT_POINTSPRITE           = 25;
 //* @constant
-var OG_OBJECT_EARTHPOLYLINE         = 24;
+var OG_OBJECT_EARTHPOLYLINE         = 26;
 //* @constant
 var OG_OBJECT_INVALID               = 65535;
-
 //* @constant
 var OG_RENDEREFFECT_RGB             = 0;
 //* @constant
@@ -97,13 +99,16 @@ goog.exportSymbol('OG_OBJECT_IMAGELAYER', OG_OBJECT_IMAGELAYER);
 goog.exportSymbol('OG_OBJECT_ELEVATIONLAYER', OG_OBJECT_ELEVATIONLAYER);
 goog.exportSymbol('OG_OBJECT_WAYPOINTLAYER', OG_OBJECT_WAYPOINTLAYER);
 goog.exportSymbol('OG_OBJECT_GEOMETRYLAYER', OG_OBJECT_GEOMETRYLAYER);
+goog.exportSymbol('OG_OBJECT_POILAYER', OG_OBJECT_POILAYER);
 goog.exportSymbol('OG_OBJECT_VOXELLAYER', OG_OBJECT_VOXELLAYER);
+goog.exportSymbol('OG_OBJECT_VECTORLAYER', OG_OBJECT_VECTORLAYER);
 goog.exportSymbol('OG_OBJECT_IMAGE', OG_OBJECT_IMAGE);
 goog.exportSymbol('OG_OBJECT_TEXTURE', OG_OBJECT_TEXTURE);
 goog.exportSymbol('OG_OBJECT_PIXELBUFFER', OG_OBJECT_PIXELBUFFER);
 goog.exportSymbol('OG_OBJECT_GEOMETRY', OG_OBJECT_GEOMETRY);
 goog.exportSymbol('OG_OBJECT_MESH', OG_OBJECT_MESH);
 goog.exportSymbol('OG_OBJECT_SURFACE', OG_OBJECT_SURFACE);
+goog.exportSymbol('OG_OBJECT_VECTOR', OG_OBJECT_VECTOR);
 goog.exportSymbol('OG_OBJECT_CAMERA', OG_OBJECT_CAMERA);
 goog.exportSymbol('OG_OBJECT_TEXT', OG_OBJECT_TEXT);
 goog.exportSymbol('OG_OBJECT_BINARYDATA', OG_OBJECT_BINARYDATA);
@@ -114,6 +119,8 @@ goog.exportSymbol('OG_OBJECT_BILLBOARD', OG_OBJECT_BILLBOARD);
 goog.exportSymbol('OG_OBJECT_BILLBOARDLAYER', OG_OBJECT_BILLBOARDLAYER);
 goog.exportSymbol('OG_OBJECT_AOEIMAGELAYER', OG_OBJECT_AOEIMAGELAYER);
 goog.exportSymbol('OG_OBJECT_AOEIMAGE', OG_OBJECT_AOEIMAGE);
+goog.exportSymbol('OG_OBJECT_POINTSPRITE', OG_OBJECT_POINTSPRITE);
+goog.exportSymbol('OG_OBJECT_EARTHPOLYLINE', OG_OBJECT_EARTHPOLYLINE);
 goog.exportSymbol('OG_OBJECT_INVALID', OG_OBJECT_INVALID);
 goog.exportSymbol('OG_RENDEREFFECT_RGB', OG_RENDEREFFECT_RGB);
 goog.exportSymbol('OG_RENDEREFFECT_CHROMADEPTH', OG_RENDEREFFECT_CHROMADEPTH);
