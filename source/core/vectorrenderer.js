@@ -23,7 +23,7 @@
 
 goog.provide('owg.VectorRenderer');
 
-goog.require('owg.GeoCoord');
+goog.require('owg.Surface');
 
 //------------------------------------------------------------------------------
 /**
@@ -35,6 +35,8 @@ function VectorRenderer(engine)
    /** @type {engine3d} */
    this.engine = engine;
 
+   /** @type {Array.< Array.<Surface> >} */
+   this.vectorarray = [];
 
 }
 //------------------------------------------------------------------------------
@@ -45,7 +47,31 @@ function VectorRenderer(engine)
  */
 VectorRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
 {
-
+   for (var i=0;i<this.vectorarray.length;i++)
+   {
+      for (var j=0;j<this.vectorarray[i].length;j++)
+      {
+         this.vectorarray[i][j].Draw();
+      }
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @param {Array.<Surface>} surfaces
+ * @return {number}
+ */
+VectorRenderer.prototype.AddVector = function(surfaces)
+{
+   this.vectorarray.push(surfaces);
+   return this.vectorarray.length-1;
+}
+//------------------------------------------------------------------------------
+/**
+ * @param {number} index
+ */
+VectorRenderer.prototype.RemoveVector = function(index)
+{
+   this.vectorarray.splice(index,1);
 }
 //------------------------------------------------------------------------------
 
