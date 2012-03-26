@@ -25,6 +25,7 @@ goog.provide('owg.ogVector');
 
 goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
+goog.require('owg.Surface');
 
 //------------------------------------------------------------------------------
 /**
@@ -47,6 +48,10 @@ function ogVector()
    this.cbf = null;
    /** @type {Object} */
    this.options = null;
+   /** @type {Array.<Surface>}*/
+   this.surfaces = [];
+   /**@type {number} */
+   this.indexInRendererArray = -1;
    /** @type {number} */
    this.layerID = -1; //the id of the vector layer containing this geometry.
    /** @type {Array.<number>} */
@@ -94,8 +99,8 @@ ogVector.prototype.ParseOptions = function(options)
  */
 ogVector.prototype._OnDestroy = function()
 {
-   //var renderer = this._GetVectorRenderer();
-   //renderer.RemoveVector(this.indexInRendererArray);
+   var renderer = this._GetVectorRenderer();
+   renderer.RemoveVector(this.indexInRendererArray);
 }
 //------------------------------------------------------------------------------
 /**
@@ -122,6 +127,25 @@ ogVector.prototype._GetVectorRenderer = function()
       }
    }
    return renderer;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description retrieve Engine
+ * @return {engine3d}
+ */
+ogVector.prototype._GetEngine = function()
+{
+   /** @type {VectorRenderer} */
+   var renderer = null;
+   /** @type {ogScene} */
+   var scene = /** @type ogScene */this.parent;
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+
+   return engine;
 }
 //------------------------------------------------------------------------------
 /**
@@ -187,7 +211,9 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
 {
    ogLog("CreateFromJSONObject");
    var gc = new GeoCoord();
-   var cart = [0,0,0];
+   var cart0 = [0,0,0];
+   var cart1 = [0,0,0];
+   var bCreated = false;
 
    if(jsonobject['type']=="FeatureCollection")
    {
@@ -245,6 +271,7 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                      if (geometrytype == "LineString")
                      {
                         var geopairs = [];
+                        var geopairsrev = [];
                         if (goog.isDef(geometry['coordinates'] && goog.isArray(geometry['coordinates'])))
                         {
                            var coords = geometry['coordinates'];
@@ -256,17 +283,13 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                                  var lng = coords[j][0];
                                  var lat = coords[j][1];
 
-                                 gc.Set(lng, lat, this.minelv);
-                                 gc.ToCartesian(cart);
-
-                                 geopairs.push([cart[0], cart[1], cart[2]]);
-                                 //ogLog("[GeoJSON Parser] push0(" + cart[0] + ", " + cart[1] + ", " + cart[2] + ")");
-
                                  gc.Set(lng, lat, this.maxelv);
-                                 gc.ToCartesian(cart);
+                                 gc.ToCartesian(cart0);
+                                 gc.Set(lng, lat, this.minelv);
+                                 gc.ToCartesian(cart1);
 
-                                 geopairs.push([cart[0], cart[1], cart[2]]);
-                                 //ogLog("[GeoJSON Parser] push1(" + cart[0] + ", " + cart[1] + ", " + cart[2] + ")");
+                                 geopairs.push([cart0[0], cart0[1], cart0[2]]);
+                                 geopairs.push([cart1[0], cart1[1], cart1[2]]);
                               }
 
                            }
@@ -274,24 +297,33 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
 
                         var indexlist = [];
                         var pointlist = [];
-                        if (geopairs.length >=4)
+                        if (geopairs.length >=2)
                         {
                            var idx = 0;
-                           var p0 = geopairs[0]; indexlist.push(idx); idx++;
-                           var p1 = geopairs[1]; indexlist.push(idx); idx++;
-                           for (var j=2;j<geopairs.length;j=j+2)
+
+                           // todo: extrude
+                           for (var j=0;j<geopairs.length;j++)
                            {
-                              var p2 = geopairs[j]; indexlist.push(idx); idx++;
-                              var p3 = geopairs[j+1]; indexlist.push(idx); idx++;
-
-                              // add p2,p3 to triangle strip
-                              // quad: p0,p1, p2, p3
-
-                              // todo: implement
-
-                              p0 = p2;
-                              p1 = p3;
+                              var pt = geopairs[j]; indexlist.push(idx); idx++;
+                              pointlist.push(pt[0]); pointlist.push(pt[1]); pointlist.push(pt[2]);
                            }
+
+                           /** @type {ObjectJSON} */
+                           var object = {"VertexSemantic" : "", "Vertices" : null, "IndexSemantic":"", "Indices":null};
+                           object["VertexSemantic"]  = "p";
+                           object["IndexSemantic"] = "TRIANGLESTRIP";
+                           object["Vertices"] = pointlist;
+                           object["Indices"] = indexlist;
+
+                           var engine = this._GetEngine();
+                           var surface = new Surface(engine);
+
+                           surface.CreateFromJSONObject(object, null, null, surface);
+                           //surface.SolidCube([0,0.06,0],[2,0.002,2],[1,1,1,1]);
+
+                           this.surfaces.push(surface);
+
+                           bCreated = true;
                         }
                      }
                      else if (geometrytype == "MultiLineString")
@@ -323,6 +355,12 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
    else
    {
       // not yet supported...
+   }
+
+   if (bCreated)
+   {
+      var renderer = this._GetVectorRenderer();
+      this.indexInRendererArray = renderer.AddVector(this.surfaces);
    }
 }
 

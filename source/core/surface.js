@@ -156,7 +156,7 @@ function Surface(engine)
 
    /** @type {vec4} */
    this.solidcolor = new vec4();
-   this.solidcolor.Set(0, 0, 0, 1);
+   this.solidcolor.Set(1, 0, 0, 1);
 
    /** @type {TriangleIntersector} */
    this.intersector = new TriangleIntersector();

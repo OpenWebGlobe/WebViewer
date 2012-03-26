@@ -37,7 +37,6 @@ function VectorRenderer(engine)
 
    /** @type {Array.< Array.<Surface> >} */
    this.vectorarray = [];
-
 }
 //------------------------------------------------------------------------------
 /**
@@ -49,10 +48,7 @@ VectorRenderer.prototype.Render = function(vCameraPosition, matModelViewProjecti
 {
    for (var i=0;i<this.vectorarray.length;i++)
    {
-      for (var j=0;j<this.vectorarray[i].length;j++)
-      {
-         this.vectorarray[i][j].Draw();
-      }
+      this.engine.VectorRender(this.vectorarray[i],this.vectorarray[i], true);
    }
 }
 //------------------------------------------------------------------------------
