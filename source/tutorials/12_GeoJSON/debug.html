@@ -34,8 +34,8 @@
       var world = ogGetWorld(scene);
 
       // Create a vector layer and add some
-      var vectorlayer = ogCreateVectorLayer(world, "Switzerland");
-      ogLoadVectorsAsync(vectorlayer, "switzerland.json");
+      var vectorlayer = ogAddVectorLayer(world, {"id": "Switzerland"});
+      ogLoadVectorAsync(vectorlayer, "switzerland.json");
 	</script>
 	</body>
 </html>
