@@ -63,9 +63,8 @@ var ElevationLayerOptions;
  * @author Martin Christen, martin.christen@fhnw.ch
  *
  * @param {engine3d} engine
- * @param {boolean} rendertotexture true if render to texture is enabled
  */
-function GlobeRenderer(engine, rendertotexture)
+function GlobeRenderer(engine)
 {
    /** @type {engine3d} */
    this.engine = engine;
@@ -83,10 +82,6 @@ function GlobeRenderer(engine, rendertotexture)
    this.lstFrustum = [];
    /** @type {number} */
    this.lastalt = 0;
-   /** @type {boolean} */
-   this.bRenderTexture = rendertotexture;
-   /** @type {Texture} */
-   this.texture = null;
    /** @type {Object} */
    this.iterator = new Object();
    /** @type {number} */
@@ -487,23 +482,9 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    this._Divide();  // Subdivide Planet
    this._Optimize(); // Optimize Planet: Remove Hidden Tiles!
 
-
-   if (this.bRenderTexture)
+   for (var i=0;i<this.lstFrustum.length;i++)
    {
-      this.engine.PushRenderTarget(this.texture);
-      this.engine.SetupDepthTextureTarget();
-
-      for (var i=0;i<this.lstFrustum.length;i++)
-      {
-         this.lstFrustum[i].Render(false);
-      }
-   }
-   else
-   {
-      for (var i=0;i<this.lstFrustum.length;i++)
-      {
-         this.lstFrustum[i].Render(false);
-      }
+      this.lstFrustum[i].Render(false);
    }
 
    var northTiles=[];
@@ -550,12 +531,6 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    if(southTiles.length>3)
    {
      this._GenerateSouthPole(southTiles); 
-   }
-
-   if (this.bRenderTexture)
-   {
-      this.engine.PopRenderTarget();
-      this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
    }
 }
 //------------------------------------------------------------------------------
@@ -1251,7 +1226,7 @@ GlobeRenderer.prototype.GetRenderParam = function()
 {
    return this.renderparam;
 }
-//------------------------------------------------------------------------------
+//------------------------------------------------------ƒ------------------------
 // Render Effects, special shaders for terrain
 //
 /** @enum {number} */
@@ -1261,22 +1236,4 @@ GlobeRenderer.RenderEffect =
    CHROMADEPTH: 1    // render globe using chroma depth elevation
 };
 //------------------------------------------------------------------------------
-/**
- * @description Called when canvas is resized.
- * @param w
- * @param h
- */
-GlobeRenderer.prototype.DoResize = function(w,h)
-{
-   if (this.bRenderTexture)
-   {
-      if (this.texture == null)
-      {
-         this.texture = new Texture(this.engine, true, w, h, true);
-      }
-      else
-      {
-         this.texture.UpdateFBO(w, h, true);
-      }
-   }
-}
+

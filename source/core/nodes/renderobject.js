@@ -52,6 +52,10 @@ function RenderObjectNode()
       this.aoeimagerenderer = null;
       /** @type {VectorRenderer} */
       this.vectorrenderer = null;
+      /** @type {boolean} */
+      this.bRenderTexture = true;
+      /** @type {Texture} */
+      this.texture = null;
       
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -62,12 +66,24 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.OnRender = function()
       {
+         if (this.bRenderTexture)
+         {
+            this.engine.PushRenderTarget(this.texture);
+            this.engine.SetupDepthTextureTarget();
+         }
+
          this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.vectorrenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.poirenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.geometryrenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.billboardrenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.aoeimagerenderer.Render(this.camera, this.engine.matModelViewProjection);
+
+         if (this.bRenderTexture)
+         {
+            this.engine.PopRenderTarget();
+            this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
+         }
       }
       
       //------------------------------------------------------------------------
@@ -80,12 +96,12 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.OnInit = function()
       {
-            this.globerenderer = new GlobeRenderer(this.engine, true); // true: enable render to texture
-            this.vectorrenderer = new VectorRenderer(this.engine);
-            this.poirenderer = new PoiRenderer(this.engine);
-            this.geometryrenderer = new GeometryRenderer(this.engine);
-            this.billboardrenderer = new BillboardRenderer(this.engine);
-            this.aoeimagerenderer = new AoeImageRenderer(this.engine);
+         this.globerenderer = new GlobeRenderer(this.engine);
+         this.vectorrenderer = new VectorRenderer(this.engine);
+         this.poirenderer = new PoiRenderer(this.engine);
+         this.geometryrenderer = new GeometryRenderer(this.engine);
+         this.billboardrenderer = new BillboardRenderer(this.engine);
+         this.aoeimagerenderer = new AoeImageRenderer(this.engine);
       }
       
       //------------------------------------------------------------------------
@@ -98,9 +114,16 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.DoResize = function(w,h)
       {
-         if (this.globerenderer)
+         if (this.bRenderTexture)
          {
-            this.globerenderer.DoResize(w,h);
+            if (this.texture == null)
+            {
+               this.texture = new Texture(this.engine, true, w, h, true);
+            }
+            else
+            {
+               this.texture.UpdateFBO(w, h, true);
+            }
          }
       }
       //------------------------------------------------------------------------
