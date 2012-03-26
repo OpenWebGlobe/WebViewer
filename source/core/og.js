@@ -20,6 +20,10 @@
 ********************************************************************************
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
+/* This is the functional wrapper of OpenWebGlobe
+   The OOP version will be available after OpenWebGlobe 1.0 release.
+   For now only use the functional model.
+********************************************************************************/
 
 goog.provide('owg.OpenWebGlobe');
 
@@ -34,6 +38,8 @@ goog.require('owg.ogWorld');
 goog.require('owg.ogNavigationController');
 goog.require('owg.ogImageLayer');
 goog.require('owg.ogElevationLayer');
+goog.require('owg.ogVector');
+goog.require('owg.ogVectorLayer');
 goog.require('owg.ogMeshObject');
 goog.require('owg.ogPOI');
 goog.require('owg.ogSurface');
@@ -67,6 +73,8 @@ function _CreateID()
 //------------------------------------------------------------------------------
 /**
  * @description Internal factory function to create an OpenWebGlobeObject
+ * todo [HIGH PRIORITY]: move this to ogObjectFactory.js
+ *                       function ObjectFactory.CreateObject(...)
  * @param {number} typ the object type
  * @param {ogObject} parent the parent object or null
  * @param {Object} options the object specific options
@@ -184,6 +192,14 @@ function _CreateObject(typ, parent, options)
    else if (typ ==  OG_OBJECT_EARTHPOLYLINE)
    {
       newobject = new ogEarthPolyline();
+   }
+   else if (typ == OG_OBJECT_VECTORLAYER)
+   {
+      newobject = new ogVectorLayer();
+   }
+   else if (typ == OG_OBJECT_VECTOR)
+   {
+      newobject = new ogVector();
    }
    
    if (newobject != null)
@@ -1640,8 +1656,97 @@ function ogShowPOILayer(poilayer_id)
    }
 }
 goog.exportSymbol('ogShowPOILayer', ogShowPOILayer);
-
 //------------------------------------------------------------------------------
+//##############################################################################
+// ** VECTOR LAYER-OBJECT **
+//##############################################################################
+/**
+ * @description Add an image layer to the globe
+ * @param {number} world_id
+ * @param {Object} options
+ * @return {number}
+ */
+function ogAddVectorLayer(world_id, options)
+{
+   // test if context_id is a valid context
+   var world = _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      var vectorlayer = _CreateObject(OG_OBJECT_VECTORLAYER, world, options);
+      return vectorlayer.id;
+   }
+
+   return -1;
+
+}
+goog.exportSymbol('ogAddVectorLayer', ogAddVectorLayer);
+//------------------------------------------------------------------------------
+/**
+ * @description Remove elevation layer from globe
+ * @param {number} layer_id
+ */
+function ogRemoveVectorLayer(layer_id)
+{
+   // test if context_id is a valid elevation layer
+   // @type {ogVectorLayer}
+   var layer = _GetObjectFromId(layer_id);
+   if (layer && layer.type == OG_OBJECT_VECTORLAYER)
+   {
+      layer.RemoveVectorLayer();
+      layer.UnregisterObject();
+   }
+}
+goog.exportSymbol('ogRemoveVectorLayer', ogRemoveVectorLayer);
+//------------------------------------------------------------------------------
+/**
+ * @description load vector
+ * @param {number} layer_id
+ * @param {string} url
+ * @return {number}
+ */
+function ogLoadVectorAsync(layer_id, url)
+{
+   // test if context_id is a valid elevation layer
+   // @type {ogVectorLayer}
+   var layer = _GetObjectFromId(layer_id);
+   if (layer && layer.type == OG_OBJECT_VECTORLAYER)
+   {
+      var options = { "url"  : url,
+                      "type" : "GeoJSON" };
+      var vector = layer.CreateVector(options);
+      return vector.id;
+   }
+
+   return -1;
+}
+goog.exportSymbol('ogLoadVectorAsync', ogLoadVectorAsync);
+//------------------------------------------------------------------------------
+/**
+ * @description Destroy vector, free all memory
+ * @param {number} vector_id the vector to be destroyed
+ */
+function ogDestroyVector(vector_id)
+{
+   var vector = _GetObjectFromId(vector_id);
+   if (vector && vector.type == OG_OBJECT_VECTOR)
+   {
+      if(vector.layer)
+      {
+         var layer = vector.layer;
+         if (layer  && layer.type == OG_OBJECT_VECTORLAYER)
+         {
+            layer.RemoveVector(vector);
+         }
+      }
+      else
+      {
+         vector.UnregisterObject();
+      }
+
+   }
+   return -1;
+}
+goog.exportSymbol('ogDestroyVector', ogDestroyVector);
 //##############################################################################
 // ** POI OBJECT **
 //##############################################################################
@@ -1676,11 +1781,11 @@ function ogDestroyPOI(poi_id)
       if(POI.layer)
       {
          //if the poi is in a poilayer, the poilayer destroies the poi.
-            var POILayer = _GetObjectFromId(POI.layer);
-            if (POILayer  && POILayer .type == OG_OBJECT_POILAYER)
-            {
-               POILayer.RemovePOI(POI);
-            }
+         var POILayer = POI.layer;
+         if (POILayer  && POILayer.type == OG_OBJECT_POILAYER)
+         {
+            POILayer.RemovePOI(POI);
+         }
       }
       else
       {
