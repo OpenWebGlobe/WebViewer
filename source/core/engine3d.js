@@ -573,7 +573,7 @@ engine3d.prototype.SetupDepthTextureTarget = function()
  * @param {Array.<Surface>} bboxarray
  * @param {boolean=} opt_bBlend
  */
-engine3d.prototype.VectorRenderer = function(geometryarray, bboxarray, opt_bBlend)
+engine3d.prototype.VectorRender = function(geometryarray, bboxarray, opt_bBlend)
 {
    /** @type {WebGLRenderingContext} */
    var gl = this.gl;
