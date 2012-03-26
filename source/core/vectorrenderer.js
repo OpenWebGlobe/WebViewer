@@ -23,12 +23,11 @@
 
 goog.provide('owg.VectorRenderer');
 
-goog.require('owg.Surface');
-goog.require('owg.engine3d');
 goog.require('owg.GeoCoord');
 
+//------------------------------------------------------------------------------
 /**
- *
+ * @constructor
  * @param {engine3d} engine
  */
 function VectorRenderer(engine)
@@ -40,20 +39,13 @@ function VectorRenderer(engine)
 }
 //------------------------------------------------------------------------------
 /**
- * @description Create Polygon from a list of WGS84 points
- * @param {Array.< Array.<number> >} points_wgs84
+ * @description Render vectors
+ * @param {vec3} vCameraPosition
+ * @param {mat4} matModelViewProjection
  */
-VectorRenderer.prototype.FromPolygon = function(points_wgs84)
+VectorRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
 {
 
 }
 //------------------------------------------------------------------------------
-/**
- * @description Create Polygon from a list of WGS84 points
- * @param {Array.< Array.<number> >} points_wgs84
- */
-VectorRenderer.prototype.FromPolyLine = function (points_wgs84)
-{
 
-}
-//------------------------------------------------------------------------------

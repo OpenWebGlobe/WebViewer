@@ -24,6 +24,7 @@
 goog.provide('owg.RenderObjectNode');
 
 goog.require('owg.GlobeRenderer');
+goog.require('owg.VectorRenderer');
 goog.require('owg.PoiRenderer');
 goog.require('owg.GeometryRenderer');
 goog.require('owg.BillboardRenderer');
@@ -49,6 +50,8 @@ function RenderObjectNode()
       this.billboardrenderer = null;
       /** @type {AoeImageRenderer} */
       this.aoeimagerenderer = null;
+      /** @type {VectorRenderer} */
+      this.vectorrenderer = null;
       
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -60,6 +63,7 @@ function RenderObjectNode()
       this.OnRender = function()
       {
          this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
+         this.vectorrenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.poirenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.geometryrenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.billboardrenderer.Render(this.camera, this.engine.matModelViewProjection);
@@ -77,6 +81,7 @@ function RenderObjectNode()
       this.OnInit = function()
       {
             this.globerenderer = new GlobeRenderer(this.engine, true); // true: enable render to texture
+            this.vectorrenderer = new VectorRenderer(this.engine);
             this.poirenderer = new PoiRenderer(this.engine);
             this.geometryrenderer = new GeometryRenderer(this.engine);
             this.billboardrenderer = new BillboardRenderer(this.engine);
