@@ -26,6 +26,7 @@ goog.provide('owg.ogVector');
 goog.require('owg.ObjectDefs');
 goog.require('owg.ogObject');
 goog.require('owg.Surface');
+goog.require('owg.poly2tri');
 
 //------------------------------------------------------------------------------
 /**
@@ -247,20 +248,27 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
 
                   if (goog.isDef(properties['highlightcolor']))
                   {
-                     ogLog("[GeoJSON Parser] Found user property highlightcolor");
                      this.highlightcolor = properties['highlightcolor']; // todo: type check
                   }
 
                   if (goog.isDef(properties['linewidth'])) // LineString/MultiLineString only..
                   {
-                     ogLog("[GeoJSON Parser] Found user property linewidth");
                      this.linewidth = properties['linewidth']; // todo: type check
                   }
 
                   if (goog.isDef(properties['pointsize'])) // Point, Multipoint only...
                   {
-                     ogLog("[GeoJSON Parser] Found user property pointsize");
                      this.pointsize = properties['pointsize']; // todo: type check
+                  }
+
+                  if (goog.isDef(properties['minelv'])) // Point, Multipoint only...
+                  {
+                     this.minelv = properties['minelv']; // todo: type check
+                  }
+
+                  if (goog.isDef(properties['maxelv'])) // Point, Multipoint only...
+                  {
+                     this.maxelv = properties['maxelv']; // todo: type check
                   }
 
                   // 2) Parse Geometry
@@ -271,7 +279,6 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                      if (geometrytype == "LineString")
                      {
                         var geopairs = [];
-                        var geopairsrev = [];
                         if (goog.isDef(geometry['coordinates'] && goog.isArray(geometry['coordinates'])))
                         {
                            var coords = geometry['coordinates'];
@@ -297,21 +304,126 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
 
                         var indexlist = [];
                         var pointlist = [];
-                        if (geopairs.length >=2)
-                        {
-                           var idx = 0;
 
-                           // todo: extrude
+                        var w = 0.5 * this.linewidth * CARTESIAN_SCALE_INV;
+
+                        if (geopairs.length >=4)
+                        {
+
+
+                           var P0 = geopairs[0];
+                           var P1 = geopairs[1];
+                           var idx = 0;
+                           var idx00, idx10, idx20, idx30;
+                           var idx01, idx11, idx21, idx31;
+
+                           for (var j=2;j<geopairs.length-1;j+=2)
+                           {
+                              var P2 = geopairs[j];
+                              var P3 = geopairs[j+1];
+
+                              // at this time P0,P1,P2,P3 is
+                              // the quad to be extruded
+
+                              /*indexlist.push(idx0);
+                              indexlist.push(idx1);
+                              indexlist.push(idx2);
+
+                              indexlist.push(idx1);
+                              indexlist.push(idx3);
+                              indexlist.push(idx2);*/
+
+                              var ux = P2[0]-P0[0];
+                              var uy = P2[1]-P0[1];
+                              var uz = P2[2]-P0[2];
+
+                              var vx = P1[0]-P0[0];
+                              var vy = P1[1]-P0[1];
+                              var vz = P1[2]-P0[2];
+
+                              // cross product n = u x v
+                              var nx = uy*vz-uz*vy;
+                              var ny = uz*vx-ux*vz;
+                              var nz = ux*vy-uy*vx;
+                              // normalize n (including cartesian scaled linewidth)
+                              var leninv = w/Math.sqrt(nx*nx+ny*ny+nz*nz);
+                              nx = nx*leninv;
+                              ny = ny*leninv;
+                              nz = nz*leninv;
+
+                              var P00 = [P0[0]+nx, P0[1]+ny, P0[2]+nz];
+                              var P10 = [P1[0]+nx, P1[1]+ny, P1[2]+nz];
+                              var P20 = [P2[0]+nx, P2[1]+ny, P2[2]+nz];
+                              var P30 = [P3[0]+nx, P3[1]+ny, P3[2]+nz];
+
+                              var P01 = [P0[0]-nx, P0[1]-ny, P0[2]-nz];
+                              var P11 = [P1[0]-nx, P1[1]-ny, P1[2]-nz];
+                              var P21 = [P2[0]-nx, P2[1]-ny, P2[2]-nz];
+                              var P31 = [P3[0]-nx, P3[1]-ny, P3[2]-nz];
+
+
+
+                              pointlist.push(P00[0]); pointlist.push(P00[1]); pointlist.push(P00[2]);
+                              idx00 = idx; idx++;
+                              pointlist.push(P10[0]); pointlist.push(P10[1]); pointlist.push(P10[2]);
+                              idx10 = idx; idx++;
+                              pointlist.push(P20[0]); pointlist.push(P20[1]); pointlist.push(P20[2]);
+                              idx20 = idx; idx++;
+                              pointlist.push(P30[0]); pointlist.push(P30[1]); pointlist.push(P30[2]);
+                              idx30 = idx; idx++;
+
+
+                              pointlist.push(P01[0]); pointlist.push(P01[1]); pointlist.push(P01[2]);
+                              idx01 = idx; idx++;
+                              pointlist.push(P11[0]); pointlist.push(P11[1]); pointlist.push(P11[2]);
+                              idx11 = idx; idx++;
+                              pointlist.push(P21[0]); pointlist.push(P21[1]); pointlist.push(P21[2]);
+                              idx21 = idx; idx++;
+                              pointlist.push(P31[0]); pointlist.push(P31[1]); pointlist.push(P31[2]);
+                              idx31 = idx; idx++;
+
+                              // Front:
+                              indexlist.push(idx01); indexlist.push(idx11); indexlist.push(idx21);
+                              indexlist.push(idx11); indexlist.push(idx31); indexlist.push(idx21);
+                              // Back:
+                              indexlist.push(idx00); indexlist.push(idx20); indexlist.push(idx10);
+                              indexlist.push(idx10); indexlist.push(idx20); indexlist.push(idx30);
+                              // Left:
+                              indexlist.push(idx00); indexlist.push(idx10); indexlist.push(idx01);
+                              indexlist.push(idx10); indexlist.push(idx11); indexlist.push(idx01);
+                              // Right:
+                              indexlist.push(idx20); indexlist.push(idx21); indexlist.push(idx31);
+                              indexlist.push(idx30); indexlist.push(idx20); indexlist.push(idx31);
+                              // Top:
+                              indexlist.push(idx00); indexlist.push(idx01); indexlist.push(idx20);
+                              indexlist.push(idx01); indexlist.push(idx21); indexlist.push(idx20);
+                              // Bottom:
+                              indexlist.push(idx10); indexlist.push(idx31); indexlist.push(idx11);
+                              indexlist.push(idx10); indexlist.push(idx30); indexlist.push(idx31);
+
+                              // fwd base points
+                              P0 = P2;
+                              P1 = P3;
+                              // fwd indices
+                              idx00 = idx01;
+                              idx10 = idx11;
+                              idx20 = idx21;
+                              idx30 = idx31;
+
+                           }
+
+
+                           // generate pointlist (for p-shader)
                            for (var j=0;j<geopairs.length;j++)
                            {
-                              var pt = geopairs[j]; indexlist.push(idx); idx++;
+                              var pt = geopairs[j];
                               pointlist.push(pt[0]); pointlist.push(pt[1]); pointlist.push(pt[2]);
                            }
 
                            /** @type {ObjectJSON} */
                            var object = {"VertexSemantic" : "", "Vertices" : null, "IndexSemantic":"", "Indices":null};
                            object["VertexSemantic"]  = "p";
-                           object["IndexSemantic"] = "TRIANGLESTRIP";
+                           object["IndexSemantic"] = "TRIANGLES";
                            object["Vertices"] = pointlist;
                            object["Indices"] = indexlist;
 
@@ -319,7 +431,15 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                            var surface = new Surface(engine);
 
                            surface.CreateFromJSONObject(object, null, null, surface);
-                           //surface.SolidCube([0,0.06,0],[2,0.002,2],[1,1,1,1]);
+
+                           if (this.color.length == 4)
+                           {
+                              surface.solidcolor.Set(this.color[0],this.color[1],this.color[2],this.color[3]);
+                           }
+                           else if (this.color.length == 3)
+                           {
+                              surface.solidcolor.Set(this.color[0],this.color[1],this.color[2],1);
+                           }
 
                            this.surfaces.push(surface);
 
