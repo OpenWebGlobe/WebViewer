@@ -1066,7 +1066,7 @@ GlobeRenderer.prototype._GenerateSouthPole = function(southTiles)
             vertices.push(this.southpolecolor[1]);
             vertices.push(this.southpolecolor[2]);
             vertices.push(1);
-            j -= 5; 
+            j -= 5;
          }
       }
       
