@@ -315,10 +315,10 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                         if (geopairs.length == 4)
                         {
                            // Special Case: cuboid
-                           var P0 = geopairs[0];
-                           var P1 = geopairs[1];
-                           var P2 = geopairs[2];
-                           var P3 = geopairs[3];
+                           P0 = geopairs[0];
+                           P1 = geopairs[1];
+                           P2 = geopairs[2];
+                           P3 = geopairs[3];
 
                            var ux = P2[0]-P0[0];
                            var uy = P2[1]-P0[1];
@@ -386,13 +386,68 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                            indexlist.push(idx10); indexlist.push(idx31); indexlist.push(idx11);
                            indexlist.push(idx10); indexlist.push(idx30); indexlist.push(idx31);
                         }
-                        else if (geopairs.length>4)
+                        else if (geopairs.length>=6)
                         {
-                           var P0 = geopairs[0];
-                           var P1 = geopairs[1];
 
-                           var P2 = geopairs[j];
-                           var P3 = geopairs[j+1];
+                           P0 = geopairs[0];
+                           P1 = geopairs[1];
+                           P2 = geopairs[2];
+                           P3 = geopairs[3];
+                           var P4,P5;
+
+                           // calculate first normal (Triangle P0, P1, P2)
+                           var ux = P2[0]-P0[0];
+                           var uy = P2[1]-P0[1];
+                           var uz = P2[2]-P0[2];
+
+                           var vx = P1[0]-P0[0];
+                           var vy = P1[1]-P0[1];
+                           var vz = P1[2]-P0[2];
+
+                           var nx1 = uy*vz-uz*vy;
+                           var ny1 = uz*vx-ux*vz;
+                           var nz1 = ux*vy-uy*vx;
+                           // normalize n (including cartesian scaled linewidth)
+                           var leninv = w/Math.sqrt(nx1*nx1+ny1*ny1+nz1*nz1);
+                           nx1 = nx1*leninv;
+                           ny1 = ny1*leninv;
+                           nz1 = nz1*leninv;
+
+
+                           for (var j=4;j<numcoords-1;j=j+2)
+                           {
+                              P4 = geopairs[j];
+                              P5 = geopairs[j+1];
+
+                              // calculate second normal (Triangle P2, P3, P4)
+                              ux = P4[0]-P2[0];
+                              uy = P4[1]-P2[1];
+                              uz = P4[2]-P2[2];
+
+                              vx = P3[0]-P2[0];
+                              vy = P3[1]-P2[1];
+                              vz = P3[2]-P2[2];
+
+                              var nx2 = uy*vz-uz*vy;
+                              var ny2 = uz*vx-ux*vz;
+                              var nz2 = ux*vy-uy*vx;
+                              // normalize n (including cartesian scaled linewidth)
+                              leninv = w/Math.sqrt(nx2*nx2+ny2*ny2+nz2*nz2);
+                              nx2 = nx2*leninv;
+                              ny2 = ny2*leninv;
+                              nz2 = nz2*leninv;
+
+                              // todo: intersect line1: (P1+n1)-(P3+n1) with line2: (P3+n2)-(P5+n2)
+
+                              // advance...
+                              P0 = P2;
+                              P1 = P3;
+                              P2 = P4;
+                              P3 = P5;
+                              nx1 = nx2;
+                              ny1 = ny2;
+                              nz1 = nz2;
+                           }
                         }
 
 
