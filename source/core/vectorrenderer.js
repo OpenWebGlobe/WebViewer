@@ -50,6 +50,15 @@ VectorRenderer.prototype.Render = function(vCameraPosition, matModelViewProjecti
    {
       this.engine.VectorRender(this.vectorarray[i],this.vectorarray[i], true);
    }
+
+   //enable for debugging:
+   /*for (var i=0;i<this.vectorarray.length;i++)
+   {
+      for (var j=0;j<this.vectorarray[i].length;j++)
+      {
+         this.vectorarray[i][j].Draw();
+      }
+   }*/
 }
 //------------------------------------------------------------------------------
 /**
