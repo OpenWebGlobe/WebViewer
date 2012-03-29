@@ -9,7 +9,7 @@
             "id" : "Switzerland",
             "color" : [1,0,1,0.2],
             "highlightcolor" : [1,0,0,0.5],
-            "linewidth" : 10000
+            "linewidth" : 100
          },
          "geometry":
          {

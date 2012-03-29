@@ -616,7 +616,7 @@ engine3d.prototype.VectorRender = function(geometryarray, bboxarray, opt_bBlend)
    gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 
    if (bBlend) { gl.enable(gl.BLEND); }
-   gl.disable(gl.DEPTH_TEST);
+   //gl.disable(gl.DEPTH_TEST);
 
    for (var i=0;i<bboxarray.length;i++)
    {
