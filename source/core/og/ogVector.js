@@ -280,9 +280,10 @@ ogVector.prototype._LineLineIntersection = function(A0,A1,B0,B1)
  * @param P30
  * @param pointlist
  * @param indexlist
+ * @param bIgnoreRight
  * @return {number} incremented index
  */
-ogVector.prototype._AppendCuboid = function(idx, P00, P01, P21, P20, P10, P11, P31, P30, pointlist, indexlist)
+ogVector.prototype._AppendCuboid = function(idx, P00, P01, P21, P20, P10, P11, P31, P30, pointlist, indexlist, bIgnoreRight)
 {
    var idx00, idx10, idx20, idx30;
    var idx01, idx11, idx21, idx31;
@@ -314,8 +315,11 @@ ogVector.prototype._AppendCuboid = function(idx, P00, P01, P21, P20, P10, P11, P
    indexlist.push(idx00); indexlist.push(idx10); indexlist.push(idx01);
    indexlist.push(idx10); indexlist.push(idx11); indexlist.push(idx01);
    // Right:
-   indexlist.push(idx20); indexlist.push(idx21); indexlist.push(idx31);
-   indexlist.push(idx30); indexlist.push(idx20); indexlist.push(idx31);
+   if (!bIgnoreRight)
+   {
+      indexlist.push(idx20); indexlist.push(idx21); indexlist.push(idx31);
+      indexlist.push(idx30); indexlist.push(idx20); indexlist.push(idx31);
+   }
    // Top:
    indexlist.push(idx00); indexlist.push(idx01); indexlist.push(idx20);
    indexlist.push(idx01); indexlist.push(idx21); indexlist.push(idx20);
@@ -505,7 +509,7 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                            P21 = [P2[0]-nx, P2[1]-ny, P2[2]-nz];
                            P31 = [P3[0]-nx, P3[1]-ny, P3[2]-nz];
 
-                           idx = this._AppendCuboid(0, P00, P01, P21, P20, P10, P11, P31, P30, pointlist, indexlist);
+                           idx = this._AppendCuboid(0, P00, P01, P21, P20, P10, P11, P31, P30, pointlist, indexlist, false);
                            var smallsurface = this._CreateSurface(pointlist, indexlist);
                            this.surfaces.push(smallsurface);
                         }
@@ -629,7 +633,7 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                                  P21 = [P2[0] - nx1, P2[1] - ny1, P2[2] - nz1];
                               }
 
-                              idx = this._AppendCuboid(0, P00, P01, P21, P20, P10, P11, P31, P30, pointlist, indexlist);
+                              idx = this._AppendCuboid(0, P00, P01, P21, P20, P10, P11, P31, P30, pointlist, indexlist, true);
                               var surface = this._CreateSurface(pointlist, indexlist);
                               this.surfaces.push(surface);
                               pointlist = []; indexlist = [];
@@ -674,7 +678,7 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                            P40 = [P4[0]+nx1, P4[1]+ny1, P4[2]+nz1];
                            P41 = [P4[0]-nx1, P4[1]-ny1, P4[2]-nz1];
 
-                           idx = this._AppendCuboid(0, P20, P21, P41, P40, P30, P31, P51, P50, pointlist, indexlist);
+                           idx = this._AppendCuboid(0, P20, P21, P41, P40, P30, P31, P51, P50, pointlist, indexlist, false);
                            var endsurface = this._CreateSurface(pointlist, indexlist);
                            this.surfaces.push(endsurface);
 
