@@ -521,9 +521,9 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                               vy = P3[1]-P2[1];
                               vz = P3[2]-P2[2];
 
-                              var nx2 = uy*vz-uz*vy;
-                              var ny2 = uz*vx-ux*vz;
-                              var nz2 = ux*vy-uy*vx;
+                              nx2 = uy*vz-uz*vy;
+                              ny2 = uz*vx-ux*vz;
+                              nz2 = ux*vy-uy*vx;
                               // normalize n (including cartesian scaled linewidth)
                               leninv = w/Math.sqrt(nx2*nx2+ny2*ny2+nz2*nz2);
                               nx2 = nx2*leninv;
