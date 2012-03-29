@@ -328,6 +328,39 @@ ogVector.prototype._AppendCuboid = function(idx, P00, P01, P21, P20, P10, P11, P
 }
 //------------------------------------------------------------------------------
 /**
+ * @param {Array.<number>} pointlist
+ * @param {Array.<number>} indexlist
+ * @return {Surface}
+ */
+ogVector.prototype._CreateSurface = function(pointlist,indexlist)
+{
+   /** @type {ObjectJSON} */
+   var object = {"VertexSemantic" : "", "Vertices" : null, "IndexSemantic":"", "Indices":null};
+   object["VertexSemantic"]  = "p";
+   object["IndexSemantic"] = "TRIANGLES";
+   object["Vertices"] = pointlist;
+   object["Indices"] = indexlist;
+
+   /** @type {engine3d} */
+   var engine = this._GetEngine();
+   /** @type {Surface} */
+   var surface = new Surface(engine);
+
+   surface.CreateFromJSONObject(object, null, null, surface);
+
+   if (this.color.length == 4)
+   {
+      surface.solidcolor.Set(this.color[0],this.color[1],this.color[2],this.color[3]);
+   }
+   else if (this.color.length == 3)
+   {
+      surface.solidcolor.Set(this.color[0],this.color[1],this.color[2],1);
+   }
+
+   return surface;
+}
+//------------------------------------------------------------------------------
+/**
  * @description Load model data from json object
  * @param {Object} jsonobject the json object.
  */
@@ -472,7 +505,9 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                            P21 = [P2[0]-nx, P2[1]-ny, P2[2]-nz];
                            P31 = [P3[0]-nx, P3[1]-ny, P3[2]-nz];
 
-                           idx = this._AppendCuboid(idx, P00, P01, P21, P20, P10, P11, P31, P30, pointlist, indexlist);
+                           idx = this._AppendCuboid(0, P00, P01, P21, P20, P10, P11, P31, P30, pointlist, indexlist);
+                           var smallsurface = this._CreateSurface(pointlist, indexlist);
+                           this.surfaces.push(smallsurface);
                         }
                         else if (geopairs.length>=6)
                         {
@@ -594,7 +629,10 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                                  P21 = [P2[0] - nx1, P2[1] - ny1, P2[2] - nz1];
                               }
 
-                              idx = this._AppendCuboid(idx, P00, P01, P21, P20, P10, P11, P31, P30, pointlist, indexlist);
+                              idx = this._AppendCuboid(0, P00, P01, P21, P20, P10, P11, P31, P30, pointlist, indexlist);
+                              var surface = this._CreateSurface(pointlist, indexlist);
+                              this.surfaces.push(surface);
+                              pointlist = []; indexlist = [];
 
                               // fwd
                               nx1 = nx2;
@@ -636,33 +674,11 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                            P40 = [P4[0]+nx1, P4[1]+ny1, P4[2]+nz1];
                            P41 = [P4[0]-nx1, P4[1]-ny1, P4[2]-nz1];
 
-                           idx = this._AppendCuboid(idx, P20, P21, P41, P40, P30, P31, P51, P50, pointlist, indexlist);
+                           idx = this._AppendCuboid(0, P20, P21, P41, P40, P30, P31, P51, P50, pointlist, indexlist);
+                           var endsurface = this._CreateSurface(pointlist, indexlist);
+                           this.surfaces.push(endsurface);
 
                         }
-
-
-                        /** @type {ObjectJSON} */
-                        var object = {"VertexSemantic" : "", "Vertices" : null, "IndexSemantic":"", "Indices":null};
-                        object["VertexSemantic"]  = "p";
-                        object["IndexSemantic"] = "TRIANGLES";
-                        object["Vertices"] = pointlist;
-                        object["Indices"] = indexlist;
-
-                        var engine = this._GetEngine();
-                        var surface = new Surface(engine);
-
-                        surface.CreateFromJSONObject(object, null, null, surface);
-
-                        if (this.color.length == 4)
-                        {
-                           surface.solidcolor.Set(this.color[0],this.color[1],this.color[2],this.color[3]);
-                        }
-                        else if (this.color.length == 3)
-                        {
-                           surface.solidcolor.Set(this.color[0],this.color[1],this.color[2],1);
-                        }
-
-                        this.surfaces.push(surface);
 
                         bCreated = true;
 
