@@ -9,7 +9,7 @@
                "id" : "Switzerland",
                "color" : [1,0,1,1],
                "highlightcolor" : [1,0,0,1],
-               "linewidth" : 10000,
+               "linewidth" : 5000,
                "minelv" : -2000,
                "maxelv" : 5000
             },
