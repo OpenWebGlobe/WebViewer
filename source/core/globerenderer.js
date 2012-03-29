@@ -446,6 +446,8 @@ GlobeRenderer.prototype._UpdateLayers = function()
  */
 GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjection)
 {
+   this.globecache.StartFrame();
+
    /** @type {WebGLRenderingContext} */
    var gl = this.engine.gl;
 
@@ -532,6 +534,7 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
    {
      this._GenerateSouthPole(southTiles); 
    }
+
 }
 //------------------------------------------------------------------------------
 
@@ -555,7 +558,7 @@ GlobeRenderer.prototype._SubDivide = function()
       this.iterator.cnt++;
       return;
    }
-   
+
    if (this.lstFrustum[i].IsAvailable())
    {
       if (this._CalcErrorMetric(i))

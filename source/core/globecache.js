@@ -47,8 +47,16 @@ function GlobeCache(engine, imagelayerlist, elevationlayerlist, quadtree, caches
    this.elevationlayerlist = elevationlayerlist;
    /** @type {MercatorQuadtree} */
    this.quadtree = quadtree;
-   
+
+   /** @type {Cache} */
    this.cache = new Cache(cachesize, false);
+
+
+   /** @type {Object} */
+   this.stats = {};
+
+   /** @type {number} */
+   this.stats.numRequests = 0;
 }
 //------------------------------------------------------------------------------
 /**
@@ -115,6 +123,7 @@ GlobeCache.prototype.RequestBlock = function(quadcode)
    
    if (terrainblock == null)
    {
+      this.stats.numRequests++;
       // item doesn't exist yet, create a new one and request data (async)
       terrainblock = new TerrainBlock(this.engine, quadcode, this.quadtree);
       terrainblock._AsyncRequestData(this.imagelayerlist, this.elevationlayerlist);
@@ -170,7 +179,32 @@ GlobeCache.prototype.GetMaxLod = function()
    return maximagelod;
 }
 //------------------------------------------------------------------------------
-
+/**
+ * @description this function is called when rendering loop starts
+ */
+GlobeCache.prototype.StartFrame = function()
+{
+   this.stats.numRequests = 0;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description returns number of new requests in current frame
+ * @return {number}
+ */
+GlobeCache.prototype.GetNumNewRequests = function()
+{
+   return this.stats.numRequests;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description returns number of new requests in current frame
+ * @return {number}
+ */
+GlobeCache.prototype.GetNumActiveRequests = function()
+{
+   return g_activeRequests;
+}
+//------------------------------------------------------------------------------
 goog.exportSymbol('GlobeCache', GlobeCache);
 goog.exportProperty(GlobeCache.prototype, 'IsReady', GlobeCache.prototype.IsReady);
 goog.exportProperty(GlobeCache.prototype, 'RequestBlock', GlobeCache.prototype.RequestBlock);

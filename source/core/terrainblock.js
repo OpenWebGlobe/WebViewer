@@ -87,6 +87,9 @@ function TerrainBlock(engine, quadcode, quadtree)
    
 }
 
+/** @type {number} */
+var g_activeRequests = 0;
+
 // #fixme: this function name must be renamed, 
 //         as it also handles elevation.
 TerrainBlock.prototype.MergeImages = function()
@@ -178,6 +181,7 @@ TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlay
          if (imagelayerlist[i].Contains(this.quadcode) && inlod)
          {
             imagelayerlist[i].RequestTile(this.engine, this.quadcode, i, _cbfOnImageTileReady, _cbfOnImageTileFailed, caller);
+            g_activeRequests++;
          }
          else
          {
@@ -200,7 +204,7 @@ TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlay
             // this will be implemented at a later stage. #fixme
             this.elevationlayers = 1;
             elevationlayerlist[0].RequestTile(this.engine, this.quadcode, 0, _cbfOnElevationTileReady, _cbfOnElevationTileFailed, caller);
-
+            g_activeRequests++;
          }
       
       }
@@ -217,6 +221,8 @@ function _cbfOnImageTileReady(quadcode, ImageObject, layer)
    terrainblock.images[layer] = ImageObject;
    terrainblock.imagelayers = terrainblock.imagelayers - 1;
    terrainblock.MergeImages();
+
+   g_activeRequests--;
 }
 //------------------------------------------------------------------------------       
 /**
@@ -228,6 +234,7 @@ function _cbfOnImageTileFailed(quadcode, terrainblock, layer)
    terrainblock.images[layer] = null;
    terrainblock.imagelayers = terrainblock.imagelayers - 1;
    terrainblock.MergeImages();
+   g_activeRequests--;
 }
 //------------------------------------------------------------------------------
 /**
@@ -249,6 +256,8 @@ function _cbfOnElevationTileReady(quadcode, mesh, layer)
    
    terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
    terrainblock.MergeImages();
+
+   g_activeRequests--;
 }
 //------------------------------------------------------------------------------       
 /**
@@ -260,6 +269,7 @@ function _cbfOnElevationTileFailed(quadcode, terrainblock, layer)
    terrainblock.mesh = null;
    terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
    terrainblock.MergeImages();
+   g_activeRequests--;
 }
 //------------------------------------------------------------------------------
 /**
@@ -371,7 +381,7 @@ TerrainBlock.prototype._CreateElevationMesh = function()
 {
    this.mesh = new Surface(this.engine);
    this.mesh.lod = this.quadcode.length;
-   
+
    var blocksize = 9;
    var elevationdata = new Array(blocksize*blocksize);
    for (var i=0;i<blocksize*blocksize;i++) 
