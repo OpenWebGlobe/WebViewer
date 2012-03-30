@@ -436,8 +436,8 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                         if (goog.isDef(geometry['coordinates'] && goog.isArray(geometry['coordinates'])))
                         {
                            /** @type {Array.< Array.<number> >} */
-                           var coords = geometry['coordinates'];
-                           bCreated = this._CreateLineString(coords);
+                           var lscoords = geometry['coordinates'];
+                           bCreated = this._CreateLineString(lscoords);
                         }
                      }
                      else if (geometrytype == "MultiLineString")
@@ -445,11 +445,11 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                         if (goog.isDef(geometry['coordinates'] && goog.isArray(geometry['coordinates'])))
                         {
                            /** @type {Array.< Array.<number> >} */
-                           var coords = geometry['coordinates'];
+                           var mlscoords = geometry['coordinates'];
 
-                           for (var j=0;j<coords.length;j++)
+                           for (var j=0;j<mlscoords.length;j++)
                            {
-                              if (this._CreateLineString(coords[j]))
+                              if (this._CreateLineString(mlscoords[j]))
                               {
                                  bCreated = true;
                               }
@@ -458,7 +458,12 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
                      }
                      else if (geometrytype == "Polygon")
                      {
-
+                        if (goog.isDef(geometry['coordinates'] && goog.isArray(geometry['coordinates'])))
+                        {
+                           /** @type {Array.< Array.<number> >} */
+                           var polycoords = geometry['coordinates'];
+                           bCreated = this._CreatePolygon(polycoords);
+                        }
                      }
                      else if (geometrytype == "MultiPolygon")
                      {
@@ -776,6 +781,94 @@ ogVector.prototype._CreateLineString = function(coords)
 
    return true;
 }
+//------------------------------------------------------------------------------
+ /**
+ * Create 3D-Geometry representing 2D-Polygon on Terrain.
+ *
+ * @param {Array.< Array.< Array.<number> > >} coords
+ * @return {boolean}
+ */
+ogVector.prototype._CreatePolygon = function(coords)
+{
+   var indexlist = [];
+   var pointlist = [];
+   var curidx = 0;
+
+
+   var contour = [];
+   var holes = [];
+
+   // the first polygon is the outer polygon
+   // following polygons are inner polygons
+
+   var numpolygons = coords.length;
+
+   if (numpolygons == 0)
+   {
+      return false;
+   }
+   else if (numpolygons >= 1)
+   {
+      for (var i=0;i<numpolygons;i++)
+      {
+         if (i==0)
+         {
+            // OUTER POLYGON / CONTOUR
+            for (var j=0;j<coords[i].length;j++)
+            {
+               contour.push(new poly2tri.Point(coords[i][j][0], coords[i][j][1], curidx));
+               curidx++;
+            }
+         }
+         else
+         {
+            // INNER POLYGON / HOLES
+            var hole = [];
+            for (var j=0;j<coords[i].length;j++)
+            {
+               hole.push(new poly2tri.Point(coords[i][j][0], coords[i][j][1]), curidx);
+               curidx++;
+            }
+            holes.push(hole);
+         }
+      }
+
+      var sweep_context = new poly2tri.SweepContext(contour);
+      for (var idx in holes)
+      {
+         sweep_context.AddHole(holes[idx]);
+      }
+
+      // triangulate
+      poly2tri.sweep.Triangulate(sweep_context);
+
+      var triangles = sweep_context.GetTriangles();
+
+      var indices = [];
+
+      for (var tri=0;tri<triangles.length;tri++)
+      {
+         var idx0 = triangles[tri].GetPoint(0).GetIndex();
+         var idx1 = triangles[tri].GetPoint(1).GetIndex();
+         var idx2 = triangles[tri].GetPoint(2).GetIndex();
+
+         indices.push(idx0);
+         indices.push(idx1);
+         indices.push(idx2);
+      }
+
+      // todo: Convert to mercator projection and create extruded 3d model
+   }
+
+
+   return true;
+
+}
+//------------------------------------------------------------------------------
+
+
+
+
 
 
 
