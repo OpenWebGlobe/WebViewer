@@ -557,7 +557,7 @@ engine3d.prototype.SetupDepthTextureTarget = function()
    /** @type {WebGLRenderingContext} */
    var gl = this.gl;
    gl.clearColor(0.0, 0.0, 0.0, 0.0);
-   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
    gl.enable(gl.DEPTH_TEST);
    gl.frontFace(gl.CCW);
    gl.enable(gl.CULL_FACE);
@@ -578,7 +578,7 @@ engine3d.prototype.VectorRender = function(geometryarray, bboxarray, opt_bBlend)
    /** @type {WebGLRenderingContext} */
    var gl = this.gl;
 
-   gl.clear(gl.STENCIL_BUFFER_BIT);
+   //gl.clear(gl.STENCIL_BUFFER_BIT);
 
    /** @type {boolean} */
    var bBlend = opt_bBlend || false;
@@ -610,12 +610,19 @@ engine3d.prototype.VectorRender = function(geometryarray, bboxarray, opt_bBlend)
    gl.depthMask(true);
    gl.colorMask(true, true, true, true);
    gl.cullFace(gl.FRONT);
-   gl.stencilFunc(gl.LEQUAL, 0, 1);
+   gl.stencilFunc(gl.NOTEQUAL, 0, 1);
    gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 
    if (bBlend) { gl.enable(gl.BLEND); }
-   gl.disable(gl.DEPTH_TEST);
+   //gl.disable(gl.DEPTH_TEST);
+   gl.depthMask(true);
 
+   for (var i=0;i<bboxarray.length;i++)
+   {
+      bboxarray[i].Draw();
+   }
+
+   gl.stencilFunc(gl.NOTEQUAL, 0, 2);
    for (var i=0;i<bboxarray.length;i++)
    {
       bboxarray[i].Draw();
