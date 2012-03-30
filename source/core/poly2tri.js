@@ -47,6 +47,7 @@ poly2tri.Point = function (a)
 {
    this.x = null;
    this.y = null;
+   this.index = -1;
 
    if (arguments.length == 0)
    {
@@ -57,6 +58,12 @@ poly2tri.Point = function (a)
    {
       this.x = arguments[0];
       this.y = arguments[1];
+   }
+   else if (arguments.length == 3)
+   {
+      this.x = arguments[0];
+      this.y = arguments[1];
+      this.index = arguments[2];
    }
    else
    {
@@ -75,6 +82,15 @@ poly2tri.Point.prototype.set_zero = function ()
 {
    this.x = 0.0;
    this.y = 0.0;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Get index of the point
+ * @return {number}
+ */
+poly2tri.Point.prototype.GetIndex = function ()
+{
+   return this.index;
 }
 //------------------------------------------------------------------------------
 /**
