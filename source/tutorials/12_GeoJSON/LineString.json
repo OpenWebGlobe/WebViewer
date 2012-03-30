@@ -1,0 +1,30 @@
+{
+   "type": "FeatureCollection",
+   "features" :
+      [
+         {
+            "type" : "Feature",
+            "properties":
+            {
+               "id" : "Switzerland",
+               "color" : [1,0,0,1],
+               "highlightcolor" : [1,0,0,1],
+               "linewidth" : 10000,
+               "minelv" : -2000,
+               "maxelv" : 5000
+            },
+            "geometry":
+            {
+               "type" : "LineString",
+               "coordinates" :
+                  [
+                     [7.201538,47.197178],
+                     [8.948364,47.260592],
+                     [7.739868,46.954012],
+                     [8.360596,47.890564],
+                     [7.201538,47.197178]
+                  ]
+            }
+         }
+      ]
+}
