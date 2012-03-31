@@ -306,21 +306,16 @@ Surface.prototype.SetIndexBuffer = function (idx, idxsem)
    this.indexsemantic = idxsem;
    this.numindex = idx.length;
    this.Ready = true;
-   var indexoverhead = 0;
-   if (this.curtainindex > 0)
-   {
-      indexoverhead = this.curtainindex;
-   }
 
    //calculate the number of triangles
    switch (idxsem)
    {
       case "TRIANGLES"     :
-         this.numOfTriangles = (idx.length - indexoverhead) / 3;
+         this.numOfTriangles = (idx.length) / 3;
          break;
 
       case "TRIANGLESTRIP" :
-         this.numOfTriangles = ((idx.length - indexoverhead) - 3) + 1
+         this.numOfTriangles = ((idx.length) - 3) + 1
 
       case "default"       :
          break;
