@@ -437,7 +437,6 @@ TerrainBlock.prototype._CreateElevationMesh = function()
    /** @type {Array.<number>} */
    var positionbuffer = [];
 
-   /** @type {number} */
    var x0,y0,x1,y1;
 
    /** @type {Array.<number>} */
@@ -454,9 +453,7 @@ TerrainBlock.prototype._CreateElevationMesh = function()
    var dH = (y1-y0)/(blocksize-1);
    /** @type {number} */
    var dW = (x1-x0)/(blocksize-1);
-   /** @type {number} */
    var x_coord, y_coord;
-   /** @type {number} */
    var x_cart, y_cart, z_cart;
    /** @type {GeoCoord} */
    var g = new GeoCoord();
