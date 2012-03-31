@@ -261,6 +261,24 @@ Texture.prototype.Disable = function()
 }
 //------------------------------------------------------------------------------
 /**
+ * BlitRect(x0,y0,width,height)
+ * Convienience function to draw Texture in a rectangular shape, internally using the blit function
+ * @param {number} x0 Top Left x-coord
+ * @param {number} y0 Top Left y-coord
+ * @param {number} width The width of the rectangle
+ * @param {number} height The height of the rectangle
+ */
+Texture.prototype.BlitRect = function(x0, y0, width, height)
+{
+   if (this.ready)
+   {
+      var scalex = width / this.width;
+      var scaley = height / this.height;
+      this.Blit(x0, y0, 0, 0, scalex, scaley);
+   }
+}
+//------------------------------------------------------------------------------
+/**
  * Blit Texture: Draw texture on screen
  * @param {number} x
  * @param {number} y
@@ -316,6 +334,7 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
        else
        {
          model.Translation(x,y,z);
+
          /** @type {mat4} */
          var scaleMat = new mat4();
          scaleMat.Scale(scalex, scaley, 1.0);

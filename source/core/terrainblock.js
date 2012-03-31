@@ -161,6 +161,12 @@ TerrainBlock.prototype.MergeImages = function()
  */
 TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlayerlist)
 {
+   if (this.quadcode.length < 3)
+   {
+      _cbfOnImageTileFailed(this.quadcode, this, -1);
+      return;
+   }
+
    var caller = this;
    
    // Part 1: Image Layer Tile Request
@@ -230,9 +236,19 @@ function _cbfOnImageTileReady(quadcode, ImageObject, layer)
  * @private
  */
 function _cbfOnImageTileFailed(quadcode, terrainblock, layer)
-{  
-   terrainblock.images[layer] = null;
-   terrainblock.imagelayers = terrainblock.imagelayers - 1;
+{
+   if (layer>=0)
+   {
+      terrainblock.images[layer] = null;
+      terrainblock.imagelayers = terrainblock.imagelayers - 1;
+
+   }
+   else
+   {
+      terrainblock.images = null;
+      terrainblock.imagelayers = 0;
+   }
+
    terrainblock.MergeImages();
    g_activeRequests--;
 }
@@ -382,18 +398,21 @@ TerrainBlock.prototype._CreateElevationMesh = function()
    this.mesh = new Surface(this.engine);
    this.mesh.lod = this.quadcode.length;
 
-   var blocksize = 9;
-   var elevationdata = new Array(blocksize*blocksize);
-   for (var i=0;i<blocksize*blocksize;i++) 
+   var blocksize;
+
+   if (this.quadcode.length<3)
    {
-      elevationdata[i] = 0; // set elevation value to 0
+      blocksize = 2;
    }
-   
-   //------------------------------------
-   // this code needs major optimization
-   // #fixme
-   //------------------------------------
- 
+   else if (this.quadcode.length<6)
+   {
+      blocksize = 9;
+   }
+   else
+   {
+      blocksize = 5;
+   }
+
    //--------------------------
    // (1) CREATE TEXTURE COORDS
    //--------------------------
@@ -414,20 +433,32 @@ TerrainBlock.prototype._CreateElevationMesh = function()
    //----------------------
    // (2) CREATE POSITIONS
    //----------------------
-   
-   var positionbuffer = new Array(3*blocksize*blocksize);
-   
+
+   /** @type {Array.<number>} */
+   var positionbuffer = [];
+
+   /** @type {number} */
    var x0,y0,x1,y1;
+
+   /** @type {Array.<number>} */
    var coords = new Array(4);
+   /** @type {Array.<number>} */
    var xy_coord = new Array(2);
+   /** @type {Array.<number>} */
    var xyz_cart = new Array(3);
+
    this.quadtree.QuadKeyToMercatorCoord(this.quadcode, coords);
    x0 = coords[0]; y0 = coords[1]; x1 = coords[2]; y1 = coords[3];
 
+   /** @type {number} */
    var dH = (y1-y0)/(blocksize-1);
+   /** @type {number} */
    var dW = (x1-x0)/(blocksize-1);
+   /** @type {number} */
    var x_coord, y_coord;
+   /** @type {number} */
    var x_cart, y_cart, z_cart;
+   /** @type {GeoCoord} */
    var g = new GeoCoord();
 
    for (var y=0;y<blocksize;y++)
@@ -440,7 +471,7 @@ TerrainBlock.prototype._CreateElevationMesh = function()
          // Calculate 3D Position:
 
          Mercator.MercatorToWGS84(x_coord, y_coord, xy_coord);
-         g.Set(xy_coord[0], xy_coord[1], elevationdata[y*blocksize+x]);
+         g.Set(xy_coord[0], xy_coord[1], 0.0);
          g.ToCartesian(xyz_cart);
          x_cart = xyz_cart[0];
          y_cart = xyz_cart[1];
@@ -472,9 +503,9 @@ TerrainBlock.prototype._CreateElevationMesh = function()
             this.vTilePoints[4].Set(x_cart, y_cart, z_cart); 
          }
 
-         positionbuffer[3*y*blocksize+3*x+0] = x_cart - this.vOffset[0];
-         positionbuffer[3*y*blocksize+3*x+1] = y_cart - this.vOffset[1];
-         positionbuffer[3*y*blocksize+3*x+2] = z_cart - this.vOffset[2];
+         positionbuffer.push(x_cart - this.vOffset[0]);
+         positionbuffer.push(y_cart - this.vOffset[1]);
+         positionbuffer.push(z_cart - this.vOffset[2]);
       }
 
    }
@@ -543,6 +574,9 @@ TerrainBlock.prototype._CreateElevationMesh = function()
  */
 TerrainBlock.prototype.Render = function(nomaterial)
 {
+   if (this.quadcode.length < 3)
+      return;
+
    if (nomaterial)
    {
       this.tmpmodel.CopyFrom(this.engine.matModel);

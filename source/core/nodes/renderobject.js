@@ -82,6 +82,13 @@ function RenderObjectNode()
          if (this.bRenderTexture)
          {
             this.engine.PopRenderTarget();
+
+            var numpix = 6;
+
+            var scalex = this.texture.width / (this.texture.width+numpix);
+            var scaley = this.texture.height / (this.texture.height+numpix);
+
+            this.texture.Blit(numpix,numpix, 0, 0, scalex, scaley, true, true, 1.0);
             this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
          }
       }
