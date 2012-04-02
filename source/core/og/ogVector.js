@@ -161,22 +161,9 @@ ogVector.prototype.Hide = function()
 /**
  * @description shows the geometry
  */
-ogGeometry.prototype.Show = function()
+ogVector.prototype.Show = function()
 {
 
-   if(this.ogpointsprite != null)
-   {
-      this.ogpointsprite.Show();
-   }
-   else
-   {
-      for(var j=0;j<this.meshes_og.length;j++)
-      {
-         /**@type {ogMeshObject} */
-         var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
-         mesh.Show();
-      }
-   }
 }
 //------------------------------------------------------------------------------
 /**
