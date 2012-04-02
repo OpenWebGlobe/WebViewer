@@ -116,8 +116,8 @@ function _fncResize(evt)
 			}
 			else
 			{
-				engine.context.width = window.innerWidth-20;
-				engine.context.height = window.innerHeight-20;
+				engine.context.width = window.innerWidth;
+				engine.context.height = window.innerHeight;
 			}
 
       }
