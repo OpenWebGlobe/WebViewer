@@ -71,7 +71,7 @@ function RenderObjectNode()
             this.engine.PushRenderTarget(this.texture);
             this.engine.SetupDepthTextureTarget();
          }
-
+         
          this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.vectorrenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.poirenderer.Render(this.camera, this.engine.matModelViewProjection);

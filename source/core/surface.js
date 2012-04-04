@@ -781,6 +781,7 @@ Surface.prototype.CreateFromJSONObject = function (jsonobject, readycbf, failedc
    if (jsonobject['DiffuseMap'])
    {
       surface.texture = new Texture(surface.engine);
+      surface.texture.repeat = true;
 
       var cbr = function ()
       {
