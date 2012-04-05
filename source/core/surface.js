@@ -315,7 +315,7 @@ Surface.prototype.SetIndexBuffer = function (idx, idxsem)
          break;
 
       case "TRIANGLESTRIP" :
-         this.numOfTriangles = ((idx.length) - 3) + 1
+         this.numOfTriangles = idx.length - 2;
 
       case "default"       :
          break;
