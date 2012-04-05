@@ -83,7 +83,7 @@ function RenderObjectNode()
          {
             this.engine.PopRenderTarget();
 
-            var numpix = 6;
+            var numpix = 10;
 
             var scalex = this.texture.width / (this.texture.width+numpix);
             var scaley = this.texture.height / (this.texture.height+numpix);
