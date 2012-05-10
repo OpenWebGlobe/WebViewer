@@ -50,6 +50,8 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.available = false;
    /** @type {Surface} */
    this.mesh = null;
+   /** @type {boolean} */
+   this.haselevation = true;
    
    /** @type {Array} */
    this.vOffset = []; // virtual camera offset
@@ -395,6 +397,8 @@ TerrainBlock.prototype.CalcDistanceTo = function(vWhere)
 */
 TerrainBlock.prototype._CreateElevationMesh = function()
 {
+   this.haselevation = false;
+
    this.mesh = new Surface(this.engine);
    this.mesh.lod = this.quadcode.length;
 

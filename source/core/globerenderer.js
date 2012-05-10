@@ -706,6 +706,7 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
 {
    var pointDir = this.engine.GetDirectionMousePos(mx, my, this.matPick, true);           
    var candidates = new Array();
+   var meshmode = 0;
   
    for (var i=0;i<this.lstFrustum.length;i++)
    {
@@ -735,6 +736,15 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
          {
             pickresult["hit"] = true;
             tmin = r.t;
+
+            if (!candidates[i].haselevation)
+            {
+               meshmode = 1;
+            }
+            else
+            {
+               meshmode = 0;
+            }
          }
       }
    }
@@ -752,6 +762,11 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
       pickresult["lng"] = gc._wgscoords[0];
       pickresult["lat"] = gc._wgscoords[1];
       pickresult["elv"] = gc._wgscoords[2];
+
+      if (meshmode == 1)
+      {
+         pickresult["elv"] = 0;
+      }
    }
  }
 //-----------------------------------------------------------------------------

@@ -32,36 +32,58 @@
 <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
 <!--<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
--->
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>-->
 
 <script type="text/javascript">
+
+var displaytext = "Click Mouse to measure point! (1: Disable Navigation, 2: Enable Navigation)";
 
 //------------------------------------------------------------------------------
 // called every frame:
 function OnRender(context)
 {  
    ogSetTextColor(context, 0,1,0);
-   ogDrawText(context, "Hello World", 0, 20);
+   ogDrawText(context, displaytext, 0, 20);
 }
 //------------------------------------------------------------------------------
 function OnMouseDown(context, button, mx, my)
 {
    // retrieve the scene attached to context:
    var scene = ogGetScene(context);
-   
+
+
+
    // call the pickglobe function, this gives the result in lng, lat, elv
    var result = ogPickGlobe(scene, mx, my);
    if (result[0])
    {
-      alert("pick result: lng=" + result[1] + ", lat=" + result[2] + ", elv=" + result[3]);
+      displaytext = "pick result: lng=" + result[1].toFixed(3) + ", lat=" + result[2].toFixed(3) + ", elv=" + result[3].toFixed(1);
       /*console.log("picked at: [" + mx + ", " + my + "]");
       console.log("pick result: x=" + result[4] + ", y=" + result[5] + ", z=" + result[6]);
       var mouse = ogWorldToWindow(scene, result[4],result[5],result[6]);
       console.log("world to window = [" + mouse[0] + ", " + mouse[1] + ", " + mouse[2] + "]");*/
+   }
+
+}
+
+function OnKeyDown(ctx,key)
+{
+   var scene = ogGetScene(ctx);
+
+   if (key == 49)
+   {
+      displaytext = "Navigation Disabled!";
+      ogLockNavigation(scene);
 
    }
+   else if (key == 50)
+   {
+      displaytext = "Navigation Enabled!";
+      ogUnlockNavigation(scene);
+   }
+
 }
+
 //------------------------------------------------------------------------------
 function main()
 {
@@ -90,7 +112,8 @@ function main()
       layer   : "SRTM",
       service : "i3d"
    };
-   
+
+
    ogAddImageLayer(globe, imgBlueMarble500);
    ogAddElevationLayer(globe, elvSRTM_CH);
 
@@ -100,8 +123,11 @@ function main()
    
    // (5) Set the mouse down function. We need this for picking!
    ogSetMouseDownFunction(ctx, OnMouseDown);
+
+   // (6) Set key down function
+   ogSetKeyDownFunction(ctx, OnKeyDown);
    
-   // (6) Set the background color
+   // (7) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1); 
 }
 //------------------------------------------------------------------------------
