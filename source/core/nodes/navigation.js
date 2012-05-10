@@ -129,6 +129,8 @@ function NavigationNode()
       this._ptDragOriginY = 0;
       /** @type {boolean} */
       this._bDragging = false;
+      /** @type {boolean} */
+      this._bExternalLock =  false;
       
       this.geocoord = new Array(3);
       this.pos = new GeoCoord(0,0,0);
@@ -148,7 +150,15 @@ function NavigationNode()
       
       /** @type {ogCamera} */
       this.ogcam = null;
-     
+
+      //------------------------------------------------------------------------
+      /**
+       * @param {boolean} b true if lock, false if unlock
+       */
+      this.LockNavigation = function(b)
+      {
+         this._bExternalLock = b;
+      }
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {

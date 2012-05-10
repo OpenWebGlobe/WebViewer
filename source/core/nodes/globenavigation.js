@@ -47,6 +47,7 @@ function GlobeNavigationNode()
    this.curtime = 0;
    this.matView = new mat4();
    this._bLockNavigation = false;
+   this._bExternalLock = false;
 
    this._vEye = new vec3();
    this._vEye.Set(1, 0, 0);
@@ -142,13 +143,27 @@ function GlobeNavigationNode()
    this.bElevationChanged = false;
    this.bElevationLock = false;
 
+   this.basis = 0;
+
    //---------------------------------------------------------------------------
-   this.OnChangeState = function ()
+   /**
+    * @param {boolean} b true if lock, false if unlock
+    */
+   this.LockNavigation = function(b)
+   {
+      if (!b)
+      {
+         this._bLockNavigation = false;
+      }
+      this._bExternalLock = b;
+   }
+   //---------------------------------------------------------------------------
+   this.OnChangeState = function()
    {
       this.engine.SetViewMatrix(this.matView);
    }
    //---------------------------------------------------------------------------
-   this.OnRender = function ()
+   this.OnRender = function()
    {
    }
    //---------------------------------------------------------------------------
@@ -175,13 +190,21 @@ function GlobeNavigationNode()
 
       // test if navigation was locked from outside (for example GUI)
       ts.navigationtype = 1;
-      if (ts.navigationlock != 0)
+
+      if (this._bExternalLock)
       {
          this._bLockNavigation = true;
       }
       else
       {
-         this._bLockNavigation = false;
+         if (ts.navigationlock != 0)
+         {
+            this._bLockNavigation = true;
+         }
+         else
+         {
+            this._bLockNavigation = false;
+         }
       }
 
       // update position
@@ -322,6 +345,12 @@ function GlobeNavigationNode()
    // EVENT: OnMouseWheel
    this.OnMouseWheel = function (e)
    {
+      if (this._bLockNavigation || this.engine.flyto.isMoving)
+      {
+         this.crosshairdelay = 0;
+         return;
+      }
+
       if (this._state == GlobeNavigationNode.STATES.IDLE)
       {
          if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == 0)
@@ -786,7 +815,6 @@ function GlobeNavigationNode()
    //---------------------------------------------------------------------------
    this.SetOrientation = function (yaw, pitch, roll)
    {
-      //this._bLockNavigation = false;
       this._bQuaternionMode = false;
       this.matCami3d.Cami3d();
       this._yaw = yaw;

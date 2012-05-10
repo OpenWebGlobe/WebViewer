@@ -1081,7 +1081,7 @@ goog.exportSymbol('ogDestroyCamera', ogDestroyCamera);
 
 //------------------------------------------------------------------------------
 /**
- * @description Destroys the camera object.
+ * @description Set camera position.
  * @param {number} camera_id the camera id.
  * @param {number} lng
  * @param {number} lat
@@ -1097,6 +1097,23 @@ function ogSetPosition(camera_id, lng, lat, elv)
    }
 }
 goog.exportSymbol('ogSetPosition', ogSetPosition);
+
+//------------------------------------------------------------------------------
+/**
+ * @description Get camera field of view.
+ * @param {number} camera_id the camera id.
+ */
+function ogGetFov(camera_id)
+{
+   /** @type {ogCamera} */
+   var cam = /** @type {ogCamera} */ _GetObjectFromId(camera_id);
+   if (cam && cam.type == OG_OBJECT_CAMERA)
+   {
+      cam.GetFieldOfView();
+   }
+
+   return 0;
+}
 
 //------------------------------------------------------------------------------
 /**
@@ -2726,7 +2743,48 @@ function ogStopFlyTo(scene_id)
     }
 }
 goog.exportSymbol('ogStopFlyTo', ogStopFlyTo);
+//------------------------------------------------------------------------------
+/**
+ * @description Lock Navigation
+ *
+ * @param {number} scene_id the scene id.
+ */
+function ogLockNavigation(scene_id)
+{
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
 
+   if(engine)
+   {
+      engine.scene.nodeNavigation.LockNavigation(true);
+   }
+}
+goog.exportSymbol('ogLockNavigation', ogLockNavigation);
+//------------------------------------------------------------------------------
+/**
+ * @description Lock Navigation
+ *
+ * @param {number} scene_id the scene id.
+ */
+function ogUnlockNavigation(scene_id)
+{
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+
+   if(engine)
+   {
+      engine.scene.nodeNavigation.LockNavigation(false);
+   }
+}
+goog.exportSymbol('ogUnlockNavigation', ogUnlockNavigation);
 //------------------------------------------------------------------------------
 /** 
  * @description Set the canvas size offset. Canvas width = window.width - widthOffset
