@@ -781,9 +781,12 @@ ogVector.prototype._CreatePolygon = function(coords)
    var pointlist = [];
    var curidx = 0;
 
-
    var contour = [];
    var holes = [];
+   var points_wgs84 = [];
+   var points = [];
+
+   var gc = new GeoCoord();
 
    // the first polygon is the outer polygon
    // following polygons are inner polygons
@@ -804,6 +807,7 @@ ogVector.prototype._CreatePolygon = function(coords)
             for (var j=0;j<coords[i].length;j++)
             {
                contour.push(new poly2tri.Point(coords[i][j][0], coords[i][j][1], curidx));
+               points_wgs84.push([coords[i][j][0], coords[i][j][1]]);
                curidx++;
             }
          }
@@ -814,6 +818,7 @@ ogVector.prototype._CreatePolygon = function(coords)
             for (var j=0;j<coords[i].length;j++)
             {
                hole.push(new poly2tri.Point(coords[i][j][0], coords[i][j][1]), curidx);
+               points_wgs84.push([coords[i][j][0], coords[i][j][1]]);
                curidx++;
             }
             holes.push(hole);
@@ -843,6 +848,10 @@ ogVector.prototype._CreatePolygon = function(coords)
          indices.push(idx1);
          indices.push(idx2);
       }
+
+
+
+
 
       // todo: Convert to mercator projection and create extruded 3d model
    }
