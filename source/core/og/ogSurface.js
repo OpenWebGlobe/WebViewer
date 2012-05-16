@@ -235,5 +235,19 @@ ogSurface.prototype.Hide = function()
 }
 
 
+//------------------------------------------------------------------------------
+/**
+* @description hide the surface
+* @ignore
+*/
+ogSurface.prototype.SetHighlightColor = function(r,g,b,a)
+{
+   if (this.surface)
+   {
+      this.surface.SetHighlightColor(r,g,b,a);
+   }
+}
+
+
 
 

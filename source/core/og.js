@@ -2261,6 +2261,27 @@ function ogShowGeometry(geometry_id)
        
 }
 goog.exportSymbol('ogShowGeometry', ogShowGeometry);
+
+//------------------------------------------------------------------------------
+/** @description Hide a Geometry
+*   @param {number} geometry_id
+*   @param {number} r
+*   @param {number} g
+*   @param {number} b
+*   @param {number} a
+*/
+function ogHighlightGeometry(geometry_id,r,g,b,a)
+{
+   /** @type {ogGeometry} */
+   var geometry = /** @type {ogGeometry} */_GetObjectFromId(geometry_id);
+   if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
+   {
+     geometry.SetHighlightColor(r,g,b,a);
+   }  
+}
+goog.exportSymbol('ogGeometryHighlight', ogGeometryHighlight);
+
+
 //------------------------------------------------------------------------------
 /** @description Returns the id of a picked geometry or -1
  *  @param {number} scene_id 

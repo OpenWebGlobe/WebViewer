@@ -264,6 +264,30 @@ ogGeometry.prototype.Show = function()
 }
 
 
+//------------------------------------------------------------------------------
+/**
+ * @description hides the geometry
+ */
+ogGeometry.prototype.SetHighlightColor = function(r,g,b,a)
+{
+   if(this.ogpointsprite != null)
+   {
+      
+      
+   }
+   else
+   {
+      for(var j=0;j<this.meshes_og.length;j++)
+      {
+         /**@type {ogMeshObject} */
+         var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+         mesh.SetHighlightColor(r,g,b,a);
+      }
+   }
+
+}
+
+
 
 //------------------------------------------------------------------------------
 /** 

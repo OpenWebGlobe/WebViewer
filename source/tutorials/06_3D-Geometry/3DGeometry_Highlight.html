@@ -46,6 +46,7 @@ function OnRender(context)
    ogDrawText(context,"Click on a geometry to hide it.",0,50);
    ogDrawText(context,"Right click to show all geometries again.",0,20);
 }
+var highlightedGeometry = -1;
 //------------------------------------------------------------------------------
 // Mouse-Down-Event: Called when a mouse button is pressed
 function OnMouseDown(context, button, mx, my)
@@ -56,20 +57,20 @@ function OnMouseDown(context, button, mx, my)
    
    if(button == 0)
    {
-      var mesh_id = ogPickMesh(scene,mx,my);
-      if(mesh_id != -1)
+      var geo_id = ogPickGeometry(scene,mx,my);
+      if(geo_id != -1)
       {
-         ogHideMesh(mesh_id);  //hide the clicked mesh
+         ogHighlightGeometry(geo_id,1,0,0,1);  //highlight the clicked geometry
+         highlightedGeometry = geo_id;
+         return;
       }
+
    }
    
-   if(button > 0)
+   if(highlightedGeometry > 0)
    {
-      for(var i = 0; i<ogGetNumMeshes(geometry);i++) //iterate over all meshes in this geometry
-      {
-         var mesh_id = ogGetMeshAt(geometry,i);
-         ogShowMesh(mesh_id); //show all meshes.
-      }   
+      ogHighlightGeometry(highlightedGeometry,1,1,1,1);  //unhighlight the clicked geometry
+      geo_id = -1;
    }
    
    

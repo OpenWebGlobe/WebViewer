@@ -122,6 +122,21 @@ ogMeshObject.prototype.Hide = function()
    }   
 }
 
+/**
+ * @description changes the highlight color
+ * @ignore
+ * 
+ */
+ogMeshObject.prototype.SetHighlightColor = function(r,g,b,a)
+{
+   for(var k=0; k<this.surfaces_og.length;k++)
+   {
+      /** @type {ogSurface} */
+      var surf = /** @type {ogSurface} */this.surfaces_og[k];
+      surf.SetHighlightColor(r,g,b,a);
+   }   
+}
+
 
 //------------------------------------------------------------------------------
 /**

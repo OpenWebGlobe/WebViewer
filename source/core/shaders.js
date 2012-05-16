@@ -173,14 +173,16 @@ ShaderManager.prototype.UseShader_PC = function(modelviewprojection)
 /**
  *  
  * @param {mat4} modelviewprojection
+ * @param {vec4} color 
  */
-ShaderManager.prototype.UseShader_PT = function(modelviewprojection)
+ShaderManager.prototype.UseShader_PT = function(modelviewprojection, color)
 {
    if (this.program_pt)
    {
       this.gl.useProgram(this.program_pt);
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt, "matMVP"), false, modelviewprojection.ToFloat32Array());
-      this.gl.uniform1i(this.gl.getUniformLocation(this.program_pt, "uTexture"), 0);   
+      this.gl.uniform1i(this.gl.getUniformLocation(this.program_pt, "uTexture"), 0);
+      this.gl.uniform4fv(this.gl.getUniformLocation(this.program_pt, "uColor"), color.ToFloat32Array());
    }    
 }
 //------------------------------------------------------------------------------
@@ -374,7 +376,7 @@ ShaderManager.prototype.InitShader_PC = function()
 ShaderManager.prototype.InitShader_PT = function()
 {
    var src_vertexshader_PT= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition,1.0);\n   vTexCoord = aTexCoord;\n}\n";
-   var src_fragmentshader_PT= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\nvoid main()\n{\n   gl_FragColor = texture2D(uTexture, vTexCoord);\n}\n\n";
+   var src_fragmentshader_PT= "#ifdef GL_ES\nprecision highp float;\n#endif\nuniform vec4 uColor;\nvarying vec2 vTexCoord;\nuniform sampler2D uTexture;\n\nvoid main()\n{\n   gl_FragColor = texture2D(uTexture, vTexCoord)*uColor;\n}\n\n";
      
    this.vs_pt = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PT);
    this.fs_pt = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_PT);

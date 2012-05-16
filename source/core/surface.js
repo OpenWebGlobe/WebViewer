@@ -153,6 +153,10 @@ function Surface(engine)
    /** @type {vec4} */
    this.defaultpoicolor = new vec4();
    this.defaultpoicolor.Set(1, 1, 1, 1);
+   
+   /** @type {vec4} */
+   this.highlightcolor = new vec4();
+   this.highlightcolor.Set(1, 1, 1, 1);
 
    /** @type {vec4} */
    this.solidcolor = new vec4();
@@ -195,6 +199,21 @@ function Surface(engine)
    /** @type {number} */
    this.lod = -1;
 }
+
+//------------------------------------------------------------------------------
+/**
+ * @description Set the highlight color
+ * @param {number} r
+ * @param {number} g
+ * @param {number} b
+ * @param {number} a
+ * 
+ */
+Surface.prototype.SetHighlightColor = function(r,g,b,a)
+{
+   this.highlightcolor.Set(r,g,b,a);
+}
+
 //------------------------------------------------------------------------------
 /**
  * @description Specify a buffer with the vertex semantic "p"
@@ -451,7 +470,7 @@ Surface.prototype.Draw = function (opt_ranged, opt_count, opt_offset, opt_fontco
          this.gl.enableVertexAttribArray(1);
          this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5 * 4, 0 * 4); // position
          this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5 * 4, 3 * 4); // texture
-         this.engine.shadermanager.UseShader_PT(this.engine.matModelViewProjection);
+         this.engine.shadermanager.UseShader_PT(this.engine.matModelViewProjection, this.highlightcolor);
          break;
 
       case "pnct":
