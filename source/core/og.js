@@ -2279,7 +2279,7 @@ function ogHighlightGeometry(geometry_id,r,g,b,a)
      geometry.SetHighlightColor(r,g,b,a);
    }  
 }
-goog.exportSymbol('ogGeometryHighlight', ogGeometryHighlight);
+goog.exportSymbol('ogHighlightGeometry', ogHighlightGeometry);
 
 
 //------------------------------------------------------------------------------
