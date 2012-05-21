@@ -62,6 +62,10 @@ function EarthPolyline(engine,options)
   
   this.options = options;
   
+  /** @type {vec4} */
+  this.highlightcolor = new vec4();
+  this.highlightcolor.Set(1, 1, 1, 1);
+  
 }
 
 
@@ -211,7 +215,8 @@ EarthPolyline.prototype.Draw = function()
       this.gl.enableVertexAttribArray(1);
       this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7*4, 0*4); // position
       this.gl.vertexAttribPointer(1, 4, this.gl.FLOAT, false, 7*4, 3*4); // color
-      this.engine.shadermanager.UseShader_PC(this.engine.matModelViewProjection);
+      
+      this.engine.shadermanager.UseShader_PC(this.engine.matModelViewProjection,this.highlightcolor);
       
                         
       this.gl.lineWidth(this.options["linewidth"]);

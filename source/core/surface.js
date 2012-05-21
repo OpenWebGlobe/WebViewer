@@ -462,7 +462,7 @@ Surface.prototype.Draw = function (opt_ranged, opt_count, opt_offset, opt_fontco
          this.gl.enableVertexAttribArray(1);
          this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 7 * 4, 0 * 4); // position
          this.gl.vertexAttribPointer(1, 4, this.gl.FLOAT, false, 7 * 4, 3 * 4); // color
-         this.engine.shadermanager.UseShader_PC(this.engine.matModelViewProjection);
+         this.engine.shadermanager.UseShader_PC(this.engine.matModelViewProjection,this.highlightcolor);
          break;
 
       case "pt":

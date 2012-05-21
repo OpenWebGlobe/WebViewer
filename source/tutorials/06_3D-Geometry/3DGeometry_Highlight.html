@@ -29,10 +29,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
-<!--<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>-->
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 <script type="text/javascript">
 
 var geometry = null;
@@ -138,7 +138,7 @@ function main()
    // A geometry is a container for meshes
    // a mesh is a container of surfaces. every surface needs a json file.
 
-   geometry = ogLoadGeometryAsync(geometrylayer,"torus.json");
+   geometry = ogLoadGeometryAsync(geometrylayer,"cubepc.json");
    
    var scene = ogGetScene(ctx);
    ogFlyToLookAtPosition(scene,7.438637,46.951081,3400,1000);

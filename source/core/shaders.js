@@ -160,13 +160,15 @@ ShaderManager.prototype.UseShader_PNT = function(normalmatrix, modelview, projec
 /**
  *  
  * @param {mat4} modelviewprojection
+ * @param {vec4} color 
  */
-ShaderManager.prototype.UseShader_PC = function(modelviewprojection)
+ShaderManager.prototype.UseShader_PC = function(modelviewprojection, color)
 {
    if (this.program_pc)
    {
       this.gl.useProgram(this.program_pc);
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pc, "matMVP"), false, modelviewprojection.ToFloat32Array());
+      this.gl.uniform4fv(this.gl.getUniformLocation(this.program_pc, "uColor"), color.ToFloat32Array());
    }    
 }
 //------------------------------------------------------------------------------
@@ -339,7 +341,7 @@ ShaderManager.prototype.InitShader_PNT = function()
 ShaderManager.prototype.InitShader_PC = function()
 {
    var src_vertexshader_PC= "uniform mat4 matMVP;\nattribute vec3 aPosition;\nattribute vec4 aColor;\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_Position = matMVP * vec4(aPosition, 1.0);\n   vColor = aColor;\n   gl_PointSize = 1.0;}\n";
-   var src_fragmentshader_PC= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec4 vColor;\n\nvoid main()\n{\n   gl_FragColor = vColor;\n}\n\n";
+   var src_fragmentshader_PC= "#ifdef GL_ES\nprecision highp float;\n#endif\n\nvarying vec4 vColor;\n\nuniform vec4 uColor;\nvoid main()\n{\n   gl_FragColor = vColor * uColor;\n}\n\n";
   
    this.vs_pc = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PC);
    this.fs_pc = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_PC);
