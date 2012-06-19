@@ -151,6 +151,7 @@ GlobeRenderer.prototype.Destroy = function()
  *    service: i3d for i3d tile layout (deprecated)
  *             osm for OpenStreetMap tile layout
  *             owg for OpenWebGlobe tile layout (default)
+ *             tms for TMS tile layout
  *    
  *  Example:
  *    var imglayer = 
@@ -223,6 +224,7 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
             this._UpdateLayers();
          }
       }
+      // TMS service
       else if (options["service"] == "tms")
       {
          if (goog.isDef(options["url"]) && options["url"].length>0)
