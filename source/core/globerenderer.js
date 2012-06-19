@@ -35,6 +35,7 @@ goog.require('owg.i3dElevationLayer');
 goog.require('owg.owgElevationLayer');
 goog.require('owg.GoogleImageLayer');
 goog.require('owg.OYMImageLayer');
+goog.require('owg.TMSImageLayer');
 //------------------------------------------------------------------------------
 /**
  * @typedef {{
@@ -208,6 +209,25 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
          if (goog.isDef(options["url"]) && options["url"].length>0)
          {
             var imgLayer = new OSMImageLayer();
+            if (goog.isDef(options["minlod"]))
+            {
+               imgLayer.userminlod = options["minlod"];
+            }
+            if (goog.isDef(options["maxlod"]))
+            {
+               imgLayer.usermaxlod = options["maxlod"];
+            }
+            imgLayer.Setup(options["url"]);
+            index = this.imagelayerlist.length;
+            this.imagelayerlist.push(imgLayer);
+            this._UpdateLayers();
+         }
+      }
+      else if (options["service"] == "tms")
+      {
+         if (goog.isDef(options["url"]) && options["url"].length>0)
+         {
+            var imgLayer = new TMSImageLayer();
             if (goog.isDef(options["minlod"]))
             {
                imgLayer.userminlod = options["minlod"];
