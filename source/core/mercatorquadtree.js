@@ -151,14 +151,30 @@ MercatorQuadtree.prototype.QuadKeyToTileCoord = function(quadcode, result)
       }
    }
 }
+MercatorQuadtree.prototype.QuadKeyToMercator = function(quadcode, coords)
+{
+   var result = {
+	   x : null,
+      y : null,
+	   lod : null
+   }
+   this.QuadKeyToTileCoord(quadcode,result);
+    var maxx=20037508.34;
+    var maxy=20037508.34;
+    var minx=-20037508.34;
+    var miny=-20037508.34;
+    var lodTileCount = Math.pow(2,result.lod);
+    var scale = (maxx-minx)/lodTileCount;
+    coords[0]=minx+scale*result.x;
+    coords[1]=maxy-scale*(result.y+1);
+    coords[2]=minx+scale*(result.x+1);
+    coords[3]=maxy-scale*(result.y);
+
+}
 //------------------------------------------------------------------------------
-
-
-
-
-
 
 goog.exportSymbol('MercatorQuadtree', MercatorQuadtree);
 goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToMercatorCoord', MercatorQuadtree.prototype.QuadKeyToMercatorCoord);
 goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToNormalizedCoord', MercatorQuadtree.prototype.QuadKeyToNormalizedCoord);
 goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToTileCoord', MercatorQuadtree.prototype.QuadKeyToTileCoord);
+goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToMercator', MercatorQuadtree.prototype.QuadKeyToMercator);

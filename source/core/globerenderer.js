@@ -36,6 +36,7 @@ goog.require('owg.owgElevationLayer');
 goog.require('owg.GoogleImageLayer');
 goog.require('owg.OYMImageLayer');
 goog.require('owg.TMSImageLayer');
+goog.require('owg.WMSImageLayer');
 //------------------------------------------------------------------------------
 /**
  * @typedef {{
@@ -239,6 +240,25 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
                imgLayer.usermaxlod = options["maxlod"];
             }
             imgLayer.Setup(options["url"]);
+            index = this.imagelayerlist.length;
+            this.imagelayerlist.push(imgLayer);
+            this._UpdateLayers();
+         }
+      }
+      // TMS service
+      else if (options["service"] == "wms")
+      {
+         if (goog.isDef(options["url"]) && options["url"].length>0
+            && goog.isDef(options["layer"]) && options["layer"].length>0)
+         {
+            var imgLayer = new WMSImageLayer();
+            if (goog.isDef(options["format"]))
+            {imgLayer.format = options["format"];} 
+            if (goog.isDef(options["style"]))
+            {imgLayer.style = options["style"];}
+            if (goog.isDef(options["version"]))
+            {imgLayer.version = options["version"];}
+            imgLayer.Setup(options["url"],options["layer"],options["format"],options["style"],options["version"],options["transparency"]);
             index = this.imagelayerlist.length;
             this.imagelayerlist.push(imgLayer);
             this._UpdateLayers();
