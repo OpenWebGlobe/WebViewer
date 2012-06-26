@@ -31,8 +31,14 @@ goog.require('owg.Texture');
 //------------------------------------------------------------------------------
 /**
  * @constructor
- * @description WMS Image Layer (WMS Server must support EPSG:900913)
+ * @description WMS Image Layer (Mercator Projection)
+ * some wms server can't work,The reason why vmap0.tiles.osgeo.org doesn't work is:
+ * that server doesn't send the header "Access-Control-Allow-Origin: *".
+ * This is required for WebGL because of security issues.
+ * More info here: http://forums.openwebglobe.org/viewtopic.php?f=4&t=7
+ * The imagelayer_wms.js was finished debug by debug-wms.html 
  * @author Boguisław Kaczałek, boguslaw.kaczalek@opegieka.pl
+ * modified by gouguijia@gmail.com
  */
 function WMSImageLayer()
 {
@@ -42,6 +48,7 @@ function WMSImageLayer()
    this.style = null;
    this.version=null;
    this.transparency = 1.0;
+   this.SRS=null;
    this.quadtree = new MercatorQuadtree();
  
    //---------------------------------------------------------------------------
@@ -57,25 +64,37 @@ function WMSImageLayer()
    //---------------------------------------------------------------------------
    this.RequestTile = function(engine, quadcode, layer, cbfReady, cbfFailed, caller)
    {
-      if (this.server.indexOf("?", this.server.length - 1) == -1){
+      if (this.server.indexOf("?", this.server.length - 1) == -1)
+      {
           this.server+="?";
       }
       var coords = new Array(4);
-      this.quadtree.QuadKeyToMercator(quadcode, coords);
-      var bbox= coords[0]+","+coords[1]+","+coords[2]+","+coords[3];
+      if(this.SRS=="EPSG%3A4326")
+      {
+         this.quadtree.QuadKeyToWGS84(quadcode, coords);
+         var bbox= coords[0]+","+coords[1]+","+coords[2]+","+coords[3];         
+      }
+      else // EPSG:900913, ESRI:102100, ESRI:102113, EPSG:3785, EPSG:3857
+      {
+         this.quadtree.QuadKeyToMercator(quadcode, coords);
+         var bbox= coords[0]+","+coords[1]+","+coords[2]+","+coords[3];         
+      }
+
       var sFilename = this.server + 
                "service=WMS"+
                "&request=GetMap" + 
                "&WIDTH=256" +
                "&HEIGHT=256" +
                "&TILED=TRUE" +
-               "&SRS=EPSG%3A900913" +
+               "&SRS=" + this.SRS      +     // deprecated -> EPSG%3A3857
                "&LAYERS=" + this.layer +
                "&STYLES=" + this.style +
                "&FORMAT="+ this.format +
                "&VERSION=" + this.version +
                "&BBOX=" + bbox;
+               
 
+      
       var ImageTexture = new Texture(engine);  
       ImageTexture.quadcode = quadcode;   // store quadcode in texture object
       ImageTexture.layer = layer;
@@ -85,7 +104,8 @@ function WMSImageLayer()
       if (this.format=="image/png") {
           ImageTexture.transparency = this.transparency;
       }
-      ImageTexture.loadTexture(sFilename, _cbWMSTileReady, _cbWMSTileFailed, true);
+      ImageTexture.loadTexture(sFilename, _cbWMSTileReady, _cbWMSTileFailed, true); 
+ 
    };
    //---------------------------------------------------------------------------
    this.GetMinLod = function()
@@ -98,6 +118,7 @@ function WMSImageLayer()
    {
       return 30;
    }
+   
    //---------------------------------------------------------------------------
    this.Contains = function(quadcode)
    {
@@ -108,19 +129,28 @@ function WMSImageLayer()
       return false;
    }
    //---------------------------------------------------------------------------
-   this.Setup = function(server,layer,format,style,version,transparency)
+   
+   this.Setup = function(server,layer,SRS,format,style,version,transparency)
    {   
-   this.server = server;
-   this.layer = layer;
-   this.format = format;
-   this.style = style;
-   this.version = version;
-   this.transparency = transparency;
+      this.server = server;
+      this.layer = layer;
+      this.format = format;
+      this.style = style;
+      this.version = version;
+      this.transparency = transparency;
+      this.SRS = SRS;
       //load defaults if not provided
-   if (this.format == null) {this.format = "image/png"};
-   if (this.style == null) {this.style = ""};
-   if (this.version == null) {this.version="1.1.1"};
-   if (this.transparency == null) {this.transparency="1.0"};
+      if (this.format == null) {this.format = "image/png";}
+      if (this.style == null) {this.style = "";}
+      if (this.version == null) {this.version="1.1.1";}
+      if (this.SRS==null){this.SRS="EPSG%3A900913";}
+      if (this.SRS=="EPSG:900913"){this.SRS="EPSG%3A900913";}
+      if (this.SRS=="ESRI:102100"){this.SRS="ESRI%3A102100";}
+      if (this.SRS=="ESRI:102113"){this.SRS="ESRI%3A102113";}
+      if (this.SRS=="EPSG:3785"){this.SRS="EPSG%3A3785";}
+      if (this.SRS=="EPSG:3857"){this.SRS="EPSG%3A3857";}
+      if (this.SRS=="EPSG:4326"){this.SRS="EPSG%3A4326";}
+
    }
 }
 

@@ -258,7 +258,7 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
             {imgLayer.style = options["style"];}
             if (goog.isDef(options["version"]))
             {imgLayer.version = options["version"];}
-            imgLayer.Setup(options["url"],options["layer"],options["format"],options["style"],options["version"],options["transparency"]);
+            imgLayer.Setup(options["url"],options["layer"],options["SRS"],options["format"],options["style"],options["version"],options["transparency"]);
             index = this.imagelayerlist.length;
             this.imagelayerlist.push(imgLayer);
             this._UpdateLayers();

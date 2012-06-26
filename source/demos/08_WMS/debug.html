@@ -14,11 +14,11 @@
 	   ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
 		var context = ogCreateContextFromCanvas("canvas", true);
 		var globe = ogCreateGlobe(context);
-		ogAddImageLayer(globe, {
+		/*ogAddImageLayer(globe, {
          url: ["http://www.openwebglobe.org/data/img"],
          layer: "bluemarble",
          service: "owg"
-		});
+		});*/
       // Demo using WMS Service of: http://www.osm-wms.de/
       // Please use for testing only
        /*ogAddImageLayer(globe, {
@@ -31,7 +31,8 @@
          url: ["http://129.206.228.72/cached/osm"],
          layer: "osm_auto:all",
          service: "wms",
-         transparency: 0.5
+         transparency: 1.0,
+         SRS: "EPSG:3857"
       });
 		ogAddElevationLayer(globe, {
 			url: ["http://www.openwebglobe.org/data/elv"],

@@ -171,6 +171,31 @@ MercatorQuadtree.prototype.QuadKeyToMercator = function(quadcode, coords)
     coords[3]=maxy-scale*(result.y);
 
 }
+MercatorQuadtree.prototype.QuadKeyToWGS84 = function(quadcode, coords)
+{
+   var lod = quadcode.length;
+   var mercator = [];
+   var mapSize = 256*Math.pow(2,lod);
+   this.QuadKeyToNormalizedCoord(quadcode, mercator);
+   var minpixelX=mercator[0]*256*Math.pow(2,lod); 
+   var minpixelY=(1.00-mercator[1])*256*Math.pow(2,lod);
+   var maxpixelX=mercator[2]*256*Math.pow(2,lod);
+   var maxpixelY=(1.00-mercator[3])*256*Math.pow(2,lod);  
+   var x = (Math.min(Math.max(minpixelX, 0), mapSize - 1) / mapSize) - 0.5;
+   var y = 0.5 - (Math.min(Math.max(minpixelY, 0), mapSize - 1) / mapSize);
+   var minx = 90.0 - 360.0 * Math.atan(Math.exp(-y * 2.0 * Math.PI)) / Math.PI;
+   var miny = 360.0000 * x;
+
+   x = (Math.min(Math.max(minpixelX, 0), mapSize - 1) / mapSize) - 0.5;
+   y = 0.5 - (Math.min(Math.max(minpixelY, 0), mapSize - 1) / mapSize);
+   var maxx = 90.0 - 360.0 * Math.atan(Math.exp(-y * 2.0 * Math.PI)) / Math.PI;
+   var maxy = 360.0000 * x;
+    coords[0]=minx;
+    coords[1]=miny;
+    coords[2]=maxx;
+    coords[3]=maxy;
+
+}
 //------------------------------------------------------------------------------
 
 goog.exportSymbol('MercatorQuadtree', MercatorQuadtree);
@@ -178,3 +203,4 @@ goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToMercatorCoord', Mercat
 goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToNormalizedCoord', MercatorQuadtree.prototype.QuadKeyToNormalizedCoord);
 goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToTileCoord', MercatorQuadtree.prototype.QuadKeyToTileCoord);
 goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToMercator', MercatorQuadtree.prototype.QuadKeyToMercator);
+goog.exportProperty(MercatorQuadtree.prototype, 'QuadKeyToWGS84', MercatorQuadtree.prototype.QuadKeyToWGS84);
