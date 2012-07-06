@@ -62,6 +62,8 @@ function RenderObjectNode()
       // 2: render bottom
       /** @type {number} */
       this.stereoscopic = 0;
+      /** @type {number} */
+      this.elevation = 0;
       
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -96,7 +98,10 @@ function RenderObjectNode()
             var scaley = this.texture.height / (this.texture.height+numpix);
             if (this.stereoscopic == 0)
             {
-               this.texture.Blit(numpix,numpix, 0, 0, scalex, scaley, true, true, 1.0);
+               if (this.elevation > 10000)
+               {
+                  this.texture.Blit(numpix,numpix, 0, 0, scalex, scaley, true, true, 1.0);
+               }
                this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
             }
             else if (this.stereoscopic == 1) // top
@@ -117,6 +122,7 @@ function RenderObjectNode()
       {
           var pos = ts.GetPosition();
           this.camera.Set(pos.x, pos.y, pos.z);
+          this.elevation = ts.geoposition.elevation;
       }
       
       //------------------------------------------------------------------------
