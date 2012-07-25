@@ -2914,3 +2914,21 @@ function ogCalcDistanceWGS84(lng0,lat0,lng1,lat1)
 }
 goog.exportSymbol('ogCalcDistanceWGS84', ogCalcDistanceWGS84);
 //------------------------------------------------------------------------------
+/**
+ * @description Set the minimal camera altitude over ground in meters
+ * @param minAltiude
+ */
+function ogSetMinAltitude(scene_id, minAltiude)
+{
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   {
+      var context =  /** @type ogContext */scene.parent;
+      // Get the engine
+      /** @type {engine3d} */
+      var engine = context.engine;
+      engine.scene.nodeNavigation.SetMinAltitude(minAltiude);
+   }
+
+
+}

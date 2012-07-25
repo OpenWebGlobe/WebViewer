@@ -508,7 +508,7 @@ engine3d.prototype.OnDestroy = function()
    this.scene = null;
    this.poimanager = null;
    this.texturemanager = null;
-   goog.events.listen(window, goog.events.EventType.RESIZE, null, false, this);
+   goog.events.unlisten(window, goog.events.EventType.RESIZE, null, false, this);
 }
 //------------------------------------------------------------------------------
 /**

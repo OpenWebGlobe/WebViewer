@@ -972,6 +972,14 @@ function GlobeNavigationNode()
       evt.returnValue = false;
       return false;
    }
+
+   /**
+    * Set the min altitude in meters
+    */
+   this.SetMinAltitude = function(min)
+   {
+      this.minAltitude = min;
+   }
 }
 goog.inherits(GlobeNavigationNode, NavigationNode);
 
