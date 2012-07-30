@@ -787,13 +787,21 @@ engine3d.prototype.CreateScene = function()
 {
    if (this.worldtype == 0) // custom scene
    {
-      goog.debug.Logger.getLogger('owg.engine3d').warning("** WARNING: not implemented");
+      var options = {
+         "type" : "custom"
+      };
+      this.scene = new SceneGraph(this, options);
+      this.scene.nodeRenderObject.DoResize(this.width,this.height);
    }
    else if (this.worldtype == 1) // wgs84
    {
-      this.scene = new SceneGraph(this);
-      // call resize here to initialize the scenegraph: todo: move to scenegraph (don't call renderobject direcly)
+      var options = {
+         "type" : "ellipsoid"
+      };
+
+      this.scene = new SceneGraph(this, options);
       this.scene.nodeRenderObject.DoResize(this.width,this.height);
+
    }
    else if (this.worldtype == 2)
    {
@@ -1219,7 +1227,7 @@ engine3d.prototype.SetKeyUpCallback = function(opt_f)
  */
 engine3d.prototype.PickGlobe = function(mx, my, pickresult)
 {
-   if (this.scene)
+   if (this.scene && this.scene.nodeRenderObject && this.scene.nodeRenderObject.globerenderer)
    {
       this.scene.nodeRenderObject.globerenderer.PickGlobe(mx,my,pickresult);
    }
@@ -1232,7 +1240,7 @@ engine3d.prototype.PickGlobe = function(mx, my, pickresult)
  */
 engine3d.prototype.UpdatePickMatrix = function(matView)
 {
-   if (this.scene)
+   if (this.scene && this.scene.nodeRenderObject && this.scene.nodeRenderObject.globerenderer)
    {
       var pickmatrix = new mat4();
       pickmatrix.Multiply(this.matProjection, matView);
@@ -1255,7 +1263,7 @@ engine3d.prototype.UpdatePickMatrix = function(matView)
  */
 engine3d.prototype.PickEllipsoid = function(mx, my, pickresult, initialize)
 {
-   if (this.scene)
+   if (this.scene && this.scene.nodeRenderObject && this.scene.nodeRenderObject.globerenderer)
    {
       this.scene.nodeRenderObject.globerenderer.PickEllipsoid(mx,my,pickresult,initialize);
    }
@@ -1269,7 +1277,7 @@ engine3d.prototype.PickEllipsoid = function(mx, my, pickresult, initialize)
  */
 engine3d.prototype.PickPOI = function(mx, my)
 {
-   if (this.scene)
+   if (this.scene && this.scene.nodeRenderObject && this.scene.nodeRenderObject.poirenderer)
    {
       return this.scene.nodeRenderObject.poirenderer.PickPOI(mx,my);
    }
@@ -1284,7 +1292,7 @@ engine3d.prototype.PickPOI = function(mx, my)
  */
 engine3d.prototype.PickSurface = function(mx, my)
 {
-   if (this.scene)
+   if (this.scene && this.scene.nodeRenderObject && this.scene.nodeRenderObject.geometryrenderer)
    {
       return this.scene.nodeRenderObject.geometryrenderer.PickSurface(mx,my);
    }
@@ -1299,7 +1307,7 @@ engine3d.prototype.PickSurface = function(mx, my)
  */
 engine3d.prototype.PickBillboard = function(mx, my)
 {
-   if (this.scene)
+   if (this.scene && this.scene.nodeRenderObject && this.scene.nodeRenderObject.billboardrenderer)
    {
       return this.scene.nodeRenderObject.billboardrenderer.PickBillboard(mx,my);
    }
@@ -1311,7 +1319,7 @@ engine3d.prototype.PickBillboard = function(mx, my)
  */
 engine3d.prototype.AltitudeAboveGround = function()
 {
-   if (this.scene)
+   if (this.scene && this.scene.nodeRenderObject && this.scene.nodeRenderObject.globerenderer)
    {
       return this.scene.nodeRenderObject.globerenderer.AltitudeAboveGround();
    }   
@@ -1344,7 +1352,7 @@ engine3d.prototype.AltitudeAboveEllipsoid = function()
  */
 engine3d.prototype.GetElevationAt = function(lng, lat)
 {
-   if (this.scene)
+   if (this.scene && this.scene.nodeRenderObject && this.scene.nodeRenderObject.globerenderer)
    {
       return this.scene.nodeRenderObject.globerenderer.GetElevationAt(lng, lat);
    }

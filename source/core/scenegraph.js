@@ -35,9 +35,10 @@ goog.require('owg.mat4');
  * Scenegraph Class.
  * @author Martin Christen martin.christen@fhnw.ch 
  * @constructor
- * @param{engine3d} engine the engine
+ * @param {engine3d} engine the engine
+ * @param {Object} options options for Scenegraph
  */
-function SceneGraph(engine)
+function SceneGraph(engine, options)
 {
    /** @type {engine3d} */
    this.engine = engine;         // Render Engine
@@ -47,9 +48,9 @@ function SceneGraph(engine)
    this.navigation.InitNode();
    
    // Access Nodes:
-   this.nodeNavigation = this.navigation;               // Navigation Node (for view matrix)
-   this.nodeCamera = new CameraNode();                  // Camera Node (for projection matrix)
-   this.nodeRenderObject = new RenderObjectNode();      // Render Object Node (render openglobe objects, e.g. the virtual globe)
+   this.nodeNavigation = this.navigation;                   // Navigation Node (for view matrix)
+   this.nodeCamera = new CameraNode();                      // Camera Node (for projection matrix)
+   this.nodeRenderObject = new RenderObjectNode(options);   // Render Object Node (render openglobe objects, e.g. the virtual globe)
    this.nodeLogos = new LogosNode();
    
    this.nodeCamera.SetEngine(engine);

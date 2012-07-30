@@ -35,8 +35,9 @@ goog.require('owg.AoeImageRenderer');
  * Render Object Node. Renders OpenWebGlobe objects, including virtual globe 
  * @author Martin Christen martin.christen@fhnw.ch 
  * @constructor
+ * @param {Object} options
  */
-function RenderObjectNode()
+function RenderObjectNode(options)
 {
       /** @type {GlobeRenderer} */
       this.globerenderer = null;
@@ -64,6 +65,13 @@ function RenderObjectNode()
       this.stereoscopic = 0;
       /** @type {number} */
       this.elevation = 0;
+      /** @type {boolean} */
+      this.custom = false;
+
+      if (options["type"] == "custom")
+      {
+         this.custom = true;
+      }
       
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -80,8 +88,10 @@ function RenderObjectNode()
             this.engine.SetupDepthTextureTarget();
          }
 
-
-         this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
+         if (this.globerenderer)
+         {
+            this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
+         }
          this.vectorrenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.poirenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.geometryrenderer.Render(this.camera, this.engine.matModelViewProjection);
@@ -128,7 +138,10 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.OnInit = function()
       {
-         this.globerenderer = new GlobeRenderer(this.engine);
+         if (!this.custom)
+         {
+            this.globerenderer = new GlobeRenderer(this.engine);
+         }
          this.vectorrenderer = new VectorRenderer(this.engine);
          this.poirenderer = new PoiRenderer(this.engine);
          this.geometryrenderer = new GeometryRenderer(this.engine);
@@ -139,8 +152,12 @@ function RenderObjectNode()
       //------------------------------------------------------------------------
       this.OnExit = function()
       {
-         this.globerenderer.Destroy(); // free all memory
-         this.globerenderer = null;
+         if (this.globerenderer)
+         {
+            this.globerenderer.Destroy(); // free all memory
+            this.globerenderer = null;
+         }
+
       }
 
       //------------------------------------------------------------------------

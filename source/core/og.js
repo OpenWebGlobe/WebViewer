@@ -921,7 +921,7 @@ function ogCreateScene(context_id, scenetype)
       {
          /** @type {ogScene} */
          var scene = _CreateObject(OG_OBJECT_SCENE, context, sceneoptions);
-         context.scene = scene;         
+         context.scene = scene;
          return scene.id;
       }
       else
@@ -1382,16 +1382,16 @@ function ogCreateGlobe(context_id)
    // this is just a convienience function to save some typing.
    var scene_id = ogCreateScene(context_id, OG_SCENE_3D_ELLIPSOID_WGS84);
    var world_id = ogCreateWorld(scene_id);
-   
+
    /** @type {ogScene} */
    var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
-   
+
    //create a camera object and add it to the scene
    var cam = _CreateObject(OG_OBJECT_CAMERA, scene, null);
    cam.SetCurrentPositionAsCameraPosition();
    scene.SetActiveCamera(cam.id);
    scene.AddCamera(cam);
-   
+
    return world_id;
 }
 goog.exportSymbol('ogCreateGlobe', ogCreateGlobe);
