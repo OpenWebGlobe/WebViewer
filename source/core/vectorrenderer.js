@@ -48,7 +48,15 @@ VectorRenderer.prototype.Render = function(vCameraPosition, matModelViewProjecti
 {
    for (var i=0;i<this.vectorarray.length;i++)
    {
+      var tmpmodel = new mat4();
+      tmpmodel.CopyFrom(this.engine.matModel);
+      tmpmodel._values[12] += this.vectorarray[i].vOffset[0];
+      tmpmodel._values[13] += this.vectorarray[i].vOffset[1];
+      tmpmodel._values[14] += this.vectorarray[i].vOffset[2];
+      this.engine.PushMatrices();
+      this.engine.SetModelMatrix(tmpmodel);
       this.engine.VectorRender(this.vectorarray[i],this.vectorarray[i], true);
+      this.engine.PopMatrices();
    }
 
    //enable for debugging:
