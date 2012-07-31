@@ -106,7 +106,7 @@ function _ctx_callback_mouseup(button, x, y, engine)
    
    if (context.cbfMouseUp)
    {
-      context.cbfMouseUp(context.id);
+      context.cbfMouseUp(context.id, button, x, y);
    }
 }
 //------------------------------------------------------------------------------
