@@ -482,22 +482,34 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
 //------------------------------------------------------------------------------
 engine3d.prototype.OnDestroy = function()
 {
-   this.cbfInit = null;
-   this.cbfTimer = null;
-   this.cbfRender = null;
-   this.cbfMouseClicked = null;
-   this.cbfMouseReleased = null;
-   this.cbfMouseMoved = null;
-   this.cbfMouseWheel = null;
-   this.cbfKeyPressed = null;
-   this.cbfKeyReleased = null;
-   this.cbfResize = null;
+   if (this.cbfInit)
+   {
+      this.cbfInit = null;
+   }
+
+   if (this.cbfMouseDown) { goog.events.unlistenByKey(this.cbfMouseDown); this.cbfMouseDown = null;}
+   if (this.cbfMouseUp) { goog.events.unlistenByKey(this.cbfMouseUp); this.cbfMouseUp = null;}
+   if (this.cbfMouseWheel) { goog.events.unlistenByKey(this.cbfMouseWheel); this.cbfMouseWheel = null;}
+
+   if (this.cbfTimer) { this.cbfTimer = null;}
+   if (this.cbfRender) { this.cbfRender = null;}
+
+   if (_gcbfKeyDown) { goog.events.unlistenByKey(_gcbfKeyDown); _gcbfKeyUp = null;}
+   if (_gcbfKeyUp) { goog.events.unlistenByKey(_gcbfKeyUp); _gcbfKeyUp = null;}
+
+   //if (this.cbfMouseMoved) { goog.events.unlistenByKey(this.cbfMouseMoved); this.cbfMouseMoved = null;}
+
+
+   //if (this.cbfResize) { goog.events.unlistenByKey(this.cbfResize); this.cbfResize = null;}
 
    if (this.scene)
    {
       this.scene.Destroy();
       this.scene = null;
    }
+
+   this.gl.clearColor(0,0,0,0);
+   this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
    this.gl = null;       
    this.context = null;
@@ -509,6 +521,10 @@ engine3d.prototype.OnDestroy = function()
    this.poimanager = null;
    this.texturemanager = null;
    goog.events.unlisten(window, goog.events.EventType.RESIZE, null, false, this);
+
+
+   _g_nInstanceCnt = 0;
+   _g_vInstances = [];
 }
 //------------------------------------------------------------------------------
 /**
@@ -545,8 +561,16 @@ engine3d.prototype.Clear = function()
 {
    /** @type {WebGLRenderingContext} */
    var gl = this.gl;
-   gl.clearColor(this.bg_r, this.bg_g, this.bg_b, this.bg_a);
-   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+   if (gl)
+   {
+      gl.clearColor(this.bg_r, this.bg_g, this.bg_b, this.bg_a);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+   }
+   else
+   {
+      ogLog("Warning: no gl context!!")
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -646,8 +670,14 @@ engine3d.prototype.VectorRender = function(geometryarray, bboxarray, opt_bBlend)
  */
 engine3d.prototype.SetViewport = function(x,y,w,h)
 {
-   this.vp_x = x; this.vp_y = y; this.vp_w = w; this.vp_h = h;
-   this.gl.viewport(x, y, w, h);
+   if (this.gl)
+   {
+      this.vp_x = x;
+      this.vp_y = y;
+      this.vp_w = w;
+      this.vp_h = h;
+      this.gl.viewport(x, y, w, h);
+   }
 }
 
 //------------------------------------------------------------------------------
@@ -1007,8 +1037,6 @@ function fncTimer()
       {
          window.requestAnimFrame(fncTimer, engine.context);
       }
-      
-
    }
 
 }

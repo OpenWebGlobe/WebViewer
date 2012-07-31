@@ -145,6 +145,21 @@ function GlobeNavigationNode()
 
    this.basis = 0;
 
+   /** @type {number} */
+   this.evtKeyDown = 0;
+   /** @type {number} */
+   this.evtKeyUp = 0;
+   /** @type {number} */
+   this.evtMouseDown = 0;
+   /** @type {number} */
+   this.evtMouseMove = 0;
+   /** @type {number} */
+   this.evtMouseUp = 0;
+   /** @type {number} */
+   this.evtMouseDoubleClick = 0;
+   /** @type {number} */
+   this.evtMouseWheel = 0;
+
    //---------------------------------------------------------------------------
    /**
     * @param {boolean} b true if lock, false if unlock
@@ -261,19 +276,31 @@ function GlobeNavigationNode()
    //---------------------------------------------------------------------------
    this.OnExit = function ()
    {
-      //
+
+   }
+   //---------------------------------------------------------------------------
+   this.OnUnregisterEvents = function ()
+   {
+      goog.events.unlistenByKey(this.evtKeyDown);
+      goog.events.unlistenByKey(this.evtKeyUp);
+      goog.events.unlistenByKey(this.evtMouseDown);
+      goog.events.unlistenByKey(this.evtMouseMove);
+      goog.events.unlistenByKey(this.evtMouseUp);
+      goog.events.unlistenByKey(this.evtMouseDoubleClick);
+      goog.events.unlistenByKey(this.evtMouseWheel);
+
    }
    //---------------------------------------------------------------------------
    this.OnRegisterEvents = function (context)
    {
-      goog.events.listen(window, goog.events.EventType.KEYDOWN, this.OnKeyDown, false, this);
-      goog.events.listen(window, goog.events.EventType.KEYUP, this.OnKeyUp, false, this);
-      goog.events.listen(context, goog.events.EventType.MOUSEDOWN, this.OnMouseDown, false, this);
-      goog.events.listen(context, goog.events.EventType.MOUSEMOVE, this.OnMouseMove, false, this);
-      goog.events.listen(context, goog.events.EventType.MOUSEUP, this.OnMouseUp, false, this);
-      goog.events.listen(context, goog.events.EventType.DBLCLICK, this.OnMouseDoubleClick, false, this);
+      this.evtKeyDown = goog.events.listen(window, goog.events.EventType.KEYDOWN, this.OnKeyDown, false, this);
+      this.evtKeyUp = goog.events.listen(window, goog.events.EventType.KEYUP, this.OnKeyUp, false, this);
+      this.evtMouseDown = goog.events.listen(context, goog.events.EventType.MOUSEDOWN, this.OnMouseDown, false, this);
+      this.evtMouseMove = goog.events.listen(context, goog.events.EventType.MOUSEMOVE, this.OnMouseMove, false, this);
+      this.evtMouseUp = goog.events.listen(context, goog.events.EventType.MOUSEUP, this.OnMouseUp, false, this);
+      this.evtMouseDoubleClick = goog.events.listen(context, goog.events.EventType.DBLCLICK, this.OnMouseDoubleClick, false, this);
       var mouseWheelHandler = new goog.events.MouseWheelHandler(context);
-      goog.events.listen(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.OnMouseWheel, false, this);
+      this.evtMouseWheel = goog.events.listen(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.OnMouseWheel, false, this);
    }
    //---------------------------------------------------------------------------
    this._OnInputChange = function ()
@@ -563,6 +590,9 @@ function GlobeNavigationNode()
    // EVENT: OnMouseDown
    this.OnMouseDown = function (e)
    {
+      if (!this.engine || !this.engine.context)
+         return;
+
       if (this._bLockNavigation || this.engine.flyto.isMoving)
       {
          return;
@@ -594,6 +624,9 @@ function GlobeNavigationNode()
    // EVENT: OnMouseUp
    this.OnMouseUp = function (e)
    {
+      if (!this.engine || !this.engine.context)
+         return;
+
       this._bDragging = true;
       this._nMouseX = e.offsetX - this.engine.context.offsetLeft;
       this._nMouseY = e.offsetY - this.engine.context.offsetTop;
@@ -622,6 +655,9 @@ function GlobeNavigationNode()
    // EVENT: OnMouseMove
    this.OnMouseMove = function (e)
    {
+      if (!this.engine || !this.engine.context)
+         return;
+
       if (this._bLockNavigation || this.engine.flyto.isMoving)
       {
          return;
