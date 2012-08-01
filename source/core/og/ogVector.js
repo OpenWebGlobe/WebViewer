@@ -84,9 +84,13 @@ ogVector.prototype = new ogObject();
  */
 ogVector.prototype.ParseOptions = function(options)
 {
-   this.options = options;
+   if (options["dynamic"])
+   {
+      this.CreateFromJSONObject(options["data"]);
+      return;
+   }
 
-   if(options["url"])
+   if (goog.isDef(options["url"]))
    {
       if (options["type"] == "GeoJSON")
       {

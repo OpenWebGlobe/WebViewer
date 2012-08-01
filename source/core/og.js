@@ -1728,8 +1728,9 @@ function ogLoadVectorAsync(layer_id, url)
    var layer = _GetObjectFromId(layer_id);
    if (layer && layer.type == OG_OBJECT_VECTORLAYER)
    {
-      var options = { "url"  : url,
-                      "type" : "GeoJSON" };
+      var options = { "url"     : url,
+                      "dynamic" : false,
+                      "type"    : "GeoJSON" };
       var vector = layer.CreateVector(options);
       return vector.id;
    }
@@ -1764,6 +1765,27 @@ function ogDestroyVector(vector_id)
    return -1;
 }
 goog.exportSymbol('ogDestroyVector', ogDestroyVector);
+//------------------------------------------------------------------------------
+//---------------------------------------------------------------------
+/** @description Add a line to the Vector Layer
+ *  @param {number} layer_id
+ *  @returns {number} the vector id
+ */
+function ogAddGeoJSON(layer_id,data)
+{
+   var layer = _GetObjectFromId(layer_id);
+   if (layer && layer.type == OG_OBJECT_VECTORLAYER)
+   {
+      var options = { "dynamic" : true,
+                      "type"    : "GeoJSON",
+                      "data"    : data };
+      var vector = layer.CreateVector(options);
+      return vector.id;
+   }
+
+   return -1;
+}
+goog.exportSymbol('ogAddGeoJSON', ogAddGeoJSON);
 //##############################################################################
 // ** POI OBJECT **
 //##############################################################################
