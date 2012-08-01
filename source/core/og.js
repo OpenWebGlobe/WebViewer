@@ -1767,7 +1767,7 @@ function ogDestroyVector(vector_id)
 goog.exportSymbol('ogDestroyVector', ogDestroyVector);
 //------------------------------------------------------------------------------
 //---------------------------------------------------------------------
-/** @description Add a line to the Vector Layer
+/** @description Add a GeoJSON to the Vector Layer
  *  @param {number} layer_id
  *  @returns {number} the vector id
  */
