@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!--
+/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2010-2012 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/
+
+                         TUTORIAL 19: Using Fullscreen
+*******************************************************************************/
+-->
+<html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+<button onclick="fullscreen();">Go Fullscreen</button>
+<script>
+   var bFullscreen = false;
+   //---------------------------------------------------------------------------
+   function fullscreenChange()
+   {
+      var elem = document.getElementById("canvas");
+      if (document.webkitFullscreenElement === elem ||
+          document.mozFullscreenElement === elem ||
+          document.mozFullScreenElement === elem)
+      {
+         bFullscreen = true;
+      }
+      else
+      {
+         bFullscreen = false;
+      }
+   }
+   document.addEventListener('fullscreenchange', fullscreenChange, false);
+   document.addEventListener('mozfullscreenchange', fullscreenChange, false);
+   document.addEventListener('webkitfullscreenchange', fullscreenChange, false);
+   //---------------------------------------------------------------------------
+   function fullscreen()
+   {
+      var elem = document.getElementById("canvas");
+      elem.requestFullscreen = elem.requestFullscreen    ||
+                               elem.mozRequestFullscreen ||
+                               elem.mozRequestFullScreen ||
+                               elem.webkitRequestFullscreen;
+      elem.requestFullscreen();
+   }
+   //---------------------------------------------------------------------------
+   function OnRender(context)
+   {
+      ogSetTextColor(context, 0,1,0);
+      var text = "Hello World";
+      if (bFullscreen)
+      {
+         text = "Hello Fullscreen!";
+      }
+      ogDrawText(context, text, 0, 20);
+   }
+   //---------------------------------------------------------------------------
+   function main()
+   {
+      ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
+      var ctx = ogCreateContextFromCanvas("canvas", true);
+      var globe = ogCreateGlobe(ctx);
+
+      var imgBlueMarble500 =
+      {
+         url     : ["http://www.openwebglobe.org/data/img"],
+         layer   : "World500",
+         service : "i3d"
+      };
+
+      var elvSRTM_CH =
+      {
+         url     : ["http://www.openwebglobe.org/data/elv"],
+         layer   : "SRTM",
+         service : "i3d"
+      };
+
+      ogAddImageLayer(globe, imgBlueMarble500);
+      ogAddElevationLayer(globe, elvSRTM_CH);
+
+      ogSetRenderFunction(ctx, OnRender);
+
+      ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+   }
+   //------------------------------------------------------------------------------
+</script>
+<body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
+<div style="text-align: center">
+   <canvas id="canvas"></canvas>
+</div>
+</body>
+</html>
