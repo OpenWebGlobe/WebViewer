@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!--
+/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2010-2012 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/
+
+                       TUTORIAL 15: Changing Navigation
+*******************************************************************************/
+-->
+<html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+<button onclick="globe_nav();">Globe Navigation</button>
+<button onclick="fly_nav();">Flight Navigation</button>
+<!--<button onclick="constrained_nav();">Constrained Navigation</button>-->
+<script>
+   var g_ctx;
+   //---------------------------------------------------------------------------
+   function OnRender(context)
+   {
+      ogSetTextColor(context, 0,1,0);
+      ogDrawText(context, "Hello World", 0, 20);
+   }
+   //---------------------------------------------------------------------------
+   function globe_nav()
+   {
+      var scene = ogGetScene(g_ctx);
+      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_GLOBE);
+   }
+   //---------------------------------------------------------------------------
+   function fly_nav()
+   {
+      var scene = ogGetScene(g_ctx);
+      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_FLIGHT);
+   }
+   //---------------------------------------------------------------------------
+   function constrained_nav()
+   {
+      /*var scene = ogGetScene(g_ctx);
+      var options =
+         {
+            "bounds"           : [[6.7, 45, 200 ],[7.0, 46, 1000]],
+            "elevation_raster" : [200, 300, 400, 500, 600, 700, 800, 900, 1000]
+         }
+      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_CONSTRAINED, options);
+      */
+   }
+   //---------------------------------------------------------------------------
+   function main()
+   {
+      ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
+      g_ctx = ogCreateContextFromCanvas("canvas", true);
+      var globe = ogCreateGlobe(g_ctx);
+
+      var imgBlueMarble500 =
+      {
+         url     : ["http://www.openwebglobe.org/data/img"],
+         layer   : "World500",
+         service : "i3d"
+      };
+
+      var elvSRTM_CH =
+      {
+         url     : ["http://www.openwebglobe.org/data/elv"],
+         layer   : "SRTM",
+         service : "i3d"
+      };
+
+      ogAddImageLayer(globe, imgBlueMarble500);
+      ogAddElevationLayer(globe, elvSRTM_CH);
+
+      ogSetRenderFunction(g_ctx, OnRender);
+
+      ogSetBackgroundColor(g_ctx, 0.2,0.2,0.7,1);
+   }
+   //------------------------------------------------------------------------------
+</script>
+<body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
+<div style="text-align: center">
+   <canvas id="canvas"></canvas>
+</div>
+</body>
+</html>
