@@ -50,8 +50,6 @@ function ogScene()
    this.cameras = [];
    /** @type {number} */
    this.scenetype = OG_SCENE_3D_ELLIPSOID_WGS84;
-
-   
 }
 //------------------------------------------------------------------------------
 ogScene.prototype = new ogObject();
@@ -144,8 +142,7 @@ ogScene.prototype.PickBillboard = function(mx, my)
    var context = /** @type ogContext */this.parent;
    return context.engine.PickBillboard(mx, my); //returns the billboard_id and the normalized coordinate on the billboard.
 }
-
-
+//------------------------------------------------------------------------------
 /**
  * @description sets a new active camera.
  * 
@@ -161,7 +158,7 @@ ogScene.prototype.SetActiveCamera = function(camera_id)
    this.activecamera = cam;
    
 }
-
+//------------------------------------------------------------------------------
 /**
  * @description appends the new camera to the camera array.
  * 
@@ -169,4 +166,36 @@ ogScene.prototype.SetActiveCamera = function(camera_id)
 ogScene.prototype.AddCamera = function(camera)
 {
    this.cameras.push(camera);
+}
+//------------------------------------------------------------------------------
+/**
+ *
+ * @param {number} navigationmode
+ * @param {Object} opt_options
+ */
+ogScene.prototype.SetNavigationMode = function(navigationmode, opt_options)
+{
+   /** @type {ogContext} */
+   var context = /** @type ogContext */this.parent;
+   /** @type {engine3d} */
+   var engine = context.engine;
+
+   if (navigationmode == OG_NAVIGATIONMODE_GLOBE)
+   {
+      opt_options["type"] = "globe";
+   }
+   else if (navigationmode == OG_NAVIGATIONMODE_FLIGHT)
+   {
+      opt_options["type"] = "fly";
+   }
+   else if (navigationmode == OG_NAVIGATIONMODE_CONSTRAINED)
+   {
+      opt_options["type"] = "constrained";
+   }
+   else
+   {
+      return;
+   }
+
+   engine.scene.SetNavigationMode(opt_options);
 }

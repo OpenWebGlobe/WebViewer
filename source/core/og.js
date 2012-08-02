@@ -1350,6 +1350,32 @@ function ogLookAt(scene_id,lng,lat,elv)
 goog.exportSymbol('ogLookAt', ogLookAt);
 //------------------------------------------------------------------------------
 //##############################################################################
+// ** NAVIGATION **
+//##############################################################################
+//------------------------------------------------------------------------------
+/**
+ * Set the Navigation Mode. Navigation mode can be:
+ * OG_NAVIGATIONMODE_GLOBE, or OG_NAVIGATIONMODE_FLIGHT or OG_NAVIGATIONMODE_CONSTRAINED
+ * @param {number} scene_id
+ * @param {number} navigationmode
+ * @param {Object=} opt_options
+ */
+function ogSetNavigationMode(scene_id, navigationmode, opt_options)
+{
+   if (!goog.isDef(opt_options))
+   {
+      opt_options = {};
+   }
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      scene.SetNavigationMode(navigationmode, opt_options);
+   }
+
+
+}
+goog.exportSymbol('ogSetNavigationMode', ogSetNavigationMode);
+//##############################################################################
 // ** WORLD-OBJECT **
 //##############################################################################
 /** @description create world object

@@ -143,6 +143,20 @@ goog.exportSymbol('OG_SCENE_3D_FLAT_CARTESIAN', OG_SCENE_3D_FLAT_CARTESIAN);
 goog.exportSymbol('OG_SCENE_2D_SCREEN', OG_SCENE_2D_SCREEN);
 goog.exportSymbol('OG_SCENE_CUSTOM', OG_SCENE_CUSTOM);
 
+//------------------------------------------------------------------------------
+// NAVIGATION MODE
+//------------------------------------------------------------------------------
+
+//* @constant
+var OG_NAVIGATIONMODE_GLOBE                 = 0;
+//* @constant
+var OG_NAVIGATIONMODE_FLIGHT                = 1;
+//* @constant
+var OG_NAVIGATIONMODE_CONSTRAINED           = 2;
+
+goog.exportSymbol('OG_NAVIGATIONMODE_GLOBE', OG_NAVIGATIONMODE_GLOBE);
+goog.exportSymbol('OG_NAVIGATIONMODE_FLIGHT', OG_NAVIGATIONMODE_FLIGHT);
+goog.exportSymbol('OG_NAVIGATIONMODE_CONSTRAINED', OG_NAVIGATIONMODE_CONSTRAINED);
 
 //------------------------------------------------------------------------------
 // OBJECT STATUS

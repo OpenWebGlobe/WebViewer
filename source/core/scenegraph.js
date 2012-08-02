@@ -43,12 +43,11 @@ function SceneGraph(engine, options)
    /** @type {engine3d} */
    this.engine = engine;         // Render Engine
    
-   this.navigation = /*new NavigationNode();*/ new GlobeNavigationNode();
-   this.navigation.SetEngine(engine);
-   this.navigation.InitNode();
+   this.nodeNavigation = /*new NavigationNode();*/ new GlobeNavigationNode();
+   this.nodeNavigation.SetEngine(engine);
+   this.nodeNavigation.InitNode();
    
    // Access Nodes:
-   this.nodeNavigation = this.navigation;                   // Navigation Node (for view matrix)
    this.nodeCamera = new CameraNode();                      // Camera Node (for projection matrix)
    this.nodeRenderObject = new RenderObjectNode(options);   // Render Object Node (render openglobe objects, e.g. the virtual globe)
    this.nodeLogos = new LogosNode();
@@ -151,6 +150,30 @@ SceneGraph.prototype.Destroy = function()
    {
       this.nodeLogos.OnDestroy();
       this.nodeLogos = null;
+   }
+}
+
+/**
+ * @param {Object} options
+ */
+SceneGraph.prototype.SetNavigationMode = function(options)
+{
+   if (goog.isDef(options["type"]))
+   {
+      if (options["type"] == "globe")
+      {
+         this.nodeNavigation.OnDestroy();
+         this.nodeNavigation = /*new NavigationNode();*/ new GlobeNavigationNode();
+         this.nodeNavigation.SetEngine(this.engine);
+         this.nodeNavigation.InitNode();
+      }
+      else if (options["type"] == "fly")
+      {
+         this.nodeNavigation.OnDestroy();
+         this.nodeNavigation = new NavigationNode();
+         this.nodeNavigation.SetEngine(this.engine);
+         this.nodeNavigation.InitNode();
+      }
    }
 }
 
