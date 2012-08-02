@@ -158,22 +158,43 @@ SceneGraph.prototype.Destroy = function()
  */
 SceneGraph.prototype.SetNavigationMode = function(options)
 {
+   var lng, lat, elv;
+   var yaw, pitch, roll;
    if (goog.isDef(options["type"]))
    {
       if (options["type"] == "globe")
       {
          this.nodeNavigation.OnDestroy();
-         this.nodeNavigation = /*new NavigationNode();*/ new GlobeNavigationNode();
+         this.nodeNavigation = new GlobeNavigationNode();
          this.nodeNavigation.SetEngine(this.engine);
-         this.nodeNavigation.InitNode();
       }
       else if (options["type"] == "fly")
       {
          this.nodeNavigation.OnDestroy();
          this.nodeNavigation = new NavigationNode();
          this.nodeNavigation.SetEngine(this.engine);
-         this.nodeNavigation.InitNode();
+
       }
+
+      lng = this.nodeNavigation._longitude;
+      lat = this.nodeNavigation._latitude;
+      elv = this.nodeNavigation._ellipsoidHeight;
+      yaw = this.nodeNavigation._yaw;
+      pitch = this.nodeNavigation._pitch;
+      roll = this.nodeNavigation._roll;
+
+      if (goog.isDef(options["Longitude"])) { lng = options["Longitude"];}
+      if (goog.isDef(options["Latitude"])) { lat = options["Latitude"];}
+      if (goog.isDef(options["Elevation"])) { elv = options["Elevation"];}
+      if (goog.isDef(options["Yaw"])) { yaw = MathUtils.Deg2Rad(options["Yaw"]);}
+      if (goog.isDef(options["Pitch"])) { pitch = MathUtils.Deg2Rad(options["Pitch"]);}
+      if (goog.isDef(options["Roll"])) { roll = MathUtils.Deg2Rad(options["Roll"]);}
+
+      this.nodeNavigation.SetPosition(lng, lat, elv);
+      this.nodeNavigation.SetOrientation(yaw, pitch, roll);
+
+      this.nodeNavigation.InitNode();
+
    }
 }
 

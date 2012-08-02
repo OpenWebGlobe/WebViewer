@@ -159,7 +159,18 @@ function GlobeNavigationNode()
    this.evtMouseDoubleClick = 0;
    /** @type {number} */
    this.evtMouseWheel = 0;
-
+   //---------------------------------------------------------------------------
+   /**
+    * @param {number} lng
+    * @param {number} lat
+    * @param {number} elv
+    */
+   NavigationNode.prototype.SetPosition = function(lng, lat, elv)
+   {
+      this._longitude         = lng;
+      this._latitude          = lat;
+      this._ellipsoidHeight   = elv;
+   }
    //---------------------------------------------------------------------------
    /**
     * @param {boolean} b true if lock, false if unlock

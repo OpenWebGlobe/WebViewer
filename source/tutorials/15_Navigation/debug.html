@@ -41,20 +41,35 @@
    //---------------------------------------------------------------------------
    function OnRender(context)
    {
+      var scene = ogGetScene(context);
+
+      var currentpos = ogGetPosition(scene);
+      text = "longitude: "+currentpos.longitude.toFixed(3)+" latitude: "+currentpos.latitude.toFixed(3)+" elevation: "+currentpos.elevation.toFixed(1);
+
       ogSetTextColor(context, 0,1,0);
-      ogDrawText(context, "Hello World", 0, 20);
+      ogDrawText(context, text, 0, 20);
    }
    //---------------------------------------------------------------------------
    function globe_nav()
    {
       var scene = ogGetScene(g_ctx);
-      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_GLOBE);
+
+      var options = { "Longitude" : 7.616000,
+                      "Latitude"  : 45.12,
+                      "Elevation" : 300000
+      };
+      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_GLOBE, options);
    }
    //---------------------------------------------------------------------------
    function fly_nav()
    {
       var scene = ogGetScene(g_ctx);
-      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_FLIGHT);
+
+      var options = { "Longitude" : 7.616000,
+                      "Latitude"  : 45.12,
+                      "Elevation" : 2000
+      };
+      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_FLIGHT, options);
    }
    //---------------------------------------------------------------------------
    function constrained_nav()
@@ -94,7 +109,9 @@
 
       ogSetRenderFunction(g_ctx, OnRender);
 
-      ogSetBackgroundColor(g_ctx, 0.2,0.2,0.7,1);
+      ogSetBackgroundColor(g_ctx, 0.2,0.6,0.7,1);
+
+      globe_nav(); // initialize with globe navigation...
    }
    //------------------------------------------------------------------------------
 </script>
