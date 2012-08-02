@@ -1384,6 +1384,19 @@ engine3d.prototype.GetElevationAt = function(lng, lat)
    {
       return this.scene.nodeRenderObject.globerenderer.GetElevationAt(lng, lat);
    }
+
+   // Special case: There is no globe. GetElevationAt always returns 0 in this case.
+   if (!this.scene.nodeRenderObject.globerenderer)
+   {
+
+      var oReturn =  {  "hasvalue"  :  true,
+                        "elevation" :  0,
+                        "lod"       :  0
+                     };
+      return oReturn;
+   }
+
+
    var oFailed = {};
    oFailed["hasvalue"] = false;
    oFailed["elevation"] = 0;
