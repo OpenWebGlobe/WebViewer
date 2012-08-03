@@ -175,7 +175,7 @@ function ConstrainedNavigationNode(options)
    // Parameters for constrained navigation
    //---------------------------------------
 
-   /** @type {booleam} */
+   /** @type {boolean} */
    this.bElevationUp = false;
 
    /** @type {boolean} */
@@ -193,12 +193,12 @@ function ConstrainedNavigationNode(options)
    /** @type {number} */
    this.MaxElevation = 7000000;
 
-   /** @type {Array.<number>} */
-   this.BoundingBox = [];
+   /** @type {Array.< Array.<number> >} */
+   this.BoundingRect = [];
 
-   if (goog.isDef(options["BoundingBox"]))
+   if (goog.isDef(options["BoundingRect"]))
    {
-      this.BoundingBox = options["BoundingBox"];
+      this.BoundingRect = options["BoundingRect"];
    }
 
    /** @type {Array.<number>} */
@@ -206,7 +206,7 @@ function ConstrainedNavigationNode(options)
 
    if (goog.isDef(options["BoundingPolygon"]))
    {
-      this.BoundingBox = []; // just in case... there can't be a bounding box AND a bounding polygon...
+      this.BoundingRect = []; // just in case... there can't be a bounding box AND a bounding polygon...
       this.BoundingPolygon = options["BoundingPolygon"];
    }
 
@@ -663,6 +663,28 @@ function ConstrainedNavigationNode(options)
          this._ellipsoidHeight += cor;
       }
       //}
+
+
+      if (this.BoundingRect.length==2 && this.BoundingRect[0].length == 2 && this.BoundingRect[1].length == 2)
+      {
+         if (this.BoundingRect[0][0]>this._longitude)
+         {
+            this._longitude = this.BoundingRect[0][0];
+         }
+         if (this.BoundingRect[1][0]<this._longitude)
+         {
+            this._longitude = this.BoundingRect[1][0];
+         }
+         if (this.BoundingRect[0][1]>this._latitude)
+         {
+            this._latitude = this.BoundingRect[0][1];
+         }
+         if (this.BoundingRect[1][1]<this._latitude)
+         {
+            this._latitude = this.BoundingRect[1][1];
+         }
+      }
+
 
       //update the ogCamera Object wich is currently active...
       if (this.ogcam)

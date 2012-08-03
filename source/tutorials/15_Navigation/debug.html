@@ -82,11 +82,11 @@
             "Elevation"          : 2500,    // Initial Position: Elevation
             "MinElevation"       : 2000,    // Minimum Allowed Elevation (optional)
             "MaxElevation"       : 50000,   // Maximum Allowed Elevation (optional)
-            "BoundingBox"        : [[6.0, 45],[7.0, 46]], // Bounding Box [without elevation!] (optional)
+            "BoundingRect"       : [[6.0, 45],[7.0, 46]], // 2D Bounding Rect (optional)
             /*"BoundingPolygon"    : [ [7.201538,47.197178],
                                      [8.948364,47.260592],
                                      [7.739868,46.954012],
-                                     [8.360596,47.890564]],*/ // Bounding Polygon (instead of BoundingBox, optional)
+                                     [8.360596,47.890564]],*/ // 2D Bounding Polygon (instead of BoundingBox, optional)
             "ElevationSteps"     : [2000, 3000, 4000, 5000, 10000, 20000, 50000]   // Sorted List of allowed Elevations (optional)
       }
       ogSetNavigationMode(scene, OG_NAVIGATIONMODE_CONSTRAINED, options);
