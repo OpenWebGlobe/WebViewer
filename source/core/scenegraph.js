@@ -183,7 +183,7 @@ SceneGraph.prototype.SetNavigationMode = function(options)
       else if (options["type"] == "constrained")
       {
          this.nodeNavigation.OnDestroy();
-         this.nodeNavigation = new ConstrainedNavigationNode();
+         this.nodeNavigation = new ConstrainedNavigationNode(options);
          this.nodeNavigation.SetEngine(this.engine);
 
          ogLog("CONSTRAINED");
