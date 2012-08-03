@@ -1490,6 +1490,32 @@ function ogSetRenderEffect(world_id, rendereffect, opt_param)
    } 
 }
 goog.exportSymbol('ogSetRenderEffect', ogSetRenderEffect);
+//------------------------------------------------------------------------------
+/**
+ * Retrieve Elevation at specified lng, lat. Only works if elevation is loaded.
+ * @param {number} world_id
+ * @param {number} lng
+ * @param {number} lat
+ * @return {Object} elevation object
+ *                  return["hasvalue"] true, if there is a valid value
+ *                  return["elevation"] : elevation at specified position
+ *                  return["lod"] : level of detail at position
+ */
+function ogGetElevationAt(world_id, lng, lat)
+{
+   var val = { "hasvalue" : false,
+           "elevation": 0,
+           "lod": 0};
+
+   var world = /** @type ogWorld */ _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      val = world.GetEngine().GetElevationAt(lng, lat);
+   }
+
+   return val;
+}
+//------------------------------------------------------------------------------
 //##############################################################################
 // ** TEXTURE-OBJECT **
 //##############################################################################

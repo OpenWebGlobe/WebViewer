@@ -1390,9 +1390,9 @@ engine3d.prototype.GetElevationAt = function(lng, lat)
    {
 
       var oReturn =  {  "hasvalue"  :  true,
-                        "elevation" :  0,
-                        "lod"       :  0
-                     };
+         "elevation" :  0,
+         "lod"       :  0
+      };
       return oReturn;
    }
 
