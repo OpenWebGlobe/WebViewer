@@ -35,7 +35,7 @@
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 <button onclick="globe_nav();">Globe Navigation</button>
 <button onclick="fly_nav();">Flight Navigation</button>
-<!--<button onclick="constrained_nav();">Constrained Navigation</button>-->
+<button onclick="constrained_nav();">Constrained Navigation</button>
 <script>
    var g_ctx;
    //---------------------------------------------------------------------------
@@ -74,14 +74,23 @@
    //---------------------------------------------------------------------------
    function constrained_nav()
    {
-      /*var scene = ogGetScene(g_ctx);
+      var scene = ogGetScene(g_ctx);
       var options =
-         {
-            "bounds"           : [[6.7, 45, 200 ],[7.0, 46, 1000]],
-            "elevation_raster" : [200, 300, 400, 500, 600, 700, 800, 900, 1000]
-         }
+      {
+            "Longitude"          : 6.5,    // Initial Position: Longitude
+            "Latitude"           : 45.5,   // Initial Position: Latitude
+            "Elevation"          : 500,    // Initial Position: Elevation
+            "MinElevation"       : 200,    // Minimum Allowed Elevation (optional)
+            "MaxElevation"       : 1000,   // Maximum Allowed Elevation (optional)
+            "BoundingBox"        : [[6.0, 45],[7.0, 46]], // Bounding Box [without elevation!] (optional)
+            /*"BoundingPolygon"    : [ [7.201538,47.197178],
+                                     [8.948364,47.260592],
+                                     [7.739868,46.954012],
+                                     [8.360596,47.890564]],*/ // Bounding Polygon (instead of BoundingBox, optional)
+            "ElevationSteps"     : [200, 300, 400, 500, 600, 700, 800, 900, 1000]   // List of allowed Elevations (optional)
+      }
       ogSetNavigationMode(scene, OG_NAVIGATIONMODE_CONSTRAINED, options);
-      */
+
    }
    //---------------------------------------------------------------------------
    function main()
