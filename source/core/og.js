@@ -1392,6 +1392,13 @@ function ogCreateWorld(scene_id)
       worldoptions["scenetype"] = scene.scenetype;
       var world = _CreateObject(OG_OBJECT_WORLD, scene, worldoptions);
       scene.world = world;
+
+      //create a camera object and add it to the scene
+      var cam = _CreateObject(OG_OBJECT_CAMERA, scene, null);
+      cam.SetCurrentPositionAsCameraPosition();
+      scene.SetActiveCamera(cam.id);
+      scene.AddCamera(cam);
+
       return world.id;
    }
    
@@ -1408,15 +1415,6 @@ function ogCreateGlobe(context_id)
    // this is just a convienience function to save some typing.
    var scene_id = ogCreateScene(context_id, OG_SCENE_3D_ELLIPSOID_WGS84);
    var world_id = ogCreateWorld(scene_id);
-
-   /** @type {ogScene} */
-   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
-
-   //create a camera object and add it to the scene
-   var cam = _CreateObject(OG_OBJECT_CAMERA, scene, null);
-   cam.SetCurrentPositionAsCameraPosition();
-   scene.SetActiveCamera(cam.id);
-   scene.AddCamera(cam);
 
    return world_id;
 }
