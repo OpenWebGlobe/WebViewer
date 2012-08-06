@@ -2177,7 +2177,14 @@ goog.exportSymbol('ogRemoveGeometryLayer', ogRemoveGeometryLayer);
 function ogCreateGeometry(layer_id ,jsonobject)
 {
    var options = {};
-   options["jsonobject"]=jsonobject;
+   if (goog.isDef(jsonobject["type"]))
+   {
+      options = jsonobject;
+   }
+   else
+   {
+      options["jsonobject"]=jsonobject;
+   }
    /** @type {ogGeometryLayer} */
    var layer = /** @type {ogGeometryLayer} */ _GetObjectFromId(layer_id);
    if( layer && layer.type == OG_OBJECT_GEOMETRYLAYER)
@@ -2189,6 +2196,7 @@ function ogCreateGeometry(layer_id ,jsonobject)
    return -1;
 }
 goog.exportSymbol('ogCreateGeometry', ogCreateGeometry);
+//------------------------------------------------------------------------------
 /** @description Create a Geometry Object
 *   @param {number} layer_id the scene
 *   @param {string} url json url

@@ -1500,6 +1500,7 @@ Surface.prototype.SolidCube = function(center,dimension,opt_color)
    }
 
    this.CreateFromJSONObject(object, null, null);
+   this.UpdateAABB();
 }
 //------------------------------------------------------------------------------
 /**
@@ -1533,6 +1534,52 @@ Surface.prototype.SolidBlitMesh = function(opt_color)
    }
 
    this.CreateFromJSONObject(object, null, null);
+}
+//------------------------------------------------------------------------------
+/** @description Create a solid Geosphere
+ *
+ * @param {Array.<number>} color color r,g,b,a in range [0,1], for example [0.0,1.0,0.5,0.5]. The color may have 3 (RGB) or 4 (RGBA) components.
+ */
+Surface.prototype.SolidGeosphere = function(color)
+{
+   var cx = 0;
+   var cy = 0;
+   var cz = 0;
+
+   var cubelen = Math.sqrt(WGS84_a2_scaled/3);
+   var w = cubelen;
+   var h = cubelen;
+   var d = cubelen;
+
+   /** @type {ObjectJSON} */
+   var object = {"VertexSemantic" : "", "Vertices" : null, "IndexSemantic":"", "Indices":null};
+   object["VertexSemantic"]  = "p";
+   object["Vertices"] =  [-0.5*w+cx,-0.5*h+cy,-0.5*d+cz,
+      -0.5*w+cx,-0.5*h+cy, 0.5*d+cz,
+      0.5*w+cx,-0.5*h+cy,-0.5*d+cz,
+      0.5*w+cx,-0.5*h+cy, 0.5*d+cz,
+      0.5*w+cx, 0.5*h+cy,-0.5*d+cz,
+      0.5*w+cx, 0.5*h+cy, 0.5*d+cz,
+      -0.5*w+cx, 0.5*h+cy,-0.5*d+cz,
+      -0.5*w+cx, 0.5*h+cy, 0.5*d+cz];
+   object["IndexSemantic"] = "TRIANGLES";
+   object["Indices"] = [3,1,0,5,3,2,7,5,4,1,7,6,5,7,1,2,0,6,2,3,0,4,5,2,6,7,4,0,1,6,3,5,1,4,2,6];
+
+   if (goog.isDef(color))
+   {
+      if (color.length == 4)
+      {
+         this.solidcolor.Set(color[0], color[1], color[2], color[3]);
+      }
+      else if (color.length == 3)
+      {
+         this.solidcolor.Set(color[0], color[1], color[2], 1);
+      }
+   }
+
+   this.CreateFromJSONObject(object, null, null);
+
+   this.UpdateAABB();
 }
 //------------------------------------------------------------------------------
 
