@@ -463,6 +463,23 @@ function ogDestroyContext(context_id)
 }
 goog.exportSymbol('ogDestroyContext', ogDestroyContext);
 //------------------------------------------------------------------------------
+/** @description Return WebGL Rendering Context (if available)
+ *  @param {number} context_id the context
+ *  @return {WebGLRenderingContext}
+ */
+function ogGetGL(context_id)
+{
+   /** @type {ogContext} */
+   var context = /** @type {ogContext} */ _GetObjectFromId(context_id);
+   if (context && context.type == OG_OBJECT_CONTEXT)
+   {
+      return /** @type {WebGLRenderingContext} */ context.engine.gl;
+   }
+
+   return null;
+}
+goog.exportSymbol('ogGetGL', ogGetGL);
+//------------------------------------------------------------------------------
 /**
  * @description Get width of context
  * @param {number} context_id id of the context
