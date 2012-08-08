@@ -1646,7 +1646,41 @@ Surface.prototype.SolidGeosphere = function(color, subdiv)
          var idx_ca = -1;
 
          // optimization: check if point(s) already exists:
-         // todo
+         var vertex_eps = 0.0000001;
+         for (var j=0;j<pos.length/vlen;j+=vlen)
+         {
+            var equalab = true;
+            var equalbc = true;
+            var equalca = true;
+            for (var k=0;k<vlen;k++)
+            {
+               if (Math.abs(pos[j+k]-Mab[k])>vertex_eps)
+               {
+                  equalab &= false;
+               }
+               if (Math.abs(pos[j+k]-Mbc[k])>vertex_eps)
+               {
+                  equalbc &= false;
+               }
+               if (Math.abs(pos[j+k]-Mca[k])>vertex_eps)
+               {
+                  equalca &= false;
+               }
+            }
+
+            if (equalab)
+            {
+               idx_ab = j/vlen;
+            }
+            if (equalbc)
+            {
+               idx_bc = j/vlen;
+            }
+            if (equalca)
+            {
+               idx_ca = j/vlen;
+            }
+         }
 
          if (idx_ab == -1)
          {
@@ -1672,39 +1706,6 @@ Surface.prototype.SolidGeosphere = function(color, subdiv)
       }
       object["Indices"] = idx2;
    }
-
-
-   /*var idx = object["Indices"];
-   var pos = object["Vertices"];
-   for (var i=0;i < subdiv;i++)
-   {
-      var idx2 = [];
-      for (var tri=0;tri<idx.length;tri=tri+3)
-      {
-         var tA = idx[tri];
-         var tB = idx[tri+1];
-         var tC = idx[tri+2];
-
-         var rx = (pos[tA*3+0] + pos[tB*3+0] + pos[tC*3+0])/3;
-         var ry = (pos[tA*3+1] + pos[tB*3+1] + pos[tC*3+1])/3;
-         var rz = (pos[tA*3+2] + pos[tB*3+2] + pos[tC*3+2])/3;
-
-         //var to = Math.sqrt(WGS84_a2_scaled*WGS84_b2_scaled)/(WGS84_b2_scaled*rx*rx+WGS84_b2_scaled*ry*ry+WGS84_a2_scaled*rz*rz);
-         //var t = 1 / (Math.sqrt(((rx*rx+ry*ry)/WGS84_a2_scaled)+(rz*rz*WGS84_b2_scaled)));
-         var t = Math.sqrt(WGS84_a2_scaled/(rx*rx+ry*ry+rz*rz));
-
-         var tS = pos.length/3;
-         pos.push(t*rx);
-         pos.push(t*ry);
-         pos.push(t*rz);
-
-         idx2.push(tA); idx2.push(tB); idx2.push(tS);
-         idx2.push(tB); idx2.push(tC); idx2.push(tS);
-         idx2.push(tC); idx2.push(tA); idx2.push(tS);
-      }
-      object["Indices"] = idx2;
-   }
-   */
 
    this.CreateFromJSONObject(object, null, null);
 
