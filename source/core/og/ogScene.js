@@ -199,3 +199,5 @@ ogScene.prototype.SetNavigationMode = function(navigationmode, opt_options)
 
    engine.scene.SetNavigationMode(opt_options);
 }
+//------------------------------------------------------------------------------
+

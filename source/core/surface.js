@@ -1536,20 +1536,55 @@ Surface.prototype.SolidBlitMesh = function(opt_color)
    this.CreateFromJSONObject(object, null, null);
 }
 //------------------------------------------------------------------------------
+/**
+ * @param {Array.<number>} point
+ * @return {Array.<number>}
+ * @private
+ */
+Surface.prototype._compute_ellipsoid_normal = function(point)
+{
+   var res = [];
+   var rx = point[0];
+   var ry = point[1];
+   var rz = point[2];
+
+   // Sphere:
+   //var t = Math.sqrt(WGS84_a2_scaled/(rx*rx+ry*ry+rz*rz));
+
+   // WGS84 Ellipsoid:
+   var t = rx*rx + ry*ry;
+       t = t / WGS84_a2_scaled;
+       t = t + rz*rz / WGS84_b2_scaled;
+       t = Math.sqrt(t);
+       t = 1.0 / t;
+
+   res.push(t*rx);
+   res.push(t*ry);
+   res.push(t*rz);
+
+   return res;
+}
+//------------------------------------------------------------------------------
 /** @description Create a solid Geosphere
  *
  * @param {Array.<number>} color color r,g,b,a in range [0,1], for example [0.0,1.0,0.5,0.5]. The color may have 3 (RGB) or 4 (RGBA) components.
+ * @param {number} subdiv
  */
-Surface.prototype.SolidGeosphere = function(color)
+Surface.prototype.SolidGeosphere = function(color, subdiv)
 {
+
    var cx = 0;
    var cy = 0;
    var cz = 0;
 
-   var cubelen = Math.sqrt(WGS84_a2_scaled/3);
+   var cubelen = Math.sqrt(WGS84_a2_scaled);
    var w = cubelen;
    var h = cubelen;
    var d = cubelen;
+
+   ogLog("SolidGeosphere(), len=" + cubelen);
+
+   var vlen = 3; // number of elements per vertex
 
    /** @type {ObjectJSON} */
    var object = {"VertexSemantic" : "", "Vertices" : null, "IndexSemantic":"", "Indices":null};
@@ -1576,6 +1611,100 @@ Surface.prototype.SolidGeosphere = function(color)
          this.solidcolor.Set(color[0], color[1], color[2], 1);
       }
    }
+
+   var pos = object["Vertices"];
+   for (var i=0;i < subdiv;i++)
+   {
+      var idx2 = [];
+      var idx = object["Indices"];
+      for (var tri=0;tri<idx.length;tri=tri+3)
+      {
+         var tA = idx[tri];
+         var tB = idx[tri+1];
+         var tC = idx[tri+2];
+         //---------------------------------------------------------------------
+         var Mab = [ (pos[tA*vlen+0] + pos[tB*vlen+0])/2,
+                     (pos[tA*vlen+1] + pos[tB*vlen+1])/2,
+                     (pos[tA*vlen+2] + pos[tB*vlen+2])/2
+                   ];
+         Mab = this._compute_ellipsoid_normal(Mab);
+         //---------------------------------------------------------------------
+         var Mbc = [ (pos[tB*vlen+0] + pos[tC*vlen+0])/2,
+                     (pos[tB*vlen+1] + pos[tC*vlen+1])/2,
+                     (pos[tB*vlen+2] + pos[tC*vlen+2])/2
+         ];
+         Mbc = this._compute_ellipsoid_normal(Mbc);
+         //---------------------------------------------------------------------
+         var Mca = [ (pos[tC*vlen+0] + pos[tA*vlen+0])/2,
+                     (pos[tC*vlen+1] + pos[tA*vlen+1])/2,
+                     (pos[tC*vlen+2] + pos[tA*vlen+2])/2
+         ];
+         Mca = this._compute_ellipsoid_normal(Mca);
+         //---------------------------------------------------------------------
+         var idx_ab = -1;
+         var idx_bc = -1;
+         var idx_ca = -1;
+
+         // optimization: check if point(s) already exists:
+         // todo
+
+         if (idx_ab == -1)
+         {
+            idx_ab = pos.length/vlen;
+            pos.push(Mab[0]); pos.push(Mab[1]); pos.push(Mab[2]);
+         }
+         if (idx_bc == -1)
+         {
+            idx_bc = pos.length/vlen;
+            pos.push(Mbc[0]); pos.push(Mbc[1]); pos.push(Mbc[2]);
+         }
+         if (idx_ca == -1)
+         {
+            idx_ca = pos.length/vlen;
+            pos.push(Mca[0]); pos.push(Mca[1]); pos.push(Mca[2]);
+         }
+
+         // add triangles:
+         idx2.push(tA); idx2.push(idx_ab); idx2.push(idx_ca);
+         idx2.push(tB); idx2.push(idx_bc); idx2.push(idx_ab);
+         idx2.push(tC); idx2.push(idx_ca); idx2.push(idx_bc);
+         idx2.push(idx_ab); idx2.push(idx_bc); idx2.push(idx_ca);
+      }
+      object["Indices"] = idx2;
+   }
+
+
+   /*var idx = object["Indices"];
+   var pos = object["Vertices"];
+   for (var i=0;i < subdiv;i++)
+   {
+      var idx2 = [];
+      for (var tri=0;tri<idx.length;tri=tri+3)
+      {
+         var tA = idx[tri];
+         var tB = idx[tri+1];
+         var tC = idx[tri+2];
+
+         var rx = (pos[tA*3+0] + pos[tB*3+0] + pos[tC*3+0])/3;
+         var ry = (pos[tA*3+1] + pos[tB*3+1] + pos[tC*3+1])/3;
+         var rz = (pos[tA*3+2] + pos[tB*3+2] + pos[tC*3+2])/3;
+
+         //var to = Math.sqrt(WGS84_a2_scaled*WGS84_b2_scaled)/(WGS84_b2_scaled*rx*rx+WGS84_b2_scaled*ry*ry+WGS84_a2_scaled*rz*rz);
+         //var t = 1 / (Math.sqrt(((rx*rx+ry*ry)/WGS84_a2_scaled)+(rz*rz*WGS84_b2_scaled)));
+         var t = Math.sqrt(WGS84_a2_scaled/(rx*rx+ry*ry+rz*rz));
+
+         var tS = pos.length/3;
+         pos.push(t*rx);
+         pos.push(t*ry);
+         pos.push(t*rz);
+
+         idx2.push(tA); idx2.push(tB); idx2.push(tS);
+         idx2.push(tB); idx2.push(tC); idx2.push(tS);
+         idx2.push(tC); idx2.push(tA); idx2.push(tS);
+      }
+      object["Indices"] = idx2;
+   }
+   */
 
    this.CreateFromJSONObject(object, null, null);
 

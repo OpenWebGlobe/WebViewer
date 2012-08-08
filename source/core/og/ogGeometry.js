@@ -109,6 +109,11 @@ ogGeometry.prototype.ParseOptions = function(options)
       this.CreateSolidCube(options);
       return;
    }
+   else if (options["type"] == "solidgeosphere")
+   {
+      this.CreateSolidGeosphere(options);
+      return;
+   }
 
 
 
@@ -400,13 +405,6 @@ ogGeometry.prototype.CreateEarthPolyLine = function(options)
  */
 ogGeometry.prototype.CreateSolidCube = function(options)
 {
-   /*type: "solidcube",
-   length: "1000",     // 1000 Meters
-   position: [7,46,5000], // position of cube (WGS84)
-   color: [1,0,0],
-   srs: "EPSG:4326"   // spatial reference system (optional, default is EPSG:4326)
-   */
-
    if (!goog.isDef(options["srs"]))
    {
       options["srs"] = "EPSG:4326"; // default value
@@ -419,7 +417,6 @@ ogGeometry.prototype.CreateSolidCube = function(options)
    {
       options["color"] = [1,1,1];
    }
-
    var scene = /** @type ogScene */this.parent;
    /** @type {ogContext} */
    var context =  /** @type ogContext */scene.parent;
@@ -461,8 +458,52 @@ ogGeometry.prototype.CreateSolidCube = function(options)
    }
 
 }
+//------------------------------------------------------------------------------
+/**
+ * @param {Object} options
+ */
+ogGeometry.prototype.CreateSolidGeosphere = function(options)
+{
+   if (!goog.isDef(options["color"]))
+   {
+      options["color"] = [1,1,1];
+   }
 
+   if (!goog.isDef(options["subdivisions"]))
+   {
+      options["subdivisions"] = 1;
+   }
+   var scene = /** @type ogScene */this.parent;
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
 
+   /** @type {GeometryRenderer} */
+   var renderer = null;
+
+   // test if there is a scenegraph attached
+   if (engine.scene)
+   {
+      if (engine.scene.nodeRenderObject)
+      {
+         renderer = engine.scene.nodeRenderObject.geometryrenderer;
+      }
+   }
+
+   if (renderer)
+   {
+      var geosphere = new Surface(engine);
+
+      var color = options["color"];
+      var subdiv = options["subdivisions"];
+      geosphere.SolidGeosphere(color, subdiv);
+      this.indexInRendererArray = renderer.AddGeometry([[geosphere]]);
+   }
+
+}
+//------------------------------------------------------------------------------
 
 
 
