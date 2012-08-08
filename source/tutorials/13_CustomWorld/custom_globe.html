@@ -58,13 +58,24 @@
       // first parameter is canvas-id and second is "fullscreen"
       var ctx = ogCreateContextFromCanvas("canvas", true);
 
-      // (2) Create a 3D-Scene
+      // (2) Create a custom 3D-Scene
       var scene = ogCreateScene(ctx, OG_SCENE_CUSTOM);
       var world = ogCreateWorld(scene);
 
       //create a geometry layer
       geometrylayer = ogCreateGeometryLayer(world,"buildings");
-      var geometry1 = ogLoadGeometryAsync(geometrylayer,"cubepc.json");
+
+
+      // Create a geometry using predefined shapes.
+      // Create the first 3d model
+      var geosphere = ogCreateGeometry(geometrylayer,
+         {  type: "solidgeosphere",
+            color: [1,1,1],
+            subdivisions: 3
+         }
+      );
+
+      var cube = ogLoadGeometryAsync(geometrylayer,"cubepc.json");
       ogFlyToLookAtPosition(scene, 7.438637, 46.951081, 3700, 30, -45, 0);
 
       // (4) Set the "Render-Callback" function.
