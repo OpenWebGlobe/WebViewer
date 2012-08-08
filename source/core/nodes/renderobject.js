@@ -67,6 +67,10 @@ function RenderObjectNode(options)
       this.elevation = 0;
       /** @type {boolean} */
       this.custom = false;
+      /** @type {Surface} */
+      this.globeshape = null;
+      /** @type {boolean} */
+      this.postprocess = true;
 
       if (options["type"] == "custom")
       {
@@ -90,7 +94,15 @@ function RenderObjectNode(options)
 
          if (this.globerenderer)
          {
+            if (this.globeshape)
+            {
+               this.engine.DisableDepthTest();
+               this.globeshape.Draw();
+               this.engine.EnableDepthTest();
+            }
+
             this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
+
          }
          this.vectorrenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.poirenderer.Render(this.camera, this.engine.matModelViewProjection);
@@ -102,27 +114,20 @@ function RenderObjectNode(options)
          {
             this.engine.PopRenderTarget();
 
-            var numpix = 10;
-
-            var scalex = this.texture.width / (this.texture.width+numpix);
-            var scaley = this.texture.height / (this.texture.height+numpix);
             if (this.stereoscopic == 0)
             {
-               if (this.elevation > 10000)
+               if (goog.isDef(this.texture.blitMesh) && !goog.isNull(this.texture.blitMesh))
                {
-                  this.texture.Blit(numpix,numpix, 0, 0, scalex, scaley, true, true, 1.0);
+                  if (this.postprocess)
+                  {
+                     this.texture.blitMesh.mode = "blur";
+                  }
+                  else
+                  {
+                     this.texture.blitMesh.mode = "pt";
+                  }
                }
                this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
-            }
-            else if (this.stereoscopic == 1) // top
-            {
-               this.texture.Blit(numpix,this.texture.height/2+numpix/2, 0, 0, scalex, scaley/2, true, true, 1.0);
-               this.texture.Blit(0,this.texture.height/2, 0, 0, 1, 0.5, true, true, 1.0);
-            }
-            else if (this.stereoscopic == 2) // bottom
-            {
-               this.texture.Blit(numpix,numpix/2, 0, 0, scalex, scaley/2, true, true, 1.0);
-               this.texture.Blit(0,0, 0, 0, 1, 0.5, true, true, 1.0);
             }
          }
       }
@@ -140,6 +145,8 @@ function RenderObjectNode(options)
       {
          if (!this.custom)
          {
+            this.globeshape = new Surface(this.engine);
+            this.globeshape.SolidGeosphere([1,0,1,0], 3);
             this.globerenderer = new GlobeRenderer(this.engine);
          }
          this.vectorrenderer = new VectorRenderer(this.engine);
@@ -147,11 +154,17 @@ function RenderObjectNode(options)
          this.geometryrenderer = new GeometryRenderer(this.engine);
          this.billboardrenderer = new BillboardRenderer(this.engine);
          this.aoeimagerenderer = new AoeImageRenderer(this.engine);
+
       }
       
       //------------------------------------------------------------------------
       this.OnExit = function()
       {
+         if (this.globeshape)
+         {
+            this.globeshape.Destroy();
+            this.globeshape = null;
+         }
          if (this.globerenderer)
          {
             this.globerenderer.Destroy(); // free all memory

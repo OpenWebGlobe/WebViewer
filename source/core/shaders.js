@@ -651,22 +651,29 @@ var src_vertexshader_blur= "uniform mat4 matMVP;\n" +
                                  "precision highp float;\n" +
                                  "#endif\n" +
                                  "uniform vec2 uInvTexSize;\n" +
-                                 "uniform float uKernel[9];" +
-                                 "uniform vec2 uOffset[9];" +
                                  "varying vec2 vTexCoord;\n" +
                                  "uniform sampler2D uTexture;\n\n" +
                                  "void main()\n" +
                                  "{\n" +
                                  "   float weight=0.0; vec4 colorsum = vec4(0.0,0.0,0.0,0.0);\n" +
-                                 "   for (int i=0;i<9;i++)\n" +
-                                 "   {\n" +
-                                 "      vec4 col = texture2D(uTexture, vTexCoord + uInvTexSize * uOffset[i]) * uKernel[i];" +
-                                 "      if (col.a > 0.0)\n" +
-                                 "      {\n" +
-                                 "          colorsum += col; weight+=uKernel[i];\n" +
-                                 "      }\n" +
+                                 "   vec4 mid = texture2D(uTexture, vTexCoord);\n" +
+                                 "   if (mid.r == 1.0 && mid.g == 0.0 && mid.b == 1.0 && mid.a < 0.5)\n" +
+                                 "   {   for (int i=-3;i<3;i++) {\n" +
+                                 "       \n" +
+                                 "          for (int j=-3;j<3;j++) {\n" +
+                                 "          \n" +
+                                 "             vec4 val = texture2D(uTexture, vTexCoord + uInvTexSize * vec2(i,j));\n" +
+                                 "             if (val.r == 1.0 && val.g == 0.0 && val.b == 1.0 && val.a < 0.5) \n" +
+                                 "             {}\n" +
+                                 "             else \n" +
+                                 "             {" +
+                                 "                gl_FragColor = val; return;\n" +
+                                 "             }\n" +
+                                 "           }\n" +
+                                 "        }\n" +
+                                 "        gl_FragColor = vec4(0,1,0.5,0); return;\n" +
                                  "   }\n" +
-                                 "   gl_FragColor = colorsum / weight;\n" +
+                                 "   gl_FragColor = mid;\n" +
                                  "}\n";
 
    this.vs_blur = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_blur);
