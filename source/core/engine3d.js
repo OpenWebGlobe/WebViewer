@@ -458,7 +458,7 @@ engine3d.prototype.InitEngine = function(canvasid, bFullscreen)
    
    
    dtStart = new Date(); // setup main timer...
-   if(typeof(window)!="undefined")//if owg runs in a webworker "window" is not available!
+   if(typeof(window)!="undefined") // if owg runs in a webworker "window" is not available!
    {
       window.requestAnimFrame(fncTimer, this.context); // request first frame
    }
@@ -689,7 +689,22 @@ engine3d.prototype.GetViewport = function()
 {
    return {x: this.vp_x, y: this.vp_y, w: this.vp_w, h: this.vp_h};
 }
-
+//------------------------------------------------------------------------------
+/**
+ * Enable Depth Test
+ */
+engine3d.prototype.EnableDepthTest = function()
+{
+   this.gl.enable(this.gl.DEPTH_TEST);
+}
+//------------------------------------------------------------------------------
+/**
+ * Disable Depth Test
+ */
+engine3d.prototype.DisableDepthTest = function()
+{
+   this.gl.disable(this.gl.DEPTH_TEST);
+}
 //------------------------------------------------------------------------------
 /**
  * @description Set projection matrix
