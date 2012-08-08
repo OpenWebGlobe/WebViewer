@@ -23,7 +23,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      TUTORIAL 6a: Load a 3D-Model
+                     TUTORIAL 6.2: Create a base 3D Model
                       
 *******************************************************************************/
 -->
@@ -92,8 +92,7 @@ function main()
 	
    //create a geometry layer
    geometrylayer = ogCreateGeometryLayer(world,"buildings");
-   
-   
+
    // Create a geometry using predefined shapes.
    // Create the first 3d model
    var geometry1 = ogCreateGeometry(geometrylayer,
@@ -104,6 +103,7 @@ function main()
          srs: "EPSG:4326"   // spatial reference system (optional, default is EPSG:4326)
       }
    );
+
    ogFlyToLookAtPosition(scene, 6.95, 45.94, 8000, 1000,30,-25,0);
 
 
