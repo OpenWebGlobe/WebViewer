@@ -329,7 +329,7 @@ ShaderManager.prototype.InitShader_P = function()
       
       // linking
       this.gl.linkProgram(this.program_p);
-      if (!this.gl.getProgramParameter(this.program_p, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_p, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert("Shader Link: " + this.gl.getProgramInfoLog(this.program_p));
           return;
@@ -366,7 +366,7 @@ ShaderManager.prototype.InitShader_PNT = function()
       
       // linking
       this.gl.linkProgram(this.program_pnt);
-      if (!this.gl.getProgramParameter(this.program_pnt, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_pnt, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_pnt));
           return;
@@ -403,7 +403,7 @@ ShaderManager.prototype.InitShader_PC = function()
       
       // linking
       this.gl.linkProgram(this.program_pc);
-      if (!this.gl.getProgramParameter(this.program_pc, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_pc, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_pc));
           return;
@@ -439,7 +439,7 @@ ShaderManager.prototype.InitShader_PT = function()
       
       // linking
       this.gl.linkProgram(this.program_pt);
-      if (!this.gl.getProgramParameter(this.program_pt, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_pt, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_pt));
           return;
@@ -480,7 +480,7 @@ ShaderManager.prototype.InitShader_PT_chroma = function()
       
       // linking
       this.gl.linkProgram(this.program_pt_chroma);
-      if (!this.gl.getProgramParameter(this.program_pt_chroma, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_pt_chroma, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_pt_chroma));
           return;
@@ -517,7 +517,7 @@ ShaderManager.prototype.InitShader_PNCT = function()
       
       // linking
       this.gl.linkProgram(this.program_pnct);
-      if (!this.gl.getProgramParameter(this.program_pnct, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_pnct, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_pnct));
           return;
@@ -553,7 +553,7 @@ ShaderManager.prototype.InitShader_Font = function()
       
       // linking
       this.gl.linkProgram(this.program_font);
-      if (!this.gl.getProgramParameter(this.program_font, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_font, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert("font shader: "+this.gl.getProgramInfoLog(this.program_font));
           return;
@@ -588,7 +588,7 @@ ShaderManager.prototype.InitShader_Poi = function()
       
       // linking
       this.gl.linkProgram(this.program_poi);
-      if (!this.gl.getProgramParameter(this.program_poi, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_poi, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert("poi shader: "+this.gl.getProgramInfoLog(this.program_poi));
           return;
@@ -627,7 +627,7 @@ ShaderManager.prototype.InitShader_Point = function()
       
       // linking
       this.gl.linkProgram(this.program_point);
-      if (!this.gl.getProgramParameter(this.program_point, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_point, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_point));
           return;
@@ -694,7 +694,7 @@ var src_vertexshader_blur= "uniform mat4 matMVP;\n" +
 
       // linking
       this.gl.linkProgram(this.program_blur);
-      if (!this.gl.getProgramParameter(this.program_blur, this.gl.LINK_STATUS))
+      if (!this.gl.getProgramParameter(this.program_blur, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
          alert(this.gl.getProgramInfoLog(this.program_blur));
          return;
@@ -732,7 +732,7 @@ ShaderManager.prototype._createShader = function(shaderType, shaderSource)
    this.gl.shaderSource(shader, shaderSource);
    this.gl.compileShader(shader);
 
-   if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) 
+   if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS) && !this.gl.isContextLost())
    {
       if (shaderType == this.gl.VERTEX_SHADER)
       {
