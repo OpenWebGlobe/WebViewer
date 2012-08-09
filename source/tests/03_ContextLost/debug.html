@@ -37,7 +37,7 @@
 <script>
    //---------------------------------------------------------------------------
    var g_ctx = -1;
-   var g_ext = null;
+   var WEBGL_EXT_lose_context = null;
    function OnRender(context)
    {
       ogSetTextColor(context, 0,1,0);
@@ -46,18 +46,18 @@
    //---------------------------------------------------------------------------
    function loose_ctx()
    {
-      if (g_ext)
+      if (WEBGL_EXT_lose_context)
       {
-         g_ext.loseContext();
+         WEBGL_EXT_lose_context.loseContext();
          console.log("context lost!");
       }
    }
    //---------------------------------------------------------------------------
    function restore_ctx()
    {
-      if (g_ext)
+      if (WEBGL_EXT_lose_context)
       {
-         g_ext.restoreContext();
+         WEBGL_EXT_lose_context.restoreContext();
          console.log("context restored!");
       }
    }
@@ -89,7 +89,7 @@
       ogSetBackgroundColor(g_ctx, 0.2,0.6,0.7,1);
 
       var gl = ogGetGL(g_ctx);
-      g_ext = gl.getExtension("WEBGL_EXT_lose_context") || gl.getExtension("WEBKIT_WEBGL_lose_context") || gl.getExtension("MOZ_WEBGL_lose_context");
+      WEBGL_EXT_lose_context = gl.getExtension("WEBGL_EXT_lose_context") || gl.getExtension("WEBKIT_WEBGL_lose_context") || gl.getExtension("MOZ_WEBGL_lose_context");
 
    }
    //------------------------------------------------------------------------------
