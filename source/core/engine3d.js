@@ -434,6 +434,26 @@ engine3d.prototype.InitEngine = function (canvasid, bFullscreen)
       return;
    }
 
+   this.InitGL();
+
+   //disable context menu on canvas
+   this.context.oncontextmenu = function (event)
+   {
+      event.preventDefault();
+      event.stopPropagation();
+      return false;
+   };
+
+   goog.events.listen(window, goog.events.EventType.RESIZE, _fncResize, false, this);
+   goog.events.listen(window, goog.events.EventType.UNLOAD, this.OnDestroy, false, this);
+
+}
+//------------------------------------------------------------------------------
+/**
+ * Initialize Graphics Subsystem
+ */
+engine3d.prototype.InitGL = function()
+{
    // Call OnResize(canvas.width, canvas.height)
    this._resize(this.context.width, this.context.height);
 
@@ -444,10 +464,6 @@ engine3d.prototype.InitEngine = function (canvasid, bFullscreen)
    this.gl.frontFace(this.gl.CCW);
    //this.gl.cullFace(this.gl.FRONT_AND_BACK);
    this.gl.cullFace(this.gl.BACK);
-
-   // Create Default Shaders
-   //this.CreateDefaultShaders();
-   //this.UseShaderDefault();
 
    //Init Shaders
    this.shadermanager = new ShaderManager(this.gl);
@@ -476,23 +492,11 @@ engine3d.prototype.InitEngine = function (canvasid, bFullscreen)
       this.cbfInit(engine);
    }
 
-   goog.events.listen(window, goog.events.EventType.RESIZE, _fncResize, false, this);
-
    dtStart = new Date(); // setup main timer...
    if (typeof(window) != "undefined") // if owg runs in a webworker "window" is not available!
    {
       window.requestAnimFrame(fncTimer, this.context); // request first frame
    }
-
-   //disable context menu on canvas
-   this.context.oncontextmenu = function (event)
-   {
-      event.preventDefault();
-      event.stopPropagation();
-      return false;
-   };
-
-   goog.events.listen(window, goog.events.EventType.UNLOAD, this.OnDestroy, false, this);
 
 }
 //------------------------------------------------------------------------------
@@ -576,7 +580,6 @@ engine3d.prototype.OnDestroy = function ()
  */
 engine3d.prototype.ContextLost = function()
 {
-   // do nothing... [in future there may be an openwebglobe callback for this event]
 }
 //------------------------------------------------------------------------------
 /*
@@ -584,9 +587,6 @@ engine3d.prototype.ContextLost = function()
  */
 engine3d.prototype.RestoreContext = function()
 {
-   // [in future there may be an openwebglobe callback for this]
-   // todo: reinit context
-
 }
 //------------------------------------------------------------------------------
 /**
