@@ -27,6 +27,7 @@ goog.require('owg.CameraNode');
 goog.require('owg.LogosNode');
 goog.require('owg.GlobeNavigationNode');
 goog.require('owg.ConstrainedNavigationNode');
+goog.require('owg.DynamicNavigationNode');
 goog.require('owg.RenderObjectNode');
 goog.require('owg.TraversalState');
 goog.require('owg.mat4');
@@ -168,25 +169,24 @@ SceneGraph.prototype.SetNavigationMode = function(options)
          this.nodeNavigation.OnDestroy();
          this.nodeNavigation = new GlobeNavigationNode();
          this.nodeNavigation.SetEngine(this.engine);
-
-         ogLog("GLOBE");
       }
       else if (options["type"] == "fly")
       {
          this.nodeNavigation.OnDestroy();
          this.nodeNavigation = new NavigationNode();
          this.nodeNavigation.SetEngine(this.engine);
-
-         ogLog("FLY");
-
       }
       else if (options["type"] == "constrained")
       {
          this.nodeNavigation.OnDestroy();
          this.nodeNavigation = new ConstrainedNavigationNode(options);
          this.nodeNavigation.SetEngine(this.engine);
-
-         ogLog("CONSTRAINED");
+      }
+      else if (options["type"] == "dynamic")
+      {
+         this.nodeNavigation.OnDestroy();
+         this.nodeNavigation = new DynamicNavigationNode();
+         this.nodeNavigation.SetEngine(this.engine);
       }
 
       lng = this.nodeNavigation._longitude;

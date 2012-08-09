@@ -192,6 +192,10 @@ ogScene.prototype.SetNavigationMode = function(navigationmode, opt_options)
    {
       opt_options["type"] = "constrained";
    }
+   else if (navigationmode == OG_NAVIGATIONMODE_DYNAMIC)
+   {
+      opt_options["type"] = "dynamic";
+   }
    else
    {
       return;

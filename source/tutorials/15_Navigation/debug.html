@@ -36,6 +36,7 @@
 <button onclick="globe_nav();">Globe Navigation</button>
 <button onclick="fly_nav();">Flight Navigation</button>
 <button onclick="constrained_nav();">Constrained Navigation</button>
+<button onclick="dynamic_nav();">Dynamic Navigation (in development)</button>
 <script>
    var g_ctx;
    //---------------------------------------------------------------------------
@@ -90,7 +91,17 @@
             "ElevationSteps"     : [2000, 3000, 4000, 5000, 10000, 20000, 50000]   // Sorted List of allowed Elevations (optional)
       }
       ogSetNavigationMode(scene, OG_NAVIGATIONMODE_CONSTRAINED, options);
+   }
+   //---------------------------------------------------------------------------
+   function dynamic_nav()
+   {
+      var scene = ogGetScene(g_ctx);
 
+      var options = { "Longitude" : 7.616000,
+         "Latitude"  : 45.12,
+         "Elevation" : 7000000
+      };
+      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_DYNAMIC, options);
    }
    //---------------------------------------------------------------------------
    function main()

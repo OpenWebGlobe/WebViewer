@@ -153,10 +153,13 @@ var OG_NAVIGATIONMODE_GLOBE                 = 0;
 var OG_NAVIGATIONMODE_FLIGHT                = 1;
 //* @constant
 var OG_NAVIGATIONMODE_CONSTRAINED           = 2;
+//* @constant
+var OG_NAVIGATIONMODE_DYNAMIC               = 3;
 
 goog.exportSymbol('OG_NAVIGATIONMODE_GLOBE', OG_NAVIGATIONMODE_GLOBE);
 goog.exportSymbol('OG_NAVIGATIONMODE_FLIGHT', OG_NAVIGATIONMODE_FLIGHT);
 goog.exportSymbol('OG_NAVIGATIONMODE_CONSTRAINED', OG_NAVIGATIONMODE_CONSTRAINED);
+goog.exportSymbol('OG_NAVIGATIONMODE_DYNAMIC', OG_NAVIGATIONMODE_DYNAMIC);
 
 //------------------------------------------------------------------------------
 // OBJECT STATUS

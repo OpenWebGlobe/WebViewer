@@ -1372,7 +1372,11 @@ goog.exportSymbol('ogLookAt', ogLookAt);
 //------------------------------------------------------------------------------
 /**
  * Set the Navigation Mode. Navigation mode can be:
- * OG_NAVIGATIONMODE_GLOBE, or OG_NAVIGATIONMODE_FLIGHT or OG_NAVIGATIONMODE_CONSTRAINED
+ *    OG_NAVIGATIONMODE_GLOBE, or
+ *    OG_NAVIGATIONMODE_FLIGHT or
+ *    OG_NAVIGATIONMODE_CONSTRAINED or
+ *    OG_NAVIGATIONMODE_DYNAMIC
+ *
  * @param {number} scene_id
  * @param {number} navigationmode
  * @param {Object=} opt_options
