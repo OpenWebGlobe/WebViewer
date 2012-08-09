@@ -88,7 +88,7 @@ function _fncMouseMove(evt)
          var x = evt.clientX - engine.xoffset / 2;
          var y = evt.clientY - engine.yoffset / 2;
 
-         if (engine.cbfMouseMove)
+         if (engine.cbfMouseMove && !engine.gl.isContextLost())
          {
             engine.cbfMouseMove(x, y, engine); // call mouse up callback function
          }
@@ -122,15 +122,35 @@ function _fncResize(evt)
 
       }
 
-      engine._resize(engine.context.width, engine.context.height);
+      if (!engine.gl.isContextLost())
+      {
+         engine._resize(engine.context.width, engine.context.height);
+      }
    }
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @param {engine3d} engine
+ */
+function OnLostContext(engine)
+{
+   engine.ContextLost();
+}
+//------------------------------------------------------------------------------
+/**
+ * @param {engine3d} engine
+ */
+function OnRestoreContext(engine)
+{
+   engine.RestoreContext();
 }
 
 //------------------------------------------------------------------------------
 /**
  * @description Create a new engine3d object
  * @class
-   * @constructor
+ * @constructor
  */
 function engine3d()
 {
@@ -319,8 +339,6 @@ var setupWebGL = function (canvas)
       }
    }
 
-   ;
-
    if (!window["WebGLRenderingContext"])
    {
       showLink(GET_A_WEBGL_BROWSER);
@@ -363,7 +381,6 @@ var create3DContext = function (canvas)
    }
    return context;
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Initialize Engine
@@ -377,11 +394,15 @@ engine3d.prototype.InitEngine = function (canvasid, bFullscreen)
    this.gl = setupWebGL(canvas);
    if (!this.gl)
    {
-
       return;
    }
 
    this.context = canvas;
+
+   // Handling losing/restoring context:
+   var evt_engine = this;
+   canvas.addEventListener("webglcontextlost", function(event) { OnLostContext(evt_engine); event.preventDefault(); }, false);
+   canvas.addEventListener("webglcontextrestored", function(event) { OnRestoreContext(evt_engine); }, false);
 
    if (bFullscreen)
    {
@@ -548,6 +569,24 @@ engine3d.prototype.OnDestroy = function ()
 
    _g_nInstanceCnt = 0;
    _g_vInstances = [];
+}
+//------------------------------------------------------------------------------
+/**
+ * Called when context is lost
+ */
+engine3d.prototype.ContextLost = function()
+{
+   // do nothing... [in future there may be an openwebglobe callback for this event]
+}
+//------------------------------------------------------------------------------
+/*
+ * Called when context is restored
+ */
+engine3d.prototype.RestoreContext = function()
+{
+   // [in future there may be an openwebglobe callback for this]
+   // todo: reinit context
+
 }
 //------------------------------------------------------------------------------
 /**
@@ -1016,7 +1055,7 @@ engine3d.prototype.WorldToWindow = function (x, y, z)
  * @param {function()} callback
  * @param {Element=} opt_element
  */
-if (typeof(window) != "undefined")//if owg runs in a webworker "window" is not available!
+if (typeof(window) != "undefined") //if owg runs in a webworker "window" is not available!
 {
    window.requestAnimFrame = (function ()
    {
@@ -1051,35 +1090,44 @@ function fncTimer()
       var engine = _g_vInstances[i];
       // (1) Call Timer Event
 
-      if (engine.scene)
+      if (!engine.gl.isContextLost())
       {
-         engine.scene.Tick(nMSeconds);
-      }
+         if (engine.scene)
+         {
+            engine.scene.Tick(nMSeconds);
+         }
 
-      if (engine.cbfTimer)
-      {
-         engine.cbfTimer(nMSeconds, engine);
-      }
+         if (engine.cbfTimer)
+         {
+            engine.cbfTimer(nMSeconds, engine);
+         }
 
-      // (2) Set Current Viewport and clear
-      engine.SetViewport(0, 0, engine.width, engine.height);
-      engine.Clear();
+         // (2) Set Current Viewport and clear
+         engine.SetViewport(0, 0, engine.width, engine.height);
+         engine.Clear();
 
-      // (3) Draw Scenegraph
-      if (engine.scene)
-      {
-         engine.scene.Traverse();
-         engine.scene.Render();
-      }
+         // (3) Draw Scenegraph
+         if (engine.scene)
+         {
+            engine.scene.Traverse();
+            engine.scene.Render();
+         }
 
-      // (4) Call Render Callback (-> integrate in Scenegraph)
-      if (engine.cbfRender)
-      {
-         engine.cbfRender(engine); // call  draw callback function
-      }
-      if (typeof(window) != "undefined") //if owg runs in a webworker "window" is not available!
-      {
-         window.requestAnimFrame(fncTimer, engine.context);
+         var error = engine.gl.getError();
+         if (error != engine.gl.NO_ERROR && error != engine.gl.CONTEXT_LOST_WEBGL)
+         {
+            ogLog("WebGL Error: " + error);
+         }
+
+         // (4) Call Render Callback (-> integrate in Scenegraph)
+         if (engine.cbfRender)
+         {
+            engine.cbfRender(engine); // call  draw callback function
+         }
+         if (typeof(window) != "undefined") //if owg runs in a webworker "window" is not available!
+         {
+            window.requestAnimFrame(fncTimer, engine.context);
+         }
       }
    }
 
