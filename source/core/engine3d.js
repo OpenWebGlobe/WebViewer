@@ -587,6 +587,9 @@ engine3d.prototype.ContextLost = function()
  */
 engine3d.prototype.RestoreContext = function()
 {
+   // This is a temporary fix
+   // in future all WebGL resources must be regenerated
+   window.location.reload();
 }
 //------------------------------------------------------------------------------
 /**
