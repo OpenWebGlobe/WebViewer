@@ -1582,8 +1582,6 @@ Surface.prototype.SolidGeosphere = function(color, subdiv)
    var h = cubelen;
    var d = cubelen;
 
-   ogLog("SolidGeosphere(), len=" + cubelen);
-
    var vlen = 3; // number of elements per vertex
 
    /** @type {ObjectJSON} */
