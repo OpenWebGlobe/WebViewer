@@ -1536,6 +1536,7 @@ function ogGetElevationAt(world_id, lng, lat)
 
    return val;
 }
+goog.exportSymbol('ogGetElevationAt', ogGetElevationAt);
 //------------------------------------------------------------------------------
 //##############################################################################
 // ** TEXTURE-OBJECT **
