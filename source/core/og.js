@@ -258,22 +258,23 @@ goog.exportSymbol('ogGetObjectName', ogGetObjectName);
 /**
  * @description Retrieve object position
  * @param {number} object_id the object id
- * @returns the object position
+ * @returns the object position or an empty object if failed
  */
 function ogGetObjectPosition(object_id)
 {
    var obj = _GetObjectFromId(object_id);
-   var pos;
-   if(obj){
+   var pos = {};
+   if(obj)
+   {
        switch(obj.type)
        {
-       case 13: // geometry
+       case OG_OBJECT_GEOMETRY: // geometry
          pos = {};
          pos["longitude"] = obj.options.jsonobject.Center[0];
          pos["latitude"] = obj.options.jsonobject.Center[1];
          pos["elevation"] = obj.options.jsonobject.Center[2];
          break;
-       case 22: // POI
+       case OG_OBJECT_POI: // POI
          var geocoor = new GeoCoord();
          geocoor.FromCartesian(obj.poi.posX,obj.poi.posY,obj.poi.posZ);
          pos = {};
@@ -281,14 +282,9 @@ function ogGetObjectPosition(object_id)
          pos["latitude"] = geocoor.GetLatitude();
          pos["elevation"] = geocoor.GetElevation();
          break;
-       default:
-         pos = -1;
-         break;
        }
    }
-   else{
-       pos = OG_OBJECT_INVALID;
-   }
+
    return(pos);
 }
 goog.exportSymbol('ogGetObjectPosition', ogGetObjectPosition);
