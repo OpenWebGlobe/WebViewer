@@ -256,6 +256,45 @@ goog.exportSymbol('ogGetObjectName', ogGetObjectName);
 
 //------------------------------------------------------------------------------
 /**
+ * @description Retrieve object position
+ * @param {number} object_id the object id
+ * @returns the object position
+ */
+function ogGetObjectPosition(object_id)
+{
+   var obj = _GetObjectFromId(object_id);
+   var pos;
+   if(obj){
+       switch(obj.type)
+       {
+       case 13: // geometry
+         pos = {};
+         pos["longitude"] = obj.options.jsonobject.Center[0];
+         pos["latitude"] = obj.options.jsonobject.Center[1];
+         pos["elevation"] = obj.options.jsonobject.Center[2];
+         break;
+       case 22: // POI
+         var geocoor = new GeoCoord();
+         geocoor.FromCartesian(obj.poi.posX,obj.poi.posY,obj.poi.posZ);
+         pos = {};
+         pos["longitude"] = geocoor.GetLongitude();
+         pos["latitude"] = geocoor.GetLatitude();
+         pos["elevation"] = geocoor.GetElevation();
+         break;
+       default:
+         pos = -1;
+         break;
+       }
+   }
+   else{
+       pos = OG_OBJECT_INVALID;
+   }
+   return(pos);
+}
+goog.exportSymbol('ogGetObjectPosition', ogGetObjectPosition);
+
+//------------------------------------------------------------------------------
+/**
  * @description Get number of objects
  * @returns {number} the total number of openwebglobe objects
  */
