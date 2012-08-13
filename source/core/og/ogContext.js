@@ -237,22 +237,31 @@ function ogContext()
    this.numRenderPasses = 1;
    
    // context-related callback functions
+   /** @type {function(number, number, number, number)|null} */
    this.cbfMouseDown = null;
+   /** @type {function(number, number, number, number)|null} */
    this.cbfMouseUp = null;
+   /** @type {function(number, number)|null} */
    this.cbfMouseWheel = null;
+   /** @type {function(number, number, number)|null} */
    this.cbfMouseMove = null;
+   /** @type {function(number, number)|null} */
    this.cbfKeyDown = null;
+   /** @type {function(number, number)|null} */
    this.cbfKeyUp = null;
+   /** @type {function(number, number, number)|null} */
    this.cbfResize = null;
+   /** @type {function(number)|null} */
    this.cbfRender = null;
+   /** @type {function(number, number)|null} */
    this.cbfTimer = null;
-   this.cbfRenderGeometry = null;
-   this.cbfBeginRender = null;
-   this.cbfEndRender = null;
+   /** @type {function(number)|null} */
    this.cbfInit = null;
+   /** @type {function(number)|null} */
    this.cbfExit = null;
-   
+   /** @type {function(number)|null} */
    this.cbfFlyToStarted = null;
+   /** @type {function(number)|null} */
    this.cbfInPosition = null;
 }
 
