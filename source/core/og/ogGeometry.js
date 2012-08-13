@@ -114,11 +114,7 @@ ogGeometry.prototype.ParseOptions = function(options)
       this.CreateSolidGeosphere(options);
       return;
    }
-
-
-
 }
-
 
 //------------------------------------------------------------------------------
 /**

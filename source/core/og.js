@@ -270,9 +270,13 @@ function ogGetObjectPosition(object_id)
        {
        case OG_OBJECT_GEOMETRY: // geometry
          pos = {};
-         pos["longitude"] = obj.options.jsonobject.Center[0];
-         pos["latitude"] = obj.options.jsonobject.Center[1];
-         pos["elevation"] = obj.options.jsonobject.Center[2];
+         var geometry = /** @type {ogGeometry} */ obj;
+         if (goog.isDef(geometry.options["jsonobject"]) && goog.isDef(geometry.options["jsonobject"]["Center"]))
+         {
+            pos["longitude"] = geometry.options["jsonobject"]["Center"][0];
+            pos["latitude"] = geometry.options["jsonobject"]["Center"][1];
+            pos["elevation"] = geometry.options["jsonobject"]["Center"][2];
+         }
          break;
        case OG_OBJECT_POI: // POI
          var geocoor = new GeoCoord();
