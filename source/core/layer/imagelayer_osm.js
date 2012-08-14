@@ -89,13 +89,13 @@ function OSMImageLayer()
    //---------------------------------------------------------------------------
    this.GetMaxLod = function()
    {
-      return 16;
+      return 18;
    }
    
    //---------------------------------------------------------------------------
    this.Contains = function(quadcode)
    {
-      if (quadcode.length<17)
+      if (quadcode.length<19)
       {
          return true;
       }  

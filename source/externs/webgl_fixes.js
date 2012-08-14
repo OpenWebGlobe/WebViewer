@@ -36,3 +36,7 @@ window.requestAnimationFrame;
  * @param {Element=} opt_element
  */
 window.webkitRequestAnimationFrame;
+
+/**
+ */
+WebGLRenderingContext.isContextLost = function() {}

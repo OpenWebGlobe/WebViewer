@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!--
+/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2010-2012 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/
+
+                   TUTORIAL 14: Destroy a scene and create new one
+*******************************************************************************/
+-->
+<html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+<script type="text/javascript">
+//------------------------------------------------------------------------------
+var g_ctx = -1;
+
+function DestroyScene()
+{
+   if (g_ctx != -1)
+   {
+      ogDestroyContext(g_ctx);
+      g_ctx = -1;
+   }
+}
+
+function InitScene()
+{
+   if (g_ctx != -1) // already initialized ?
+   {
+      return;
+   }
+
+   // (0) Set location of Artwork directory. Because of CORS this can't be local
+   // if you want to open this using file://...
+   ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
+   
+   // (1) create an OpenWebGlobe context using canvas
+   // first parameter is canvas-id and second is "fullscreen"
+   g_ctx = ogCreateContextFromCanvas("canvas", true);
+   
+   // (2) Create a virtual globe
+   var globe = ogCreateGlobe(g_ctx);
+   
+   // (3) Add an image and an elevation layer
+   
+   var imgBlueMarble500 = 
+   {
+      url     : ["http://www.openwebglobe.org/data/img"],
+      layer   : "World500",
+      service : "i3d"
+   };
+   
+   var elvSRTM_CH = 
+   {
+      url     : ["http://www.openwebglobe.org/data/elv"],
+      layer   : "SRTM",
+      service : "i3d"
+   };
+   
+   ogAddImageLayer(globe, imgBlueMarble500);
+   ogAddElevationLayer(globe, elvSRTM_CH);
+
+   ogSetBackgroundColor(ctx, 0.2,0.5,0.7,1);
+}
+//------------------------------------------------------------------------------
+
+function main()
+{
+   InitScene();
+}
+
+//------------------------------------------------------------------------------
+
+</script>
+
+</head>
+<body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
+<div>
+   <input type="button" name="myButton" value="Init Scene" onClick="InitScene()"/>
+   <input type="button" name="myButton" value="Destroy Scene" onClick="DestroyScene()"/>
+</div>
+<div style="text-align: center">
+   <canvas id="canvas"></canvas>          
+   </div>
+</body>
+</html>

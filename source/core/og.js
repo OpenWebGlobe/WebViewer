@@ -256,6 +256,45 @@ goog.exportSymbol('ogGetObjectName', ogGetObjectName);
 
 //------------------------------------------------------------------------------
 /**
+ * @description Retrieve object position
+ * @param {number} object_id the object id
+ * @returns the object position or an empty object if failed
+ */
+function ogGetObjectPosition(object_id)
+{
+   var obj = _GetObjectFromId(object_id);
+   var pos = {};
+   if(obj)
+   {
+       switch(obj.type)
+       {
+       case OG_OBJECT_GEOMETRY: // geometry
+         pos = {};
+         var geometry = /** @type {ogGeometry} */ obj;
+         if (goog.isDef(geometry.options["jsonobject"]) && goog.isDef(geometry.options["jsonobject"]["Center"]))
+         {
+            pos["longitude"] = geometry.options["jsonobject"]["Center"][0];
+            pos["latitude"] = geometry.options["jsonobject"]["Center"][1];
+            pos["elevation"] = geometry.options["jsonobject"]["Center"][2];
+         }
+         break;
+       case OG_OBJECT_POI: // POI
+         var geocoor = new GeoCoord();
+         geocoor.FromCartesian(obj.poi.posX,obj.poi.posY,obj.poi.posZ);
+         pos = {};
+         pos["longitude"] = geocoor.GetLongitude();
+         pos["latitude"] = geocoor.GetLatitude();
+         pos["elevation"] = geocoor.GetElevation();
+         break;
+       }
+   }
+
+   return(pos);
+}
+goog.exportSymbol('ogGetObjectPosition', ogGetObjectPosition);
+
+//------------------------------------------------------------------------------
+/**
  * @description Get number of objects
  * @returns {number} the total number of openwebglobe objects
  */
@@ -462,6 +501,23 @@ function ogDestroyContext(context_id)
    }
 }
 goog.exportSymbol('ogDestroyContext', ogDestroyContext);
+//------------------------------------------------------------------------------
+/** @description Return WebGL Rendering Context (if available)
+ *  @param {number} context_id the context
+ *  @return {WebGLRenderingContext}
+ */
+function ogGetGL(context_id)
+{
+   /** @type {ogContext} */
+   var context = /** @type {ogContext} */ _GetObjectFromId(context_id);
+   if (context && context.type == OG_OBJECT_CONTEXT)
+   {
+      return /** @type {WebGLRenderingContext} */ context.engine.gl;
+   }
+
+   return null;
+}
+goog.exportSymbol('ogGetGL', ogGetGL);
 //------------------------------------------------------------------------------
 /**
  * @description Get width of context
@@ -921,7 +977,7 @@ function ogCreateScene(context_id, scenetype)
       {
          /** @type {ogScene} */
          var scene = _CreateObject(OG_OBJECT_SCENE, context, sceneoptions);
-         context.scene = scene;         
+         context.scene = scene;
          return scene.id;
       }
       else
@@ -1350,6 +1406,36 @@ function ogLookAt(scene_id,lng,lat,elv)
 goog.exportSymbol('ogLookAt', ogLookAt);
 //------------------------------------------------------------------------------
 //##############################################################################
+// ** NAVIGATION **
+//##############################################################################
+//------------------------------------------------------------------------------
+/**
+ * Set the Navigation Mode. Navigation mode can be:
+ *    OG_NAVIGATIONMODE_GLOBE, or
+ *    OG_NAVIGATIONMODE_FLIGHT or
+ *    OG_NAVIGATIONMODE_CONSTRAINED or
+ *    OG_NAVIGATIONMODE_DYNAMIC
+ *
+ * @param {number} scene_id
+ * @param {number} navigationmode
+ * @param {Object=} opt_options
+ */
+function ogSetNavigationMode(scene_id, navigationmode, opt_options)
+{
+   if (!goog.isDef(opt_options))
+   {
+      opt_options = {};
+   }
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      scene.SetNavigationMode(navigationmode, opt_options);
+   }
+
+
+}
+goog.exportSymbol('ogSetNavigationMode', ogSetNavigationMode);
+//##############################################################################
 // ** WORLD-OBJECT **
 //##############################################################################
 /** @description create world object
@@ -1366,6 +1452,13 @@ function ogCreateWorld(scene_id)
       worldoptions["scenetype"] = scene.scenetype;
       var world = _CreateObject(OG_OBJECT_WORLD, scene, worldoptions);
       scene.world = world;
+
+      //create a camera object and add it to the scene
+      var cam = _CreateObject(OG_OBJECT_CAMERA, scene, null);
+      cam.SetCurrentPositionAsCameraPosition();
+      scene.SetActiveCamera(cam.id);
+      scene.AddCamera(cam);
+
       return world.id;
    }
    
@@ -1382,16 +1475,7 @@ function ogCreateGlobe(context_id)
    // this is just a convienience function to save some typing.
    var scene_id = ogCreateScene(context_id, OG_SCENE_3D_ELLIPSOID_WGS84);
    var world_id = ogCreateWorld(scene_id);
-   
-   /** @type {ogScene} */
-   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
-   
-   //create a camera object and add it to the scene
-   var cam = _CreateObject(OG_OBJECT_CAMERA, scene, null);
-   cam.SetCurrentPositionAsCameraPosition();
-   scene.SetActiveCamera(cam.id);
-   scene.AddCamera(cam);
-   
+
    return world_id;
 }
 goog.exportSymbol('ogCreateGlobe', ogCreateGlobe);
@@ -1466,6 +1550,33 @@ function ogSetRenderEffect(world_id, rendereffect, opt_param)
    } 
 }
 goog.exportSymbol('ogSetRenderEffect', ogSetRenderEffect);
+//------------------------------------------------------------------------------
+/**
+ * Retrieve Elevation at specified lng, lat. Only works if elevation is loaded.
+ * @param {number} world_id
+ * @param {number} lng
+ * @param {number} lat
+ * @return {Object} elevation object
+ *                  return["hasvalue"] true, if there is a valid value
+ *                  return["elevation"] : elevation at specified position
+ *                  return["lod"] : level of detail at position
+ */
+function ogGetElevationAt(world_id, lng, lat)
+{
+   var val = { "hasvalue" : false,
+           "elevation": 0,
+           "lod": 0};
+
+   var world = /** @type ogWorld */ _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      val = world.GetEngine().GetElevationAt(lng, lat);
+   }
+
+   return val;
+}
+goog.exportSymbol('ogGetElevationAt', ogGetElevationAt);
+//------------------------------------------------------------------------------
 //##############################################################################
 // ** TEXTURE-OBJECT **
 //##############################################################################
@@ -1728,8 +1839,9 @@ function ogLoadVectorAsync(layer_id, url)
    var layer = _GetObjectFromId(layer_id);
    if (layer && layer.type == OG_OBJECT_VECTORLAYER)
    {
-      var options = { "url"  : url,
-                      "type" : "GeoJSON" };
+      var options = { "url"     : url,
+                      "dynamic" : false,
+                      "type"    : "GeoJSON" };
       var vector = layer.CreateVector(options);
       return vector.id;
    }
@@ -1764,6 +1876,27 @@ function ogDestroyVector(vector_id)
    return -1;
 }
 goog.exportSymbol('ogDestroyVector', ogDestroyVector);
+//------------------------------------------------------------------------------
+//---------------------------------------------------------------------
+/** @description Add a GeoJSON to the Vector Layer
+ *  @param {number} layer_id
+ *  @returns {number} the vector id
+ */
+function ogAddGeoJSON(layer_id,data)
+{
+   var layer = _GetObjectFromId(layer_id);
+   if (layer && layer.type == OG_OBJECT_VECTORLAYER)
+   {
+      var options = { "dynamic" : true,
+                      "type"    : "GeoJSON",
+                      "data"    : data };
+      var vector = layer.CreateVector(options);
+      return vector.id;
+   }
+
+   return -1;
+}
+goog.exportSymbol('ogAddGeoJSON', ogAddGeoJSON);
 //##############################################################################
 // ** POI OBJECT **
 //##############################################################################
@@ -2105,7 +2238,14 @@ goog.exportSymbol('ogRemoveGeometryLayer', ogRemoveGeometryLayer);
 function ogCreateGeometry(layer_id ,jsonobject)
 {
    var options = {};
-   options["jsonobject"]=jsonobject;
+   if (goog.isDef(jsonobject["type"]))
+   {
+      options = jsonobject;
+   }
+   else
+   {
+      options["jsonobject"]=jsonobject;
+   }
    /** @type {ogGeometryLayer} */
    var layer = /** @type {ogGeometryLayer} */ _GetObjectFromId(layer_id);
    if( layer && layer.type == OG_OBJECT_GEOMETRYLAYER)
@@ -2117,6 +2257,7 @@ function ogCreateGeometry(layer_id ,jsonobject)
    return -1;
 }
 goog.exportSymbol('ogCreateGeometry', ogCreateGeometry);
+//------------------------------------------------------------------------------
 /** @description Create a Geometry Object
 *   @param {number} layer_id the scene
 *   @param {string} url json url

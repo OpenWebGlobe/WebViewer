@@ -437,12 +437,20 @@ function LogosNode()
 
       }
       //------------------------------------------------------------------------
+      this.OnUnregisterEvents = function ()
+      {
+         goog.events.unlistenByKey(this.evtMouseDown);
+         goog.events.unlistenByKey(this.evtMouseUp);
+         goog.events.unlistenByKey(this.evtMouseMove);
+         goog.events.unlistenByKey(this.evtMouseDoubleClick);
+      }
+      //------------------------------------------------------------------------
       this.OnRegisterEvents = function(context)
       {
-         goog.events.listen(context, goog.events.EventType.MOUSEDOWN, this.OnMouseDown, false, this);
-         goog.events.listen(context, goog.events.EventType.MOUSEUP, this.OnMouseUp, false, this);
-         goog.events.listen(context, goog.events.EventType.MOUSEMOVE, this.OnMouseMove, false, this);
-         goog.events.listen(context, goog.events.EventType.DBLCLICK, this.OnMouseDoubleClick, false, this);
+         this.evtMouseDown = goog.events.listen(context, goog.events.EventType.MOUSEDOWN, this.OnMouseDown, false, this);
+         this.evtMouseUp = goog.events.listen(context, goog.events.EventType.MOUSEUP, this.OnMouseUp, false, this);
+         this.evtMouseMove = goog.events.listen(context, goog.events.EventType.MOUSEMOVE, this.OnMouseMove, false, this);
+         this.evtMouseDoubleClick = goog.events.listen(context, goog.events.EventType.DBLCLICK, this.OnMouseDoubleClick, false, this);
       }
       //------------------------------------------------------------------------
       this.OnMouseDown = function(e)
@@ -487,6 +495,9 @@ function LogosNode()
       //------------------------------------------------------------------------
       this.OnMouseMove = function(e)
       {
+         if (!this.engine || !this.engine.context)
+            return;
+
          var xcorr = e.offsetX-this.engine.context.offsetLeft;
          var ycorr = e.offsetY-this.engine.context.offsetTop;
 

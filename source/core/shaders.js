@@ -122,6 +122,15 @@ function ShaderManager(gl)
    this.vs_pt_chroma = null;
    /** @type WebGLShader */
    this.fs_pt_chroma = null;
+
+   // Screen Space Shaders
+   /** @type WebGLProgram */
+   this.program_blur = null;
+   /** @type WebGLShader */
+   this.vs_blur = null;
+   /** @type WebGLShader */
+   this.fs_blur = null;
+
 }
 
 //------------------------------------------------------------------------------
@@ -260,6 +269,37 @@ ShaderManager.prototype.UseShader_Point = function(modelviewprojection, invmatmo
 }
 //------------------------------------------------------------------------------
 /**
+ * Use Blur Shader (pt-based)
+ * @param {mat4} modelviewprojection
+ * @param {number} tex_width
+ * @param {number} tex_height
+ */
+ShaderManager.prototype.UseShader_Blur = function(modelviewprojection, tex_width, tex_height)
+{
+   if (this.program_blur)
+   {
+      var kernel =   [1, 2, 1,
+                     2, 4, 2,
+                     1, 2, 1];
+
+      var offset_f32 = new Float32Array([
+            -1,-1,   0,-1,   1,-1,
+            -1, 0,   0, 0,   1, 0,
+            -1, 1,   0, 1,   1, 1
+         ]);
+
+      var invTexSize = new Float32Array([1/tex_width, 1/tex_height]);
+      var kernel_f32 = new Float32Array(kernel);
+      this.gl.useProgram(this.program_blur);
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_blur, "matMVP"),false,modelviewprojection.ToFloat32Array());
+      this.gl.uniform2fv(this.gl.getUniformLocation(this.program_blur, "uInvTexSize"), invTexSize);
+      this.gl.uniform1fv(this.gl.getUniformLocation(this.program_blur, "uKernel"), kernel_f32);
+      this.gl.uniform1i(this.gl.getUniformLocation(this.program_blur, "uTexture"), 0);
+      this.gl.uniform2fv(this.gl.getUniformLocation(this.program_blur, "uOffset"), offset_f32);
+   }
+}
+//------------------------------------------------------------------------------
+/**
  *  Initializes the point shader 
  *  internal use
  * 
@@ -289,7 +329,7 @@ ShaderManager.prototype.InitShader_P = function()
       
       // linking
       this.gl.linkProgram(this.program_p);
-      if (!this.gl.getProgramParameter(this.program_p, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_p, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert("Shader Link: " + this.gl.getProgramInfoLog(this.program_p));
           return;
@@ -326,7 +366,7 @@ ShaderManager.prototype.InitShader_PNT = function()
       
       // linking
       this.gl.linkProgram(this.program_pnt);
-      if (!this.gl.getProgramParameter(this.program_pnt, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_pnt, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_pnt));
           return;
@@ -363,7 +403,7 @@ ShaderManager.prototype.InitShader_PC = function()
       
       // linking
       this.gl.linkProgram(this.program_pc);
-      if (!this.gl.getProgramParameter(this.program_pc, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_pc, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_pc));
           return;
@@ -399,7 +439,7 @@ ShaderManager.prototype.InitShader_PT = function()
       
       // linking
       this.gl.linkProgram(this.program_pt);
-      if (!this.gl.getProgramParameter(this.program_pt, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_pt, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_pt));
           return;
@@ -440,7 +480,7 @@ ShaderManager.prototype.InitShader_PT_chroma = function()
       
       // linking
       this.gl.linkProgram(this.program_pt_chroma);
-      if (!this.gl.getProgramParameter(this.program_pt_chroma, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_pt_chroma, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_pt_chroma));
           return;
@@ -477,7 +517,7 @@ ShaderManager.prototype.InitShader_PNCT = function()
       
       // linking
       this.gl.linkProgram(this.program_pnct);
-      if (!this.gl.getProgramParameter(this.program_pnct, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_pnct, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_pnct));
           return;
@@ -513,7 +553,7 @@ ShaderManager.prototype.InitShader_Font = function()
       
       // linking
       this.gl.linkProgram(this.program_font);
-      if (!this.gl.getProgramParameter(this.program_font, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_font, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert("font shader: "+this.gl.getProgramInfoLog(this.program_font));
           return;
@@ -548,7 +588,7 @@ ShaderManager.prototype.InitShader_Poi = function()
       
       // linking
       this.gl.linkProgram(this.program_poi);
-      if (!this.gl.getProgramParameter(this.program_poi, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_poi, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert("poi shader: "+this.gl.getProgramInfoLog(this.program_poi));
           return;
@@ -587,17 +627,80 @@ ShaderManager.prototype.InitShader_Point = function()
       
       // linking
       this.gl.linkProgram(this.program_point);
-      if (!this.gl.getProgramParameter(this.program_point, this.gl.LINK_STATUS)) 
+      if (!this.gl.getProgramParameter(this.program_point, this.gl.LINK_STATUS) && !this.gl.isContextLost())
       {
           alert(this.gl.getProgramInfoLog(this.program_point));
           return;
       }
    }
-} 
+}
+//------------------------------------------------------------------------------
+ShaderManager.prototype.InitShader_Blur = function()
+{
+var src_vertexshader_blur= "uniform mat4 matMVP;\n" +
+                              "attribute vec3 aPosition;\n" +
+                              "attribute vec2 aTexCoord;\n" +
+                              "varying vec2 vTexCoord;\n\n" +
+                              "void main()\n" +
+                              "{\n" +
+                              "   gl_Position = matMVP * vec4(aPosition,1.0);\n" +
+                              "   vTexCoord = aTexCoord;\n" +
+                              "}\n";
 
+   var src_fragmentshader_blur=  "#ifdef GL_ES\n" +
+                                 "precision highp float;\n" +
+                                 "#endif\n" +
+                                 "uniform vec2 uInvTexSize;\n" +
+                                 "varying vec2 vTexCoord;\n" +
+                                 "uniform sampler2D uTexture;\n\n" +
+                                 "void main()\n" +
+                                 "{\n" +
+                                 "   float weight=0.0; vec4 colorsum = vec4(0.0,0.0,0.0,0.0);\n" +
+                                 "   vec4 mid = texture2D(uTexture, vTexCoord);\n" +
+                                 "   if (mid.r == 1.0 && mid.g == 0.0 && mid.b == 1.0 && mid.a < 0.5)\n" +
+                                 "   {   for (int i=-3;i<3;i++) {\n" +
+                                 "       \n" +
+                                 "          for (int j=-3;j<3;j++) {\n" +
+                                 "          \n" +
+                                 "             vec4 val = texture2D(uTexture, vTexCoord + uInvTexSize * vec2(i,j));\n" +
+                                 "             if (val.r == 1.0 && val.g == 0.0 && val.b == 1.0 && val.a < 0.5) \n" +
+                                 "             {}\n" +
+                                 "             else \n" +
+                                 "             {" +
+                                 "                gl_FragColor = val; return;\n" +
+                                 "             }\n" +
+                                 "           }\n" +
+                                 "        }\n" +
+                                 "        gl_FragColor = vec4(0,1,0.5,0); return;\n" +
+                                 "   }\n" +
+                                 "   gl_FragColor = mid;\n" +
+                                 "}\n";
 
+   this.vs_blur = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_blur);
+   this.fs_blur = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_blur);
 
+   if (this.vs_blur && this.fs_blur)
+   {
+      // create program object
+      this.program_blur = this.gl.createProgram();
 
+      // attach our two shaders to the program
+      this.gl.attachShader(this.program_blur, this.vs_blur);
+      this.gl.attachShader(this.program_blur, this.fs_blur);
+
+      // setup attributes
+      this.gl.bindAttribLocation(this.program_blur, 0, "aPosition");
+      this.gl.bindAttribLocation(this.program_blur, 1, "aTexCoord");
+
+      // linking
+      this.gl.linkProgram(this.program_blur);
+      if (!this.gl.getProgramParameter(this.program_blur, this.gl.LINK_STATUS) && !this.gl.isContextLost())
+      {
+         alert(this.gl.getProgramInfoLog(this.program_blur));
+         return;
+      }
+   }
+}
 //------------------------------------------------------------------------------
 /**
  *  Initializes all shaders. 
@@ -616,7 +719,7 @@ ShaderManager.prototype.InitShaders = function()
    this.InitShader_Poi();
    this.InitShader_Point();
    this.InitShader_PT_chroma();
-   
+   this.InitShader_Blur();
 } 
 //------------------------------------------------------------------------------
 /**
@@ -629,7 +732,7 @@ ShaderManager.prototype._createShader = function(shaderType, shaderSource)
    this.gl.shaderSource(shader, shaderSource);
    this.gl.compileShader(shader);
 
-   if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) 
+   if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS) && !this.gl.isContextLost())
    {
       if (shaderType == this.gl.VERTEX_SHADER)
       {
@@ -648,5 +751,4 @@ ShaderManager.prototype._createShader = function(shaderType, shaderSource)
 
    return shader;
 }
-
 
