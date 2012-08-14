@@ -44,6 +44,7 @@ var GeometryOptions;
  * @extends {ogObject} 
  * @description Geometry class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
+ * @author Benjamin Loesch, benjamin.loesch@fhnw.ch
  */
 function ogGeometry()
 {
@@ -229,6 +230,38 @@ ogGeometry.prototype.SetPositionWGS84Quat = function(lng, lat, elv, quat)
    }
 }
 
+//------------------------------------------------------------------------------
+/**
+ * @description Sets the orientation
+ * @param {number} yaw
+ * @param {number} pitch
+ * @param {number} roll
+ */
+ogGeometry.prototype.SetOrientation = function(yaw,pitch,roll)
+{
+   for(var j=0;j<this.meshes_og.length;j++)
+   {
+      /**@type {ogMeshObject} */
+      var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+      mesh.SetOrientation(yaw,pitch,roll);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Sets the postion of the whole geometry
+ * @param {number} scalex the scale-x factor
+ * @param {number} scaley the scale-y factor
+ * @param {number} scalez the scale-z factor
+ */
+ogGeometry.prototype.SetScale = function(scalex,scaley,scalez)
+{
+   for(var j=0;j<this.meshes_og.length;j++)
+   {
+      /**@type {ogMeshObject} */
+      var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+      mesh.SetScale(scalex,scaley,scalez);
+   }
+}
 //------------------------------------------------------------------------------
 /**
  * @description hides the geometry

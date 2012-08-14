@@ -2300,25 +2300,42 @@ function ogDestroyGeometry(geometry_id)
 goog.exportSymbol('ogDestroyGeometry', ogDestroyGeometry);
 
 //------------------------------------------------------------------------------
-/** @description 
-*   @param {number} geometry_id
-*   @param {number} lng
-*   @param {number} lat
-*   @param {number} elv
-*   @param {number=} yaw
-*   @param {number=} pitch
-*   @param {number=} roll
-*/
+/** @description
+ *   @param {number} geometry_id
+ *   @param {number} lng
+ *   @param {number} lat
+ *   @param {number} elv
+ *   @param {number=} yaw
+ *   @param {number=} pitch
+ *   @param {number=} roll
+ */
 function ogSetGeometryPositionWGS84(geometry_id, lng, lat, elv, yaw, pitch, roll)
 {
    var geometry = /** @type {ogGeometry} */_GetObjectFromId(geometry_id);
    if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
    {
-     return geometry.SetPositionWGS84(lng, lat, elv, yaw, pitch, roll);
+      return geometry.SetPositionWGS84(lng, lat, elv, yaw, pitch, roll);
    }
    return -1;
 }
 goog.exportSymbol('ogSetGeometryPositionWGS84', ogSetGeometryPositionWGS84);
+//------------------------------------------------------------------------------
+/** @description
+ *   @param {number} geometry_id
+ *   @param {number} yaw
+ *   @param {number} pitch
+ *   @param {number} roll
+ */
+function ogSetGeometryOrientation(geometry_id, yaw, pitch, roll)
+{
+   var geometry = /** @type {ogGeometry} */_GetObjectFromId(geometry_id);
+   if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
+   {
+      return geometry.SetOrientation(yaw, pitch, roll);
+   }
+   return -1;
+}
+goog.exportSymbol('ogSetGeometryOrientation', ogSetGeometryOrientation);
 //------------------------------------------------------------------------------
 /** @description 
 *   @param {number} geometry_id
@@ -2337,6 +2354,23 @@ function ogSetGeometryPositionWGS84Quat(geometry_id, lng, lat, elv, quat)
    return -1;
 }
 goog.exportSymbol('ogSetGeometryPositionWGS84Quat', ogSetGeometryPositionWGS84Quat);
+//---------------------------------------------------------------------------------
+/**
+ * @description Scales the geometry
+ * @param geometry_id
+ * @param scalex
+ * @param scaley
+ * @param scalez
+ */
+function ogSetGeometryScale(geometry_id,scalex,scaley,scalez)
+{
+   var geometry = /** @type {ogGeometry} */_GetObjectFromId(geometry_id);
+   if (geometry && geometry.type == OG_OBJECT_GEOMETRY)
+   {
+      geometry.SetScale(scalex,scaley,scalez);
+   }
+}
+goog.exportSymbol('ogSetGeometryScale', ogSetGeometryScale);
 //------------------------------------------------------------------------------
 /** @description gets the number of meshObjects in a geometry. 
 *   @param {number} geometry_id

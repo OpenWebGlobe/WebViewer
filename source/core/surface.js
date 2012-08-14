@@ -198,6 +198,8 @@ function Surface(engine)
 
    /** @type {number} */
    this.lod = -1;
+
+
 }
 
 //------------------------------------------------------------------------------
@@ -1273,6 +1275,9 @@ Surface.prototype.UpdateBillboardMatrix = function ()
  */
 Surface.prototype.SetAsNavigationFrame = function (lng, lat, elv, yaw, pitch, roll)
 {
+   this.lng = lng;
+   this.lat = lat;
+   this.elv = elv;
    var coords = new GeoCoord(lng, lat, elv);
    var cartesianCoordinates = new Array(3);
    coords.ToCartesian(cartesianCoordinates);
@@ -1357,7 +1362,9 @@ Surface.prototype.SetAsNavigationFrame = function (lng, lat, elv, yaw, pitch, ro
  */
 Surface.prototype.SetAsNavigationFrameQuat = function (lng, lat, elv, quats)
 {
-
+   this.lng = lng;
+   this.lat = lat;
+   this.elv = elv;
    var coords = new GeoCoord(lng, lat, elv);
    var cartesianCoordinates = new Array(3);
    coords.ToCartesian(cartesianCoordinates);
@@ -1436,6 +1443,50 @@ Surface.prototype.SetAsNavigationFrameQuat = function (lng, lat, elv, quats)
    this.modelMatrix = scaledNavRotMat;
    this.UpdateAABB();
 }
+
+
+//------------------------------------------------------------------------------
+/**
+ * @description sets the model matrix as a navigation frame from quaternions
+ * @param {number} scalex the scale-x factor
+ * @param {number} scaley the scale-y factor
+ * @param {number} scalez the scale-z factor
+ */
+Surface.prototype.SetScale = function (scalex,scaley,scalez)
+{
+   var scaleMat = new mat4();
+   scaleMat.Scale(scalex, scaley, scalez);
+   var scaledNavRotMat = new mat4();
+   var modelMatrixCopy = this.modelMatrix.Copy();
+   scaledNavRotMat.Multiply(modelMatrixCopy, scaleMat);
+
+   this.modelMatrix = scaledNavRotMat;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description sets the model matrix as a navigation frame from quaternions
+ * @param {number} yaw
+ * @param {number} pitch
+ * @param {number} roll
+ */
+Surface.prototype.SetOrientation = function (yaw,pitch,roll)
+{
+
+   var yawr = MathUtils.Deg2Rad(yaw);
+   var pitchr = MathUtils.Deg2Rad(pitch);
+   var rollr = MathUtils.Deg2Rad(roll);
+
+   var rotationMat= new mat4();
+   rotationMat.Rotation(yawr,pitchr,rollr);
+
+   var modelMatrixCopy = this.modelMatrix.Copy();
+
+   var mat = new mat4();
+   mat.Multiply(modelMatrixCopy,rotationMat);
+
+   this.modelMatrix = mat;
+}
+
 //------------------------------------------------------------------------------
 /**
  * @description copies data from another meshclass into this mesh-class. e.g. used for icon-pois

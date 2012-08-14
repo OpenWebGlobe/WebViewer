@@ -32,6 +32,7 @@ goog.require('owg.ogObject');
  * @extends {ogObject} 
  * @description Mesh Object (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
+ * @author Benjamin Loesch, benjamin.loesch@fhnw.ch
  */
 function ogMeshObject()
 {
@@ -177,7 +178,41 @@ ogMeshObject.prototype.SetPositionWGS84Quat = function(lng,lat,elv, quat)
 }
 
 
+//------------------------------------------------------------------------------
+/**
+ * @description Sets the scale
+ * @param {number} scalex the scale-x factor
+ * @param {number} scaley the scale-y factor
+ * @param {number} scalez the scale-z factor
+ */
+ogMeshObject.prototype.SetScale = function(scalex,scaley,scalez)
+{
+   for(var k=0; k<this.surfaces_og.length;k++)
+   {
+      /** @type {ogSurface} */
+      var surf = /** @type {ogSurface} */this.surfaces_og[k];
+      surf.SetScale(scalex,scaley,scalez);
+   }
+}
 
+//------------------------------------------------------------------------------
+/**
+ * @description Sets the orientation
+ * @param {number} yaw
+ * @param {number} pitch
+ * @param {number} roll
+ */
+ogMeshObject.prototype.SetOrientation = function(yaw,pitch,roll)
+{
+   for(var k=0; k<this.surfaces_og.length;k++)
+   {
+      /** @type {ogSurface} */
+      var surf = /** @type {ogSurface} */this.surfaces_og[k];
+      surf.SetOrientation(yaw,pitch,roll);
+   }
+}
+
+//------------------------------------------------------------------------------
 /**
  * @description shows the mesh
  * 
