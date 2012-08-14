@@ -2932,3 +2932,4 @@ function ogSetMinAltitude(scene_id, minAltiude)
 
 
 }
+goog.exportSymbol('ogSetMinAltitude', ogSetMinAltitude);
