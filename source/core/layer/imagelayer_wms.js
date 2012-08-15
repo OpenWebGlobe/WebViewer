@@ -13,7 +13,7 @@
 #                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
-#                              (c) 2010-2011 by                                #
+#                              (c) 2010-2012 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
 #                     Institute of Geomatics Engineering                       #
 #                           martin.christen@fhnw.ch                            #
@@ -21,7 +21,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-goog.provide('owg.OSMImageLayer');
+goog.provide('owg.WMSImageLayer');
 
 goog.require('owg.GlobeUtils');
 goog.require('owg.ImageLayer');
@@ -31,15 +31,25 @@ goog.require('owg.Texture');
 //------------------------------------------------------------------------------
 /**
  * @constructor
- * @description Image Layer for OpenStretMap Tile Service
- * @author Martin Christen, martin.christen@fhnw.ch
+ * @description WMS Image Layer (Mercator Projection)
+ * some wms server can't work,The reason why vmap0.tiles.osgeo.org doesn't work is:
+ * that server doesn't send the header "Access-Control-Allow-Origin: *".
+ * This is required for WebGL because of security issues.
+ * More info here: http://forums.openwebglobe.org/viewtopic.php?f=4&t=7
+ * The imagelayer_wms.js was finished debug by debug-wms.html 
+ * @author Boguisław Kaczałek, boguslaw.kaczalek@opegieka.pl
+ * modified by gouguijia@gmail.com
  */
-function OSMImageLayer()
+function WMSImageLayer()
 {
-   this.servers = null;
+   this.server = null;
    this.layer = null;
+   this.format = null;
+   this.style = null;
+   this.version=null;
+   this.transparency = 1.0;
+   this.SRS=null;
    this.quadtree = new MercatorQuadtree();
-   this.curserver = 0;
  
    //---------------------------------------------------------------------------
    this.Ready = function()
@@ -54,14 +64,35 @@ function OSMImageLayer()
    //---------------------------------------------------------------------------
    this.RequestTile = function(engine, quadcode, layer, cbfReady, cbfFailed, caller)
    {
+      if (this.server.indexOf("?", this.server.length - 1) == -1)
+      {
+          this.server+="?";
+      }
       var coords = new Array(4);
-      var res = {};
-      this.quadtree.QuadKeyToTileCoord(quadcode, res);
-      
-      var sFilename = this.servers[this.curserver] + "/" + 
-                      res.lod + "/" + 
-                      res.x + "/" + 
-                      res.y + ".png"
+      if(this.SRS=="EPSG%3A4326")
+      {
+         this.quadtree.QuadKeyToWGS84(quadcode, coords);
+         var bbox= coords[0]+","+coords[1]+","+coords[2]+","+coords[3];         
+      }
+      else // EPSG:900913, ESRI:102100, ESRI:102113, EPSG:3785, EPSG:3857
+      {
+         this.quadtree.QuadKeyToMercator(quadcode, coords);
+         var bbox= coords[0]+","+coords[1]+","+coords[2]+","+coords[3];         
+      }
+
+      var sFilename = this.server + 
+               "service=WMS"+
+               "&request=GetMap" + 
+               "&WIDTH=256" +
+               "&HEIGHT=256" +
+               "&TILED=TRUE" +
+               "&SRS=" + this.SRS      +     // deprecated -> EPSG%3A3857
+               "&LAYERS=" + this.layer +
+               "&STYLES=" + this.style +
+               "&FORMAT="+ this.format +
+               "&VERSION=" + this.version +
+               "&BBOX=" + bbox;
+               
 
       
       var ImageTexture = new Texture(engine);  
@@ -70,14 +101,10 @@ function OSMImageLayer()
       ImageTexture.cbfReady = cbfReady;   // store the ready callback in texture object
       ImageTexture.cbfFailed = cbfFailed; // store the failure callback in texture object
       ImageTexture.caller = caller;
-      ImageTexture.loadTexture(sFilename, _cbOSMTileReady, _cbOSMTileFailed, true); 
-  
- 
-      this.curserver++;
-      if (this.curserver>=this.servers.length)
-      {
-         this.curserver = 0;
+      if (this.format=="image/png") {
+          ImageTexture.transparency = this.transparency;
       }
+      ImageTexture.loadTexture(sFilename, _cbWMSTileReady, _cbWMSTileFailed, true); 
  
    };
    //---------------------------------------------------------------------------
@@ -89,13 +116,13 @@ function OSMImageLayer()
    //---------------------------------------------------------------------------
    this.GetMaxLod = function()
    {
-      return 18;
+      return 30;
    }
    
    //---------------------------------------------------------------------------
    this.Contains = function(quadcode)
    {
-      if (quadcode.length<19)
+      if (quadcode.length<31)
       {
          return true;
       }  
@@ -103,21 +130,31 @@ function OSMImageLayer()
    }
    //---------------------------------------------------------------------------
    
-   this.Setup = function(serverlist)
-   {
-      // Please respect: http://wiki.openstreetmap.org/wiki/Tile_Usage_Policy
-      
-      // serverlist:
-      //   ["http://a.tile.openstreetmap.org", "http://b.tile.openstreetmap.org", "http://c.tile.openstreetmap.org" ]
-      //   or your own tileserver(s).
-      // 
-      
-      this.servers = serverlist;
+   this.Setup = function(server,layer,SRS,format,style,version,transparency)
+   {   
+      this.server = server;
+      this.layer = layer;
+      this.format = format;
+      this.style = style;
+      this.version = version;
+      this.transparency = transparency;
+      this.SRS = SRS;
+      //load defaults if not provided
+      if (this.format == null) {this.format = "image/png";}
+      if (this.style == null) {this.style = "";}
+      if (this.version == null) {this.version="1.1.1";}
+      if (this.SRS==null){this.SRS="EPSG%3A900913";}
+      if (this.SRS=="EPSG:900913"){this.SRS="EPSG%3A900913";}
+      if (this.SRS=="ESRI:102100"){this.SRS="ESRI%3A102100";}
+      if (this.SRS=="ESRI:102113"){this.SRS="ESRI%3A102113";}
+      if (this.SRS=="EPSG:3785"){this.SRS="EPSG%3A3785";}
+      if (this.SRS=="EPSG:3857"){this.SRS="EPSG%3A3857";}
+      if (this.SRS=="EPSG:4326"){this.SRS="EPSG%3A4326";}
 
    }
 }
 
-OSMImageLayer.prototype = new ImageLayer();
+WMSImageLayer.prototype = new ImageLayer();
 
 //------------------------------------------------------------------------------
 
@@ -126,7 +163,7 @@ OSMImageLayer.prototype = new ImageLayer();
 * @description internal callback function for tiles
 * @ignore
 */
-function _cbOSMTileReady(imgTex)
+function _cbWMSTileReady(imgTex)
 {
    imgTex.cbfReady(imgTex.quadcode, imgTex, imgTex.layer);
    imgTex.cbfReady = null;
@@ -140,7 +177,7 @@ function _cbOSMTileReady(imgTex)
  * @description internal callback function for tiles
  * @ignore
  */
-function _cbOSMTileFailed(imgTex)
+function _cbWMSTileFailed(imgTex)
 {
    imgTex.cbfFailed(imgTex.quadcode, imgTex.caller, imgTex.layer);
    imgTex.cbfReady = null;

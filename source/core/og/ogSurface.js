@@ -58,6 +58,13 @@ function ogSurface()
    /** @type {Surface} */ 
    this.surface = null;
 
+   /** @type {number}*/
+   this.longitude = 0;
+   /** @type {number}*/
+   this.latitude = 0;
+   /** @type {number}*/
+   this.elevation = 0;
+
 }
 //------------------------------------------------------------------------------
 ogSurface.prototype = new ogObject();
@@ -107,7 +114,12 @@ ogSurface.prototype.ogSurface_callbackready = function(surface)
 * @param  {number=} roll
 */
 ogSurface.prototype.SetPositionWGS84 = function(lng, lat, elv, yaw, pitch, roll)
-{  
+{
+   this.longitude = lng;
+   this.latitude = lat;
+   this.elevation = elv;
+
+
    this.surface.SetAsNavigationFrame(lng,lat,elv,yaw,pitch,roll);
 }
 //------------------------------------------------------------------------------
@@ -119,9 +131,37 @@ ogSurface.prototype.SetPositionWGS84 = function(lng, lat, elv, yaw, pitch, roll)
 * @param {Array.<{number}>} quat quaternion paramters qx,qy,qz,qw
 */
 ogSurface.prototype.SetPositionWGS84Quat = function(lng, lat, elv, quat)
-{  
+{
+   this.longitude = lng;
+   this.latitude = lat;
+   this.elevation = elv;
    this.surface.SetAsNavigationFrameQuat(lng,lat,elv,quat);
 }
+
+//------------------------------------------------------------------------------
+/**
+ * @description set orientation of the surface
+ * @param {number} yaw
+ * @param {number} pitch
+ * @param {number} roll
+ */
+ogSurface.prototype.SetOrientation = function(yaw,pitch,roll)
+{
+   this.surface.SetOrientation(yaw,pitch,roll);
+}
+//------------------------------------------------------------------------------
+/**
+ * @description sets the scale
+ * @param {number} scalex the scale-x factor
+ * @param {number} scaley the scale-y factor
+ * @param {number} scalez the scale-z factor
+ */
+ogSurface.prototype.SetScale= function(scalex,scaley,scalez)
+{
+   this.surface.SetScale(scalex,scaley,scalez);
+}
+
+
 //------------------------------------------------------------------------------
 /**
 * @description parse options
@@ -174,12 +214,11 @@ ogSurface.prototype.ParseOptions = function(options)
          this.surface.visibilityDistance = 50000*CARTESIAN_SCALE_INV; //default value for visibility.
       }
    }   
-   if(options["longitude"] && options["latitude"] && options["elevation"])
-   {
-      this.longitude = options["longitude"];
-      this.latitude = options["latitude"];
-      this.elevation = options["elevation"];
-   }
+
+   this.longitude = options["jsonobject"]["Center"][0];
+   this.latitude = options["jsonobject"]["Center"][1];
+   this.elevation = options["jsonobject"]["Center"][2];
+
    
 }
 //------------------------------------------------------------------------------
@@ -231,6 +270,20 @@ ogSurface.prototype.Hide = function()
    if (this.surface)
    {
       this.surface.hide = true;
+   }
+}
+
+
+//------------------------------------------------------------------------------
+/**
+* @description hide the surface
+* @ignore
+*/
+ogSurface.prototype.SetHighlightColor = function(r,g,b,a)
+{
+   if (this.surface)
+   {
+      this.surface.SetHighlightColor(r,g,b,a);
    }
 }
 

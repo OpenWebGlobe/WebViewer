@@ -13,7 +13,7 @@
  #                              ____) | |__| | . \                              #
  #                             |_____/|_____/|_|\_\                             #
  #                                                                              #
- #                              (c) 2010-2011 by                                #
+ #                              (c) 2010-2012 by                                #
  #           University of Applied Sciences Northwestern Switzerland            #
  #                     Institute of Geomatics Engineering                       #
  #                           martin.christen@fhnw.ch                            #
@@ -21,7 +21,7 @@
  *     Licensed under MIT License. Read the file LICENSE for more information   *
  *******************************************************************************/
 
-goog.provide('owg.GlobeNavigationNode');
+goog.provide('owg.DynamicNavigationNode');
 
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent.MouseButton');
@@ -35,13 +35,12 @@ goog.require('owg.vec3');
 goog.require('owg.Mercator');
 
 /**
- * Navigation Node. Setup view matrix using Google Earth-style navigation
- * @author Tom Payne tom.payne@camptocamp.com
+ * Dynamic Navigation Node, based on GlobeNavigation (in development)
  * @author Martin Christen martin.christen@fhnw.ch
  * @constructor
  * @extends NavigationNode
  */
-function GlobeNavigationNode()
+function DynamicNavigationNode()
 {
    this.lastkey = 0;
    this.curtime = 0;
@@ -60,7 +59,7 @@ function GlobeNavigationNode()
    this._latitude = 47.472720418012834;
    this._ellipsoidHeight = 7500000;
 
-   this._state = GlobeNavigationNode.STATES.IDLE;
+   this._state = DynamicNavigationNode.STATES.IDLE;
    this._inputs = 0;
    this._dragOriginMouseX = 0;
    this._dragOriginMouseY = 0;
@@ -222,7 +221,7 @@ function GlobeNavigationNode()
       }
 
       // update position
-      if (this._state == GlobeNavigationNode.STATES.DRAGGING && !this._bLockNavigation && !this.engine.flyto.isMoving)
+      if (this._state == DynamicNavigationNode.STATES.DRAGGING && !this._bLockNavigation && !this.engine.flyto.isMoving)
       {
          // Start Drag
          if (this._bLClick)
@@ -305,50 +304,50 @@ function GlobeNavigationNode()
    this._OnInputChange = function ()
    {
       // Determine the new state based on inputs
-      var state = GlobeNavigationNode.STATES.IDLE;
-      if ((this._inputs & GlobeNavigationNode.INPUTS.MOUSE_ALL) == GlobeNavigationNode.INPUTS.MOUSE_LEFT)
+      var state = DynamicNavigationNode.STATES.IDLE;
+      if ((this._inputs & DynamicNavigationNode.INPUTS.MOUSE_ALL) == DynamicNavigationNode.INPUTS.MOUSE_LEFT)
       {
-         if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == 0)
+         if ((this._inputs & DynamicNavigationNode.INPUTS.MODIFIER_ALL) == 0)
          {
-            state = GlobeNavigationNode.STATES.DRAGGING;
+            state = DynamicNavigationNode.STATES.DRAGGING;
          }
-         else if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == GlobeNavigationNode.INPUTS.MODIFIER_SHIFT)
+         else if ((this._inputs & DynamicNavigationNode.INPUTS.MODIFIER_ALL) == DynamicNavigationNode.INPUTS.MODIFIER_SHIFT)
          {
-            state = GlobeNavigationNode.STATES.ROTATING;
+            state = DynamicNavigationNode.STATES.ROTATING;
          }
-         else if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == GlobeNavigationNode.INPUTS.MODIFIER_CONTROL)
+         else if ((this._inputs & DynamicNavigationNode.INPUTS.MODIFIER_ALL) == DynamicNavigationNode.INPUTS.MODIFIER_CONTROL)
          {
-            state = GlobeNavigationNode.STATES.LOOKING;
+            state = DynamicNavigationNode.STATES.LOOKING;
          }
       }
 
       //------------------------------------------------------------------------
-      /*if ((this._inputs & GlobeNavigationNode.INPUTS.MOUSE_ALL) == GlobeNavigationNode.INPUTS.MOUSE_MIDDLE)
+      /*if ((this._inputs & DynamicNavigationNode.INPUTS.MOUSE_ALL) == DynamicNavigationNode.INPUTS.MOUSE_MIDDLE)
        {
-       state = GlobeNavigationNode.STATES.ROTATING;
+       state = DynamicNavigationNode.STATES.ROTATING;
        }*/
       //---------------------------------------------------------------------
-      if ((this._inputs & GlobeNavigationNode.INPUTS.MOUSE_ALL) == GlobeNavigationNode.INPUTS.MOUSE_RIGHT)
+      if ((this._inputs & DynamicNavigationNode.INPUTS.MOUSE_ALL) == DynamicNavigationNode.INPUTS.MOUSE_RIGHT)
       {
-         state = GlobeNavigationNode.STATES.LOOKING;
+         state = DynamicNavigationNode.STATES.LOOKING;
       }
       //------------------------------------------------------------------------
       // If the state has changed...
       if (state != this._state)
       {
          // ...exit the old state...
-         if (this._state == GlobeNavigationNode.STATES.LOOKING)
+         if (this._state == DynamicNavigationNode.STATES.LOOKING)
          {
             this._yaw = this._dragOriginYaw + 45 * Math.PI * this._fSpeed * (this._nMouseX - this._dragOriginMouseX) / (180 * this.engine.height);
             this._pitch = this._dragOriginPitch + 45 * Math.PI * this._fSpeed * (this._dragOriginMouseY - this._nMouseY) / (180 * this.engine.height);
          }
-         /*else if (this._state == GlobeNavigationNode.STATES.ROTATING)
+         /*else if (this._state == DynamicNavigationNode.STATES.ROTATING)
           {
 
           }*/
          // ...and enter the new
          this._state = state;
-         if (this._state == GlobeNavigationNode.STATES.LOOKING)
+         if (this._state == DynamicNavigationNode.STATES.LOOKING)
          {
             this._dragOriginMouseX = this._nMouseX;
             this._dragOriginMouseY = this._nMouseY;
@@ -356,12 +355,12 @@ function GlobeNavigationNode()
             this._dragOriginPitch = this._pitch;
          }
 
-         /*if (this._state == GlobeNavigationNode.STATES.ROTATING)
+         /*if (this._state == DynamicNavigationNode.STATES.ROTATING)
           {
           }*/
       }
       // Update according to the current state
-      if (this._state == GlobeNavigationNode.STATES.LOOKING)
+      if (this._state == DynamicNavigationNode.STATES.LOOKING)
       {
          this._yaw = this._dragOriginYaw + 45 * Math.PI * this._fSpeed * (this._nMouseX - this._dragOriginMouseX) / (180 * this.engine.height);
          this._pitch = this._dragOriginPitch + 45 * Math.PI * this._fSpeed * (this._dragOriginMouseY - this._nMouseY) / (180 * this.engine.height);
@@ -377,9 +376,9 @@ function GlobeNavigationNode()
          return;
       }
 
-      if (this._state == GlobeNavigationNode.STATES.IDLE)
+      if (this._state == DynamicNavigationNode.STATES.IDLE)
       {
-         if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == 0)
+         if ((this._inputs & DynamicNavigationNode.INPUTS.MODIFIER_ALL) == 0)
          {
             var pickresult = {};
             var mx, my;
@@ -449,7 +448,7 @@ function GlobeNavigationNode()
                }
             }
          }
-         else if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == GlobeNavigationNode.INPUTS.MODIFIER_SHIFT)
+         else if ((this._inputs & DynamicNavigationNode.INPUTS.MODIFIER_ALL) == DynamicNavigationNode.INPUTS.MODIFIER_SHIFT)
          {
             this._pitch += 5 * e.deltaY * Math.PI * this._fSpeed / 180;
          }
@@ -473,32 +472,32 @@ function GlobeNavigationNode()
 
       if (e.keyCode == 16) // 'Shift'
       {
-         this._inputs |= GlobeNavigationNode.INPUTS.MODIFIER_SHIFT;
+         this._inputs |= DynamicNavigationNode.INPUTS.MODIFIER_SHIFT;
          return this._cancelEvent(e);
       }
       else if (e.keyCode == 17) // 'Control'
       {
-         this._inputs |= GlobeNavigationNode.INPUTS.MODIFIER_CONTROL;
+         this._inputs |= DynamicNavigationNode.INPUTS.MODIFIER_CONTROL;
          return this._cancelEvent(e);
       }
       else if (e.keyCode == 37 || e.keyCode == 65) // 'LeftArrow' or 'A'
       {
-         this._inputs |= GlobeNavigationNode.INPUTS.KEY_LEFT;
+         this._inputs |= DynamicNavigationNode.INPUTS.KEY_LEFT;
          return this._cancelEvent(e);
       }
       else if (e.keyCode == 38 || e.keyCode == 87) // 'UpArrow' or 'W'
       {
-         this._inputs |= GlobeNavigationNode.INPUTS.KEY_UP;
+         this._inputs |= DynamicNavigationNode.INPUTS.KEY_UP;
          return this._cancelEvent(e);
       }
       else if (e.keyCode == 39 || e.keyCode == 68) // 'RightArrow' or 'D'
       {
-         this._inputs |= GlobeNavigationNode.INPUTS.KEY_RIGHT;
+         this._inputs |= DynamicNavigationNode.INPUTS.KEY_RIGHT;
          return this._cancelEvent(e);
       }
       else if (e.keyCode == 40 || e.keyCode == 83) // 'DownArrow' or 'S'
       {
-         this._inputs |= GlobeNavigationNode.INPUTS.KEY_DOWN;
+         this._inputs |= DynamicNavigationNode.INPUTS.KEY_DOWN;
          return this._cancelEvent(e);
       }
       this._OnInputChange();
@@ -511,32 +510,32 @@ function GlobeNavigationNode()
    {
       if (e.keyCode == 16) // 'Shift'
       {
-         this._inputs &= ~GlobeNavigationNode.INPUTS.MODIFIER_SHIFT;
+         this._inputs &= ~DynamicNavigationNode.INPUTS.MODIFIER_SHIFT;
          return this._cancelEvent(e);
       }
       else if (e.keyCode == 17) // 'Control'
       {
-         this._inputs &= ~GlobeNavigationNode.INPUTS.MODIFIER_CONTROL;
+         this._inputs &= ~DynamicNavigationNode.INPUTS.MODIFIER_CONTROL;
          return this._cancelEvent(e);
       }
       else if (e.keyCode == 37 || e.keyCode == 65) // 'LeftArrow' or 'A'
       {
-         this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_LEFT;
+         this._inputs &= ~DynamicNavigationNode.INPUTS.KEY_LEFT;
          return this._cancelEvent(e);
       }
       else if (e.keyCode == 38 || e.keyCode == 87) // 'UpArrow' or 'W'
       {
-         this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_UP;
+         this._inputs &= ~DynamicNavigationNode.INPUTS.KEY_UP;
          return this._cancelEvent(e);
       }
       else if (e.keyCode == 39 || e.keyCode == 68) // 'RightArrow' or 'D'
       {
-         this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_RIGHT;
+         this._inputs &= ~DynamicNavigationNode.INPUTS.KEY_RIGHT;
          return this._cancelEvent(e);
       }
       else if (e.keyCode == 40 || e.keyCode == 83) // 'DownArrow' or 'S'
       {
-         this._inputs &= ~GlobeNavigationNode.INPUTS.KEY_DOWN;
+         this._inputs &= ~DynamicNavigationNode.INPUTS.KEY_DOWN;
          return this._cancelEvent(e);
       }
       this._OnInputChange();
@@ -602,18 +601,18 @@ function GlobeNavigationNode()
 
       if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
       {
-         this._inputs |= GlobeNavigationNode.INPUTS.MOUSE_LEFT;
+         this._inputs |= DynamicNavigationNode.INPUTS.MOUSE_LEFT;
          document.body.style.cursor = 'move';
          this._bLClick = true;
       }
       else if (e.isButton(goog.events.BrowserEvent.MouseButton.MIDDLE))
       {
-         //this._inputs |= GlobeNavigationNode.INPUTS.MOUSE_MIDDLE;
+         //this._inputs |= DynamicNavigationNode.INPUTS.MOUSE_MIDDLE;
          return false;
       }
       else if (e.isButton(goog.events.BrowserEvent.MouseButton.RIGHT))
       {
-         this._inputs |= GlobeNavigationNode.INPUTS.MOUSE_RIGHT;
+         this._inputs |= DynamicNavigationNode.INPUTS.MOUSE_RIGHT;
       }
       this._OnInputChange();
 
@@ -632,19 +631,19 @@ function GlobeNavigationNode()
 
       if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))
       {
-         this._inputs &= ~GlobeNavigationNode.INPUTS.MOUSE_LEFT;
+         this._inputs &= ~DynamicNavigationNode.INPUTS.MOUSE_LEFT;
          this._bHit = false;
          document.body.style.cursor = 'default';
          this._bLClick = false;
       }
       else if (e.isButton(goog.events.BrowserEvent.MouseButton.MIDDLE))
       {
-         //this._inputs &= ~GlobeNavigationNode.INPUTS.MOUSE_MIDDLE;
+         //this._inputs &= ~DynamicNavigationNode.INPUTS.MOUSE_MIDDLE;
          return false;
       }
       else if (e.isButton(goog.events.BrowserEvent.MouseButton.RIGHT))
       {
-         this._inputs &= ~GlobeNavigationNode.INPUTS.MOUSE_RIGHT;
+         this._inputs &= ~DynamicNavigationNode.INPUTS.MOUSE_RIGHT;
       }
       this._OnInputChange();
 
@@ -662,7 +661,7 @@ function GlobeNavigationNode()
          return;
       }
 
-      this._bDragging = this._state == GlobeNavigationNode.STATES.DRAGGING;
+      this._bDragging = this._state == DynamicNavigationNode.STATES.DRAGGING;
 
       this._bMouseDelta = true;
 
@@ -737,30 +736,30 @@ function GlobeNavigationNode()
          }
       }
 
-      /*if (this._state == GlobeNavigationNode.STATES.ROTATING)
+      /*if (this._state == DynamicNavigationNode.STATES.ROTATING)
        {
 
        }*/
 
-      if (this._inputs & GlobeNavigationNode.INPUTS.KEY_ALL || this.navigationcommand == TraversalState.NavigationCommand.ROTATE_EARTH)
+      if (this._inputs & DynamicNavigationNode.INPUTS.KEY_ALL || this.navigationcommand == TraversalState.NavigationCommand.ROTATE_EARTH)
       {
-         if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == 0)
+         if ((this._inputs & DynamicNavigationNode.INPUTS.MODIFIER_ALL) == 0)
          {
             var dX = 0;
-            if (this._inputs & GlobeNavigationNode.INPUTS.KEY_UP)
+            if (this._inputs & DynamicNavigationNode.INPUTS.KEY_UP)
             {
                dX += 1;
             }
-            if (this._inputs & GlobeNavigationNode.INPUTS.KEY_DOWN)
+            if (this._inputs & DynamicNavigationNode.INPUTS.KEY_DOWN)
             {
                dX -= 1;
             }
             var dY = 0;
-            if (this._inputs & GlobeNavigationNode.INPUTS.KEY_LEFT)
+            if (this._inputs & DynamicNavigationNode.INPUTS.KEY_LEFT)
             {
                dY -= 1;
             }
-            if (this._inputs & GlobeNavigationNode.INPUTS.KEY_RIGHT)
+            if (this._inputs & DynamicNavigationNode.INPUTS.KEY_RIGHT)
             {
                dY += 1;
             }
@@ -1016,11 +1015,11 @@ function GlobeNavigationNode()
       this.minAltitude = min;
    }
 }
-goog.inherits(GlobeNavigationNode, NavigationNode);
+goog.inherits(DynamicNavigationNode, NavigationNode);
 
 
 /** @enum {number} */
-GlobeNavigationNode.INPUTS = {
+DynamicNavigationNode.INPUTS = {
    MOUSE_LEFT:0x01,
    MOUSE_MIDDLE:0x02,
    MOUSE_RIGHT:0x04,
@@ -1036,7 +1035,7 @@ GlobeNavigationNode.INPUTS = {
 };
 
 /** @enum {number} */
-GlobeNavigationNode.STATES = {
+DynamicNavigationNode.STATES = {
    IDLE:0,
    DRAGGING:1,
    LOOKING:2,

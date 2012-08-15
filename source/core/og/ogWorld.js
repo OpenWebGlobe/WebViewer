@@ -172,3 +172,16 @@ ogWorld.prototype.SetRenderEffect = function(rendereffect, param)
    }
 }
 //------------------------------------------------------------------------------
+/**
+ * Return the engine
+ * @return {engine3d}
+ */
+ogWorld.prototype.GetEngine = function()
+{
+   /** @type {ogContext} */
+   var context = /** @type ogContext */this.parent.parent;
+   /** @type {engine3d} */
+   var engine = context.engine;
+   return engine;
+}
+//------------------------------------------------------------------------------

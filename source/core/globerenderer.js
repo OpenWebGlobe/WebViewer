@@ -35,6 +35,8 @@ goog.require('owg.i3dElevationLayer');
 goog.require('owg.owgElevationLayer');
 goog.require('owg.GoogleImageLayer');
 goog.require('owg.OYMImageLayer');
+goog.require('owg.TMSImageLayer');
+goog.require('owg.WMSImageLayer');
 //------------------------------------------------------------------------------
 /**
  * @typedef {{
@@ -150,6 +152,7 @@ GlobeRenderer.prototype.Destroy = function()
  *    service: i3d for i3d tile layout (deprecated)
  *             osm for OpenStreetMap tile layout
  *             owg for OpenWebGlobe tile layout (default)
+ *             tms for TMS tile layout
  *    
  *  Example:
  *    var imglayer = 
@@ -217,6 +220,45 @@ GlobeRenderer.prototype.AddImageLayer = function(options)
                imgLayer.usermaxlod = options["maxlod"];
             }
             imgLayer.Setup(options["url"]);
+            index = this.imagelayerlist.length;
+            this.imagelayerlist.push(imgLayer);
+            this._UpdateLayers();
+         }
+      }
+      // TMS service
+      else if (options["service"] == "tms")
+      {
+         if (goog.isDef(options["url"]) && options["url"].length>0)
+         {
+            var imgLayer = new TMSImageLayer();
+            if (goog.isDef(options["minlod"]))
+            {
+               imgLayer.userminlod = options["minlod"];
+            }
+            if (goog.isDef(options["maxlod"]))
+            {
+               imgLayer.usermaxlod = options["maxlod"];
+            }
+            imgLayer.Setup(options["url"]);
+            index = this.imagelayerlist.length;
+            this.imagelayerlist.push(imgLayer);
+            this._UpdateLayers();
+         }
+      }
+      // TMS service
+      else if (options["service"] == "wms")
+      {
+         if (goog.isDef(options["url"]) && options["url"].length>0
+            && goog.isDef(options["layer"]) && options["layer"].length>0)
+         {
+            var imgLayer = new WMSImageLayer();
+            if (goog.isDef(options["format"]))
+            {imgLayer.format = options["format"];} 
+            if (goog.isDef(options["style"]))
+            {imgLayer.style = options["style"];}
+            if (goog.isDef(options["version"]))
+            {imgLayer.version = options["version"];}
+            imgLayer.Setup(options["url"],options["layer"],options["SRS"],options["format"],options["style"],options["version"],options["transparency"]);
             index = this.imagelayerlist.length;
             this.imagelayerlist.push(imgLayer);
             this._UpdateLayers();
@@ -706,6 +748,7 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
 {
    var pointDir = this.engine.GetDirectionMousePos(mx, my, this.matPick, true);           
    var candidates = new Array();
+   var meshmode = 0;
   
    for (var i=0;i<this.lstFrustum.length;i++)
    {
@@ -735,6 +778,15 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
          {
             pickresult["hit"] = true;
             tmin = r.t;
+
+            if (!candidates[i].haselevation)
+            {
+               meshmode = 1;
+            }
+            else
+            {
+               meshmode = 0;
+            }
          }
       }
    }
@@ -752,6 +804,11 @@ GlobeRenderer.prototype.PickGlobe = function(mx, my, pickresult)
       pickresult["lng"] = gc._wgscoords[0];
       pickresult["lat"] = gc._wgscoords[1];
       pickresult["elv"] = gc._wgscoords[2];
+
+      if (meshmode == 1)
+      {
+         pickresult["elv"] = 0;
+      }
    }
  }
 //-----------------------------------------------------------------------------

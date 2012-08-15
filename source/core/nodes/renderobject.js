@@ -35,8 +35,9 @@ goog.require('owg.AoeImageRenderer');
  * Render Object Node. Renders OpenWebGlobe objects, including virtual globe 
  * @author Martin Christen martin.christen@fhnw.ch 
  * @constructor
+ * @param {Object} options
  */
-function RenderObjectNode()
+function RenderObjectNode(options)
 {
       /** @type {GlobeRenderer} */
       this.globerenderer = null;
@@ -56,6 +57,25 @@ function RenderObjectNode()
       this.bRenderTexture = true;
       /** @type {Texture} */
       this.texture = null;
+      // todo: change to enum
+      // 0: no stereo,
+      // 1: render top,
+      // 2: render bottom
+      /** @type {number} */
+      this.stereoscopic = 0;
+      /** @type {number} */
+      this.elevation = 0;
+      /** @type {boolean} */
+      this.custom = false;
+      /** @type {Surface} */
+      this.globeshape = null;
+      /** @type {boolean} */
+      this.postprocess = true;
+
+      if (options["type"] == "custom")
+      {
+         this.custom = true;
+      }
       
       //------------------------------------------------------------------------
       this.OnChangeState = function()
@@ -71,8 +91,19 @@ function RenderObjectNode()
             this.engine.PushRenderTarget(this.texture);
             this.engine.SetupDepthTextureTarget();
          }
-         
-         this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
+
+         if (this.globerenderer)
+         {
+            if (this.globeshape)
+            {
+               this.engine.DisableDepthTest();
+               this.globeshape.Draw();
+               this.engine.EnableDepthTest();
+            }
+
+            this.globerenderer.Render(this.camera, this.engine.matModelViewProjection);
+
+         }
          this.vectorrenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.poirenderer.Render(this.camera, this.engine.matModelViewProjection);
          this.geometryrenderer.Render(this.camera, this.engine.matModelViewProjection);
@@ -83,39 +114,63 @@ function RenderObjectNode()
          {
             this.engine.PopRenderTarget();
 
-            var numpix = 10;
-
-            var scalex = this.texture.width / (this.texture.width+numpix);
-            var scaley = this.texture.height / (this.texture.height+numpix);
-
-            this.texture.Blit(numpix,numpix, 0, 0, scalex, scaley, true, true, 1.0);
-            this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
+            if (this.stereoscopic == 0)
+            {
+               if (goog.isDef(this.texture.blitMesh) && !goog.isNull(this.texture.blitMesh))
+               {
+                  if (this.postprocess)
+                  {
+                     this.texture.blitMesh.mode = "blur";
+                  }
+                  else
+                  {
+                     this.texture.blitMesh.mode = "pt";
+                  }
+               }
+               this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
+            }
          }
       }
-      
+
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
           var pos = ts.GetPosition();
           this.camera.Set(pos.x, pos.y, pos.z);
+          this.elevation = ts.geoposition.elevation;
       }
       
       //------------------------------------------------------------------------
       this.OnInit = function()
       {
-         this.globerenderer = new GlobeRenderer(this.engine);
+         if (!this.custom)
+         {
+            this.globeshape = new Surface(this.engine);
+            this.globeshape.SolidGeosphere([1,0,1,0], 3);
+            this.globerenderer = new GlobeRenderer(this.engine);
+         }
          this.vectorrenderer = new VectorRenderer(this.engine);
          this.poirenderer = new PoiRenderer(this.engine);
          this.geometryrenderer = new GeometryRenderer(this.engine);
          this.billboardrenderer = new BillboardRenderer(this.engine);
          this.aoeimagerenderer = new AoeImageRenderer(this.engine);
+
       }
       
       //------------------------------------------------------------------------
       this.OnExit = function()
       {
-         this.globerenderer.Destroy(); // free all memory
-         this.globerenderer = null;
+         if (this.globeshape)
+         {
+            this.globeshape.Destroy();
+            this.globeshape = null;
+         }
+         if (this.globerenderer)
+         {
+            this.globerenderer.Destroy(); // free all memory
+            this.globerenderer = null;
+         }
+
       }
 
       //------------------------------------------------------------------------

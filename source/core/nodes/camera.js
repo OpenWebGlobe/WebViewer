@@ -37,7 +37,12 @@ function CameraNode()
       this.near = 0.00001;
       this.far = 10.0;
       this.fov = 45;
-   
+
+      //------------------------------------------------------------------------
+      this.GetFovY = function()
+      {
+         return this.fov;
+      }
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {

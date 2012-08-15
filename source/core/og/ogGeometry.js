@@ -44,6 +44,7 @@ var GeometryOptions;
  * @extends {ogObject} 
  * @description Geometry class (OpenWebGlobe object)
  * @author Martin Christen, martin.christen@fhnw.ch
+ * @author Benjamin Loesch, benjamin.loesch@fhnw.ch
  */
 function ogGeometry()
 {
@@ -98,12 +99,23 @@ ogGeometry.prototype.ParseOptions = function(options)
    {
       this.CreateFromJSONObject(options["jsonobject"]);
    }
+
    if(options["type"] == "EarthPolyline")
    {
       this.CreateEarthPolyLine(options);
+      return;
+   }
+   else if (options["type"] == "solidcube")
+   {
+      this.CreateSolidCube(options);
+      return;
+   }
+   else if (options["type"] == "solidgeosphere")
+   {
+      this.CreateSolidGeosphere(options);
+      return;
    }
 }
-
 
 //------------------------------------------------------------------------------
 /**
@@ -220,6 +232,38 @@ ogGeometry.prototype.SetPositionWGS84Quat = function(lng, lat, elv, quat)
 
 //------------------------------------------------------------------------------
 /**
+ * @description Sets the orientation
+ * @param {number} yaw
+ * @param {number} pitch
+ * @param {number} roll
+ */
+ogGeometry.prototype.SetOrientation = function(yaw,pitch,roll)
+{
+   for(var j=0;j<this.meshes_og.length;j++)
+   {
+      /**@type {ogMeshObject} */
+      var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+      mesh.SetOrientation(yaw,pitch,roll);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Sets the postion of the whole geometry
+ * @param {number} scalex the scale-x factor
+ * @param {number} scaley the scale-y factor
+ * @param {number} scalez the scale-z factor
+ */
+ogGeometry.prototype.SetScale = function(scalex,scaley,scalez)
+{
+   for(var j=0;j<this.meshes_og.length;j++)
+   {
+      /**@type {ogMeshObject} */
+      var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+      mesh.SetScale(scalex,scaley,scalez);
+   }
+}
+//------------------------------------------------------------------------------
+/**
  * @description hides the geometry
  */
 ogGeometry.prototype.Hide = function()
@@ -261,6 +305,30 @@ ogGeometry.prototype.Show = function()
          mesh.Show();
       }
    }
+}
+
+
+//------------------------------------------------------------------------------
+/**
+ * @description hides the geometry
+ */
+ogGeometry.prototype.SetHighlightColor = function(r,g,b,a)
+{
+   if(this.ogpointsprite != null)
+   {
+      
+      
+   }
+   else
+   {
+      for(var j=0;j<this.meshes_og.length;j++)
+      {
+         /**@type {ogMeshObject} */
+         var mesh = /**@type {ogMeshObject} */this.meshes_og[j];
+         mesh.SetHighlightColor(r,g,b,a);
+      }
+   }
+
 }
 
 
@@ -326,7 +394,6 @@ ogGeometry.prototype.CreateFromJSONObject = function(jsonobject)
       this.indexInRendererArray = renderer.AddGeometry(this.meshes);
    }
 }
-
 //------------------------------------------------------------------------------
 /**
  * @description Load surface-data from a JSON file.
@@ -350,19 +417,122 @@ ogGeometry.prototype.loadGeometryFromJSON = function(url)
    //this.http.onprogress = function(){me._cbfonprogress();}
    this.http.send();  
 }
-
-
-
+//------------------------------------------------------------------------------
+/**
+ * @param {Object} options
+ */
 ogGeometry.prototype.CreateEarthPolyLine = function(options)
 {
- 
    this.ogearthpolyline = _CreateObject(OG_OBJECT_EARTHPOLYLINE,this,this.options)
    //add to geometry renderer...
    var renderer = this._GetGeometryRenderer();
    this.indexInRendererArray = renderer.AddGeometry(this.ogearthpolyline.earthpolyline);
 }
+//------------------------------------------------------------------------------
+/**
+ * @param {Object} options
+ */
+ogGeometry.prototype.CreateSolidCube = function(options)
+{
+   if (!goog.isDef(options["srs"]))
+   {
+      options["srs"] = "EPSG:4326"; // default value
+   }
+   if (!goog.isDef(options["position"]))
+   {
+      options["position"] = [0,0,0];
+   }
+   if (!goog.isDef(options["color"]))
+   {
+      options["color"] = [1,1,1];
+   }
+   var scene = /** @type ogScene */this.parent;
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
 
+   /** @type {GeometryRenderer} */
+   var renderer = null;
 
+   // test if there is a scenegraph attached
+   if (engine.scene)
+   {
+      if (engine.scene.nodeRenderObject)
+      {
+         renderer = engine.scene.nodeRenderObject.geometryrenderer;
+      }
+   }
+
+   if (renderer)
+   {
+      var cube = new Surface(engine);
+
+      var position = options["position"];
+      var length = options["length"];
+      var color = options["color"];
+      if (options["srs"] == "EPSG:4326")
+      {
+         cube.SolidCube([0,0,0],[length,length,length],color);
+         cube.SetAsNavigationFrame(position[0],position[1],position[2],0,0,0);
+         this.indexInRendererArray = renderer.AddGeometry([[cube]]);
+      }
+      else if (options["srs"] == "cartesian")
+      {
+         cube.SolidCube(position,[length,length,length],color);
+         this.indexInRendererArray = renderer.AddGeometry([[cube]]);
+      }
+
+   }
+
+}
+//------------------------------------------------------------------------------
+/**
+ * @param {Object} options
+ */
+ogGeometry.prototype.CreateSolidGeosphere = function(options)
+{
+   if (!goog.isDef(options["color"]))
+   {
+      options["color"] = [1,1,1];
+   }
+
+   if (!goog.isDef(options["subdivisions"]))
+   {
+      options["subdivisions"] = 1;
+   }
+   var scene = /** @type ogScene */this.parent;
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+
+   /** @type {GeometryRenderer} */
+   var renderer = null;
+
+   // test if there is a scenegraph attached
+   if (engine.scene)
+   {
+      if (engine.scene.nodeRenderObject)
+      {
+         renderer = engine.scene.nodeRenderObject.geometryrenderer;
+      }
+   }
+
+   if (renderer)
+   {
+      var geosphere = new Surface(engine);
+
+      var color = options["color"];
+      var subdiv = options["subdivisions"];
+      geosphere.SolidGeosphere(color, subdiv);
+      this.indexInRendererArray = renderer.AddGeometry([[geosphere]]);
+   }
+
+}
+//------------------------------------------------------------------------------
 
 
 

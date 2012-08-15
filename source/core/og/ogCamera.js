@@ -180,7 +180,22 @@ ogCamera.prototype._GetNavigationNode = function()
    }
    return navigationNode;
 }
+//------------------------------------------------------------------------------
 
+ogCamera.prototype.GetFieldOfView = function()
+{
+   /** @type {ogScene} */
+   var scene = /** @type ogScene */this.parent;
+   /** @type {ogContext} */
+   var context =  /** @type ogContext */scene.parent;
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+
+   return engine.scene.nodeCamera.GetFovY();
+}
+
+//------------------------------------------------------------------------------
 
 ogCamera.prototype.UpdateNavigationNode = function()
 {

@@ -51,6 +51,8 @@ function ogVector()
    this.options = null;
    /** @type {Array.<Surface>}*/
    this.surfaces = [];
+   /** @type {Array.<number>} */
+   this.surfaces.vOffset = [0,0,0]; // virtual camera offset
    /**@type {number} */
    this.indexInRendererArray = -1;
    /** @type {number} */
@@ -82,9 +84,13 @@ ogVector.prototype = new ogObject();
  */
 ogVector.prototype.ParseOptions = function(options)
 {
-   this.options = options;
+   if (options["dynamic"])
+   {
+      this.CreateFromJSONObject(options["data"]);
+      return;
+   }
 
-   if(options["url"])
+   if (goog.isDef(options["url"]))
    {
       if (options["type"] == "GeoJSON")
       {
@@ -331,7 +337,6 @@ ogVector.prototype._CreateSurface = function(pointlist,indexlist)
    object["IndexSemantic"] = "TRIANGLES";
    object["Vertices"] = pointlist;
    object["Indices"] = indexlist;
-
    /** @type {engine3d} */
    var engine = this._GetEngine();
    /** @type {Surface} */
@@ -484,6 +489,19 @@ ogVector.prototype.CreateFromJSONObject = function(jsonobject)
    }
 }
 //------------------------------------------------------------------------------
+/** @param {Array.<number>} pointlist
+  * @param {Array.<number>} offset
+  */
+ogVector.prototype._VirtualOffset = function(pointlist, offset)
+{
+   for (var i=0;i<pointlist.length;i=i+3)
+   {
+      pointlist[i+0] -= offset[0];
+      pointlist[i+1] -= offset[1];
+      pointlist[i+2] -= offset[2];
+   }
+}
+//------------------------------------------------------------------------------
 /**
  * @description Load surface-data from a JSON file.
  * @param {string} url the url to the JSON file.
@@ -542,6 +560,25 @@ ogVector.prototype._CreateLineString = function(coords)
       return false;
    }
 
+
+   // Calculate virtual offset (higher rendering precision):
+   var gp = geopairs.length;
+   var xc = 0;
+   var yc = 0;
+   var zc = 0;
+
+   for (var i=0;i<geopairs.length;i++)
+   {
+      xc = xc + geopairs[i][0]/gp;
+      yc = yc + geopairs[i][1]/gp;
+      zc = zc + geopairs[i][2]/gp;
+   }
+
+   this.surfaces.vOffset[0] = xc;
+   this.surfaces.vOffset[1] = yc;
+   this.surfaces.vOffset[2] = zc;
+
+
    var indexlist = [];
    var pointlist = [];
 
@@ -592,6 +629,7 @@ ogVector.prototype._CreateLineString = function(coords)
       P31 = [P3[0]-nx, P3[1]-ny, P3[2]-nz];
 
       idx = this._AppendCuboid(0, P00, P01, P21, P20, P10, P11, P31, P30, pointlist, indexlist, false);
+      this._VirtualOffset(pointlist, [xc,yc,zc]);
       var smallsurface = this._CreateSurface(pointlist, indexlist);
       this.surfaces.push(smallsurface);
    }
@@ -758,6 +796,7 @@ ogVector.prototype._CreateLineString = function(coords)
       P41 = [P4[0]-nx1, P4[1]-ny1, P4[2]-nz1];
 
       idx = this._AppendCuboid(idx, P20, P21, P41, P40, P30, P31, P51, P50, pointlist, indexlist, false);
+      this._VirtualOffset(pointlist, [xc,yc,zc]);
       var surface = this._CreateSurface(pointlist, indexlist);
       this.surfaces.push(surface);
    }
@@ -781,9 +820,12 @@ ogVector.prototype._CreatePolygon = function(coords)
    var pointlist = [];
    var curidx = 0;
 
-
    var contour = [];
    var holes = [];
+   var points_wgs84 = [];
+   var points = [];
+
+   var gc = new GeoCoord();
 
    // the first polygon is the outer polygon
    // following polygons are inner polygons
@@ -804,6 +846,7 @@ ogVector.prototype._CreatePolygon = function(coords)
             for (var j=0;j<coords[i].length;j++)
             {
                contour.push(new poly2tri.Point(coords[i][j][0], coords[i][j][1], curidx));
+               points_wgs84.push([coords[i][j][0], coords[i][j][1]]);
                curidx++;
             }
          }
@@ -814,6 +857,7 @@ ogVector.prototype._CreatePolygon = function(coords)
             for (var j=0;j<coords[i].length;j++)
             {
                hole.push(new poly2tri.Point(coords[i][j][0], coords[i][j][1]), curidx);
+               points_wgs84.push([coords[i][j][0], coords[i][j][1]]);
                curidx++;
             }
             holes.push(hole);
@@ -843,6 +887,10 @@ ogVector.prototype._CreatePolygon = function(coords)
          indices.push(idx1);
          indices.push(idx2);
       }
+
+
+
+
 
       // todo: Convert to mercator projection and create extruded 3d model
    }

@@ -23,66 +23,21 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      TUTORIAL 4: Picking on the globe
+                     TUTORIAL 6.2: Create a base 3D Model
+                      
 *******************************************************************************/
 -->
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
-<!--<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
-<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>-->
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
 <script type="text/javascript">
 
-var displaytext = "Click Mouse to measure point! (1: Disable Navigation, 2: Enable Navigation)";
-
-//------------------------------------------------------------------------------
-// called every frame:
-function OnRender(context)
-{  
-   ogSetTextColor(context, 0,1,0);
-   ogDrawText(context, displaytext, 0, 20);
-}
-//------------------------------------------------------------------------------
-function OnMouseDown(context, button, mx, my)
-{
-   // retrieve the scene attached to context:
-   var scene = ogGetScene(context);
-
-
-
-   // call the pickglobe function, this gives the result in lng, lat, elv
-   var result = ogPickGlobe(scene, mx, my);
-   if (result[0])
-   {
-      displaytext = "pick result: lng=" + result[1].toFixed(3) + ", lat=" + result[2].toFixed(3) + ", elv=" + result[3].toFixed(1);
-      /*console.log("picked at: [" + mx + ", " + my + "]");
-      console.log("pick result: x=" + result[4] + ", y=" + result[5] + ", z=" + result[6]);
-      var mouse = ogWorldToWindow(scene, result[4],result[5],result[6]);
-      console.log("world to window = [" + mouse[0] + ", " + mouse[1] + ", " + mouse[2] + "]");*/
-   }
-
-}
-
-function OnKeyDown(ctx,key)
-{
-   var scene = ogGetScene(ctx);
-
-   if (key == 49)
-   {
-      displaytext = "Navigation Disabled!";
-      ogLockNavigation(scene);
-
-   }
-   else if (key == 50)
-   {
-      displaytext = "Navigation Enabled!";
-      ogUnlockNavigation(scene);
-   }
-
-}
+var geometrylayer = null;
+var hidden = false;
 
 //------------------------------------------------------------------------------
 function main()
@@ -106,29 +61,52 @@ function main()
       service : "i3d"
    };
    
+   var imgLandsat_CH = 
+   {
+      url     : ["http://www.openwebglobe.org/data/img"],
+      layer   : "LandsatCH",
+      /*transparency : 0.5,*/
+      service : "i3d"
+   };
+   
    var elvSRTM_CH = 
    {
       url     : ["http://www.openwebglobe.org/data/elv"],
       layer   : "SRTM",
       service : "i3d"
    };
-
-
+         
    ogAddImageLayer(globe, imgBlueMarble500);
+   ogAddImageLayer(globe, imgLandsat_CH);
    ogAddElevationLayer(globe, elvSRTM_CH);
-
-   // (4) Set the "Render-Callback" function.
-   // The callback function will be called everytime a frame is drawn.
-   ogSetRenderFunction(ctx, OnRender);
    
-   // (5) Set the mouse down function. We need this for picking!
-   ogSetMouseDownFunction(ctx, OnMouseDown);
-
-   // (6) Set key down function
-   ogSetKeyDownFunction(ctx, OnKeyDown);
+   // (6) Set the background color
+   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
    
-   // (7) Set the background color
-   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1); 
+   // (7) 3D Model
+   // first, we need to retrieve the scene:
+   var scene = ogGetScene(ctx);
+   
+   //then, we need to retrieve the world
+   var world = ogGetWorld(scene);
+	
+   //create a geometry layer
+   geometrylayer = ogCreateGeometryLayer(world,"buildings");
+
+   // Create a geometry using predefined shapes.
+   // Create the first 3d model
+   var geometry1 = ogCreateGeometry(geometrylayer,
+      {  type: "solidcube",
+         length: "1000",     // 1000 Meters
+         position: [7,46,4000], // position of cube (WGS84)
+         color: [1,1,0],
+         srs: "EPSG:4326"   // spatial reference system (optional, default is EPSG:4326)
+      }
+   );
+
+   ogFlyToLookAtPosition(scene, 6.95, 45.94, 8000, 1000,30,-25,0);
+
+
 }
 //------------------------------------------------------------------------------
    

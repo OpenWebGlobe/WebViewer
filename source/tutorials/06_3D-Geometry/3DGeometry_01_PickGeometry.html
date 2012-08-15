@@ -139,6 +139,9 @@ function main()
 
    geometry = ogLoadGeometryAsync(geometrylayer,"torus.json");
    
+   var scene = ogGetScene(ctx);
+   ogFlyToLookAtPosition(scene,7.438637,46.951081,3400,1000);
+   
 
 }
 //------------------------------------------------------------------------------

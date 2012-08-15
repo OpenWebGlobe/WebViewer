@@ -269,6 +269,37 @@ mat4.prototype.RotationZ = function(angle)
 }
 //------------------------------------------------------------------------------
 /**
+ * Rotation
+ * sets the matrix to a z-rotation matrix.
+ *
+ * @param {number} yaw the rotation angle in radiant.
+ * @param {number} pitch the rotation angle in radiant.
+ * @param {number} roll the rotation angle in radiant.
+ */
+mat4.prototype.Rotation = function(yaw,pitch,roll)
+{
+   var Cx = Math.cos(yaw);
+   var Cy = Math.cos(pitch);
+   var Cz = Math.cos(roll);
+   var Sx = Math.sin(yaw);
+   var Sy = Math.sin(pitch);
+   var Sz = Math.sin(roll);
+
+   this._values[0]  = Cy*Cz;  this._values[1]  = Sx*Sy*Cz+Cx*Sz;  this._values[2]  = -Cx*Sy*Cz+Sx*Sz;    this._values[3]  = 0;
+   this._values[4]  = -Cy*Sz; this._values[5]  = -Sx*Sy*Sz+Cx*Cz;  this._values[6]  = Cx*Sy*Sz+Sx*Cz;    this._values[7]  = 0;
+   this._values[8]  = Sy;     this._values[9]  = -Sx*Cy;     this._values[10] = Cx*Cy;    this._values[11] = 0;
+   this._values[12] = 0;      this._values[13] = 0;     this._values[14] = 0;   this._values[15] = 1;
+/*
+   this._values[0]  = Cy*Cz;  this._values[4]  = Sx*Sy*Cz+Cx*Sz;  this._values[8]  = -Cx*Sy*Cz+Sx*Sz;    this._values[12]  = 0;
+   this._values[1]  = -Cy*Sz; this._values[5]  = -Sx*Sy*Sz+Cx*Cz;  this._values[9]  = Cx*Sy*Sz+Sx*Cz;    this._values[13]  = 0;
+   this._values[2]  = Sy;     this._values[6]  = -Sx*Cy;     this._values[10] = Cx*Cy;    this._values[14] = 0;
+   this._values[3] = 0;      this._values[7] = 0;     this._values[11] = 0;   this._values[15] = 1;
+*/
+}
+
+
+//------------------------------------------------------------------------------
+/**
  * Creates a LookAt matrix
  * 
  * @param {number} eyex x-coordinate of eye

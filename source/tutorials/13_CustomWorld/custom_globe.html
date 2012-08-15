@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!--
+/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2010-2011 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/
+
+                TUTORIAL 13: Creating a custom scene (without globe)
+*******************************************************************************/
+-->
+<html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
+
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+
+
+<script type="text/javascript">
+
+   //------------------------------------------------------------------------------
+   // called every frame:
+   function OnRender(context)
+   {
+      ogSetTextColor(context, 0,1,0);
+      ogDrawText(context, "Hello World", 0, 20);
+   }
+   //------------------------------------------------------------------------------
+
+   function main()
+   {
+      // (0) Set location of Artwork directory. Because of CORS this can't be local
+      // if you want to open this using file://...
+      ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
+
+      // (1) create an OpenWebGlobe context using canvas
+      // first parameter is canvas-id and second is "fullscreen"
+      var ctx = ogCreateContextFromCanvas("canvas", true);
+
+      // (2) Create a custom 3D-Scene
+      var scene = ogCreateScene(ctx, OG_SCENE_CUSTOM);
+      var world = ogCreateWorld(scene);
+
+      //create a geometry layer
+      geometrylayer = ogCreateGeometryLayer(world,"buildings");
+
+
+      // Create a geometry using predefined shapes.
+      // Create the first 3d model
+      var geosphere = ogCreateGeometry(geometrylayer,
+         {  type: "solidgeosphere",
+            color: [1,1,1],
+            subdivisions: 3
+         }
+      );
+
+      var cube = ogLoadGeometryAsync(geometrylayer,"cubepc.json");
+      ogFlyToLookAtPosition(scene, 7.438637, 46.951081, 3700, 30, -45, 0);
+
+      // (4) Set the "Render-Callback" function.
+      // The callback function will be called everytime a frame is drawn.
+      ogSetRenderFunction(ctx, OnRender);
+
+      // (5) Set the background color
+      ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+   }
+   //------------------------------------------------------------------------------
+
+</script>
+
+</head>
+<body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
+<div style="text-align: center">
+   <canvas id="canvas"></canvas>
+</div>
+</body>
+</html>

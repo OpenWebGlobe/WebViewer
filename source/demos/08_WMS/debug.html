@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+		<script type="text/javascript" src="../../../compiled/deps.js"></script>
+		<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+	</head>
+	<body style="padding:0px; margin:0px; overflow:hidden;">
+		<div style="width: 100%; height: 100%;">
+			<canvas id="canvas">
+			</canvas>
+		</div>
+	<script type="text/javascript">
+	   ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
+		var context = ogCreateContextFromCanvas("canvas", true);
+		var globe = ogCreateGlobe(context);
+		/*ogAddImageLayer(globe, {
+         url: ["http://www.openwebglobe.org/data/img"],
+         layer: "bluemarble",
+         service: "owg"
+		});*/
+      // Demo using WMS Service of: http://www.osm-wms.de/
+      // Please use for testing only
+       /*ogAddImageLayer(globe, {
+         url: ["http://129.206.228.72/cached/hillshade"],
+         layer: "europe_wms:hs_srtm_europa",
+         service: "wms",
+         transparency: 0.5
+       });*/
+      ogAddImageLayer(globe, {
+         url: ["http://129.206.228.72/cached/osm"],
+         layer: "osm_auto:all",
+         service: "wms",
+         transparency: 1.0,
+         SRS: "EPSG:3857"
+      });
+		ogAddElevationLayer(globe, {
+			url: ["http://www.openwebglobe.org/data/elv"],
+			layer: "SRTM",
+			service: "i3d"
+		});
+	</script>
+	</body>
+</html>
