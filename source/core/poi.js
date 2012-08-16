@@ -122,6 +122,10 @@ function Poi(engine)
      "shadowColor" : "rgba(0, 0, 0, 1.0)"
      };
 
+  this.centerOnIcon = false;
+  this.pivotX = 0.0;
+  this.pivotY = 1.0;
+  this.pivotZ = 0.0;
 }
 //------------------------------------------------------------------------------
 /**
@@ -173,56 +177,57 @@ Poi.prototype.SetContent = function(text,textStyle,timgurl,iconStyle)
 */ 
 Poi.prototype.SetPosition = function(x,y,z,zs)
 {
-     /*this.lat = lat;
-     this.lng = lng;
-     this.elv = elv;
-     this.signElv = signElv;
-     */
-     
     //calc poi width
     if(this.iconMesh && this.textMesh)
     {
-     this.poiWidth = this.iconMesh.meshWidth + this.textMesh.meshWidth;
-     this.poiHeight = this.iconMesh.meshHeight;
+      this.poiWidth = this.iconMesh.meshWidth + this.textMesh.meshWidth;
+      this.poiHeight = this.iconMesh.meshHeight;
     }
     else if (this.iconMesh)
     {
-     this.poiWidth = this.iconMesh.meshWidth;
-     this.poiHeight = this.iconMesh.meshHeight;
+      this.poiWidth = this.iconMesh.meshWidth;
+      this.poiHeight = this.iconMesh.meshHeight;
     }
     else if (this.textMesh)
     {
-     this.poiWidth = this.textMesh.meshWidth;
-     this.poiHeight = this.textMesh.meshHeight;
+      this.poiWidth = this.textMesh.meshWidth;
+      this.poiHeight = this.textMesh.meshHeight;
     }
     
-    /*
-    this.geoCoord = new GeoCoord(lng,lat,elv);
-    var cart = new Array(3);
-    this.geoCoord.ToCartesian(cart);*/
+    // will evaluate to 0 if there's no icon
+    var iconWidth = this.poiWidth - this.textMesh.meshWidth;
+    var pivotOffsetX = this.centerOnIcon ? -this.pivotX*iconWidth/2 : -this.pivotX*this.poiWidth/2;
+    
     if(this.iconMesh)
     {
-     //this.iconMesh.SetAsBillboard(cart[0],cart[1],cart[2],-((this.iconMesh.meshWidth/2)+(this.poiWidth/2-this.iconMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);
-     this.iconMesh.SetAsBillboard(x,y,z,-((this.iconMesh.meshWidth/2)+(this.poiWidth/2-this.iconMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);
+      var textWidth = this.poiWidth-iconWidth;
+      var billboardX = this.centerOnIcon ? 0 : -textWidth/2;
+      
+      this.iconMesh.SetAsBillboard(x,y,z,
+                                  (billboardX+pivotOffsetX)*CARTESIAN_SCALE_INV*this.scale,
+                                  this.pivotY*(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,
+                                  this.pivotZ*CARTESIAN_SCALE_INV*this.scale);
      
     }
     if(this.textMesh)
     {
-     //this.textMesh.SetAsBillboard(cart[0],cart[1],cart[2],((this.textMesh.meshWidth/2)+(this.poiWidth/2-this.textMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);
-     this.textMesh.SetAsBillboard(x,y,z,((this.textMesh.meshWidth/2)+(this.poiWidth/2-this.textMesh.meshWidth))*CARTESIAN_SCALE_INV*this.scale,(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,0);  
+      var billboardX = this.centerOnIcon ?
+        iconWidth/2+this.textMesh.meshWidth/2 :
+        iconWidth/2;
+
+      this.textMesh.SetAsBillboard(x,y,z,
+                                  (billboardX+pivotOffsetX)*CARTESIAN_SCALE_INV*this.scale,
+                                  this.pivotY*(this.poiHeight/2)*CARTESIAN_SCALE_INV*this.scale,
+                                  this.pivotZ*CARTESIAN_SCALE_INV*this.scale);
     
     }
-    this.posX = x;//cart[0];
-    this.posY = y;//cart[1];
-    this.posZ = z;//cart[2];
+    this.posX = x;
+    this.posY = y;
+    this.posZ = z;
     
     if(zs!=null)
     {
-      /*this.geoCoord2 = new GeoCoord(lng,lat,signElv);
-      var cart2 = new Array(3);
-      this.geoCoord2.ToCartesian(cart2);*/
       this.pole = true;
-     // this.poleMesh = this.canvasTexture.GetPoleMesh(cart[0],cart[1],cart[2],cart2[0],cart2[1],cart2[2],this.poleR,this.poleG,this.poleB,this.poleA);
       this.poleMesh = this.canvasTexture.GetPoleMesh(x,y,z,0,0,0,this.poleR,this.poleG,this.poleB,this.poleA);
     }
 }
@@ -292,12 +297,10 @@ Poi.prototype.Draw = function()
 }
 //------------------------------------------------------------------------------
 /**
-* @description Set the poi size.
-* @param {number} size the poi size in meters, default is 20.
+* @description Reset the position, used to update size and pivot point
 */
-Poi.prototype.SetSize = function(size)
+Poi.prototype._ResetPosition = function()
 {
-  this.scale = size;
   if(this.pole)
   {
       this.SetPosition(this.posX,this.posY,this.posZ,0);
@@ -307,6 +310,40 @@ Poi.prototype.SetSize = function(size)
       this.SetPosition(this.posX,this.posY,this.posZ,null);
   }
   
+}
+//------------------------------------------------------------------------------
+/**
+* @description Set the poi size.
+* @param {number} size the poi size in meters, default is 20.
+*/
+Poi.prototype.SetSize = function(size)
+{
+  this.scale = size;
+  this._ResetPosition();  
+}
+//------------------------------------------------------------------------------
+/**
+* @description Set the poi pivot point relative to the icon size
+* @param {number} pivotX
+* @param {number} pivotY
+* @param {number} pivotZ
+*/
+Poi.prototype.SetPivot = function(pivotX, pivotY, pivotZ)
+{
+  this.pivotX = pivotX;
+  this.pivotY = pivotY;
+  this.pivotZ = pivotZ;
+  this._ResetPosition();  
+}
+//------------------------------------------------------------------------------
+/**
+* @description Set whether we center on the icon only, or the icon and the text combined
+* @param {boolean} centerOnIcon
+*/
+Poi.prototype.SetCenterOnIcon = function(centerOnIcon)
+{
+  this.centerOnIcon = centerOnIcon;
+  this._ResetPosition();  
 }
 //------------------------------------------------------------------------------
 /**
