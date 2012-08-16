@@ -15,7 +15,7 @@
 #                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
-#                              (c) 2010-2012 by                                #
+#                              (c) 2010-2011 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
 #                     Institute of Geomatics Engineering                       #
 #                           martin.christen@fhnw.ch                            #
@@ -23,7 +23,8 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                   TUTORIAL 14: Destroy a scene and create new one
+                         TUTORIAL: Highlight 3D-Geometry
+                      
 *******************************************************************************/
 -->
 <html lang="en">
@@ -34,42 +35,74 @@
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
 <script type="text/javascript">
+
+var geometry = null;
+var geometrylayer = null;
+
 //------------------------------------------------------------------------------
-var g_ctx = -1;
-
-function DestroyScene()
-{
-   if (g_ctx != -1)
-   {
-      ogDestroyContext(g_ctx);
-      g_ctx = -1;
-   }
+// Render-Event: called every frame:
+function OnRender(context)
+{  
+   ogSetTextColor(context, 0,1,0);
+   ogDrawText(context,"Click on a geometry to hide it.",0,50);
+   ogDrawText(context,"Right click to show all geometries again.",0,20);
 }
-
-function InitScene()
+var highlightedGeometry = -1;
+//------------------------------------------------------------------------------
+// Mouse-Down-Event: Called when a mouse button is pressed
+function OnMouseDown(context, button, mx, my)
 {
-   if (g_ctx != -1) // already initialized ?
-   {
-      return;
-   }
 
+   // retrieve the scene attached to context:
+   var scene = ogGetScene(context);
+   
+   if(button == 0)
+   {
+      var geo_id = ogPickGeometry(scene,mx,my);
+      if(geo_id != -1)
+      {
+         ogHighlightGeometry(geo_id,1,0,0,1);  //highlight the clicked geometry
+         highlightedGeometry = geo_id;
+         return;
+      }
+
+   }
+   
+   if(highlightedGeometry > 0)
+   {
+      ogHighlightGeometry(highlightedGeometry,1,1,1,1);  //unhighlight the clicked geometry
+      geo_id = -1;
+   }
+   
+   
+}
+//------------------------------------------------------------------------------
+function main()
+{
    // (0) Set location of Artwork directory. Because of CORS this can't be local
    // if you want to open this using file://...
    ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
    
    // (1) create an OpenWebGlobe context using canvas
    // first parameter is canvas-id and second is "fullscreen"
-   g_ctx = ogCreateContextFromCanvas("canvas", true);
+   var ctx = ogCreateContextFromCanvas("canvas", true);
    
    // (2) Create a virtual globe
-   var globe = ogCreateGlobe(g_ctx);
+   var globe = ogCreateGlobe(ctx);
    
    // (3) Add an image and an elevation layer
-   
    var imgBlueMarble500 = 
    {
       url     : ["http://www.openwebglobe.org/data/img"],
       layer   : "World500",
+      service : "i3d"
+   };
+   
+   var imgLandsat_CH = 
+   {
+      url     : ["http://www.openwebglobe.org/data/img"],
+      layer   : "LandsatCH",
+      /*transparency : 0.5,*/
       service : "i3d"
    };
    
@@ -79,30 +112,47 @@ function InitScene()
       layer   : "SRTM",
       service : "i3d"
    };
-   
+         
    ogAddImageLayer(globe, imgBlueMarble500);
+   ogAddImageLayer(globe, imgLandsat_CH);
    ogAddElevationLayer(globe, elvSRTM_CH);
+   
+   // (4) Set the "Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
+   ogSetRenderFunction(ctx, OnRender);
+   
+   // (5) Set the mouse down function. 
+   ogSetMouseDownFunction(ctx, OnMouseDown);
+   
+   // (6) Set the background color
+   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+   
+   // (7) 3D Model
+   // first, we need to retrieve the scene:
+   var scene = ogGetScene(ctx);
+   var world = ogGetWorld(scene);
+	
+   //create a geometry layer
+   geometrylayer = ogCreateGeometryLayer(world,"models");
+   
+   // definition of geometry options.
+   // A geometry is a container for meshes
+   // a mesh is a container of surfaces. every surface needs a json file.
 
-   ogSetBackgroundColor(ctx, 0.2,0.5,0.7,1);
+   geometry = ogLoadGeometryAsync(geometrylayer,"cubepc.json");
+   
+   var scene = ogGetScene(ctx);
+   ogFlyToLookAtPosition(scene,7.438637,46.951081,3400,1000);
+   
+
 }
 //------------------------------------------------------------------------------
-
-function main()
-{
-   InitScene();
-}
-
-//------------------------------------------------------------------------------
-
+   
 </script>
 
 </head>
 <body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
-<div>
-   <input type="button" name="myButton" value="Init Scene" onClick="InitScene()"/>
-   <input type="button" name="myButton" value="Destroy Scene" onClick="DestroyScene()"/>
-</div>
-<div style="text-align: center">
+   <div style="text-align: center">
    <canvas id="canvas"></canvas>          
    </div>
 </body>

@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!--
 /*******************************************************************************
 #      ____               __          __  _      _____ _       _               #
@@ -15,7 +14,7 @@
 #                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
-#                              (c) 2010-2012 by                                #
+#                              (c) 2010-2011 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
 #                     Institute of Geomatics Engineering                       #
 #                           martin.christen@fhnw.ch                            #
@@ -23,9 +22,11 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                   TUTORIAL 14: Destroy a scene and create new one
+                TUTORIAL 5.6: Changing POI Icon, POI Text, POI Size
+                      
 *******************************************************************************/
 -->
+<!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -34,38 +35,89 @@
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
 <script type="text/javascript">
-//------------------------------------------------------------------------------
-var g_ctx = -1;
 
-function DestroyScene()
+var poilayer;
+var hidden = false;
+var lastpoi;
+
+//------------------------------------------------------------------------------
+// Render-Event: called every frame:
+function OnRender(context)
+{  
+   ogSetTextColor(context, 0,1,0);
+   ogDrawText(context, "Click middle mouse button to add a POI", 0, 50);
+   ogDrawText(context, "Visibility range is set to 10-100km ", 0, 20);
+}
+//------------------------------------------------------------------------------
+// Mouse-Down-Event: Called when a mouse button is pressed
+function OnMouseDown(context, button, mx, my)
 {
-   if (g_ctx != -1)
+   // retrieve the scene attached to context:
+   var scene = ogGetScene(context);
+   
+   // get poi id of picked poi, returns -1 if no poi picked. 
+   var pickedPoiId = ogPickPOI(scene,mx,my);
+   if(pickedPoiId > 0)
    {
-      ogDestroyContext(g_ctx);
-      g_ctx = -1;
+      // change poi icon
+      ogChangePOIIcon(pickedPoiId,"http://google-maps-icons.googlecode.com/files/water.png");
+   }
+   
+   // call the pickglobe function, this gives the result in lng, lat, elv
+   var result = ogPickGlobe(scene, mx, my);
+   if (button == 1 && result[0])
+   {
+      // place poi:
+      var NewPoiDefinition = 
+      {
+         icon     : "http://google-maps-icons.googlecode.com/files/cycling.png",
+         position :  [result[1], result[2], result[3]+2000],
+         size 		: 	50,
+         //visibilityRange : [10,100] //visibility range in km!
+      };
+
+      var poi = ogCreatePOI(poilayer,NewPoiDefinition);
+      lastpoi = poi;
    }
 }
-
-function InitScene()
+//------------------------------------------------------------------------------
+function OnKeyDown(ctx,key)
 {
-   if (g_ctx != -1) // already initialized ?
+   if(key == 49) // 1 - Destroy last POI
    {
-      return;
+      ogDestroyPOI(lastpoi);
+   }
+   if(key == 50) // 2 - Change POI Icon
+   {
+      ogChangePOIIcon(lastpoi,"http://google-maps-icons.googlecode.com/files/airport.png");
+   }
+   if(key == 51) // 3 - Change POI Size
+   {
+      ogChangePOISize(lastpoi,100);
+   }
+   if(key == 52) // 4 - Change POI Size
+   {
+      ogChangePOIText(lastpoi,"changed Text.")
    }
 
+
+  
+}
+//------------------------------------------------------------------------------
+function main()
+{
    // (0) Set location of Artwork directory. Because of CORS this can't be local
    // if you want to open this using file://...
    ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
    
    // (1) create an OpenWebGlobe context using canvas
    // first parameter is canvas-id and second is "fullscreen"
-   g_ctx = ogCreateContextFromCanvas("canvas", true);
+   var ctx = ogCreateContextFromCanvas("canvas", true);
    
    // (2) Create a virtual globe
-   var globe = ogCreateGlobe(g_ctx);
+   var globe = ogCreateGlobe(ctx);
    
    // (3) Add an image and an elevation layer
-   
    var imgBlueMarble500 = 
    {
       url     : ["http://www.openwebglobe.org/data/img"],
@@ -82,27 +134,33 @@ function InitScene()
    
    ogAddImageLayer(globe, imgBlueMarble500);
    ogAddElevationLayer(globe, elvSRTM_CH);
+   
 
-   ogSetBackgroundColor(ctx, 0.2,0.5,0.7,1);
+   // (4) Set the "Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
+   ogSetRenderFunction(ctx, OnRender);
+   
+   // (5) Set the mouse down function. We need this for picking!
+   ogSetMouseDownFunction(ctx, OnMouseDown);
+   
+   // (5) Set the mouse down function. We need this for picking!
+   ogSetKeyDownFunction(ctx, OnKeyDown);
+   
+   // (6) Set the background color
+   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+   
+   // (7) Define a POI Layer, POIs will be created in "OnMouseDown"-Callback function
+   // first, we need to retrieve the scene:
+   var scene = ogGetScene(ctx);   
+   var world = ogGetWorld(scene);
+   poilayer = ogCreatePOILayer(world,"bicycle");
+           
 }
 //------------------------------------------------------------------------------
-
-function main()
-{
-   InitScene();
-}
-
-//------------------------------------------------------------------------------
-
 </script>
-
 </head>
 <body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
-<div>
-   <input type="button" name="myButton" value="Init Scene" onClick="InitScene()"/>
-   <input type="button" name="myButton" value="Destroy Scene" onClick="DestroyScene()"/>
-</div>
-<div style="text-align: center">
+   <div style="text-align: center">
    <canvas id="canvas"></canvas>          
    </div>
 </body>

@@ -1708,7 +1708,7 @@ function ogRemoveElevationLayer(layer_id)
    var layer = _GetObjectFromId(layer_id);
    if (layer && layer.type == OG_OBJECT_ELEVATIONLAYER)
    {
-      layer.RemoveImageLayer();
+      layer.RemoveElevationLayer();
       layer.UnregisterObject();
    }
 }

@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!--
 /*******************************************************************************
 #      ____               __          __  _      _____ _       _               #
@@ -23,10 +22,13 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      TUTORIAL 11: Draw a Line Object
+                      TUTORIAL 10: Using PointSprites
+                      
+            THIS IS JUST A DRAFT AND IS STILL UNDER DEVELOPEMENT !
                       
 *******************************************************************************/
 -->
+<!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -34,11 +36,49 @@
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
-
 <script type="text/javascript">
 
-var geometrylayer = null;
-var hidden = false;
+//------------------------------------------------------------------------------
+// Render-Event: called every frame:
+function OnRender(context)
+{
+   ogSetTextColor(context,1,1,1);
+  //ogDrawText(context, "Press 1 to move to a given position", 0, 130);
+   ogSetTextColor(context,1,0,0);
+}
+
+
+
+//------------------------------------------------------------------------------
+function OnKeyDown(ctx,key)
+{
+   var scene = ogGetScene(ctx);
+
+   if(key == 49) // 1 - Fly to pointcloud
+   {
+      ogFlyTo(scene,7.6374,47.5335,1285.8677); //scene,longitude,latitude,elevation
+   }
+   
+   if(key == 50) // 2 - hide pointcloud
+   {
+      ogHideGeometry(geometry1);
+      ogHideGeometry(geometry2);
+      ogHideGeometry(geometry3);
+   }
+   
+   if(key == 51) // 3 - show pointcloud
+   {
+      ogShowGeometry(geometry1);
+      ogShowGeometry(geometry2);
+      ogShowGeometry(geometry3);
+   }
+   if(key == 52) // 3 - destroy part of pointcloud
+   {
+      ogDestroyGeometry(geometry1);
+   }
+   
+
+}
 
 //------------------------------------------------------------------------------
 function main()
@@ -55,18 +95,11 @@ function main()
    var globe = ogCreateGlobe(ctx);
    
    // (3) Add an image and an elevation layer
+   
    var imgBlueMarble500 = 
    {
       url     : ["http://www.openwebglobe.org/data/img"],
       layer   : "World500",
-      service : "i3d"
-   };
-   
-   var imgLandsat_CH = 
-   {
-      url     : ["http://www.openwebglobe.org/data/img"],
-      layer   : "LandsatCH",
-      /*transparency : 0.5,*/
       service : "i3d"
    };
    
@@ -76,89 +109,75 @@ function main()
       layer   : "SRTM",
       service : "i3d"
    };
-         
-   ogAddImageLayer(globe, imgBlueMarble500);
-   ogAddImageLayer(globe, imgLandsat_CH);
-  // ogAddElevationLayer(globe, elvSRTM_CH);
+   
+   //ogAddImageLayer(globe, imgBlueMarble500);
+   //ogAddElevationLayer(globe, elvSRTM_CH);
+   
+var imgSWISSTOPO = 
+   {
+      url     : ["http://10.42.2.37/"],
+      layer   : "swissimage", 
+      service : "owg"
+   };
+	
+	var elvDHM =
+	{
+		url     : ["http://10.42.2.37/"],
+      layer   : "DHM25",
+      service : "owg"
+	}
+
+   
+	ogAddImageLayer(globe, imgSWISSTOPO);
+   ogAddElevationLayer(globe, elvDHM);
+   
+   
+   // (4) Set the "Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
+   ogSetRenderFunction(ctx, OnRender);
+   
+   
+   // (5) Set the mouse down function. We need this for picking!
+   ogSetKeyDownFunction(ctx, OnKeyDown);
+   
    
    // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
    
-   // (7) 3D Model
-   // first, we need to retrieve the scene:
-   var scene = ogGetScene(ctx);
-   
-   //then, we need to retrieve the world
+   // (7) get the scene and the world
+   var scene = ogGetScene(ctx);   
    var world = ogGetWorld(scene);
-	
-   //create a geometry layer
-   geometrylayer = ogCreateGeometryLayer(world,"polylines");
+ 
+                  
+   geometrylayer = ogCreateGeometryLayer(world,"ps");
+      
+   // if no indexbuffer -> then it's a pointsprite !
+   //geometry = ogCreateGeometry(geometrylayer, points);
    
+   var pcoptions = { "id"               :  "1",
+                     "Center"           :  [7.637986,47.533279,281.261592],
+                     "VertexSemantic"   :  "pc",
+                     "PointUrl"         :  "points.xyz",
+                     "NumberOfPoints"   :  70000000,
+                     "Type" : "pointcloud"
+   }
+   
+   geometry1 = ogCreateGeometry(geometrylayer,pcoptions);
+ 
    
 
-   //create the first polyline -------------------------------------------------
-	lng0 = 7.591127;
-	lat0 = 47.550558;
-	elv0 = 5000;
-	
-	lng1 = 7.438637;
-	lat1 = 46.951081;
-	elv1 = 5000;
-	
-	lng2 = 7.838637;
-	lat2 = 46.951081;
-	elv2 = 5000;
-	
-	lng3 = 7.891127;
-	lat3 = 47.550558;
-	elv3 = 5000;
-	
-	wgs84coords = [[lng0,lat0,elv0],[lng1,lat1,elv1],[lng2,lat2,elv2],[lng3,lat3,elv3],[lng0,lat0,elv0]]
-	
-	options = {	color : [1,1,0,1],
-					linewidth : 1,
-					segmentation : 10
-					};
-   var geometry1 = ogCreatePolylineWGS84(geometrylayer,wgs84coords,options);
-	
-	
-	
-	//create the second polyline ------------------------------------------------
-	lng0 = 7.591127+0.1;
-	lat0 = 47.550558+0.1;
-	elv0 = 5000;
-	
-	lng1 = 7.438637+0.1;
-	lat1 = 46.951081+0.1;
-	elv1 = 5000;
-	
-	lng2 = 7.838637+0.1;
-	lat2 = 46.951081+0.1;
-	elv2 = 5000;
-	
-	lng3 = 7.891127+0.1;
-	lat3 = 47.550558+0.1;
-	elv3 = 5000;
-	
-	wgs84coords = [[lng0,lat0,elv0],[lng1,lat1,elv1],[lng2,lat2,elv2],[lng3,lat3,elv3],[lng0,lat0,elv0]]
-	
-	options = {	color : [1,0,0,1],
-					linewidth : 4,
-					segmentation : 10
-					};
-   var geometry2 = ogCreatePolylineWGS84(geometrylayer,wgs84coords,options);
-	
-	
-   ogFlyToLookAtPosition(scene, 7.591127, 46.951081, 800, 100000,0,-90,0);
+   //geometry2 = ogLoadGeometryAsync(geometrylayer,"mypointcloud.json");
+
+  
+   var cam = ogGetActiveCamera(scene);
+   ogSetPosition(cam,7.636721,47.53327,290);
+
+   
 }
 //------------------------------------------------------------------------------
-   
 </script>
-
 </head>
 <body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
-   <div style="text-align: center">
    <canvas id="canvas"></canvas>          
-   </div>
 </body>
 </html>

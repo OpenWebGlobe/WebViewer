@@ -23,7 +23,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      TUTORIAL 11: Draw a Line Object
+                      TUTORIAL 5.1: Creting Custom POI Style
                       
 *******************************************************************************/
 -->
@@ -34,11 +34,58 @@
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
-
 <script type="text/javascript">
-
-var geometrylayer = null;
+var poilayer;
 var hidden = false;
+//------------------------------------------------------------------------------
+// Render-Event: called every frame:
+function OnRender(context)
+{  
+   ogSetTextColor(context, 0,1,0);
+   ogDrawText(context, "Click middle mouse button to add a POI", 0, 50);
+   ogDrawText(context, "Click on a POI to increase it's size", 0, 20);
+}
+//------------------------------------------------------------------------------
+// Mouse-Down-Event: Called when a mouse button is pressed
+function OnMouseDown(context, button, mx, my)
+{
+   // retrieve the scene attached to context:
+   var scene = ogGetScene(context);
+   
+   // get poi id of picked poi, returns -1 if no poi picked. 
+   var pickedPoiId = ogPickPOI(scene,mx,my);
+   if(pickedPoiId > 0)
+   {
+      // increase POI size
+     ogChangePOISize(pickedPoiId,100);
+
+   }
+   
+   // call the pickglobe function, this gives the result in lng, lat, elv
+   var result = ogPickGlobe(scene, mx, my);
+   if (button == 1 && result[0])
+   {
+      // place poi:
+      var NewPoiDefinition = 
+      {
+         "icon"     : "http://google-maps-icons.googlecode.com/files/cycling.png",
+         "text" 		: 	"Click: (" + result[1].toFixed(3) + ", " + result[2].toFixed(3) + ", " + result[3].toFixed(0) + ")",
+         "position" :  [result[1], result[2], result[3]+2000],
+         "size" 		: 	50,
+         "flagpole" : true,
+         "flagpoleColor": [0,0,1,1],  //	optional, default is [0,0,0,1] [r,g,b,a]
+         "visibilityRange": [10,100],//	optional, default is [0,∞]
+         "mode": "absolute",	         //optional, default is "absolute"
+         "size": 50	               //optional, default is 40
+      };
+      
+      var poi = ogCreatePOI(poilayer,NewPoiDefinition);
+   }
+   
+
+}
+
+
 
 //------------------------------------------------------------------------------
 function main()
@@ -62,94 +109,63 @@ function main()
       service : "i3d"
    };
    
-   var imgLandsat_CH = 
-   {
-      url     : ["http://www.openwebglobe.org/data/img"],
-      layer   : "LandsatCH",
-      /*transparency : 0.5,*/
-      service : "i3d"
-   };
-   
    var elvSRTM_CH = 
    {
       url     : ["http://www.openwebglobe.org/data/elv"],
       layer   : "SRTM",
       service : "i3d"
    };
-         
+   
    ogAddImageLayer(globe, imgBlueMarble500);
-   ogAddImageLayer(globe, imgLandsat_CH);
-  // ogAddElevationLayer(globe, elvSRTM_CH);
+   ogAddElevationLayer(globe, elvSRTM_CH);
+   
+
+   // (4) Set the "Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
+   ogSetRenderFunction(ctx, OnRender);
+   
+   // (5) Set the mouse down function. We need this for picking!
+   ogSetMouseDownFunction(ctx, OnMouseDown);
+   
    
    // (6) Set the background color
    ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
    
-   // (7) 3D Model
+   // (7) POI Layer with custom style
    // first, we need to retrieve the scene:
    var scene = ogGetScene(ctx);
-   
-   //then, we need to retrieve the world
-   var world = ogGetWorld(scene);
 	
-   //create a geometry layer
-   geometrylayer = ogCreateGeometryLayer(world,"polylines");
-   
-   
 
-   //create the first polyline -------------------------------------------------
-	lng0 = 7.591127;
-	lat0 = 47.550558;
-	elv0 = 5000;
-	
-	lng1 = 7.438637;
-	lat1 = 46.951081;
-	elv1 = 5000;
-	
-	lng2 = 7.838637;
-	lat2 = 46.951081;
-	elv2 = 5000;
-	
-	lng3 = 7.891127;
-	lat3 = 47.550558;
-	elv3 = 5000;
-	
-	wgs84coords = [[lng0,lat0,elv0],[lng1,lat1,elv1],[lng2,lat2,elv2],[lng3,lat3,elv3],[lng0,lat0,elv0]]
-	
-	options = {	color : [1,1,0,1],
-					linewidth : 1,
-					segmentation : 10
-					};
-   var geometry1 = ogCreatePolylineWGS84(geometrylayer,wgs84coords,options);
-	
-	
-	
-	//create the second polyline ------------------------------------------------
-	lng0 = 7.591127+0.1;
-	lat0 = 47.550558+0.1;
-	elv0 = 5000;
-	
-	lng1 = 7.438637+0.1;
-	lat1 = 46.951081+0.1;
-	elv1 = 5000;
-	
-	lng2 = 7.838637+0.1;
-	lat2 = 46.951081+0.1;
-	elv2 = 5000;
-	
-	lng3 = 7.891127+0.1;
-	lat3 = 47.550558+0.1;
-	elv3 = 5000;
-	
-	wgs84coords = [[lng0,lat0,elv0],[lng1,lat1,elv1],[lng2,lat2,elv2],[lng3,lat3,elv3],[lng0,lat0,elv0]]
-	
-	options = {	color : [1,0,0,1],
-					linewidth : 4,
-					segmentation : 10
-					};
-   var geometry2 = ogCreatePolylineWGS84(geometrylayer,wgs84coords,options);
-	
-	
-   ogFlyToLookAtPosition(scene, 7.591127, 46.951081, 800, 100000,0,-90,0);
+ 
+   var customTextstyle =
+   {
+      "font"  	         : "Arial", 
+      "fontSize" 		   : 32,
+      "backgroundColor" : [0,0,0,0],
+      "lineWidth" 		: 3,
+      "strokeColor" 		: [0,0,0,1],
+      "shadowOffsetX" 	: 0,
+      "shadowOffsetY" 	: 0,
+      "shadowBlur" 	   : 0,
+      "shadowColor"  	: [0,0,0,0],
+      "fontColor"  		: [1,0,0,1]
+   };
+
+
+   var customIconstyle = 
+   {
+      "width"  		      : 32,
+      "height"  	      : 32,
+      "border"  	      : 0,
+      "backgroundColor"  : [0,0,0,0],
+      "shadowOffsetX"  	: 0,
+      "shadowOffsetY"  	: 0,
+      "shadowBlur"  	   : 1,
+      "shadowColor" 	   : [0,0,1,1]
+   };
+   var world = ogGetWorld(scene);
+   poilayer = ogCreatePOILayer(world,"bicycle",customTextstyle,customIconstyle);
+           
 }
 //------------------------------------------------------------------------------
    

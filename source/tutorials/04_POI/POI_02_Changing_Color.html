@@ -15,7 +15,7 @@
 #                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
-#                              (c) 2010-2012 by                                #
+#                              (c) 2010-2011 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
 #                     Institute of Geomatics Engineering                       #
 #                           martin.christen@fhnw.ch                            #
@@ -23,7 +23,8 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                   TUTORIAL 14: Destroy a scene and create new one
+                      TUTORIAL 5.2: Changing POI Color
+
 *******************************************************************************/
 -->
 <html lang="en">
@@ -34,38 +35,82 @@
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
 <script type="text/javascript">
-//------------------------------------------------------------------------------
-var g_ctx = -1;
 
-function DestroyScene()
+var poi=null;
+var lastpoi=-1;
+var timeaccumulator=0;
+var poilayer = null;
+//------------------------------------------------------------------------------
+// Render-Event: called every frame:
+function OnRender(context)
 {
-   if (g_ctx != -1)
+   
+   ogSetTextColor(context, 0,1,0);
+   ogDrawText(context, "Click middle mouse button to add a POI", 0, 20);
+   
+}
+//------------------------------------------------------------------------------
+
+function OnTimer(context, delta)
+{
+   timeaccumulator+=delta;
+   while (timeaccumulator>500)
    {
-      ogDestroyContext(g_ctx);
-      g_ctx = -1;
+      timeaccumulator-=500;
    }
+   
+    if (lastpoi != -1)
+      {
+         //to change the red value every call
+         r = timeaccumulator / 500;
+         
+         //change the poi color: ogSetPOIActiveColor(poi_id,red,blue,green,alpha);
+         ogSetPOIActiveColor(lastpoi,r,0,0,1);
+      }
 }
 
-function InitScene()
+// Mouse-Down-Event: Called when a mouse button is pressed
+function OnMouseDown(context, button, mx, my)
 {
-   if (g_ctx != -1) // already initialized ?
+   // retrieve the scene attached to context:
+   var scene = ogGetScene(context);
+   
+   // call the pickglobe function, this gives the result in lng, lat, elv
+   var result = ogPickGlobe(scene, mx, my);
+   if (button == 1 && result[0])
    {
-      return;
+      // place poi:
+      var NewPoiDefinition = 
+      {
+         icon     : "http://google-maps-icons.googlecode.com/files/cycling.png",
+         //text 		: 	"Click: (" + result[1].toFixed(3) + ", " + result[2].toFixed(3) + ", " + result[3].toFixed(0) + ")",
+         position :  [result[1], result[2], result[3]+2000],
+         size 		: 	50,
+         flagpole : true
+      };
+      
+      //create poi:
+      poi = ogCreatePOI(poilayer, NewPoiDefinition);
+      
+      //set the lastpoi active for color change in OnTimer Callback
+      lastpoi = poi;
    }
-
+}
+//------------------------------------------------------------------------------
+function main()
+{
    // (0) Set location of Artwork directory. Because of CORS this can't be local
    // if you want to open this using file://...
    ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
    
    // (1) create an OpenWebGlobe context using canvas
    // first parameter is canvas-id and second is "fullscreen"
-   g_ctx = ogCreateContextFromCanvas("canvas", true);
+   var ctx = ogCreateContextFromCanvas("canvas", true);
    
    // (2) Create a virtual globe
-   var globe = ogCreateGlobe(g_ctx);
+   var globe = ogCreateGlobe(ctx);
    
    // (3) Add an image and an elevation layer
-   
    var imgBlueMarble500 = 
    {
       url     : ["http://www.openwebglobe.org/data/img"],
@@ -82,27 +127,34 @@ function InitScene()
    
    ogAddImageLayer(globe, imgBlueMarble500);
    ogAddElevationLayer(globe, elvSRTM_CH);
+   
 
-   ogSetBackgroundColor(ctx, 0.2,0.5,0.7,1);
+   // (4) Set the "Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
+   ogSetRenderFunction(ctx, OnRender);
+   ogSetTimerFunction(ctx, OnTimer);
+   
+   // (5) Set the mouse down function. We need this for picking!
+   ogSetMouseDownFunction(ctx, OnMouseDown);
+   
+   // (6) Set the background color
+   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+   
+   // (7) POI Layer
+   // first, we need to retrieve the scene:
+   var scene = ogGetScene(ctx);
+	
+   var world = ogGetWorld(scene);
+   poilayer = ogCreatePOILayer(world,"bycicles");
+ 
 }
 //------------------------------------------------------------------------------
-
-function main()
-{
-   InitScene();
-}
-
-//------------------------------------------------------------------------------
-
+   
 </script>
 
 </head>
 <body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
-<div>
-   <input type="button" name="myButton" value="Init Scene" onClick="InitScene()"/>
-   <input type="button" name="myButton" value="Destroy Scene" onClick="DestroyScene()"/>
-</div>
-<div style="text-align: center">
+   <div style="text-align: center">
    <canvas id="canvas"></canvas>          
    </div>
 </body>

@@ -15,7 +15,7 @@
 #                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
-#                              (c) 2010-2012 by                                #
+#                              (c) 2010-2011 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
 #                     Institute of Geomatics Engineering                       #
 #                           martin.christen@fhnw.ch                            #
@@ -23,46 +23,48 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                   TUTORIAL 14: Destroy a scene and create new one
+                      TUTORIAL 8.1: Update Billboard content.
 *******************************************************************************/
 -->
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<script type="text/javascript" src="paint.js"></script>
 
 <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
 <script type="text/javascript">
-//------------------------------------------------------------------------------
-var g_ctx = -1;
 
-function DestroyScene()
+var billboard_id;
+var billboardlayer;
+var canvas = null;
+//------------------------------------------------------------------------------
+// called every frame:
+function OnRender(context)
 {
-   if (g_ctx != -1)
-   {
-      ogDestroyContext(g_ctx);
-      g_ctx = -1;
-   }
+   ogSetTextColor(context, 0,1,0);
+   ogDrawText(context, "Move the mouse into the right field.", 0, 50);
+   
+   // Update the Billboard
+   ogUpdateBillboard(billboard_id,canvas);
 }
 
-function InitScene()
-{
-   if (g_ctx != -1) // already initialized ?
-   {
-      return;
-   }
 
+//------------------------------------------------------------------------------
+function main()
+{
    // (0) Set location of Artwork directory. Because of CORS this can't be local
    // if you want to open this using file://...
    ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
    
    // (1) create an OpenWebGlobe context using canvas
    // first parameter is canvas-id and second is "fullscreen"
-   g_ctx = ogCreateContextFromCanvas("canvas", true);
+   var ctx = ogCreateContextFromCanvas("canvas", false);
    
    // (2) Create a virtual globe
-   var globe = ogCreateGlobe(g_ctx);
+   var globe = ogCreateGlobe(ctx);
    
    // (3) Add an image and an elevation layer
    
@@ -83,27 +85,35 @@ function InitScene()
    ogAddImageLayer(globe, imgBlueMarble500);
    ogAddElevationLayer(globe, elvSRTM_CH);
 
-   ogSetBackgroundColor(ctx, 0.2,0.5,0.7,1);
+   // (4) Set the "Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
+   ogSetRenderFunction(ctx, OnRender);
+   
+   // (5) Set the background color
+   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+   
+   
+   // (6) get the scene
+   var scene = ogGetScene(ctx);
+   
+   var world = ogGetWorld(scene);
+   
+   // Create a Billboard Layer
+   billboardlayer = ogCreateBillboardLayer(world,"billboards");
+   
+   // Create te Billboard
+   canvas = document.getElementById('imageView');
+   billboard_id = ogCreateBillboardFromCanvas(billboardlayer,canvas,7.569964,46.135222,5735);
 }
 //------------------------------------------------------------------------------
-
-function main()
-{
-   InitScene();
-}
-
-//------------------------------------------------------------------------------
-
+   
 </script>
 
 </head>
 <body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
-<div>
-   <input type="button" name="myButton" value="Init Scene" onClick="InitScene()"/>
-   <input type="button" name="myButton" value="Destroy Scene" onClick="DestroyScene()"/>
-</div>
-<div style="text-align: center">
-   <canvas id="canvas"></canvas>          
+   <canvas id="canvas" width="800" height="800" style="position:absolute"></canvas>
+   <div style="position:absolute; width:256; height:256; left:825px; top:10px; border:solid;">
+      <canvas id="imageView" width="256" height="256"></canvas>
    </div>
 </body>
 </html>

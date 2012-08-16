@@ -23,7 +23,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                         TUTORIAL 19: Using Fullscreen
+                       TUTORIAL 15: Changing Navigation
 *******************************************************************************/
 -->
 <html lang="en">
@@ -33,54 +33,82 @@
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
-<button onclick="fullscreen();">Go Fullscreen</button>
+<button onclick="globe_nav();">Globe Navigation</button>
+<button onclick="fly_nav();">Flight Navigation</button>
+<button onclick="constrained_nav();">Constrained Navigation</button>
+<button onclick="dynamic_nav();">Dynamic Navigation (in development)</button>
 <script>
-   var bFullscreen = false;
-   //---------------------------------------------------------------------------
-   function fullscreenChange()
-   {
-      var elem = document.getElementById("canvas");
-      if (document.webkitFullscreenElement === elem ||
-          document.mozFullscreenElement === elem ||
-          document.mozFullScreenElement === elem)
-      {
-         bFullscreen = true;
-      }
-      else
-      {
-         bFullscreen = false;
-      }
-   }
-   document.addEventListener('fullscreenchange', fullscreenChange, false);
-   document.addEventListener('mozfullscreenchange', fullscreenChange, false);
-   document.addEventListener('webkitfullscreenchange', fullscreenChange, false);
-   //---------------------------------------------------------------------------
-   function fullscreen()
-   {
-      var elem = document.getElementById("canvas");
-      elem.requestFullscreen = elem.requestFullscreen    ||
-                               elem.mozRequestFullscreen ||
-                               elem.mozRequestFullScreen ||
-                               elem.webkitRequestFullscreen;
-      elem.requestFullscreen();
-   }
+   var g_ctx;
    //---------------------------------------------------------------------------
    function OnRender(context)
    {
+      var scene = ogGetScene(context);
+
+      var currentpos = ogGetPosition(scene);
+      text = "longitude: "+currentpos.longitude.toFixed(3)+" latitude: "+currentpos.latitude.toFixed(3)+" elevation: "+currentpos.elevation.toFixed(1);
+
       ogSetTextColor(context, 0,1,0);
-      var text = "Hello World";
-      if (bFullscreen)
-      {
-         text = "Hello Fullscreen!";
-      }
       ogDrawText(context, text, 0, 20);
+   }
+   //---------------------------------------------------------------------------
+   function globe_nav()
+   {
+      var scene = ogGetScene(g_ctx);
+
+      var options = { "Longitude" : 7.616000,
+                      "Latitude"  : 45.12,
+                      "Elevation" : 300000
+      };
+      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_GLOBE, options);
+   }
+   //---------------------------------------------------------------------------
+   function fly_nav()
+   {
+      var scene = ogGetScene(g_ctx);
+
+      var options = { "Longitude" : 7.616000,
+                      "Latitude"  : 45.12,
+                      "Elevation" : 2000
+      };
+      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_FLIGHT, options);
+   }
+   //---------------------------------------------------------------------------
+   function constrained_nav()
+   {
+      var scene = ogGetScene(g_ctx);
+      var options =
+      {
+            "Longitude"          : 6.5,    // Initial Position: Longitude
+            "Latitude"           : 45.5,   // Initial Position: Latitude
+            "Elevation"          : 2500,    // Initial Position: Elevation
+            "MinElevation"       : 2000,    // Minimum Allowed Elevation (optional)
+            "MaxElevation"       : 50000,   // Maximum Allowed Elevation (optional)
+            "BoundingRect"       : [[6.0, 45],[7.0, 46]], // 2D Bounding Rect (optional)
+            /*"BoundingPolygon"    : [ [7.201538,47.197178],
+                                     [8.948364,47.260592],
+                                     [7.739868,46.954012],
+                                     [8.360596,47.890564]],*/ // 2D Bounding Polygon (instead of BoundingBox, optional)
+            "ElevationSteps"     : [2000, 3000, 4000, 5000, 10000, 20000, 50000]   // Sorted List of allowed Elevations (optional)
+      }
+      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_CONSTRAINED, options);
+   }
+   //---------------------------------------------------------------------------
+   function dynamic_nav()
+   {
+      var scene = ogGetScene(g_ctx);
+
+      var options = { "Longitude" : 7.616000,
+         "Latitude"  : 45.12,
+         "Elevation" : 7000000
+      };
+      ogSetNavigationMode(scene, OG_NAVIGATIONMODE_DYNAMIC, options);
    }
    //---------------------------------------------------------------------------
    function main()
    {
       ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
-      var ctx = ogCreateContextFromCanvas("canvas", true);
-      var globe = ogCreateGlobe(ctx);
+      g_ctx = ogCreateContextFromCanvas("canvas", true);
+      var globe = ogCreateGlobe(g_ctx);
 
       var imgBlueMarble500 =
       {
@@ -99,9 +127,11 @@
       ogAddImageLayer(globe, imgBlueMarble500);
       ogAddElevationLayer(globe, elvSRTM_CH);
 
-      ogSetRenderFunction(ctx, OnRender);
+      ogSetRenderFunction(g_ctx, OnRender);
 
-      ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+      ogSetBackgroundColor(g_ctx, 0.2,0.6,0.7,1);
+
+      globe_nav(); // initialize with globe navigation...
    }
    //------------------------------------------------------------------------------
 </script>

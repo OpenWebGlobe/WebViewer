@@ -22,18 +22,17 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                      Function Tests
+                      Tutorial: Putting Image on Terrain
                       
 *******************************************************************************/
 -->
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!--<script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>-->
- <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../../../compiled/deps.js"></script>
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
-
 
 <script type="text/javascript">
 
@@ -56,7 +55,6 @@ function OnMouseDown(context, button, mx, my)
  
 }
 
-
 //------------------------------------------------------------------------------
 
 function OnKeyDown(ctx,key)
@@ -76,16 +74,13 @@ function OnKeyDown(ctx,key)
       ogFlyTo(ogGetScene(ctx),108.799532930521,40.6338723204708, 18000, 0, -90 ,0);
      
    }
+
    if(key == 50) // 2 - Create a second model out of a json object and add it to the layer
    {
       ogDestroyAoeImage(aoeimage);
-   
-      
    }
- 
-   
-}
 
+}
 
 //------------------------------------------------------------------------------
 function main()

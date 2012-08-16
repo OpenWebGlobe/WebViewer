@@ -15,7 +15,7 @@
 #                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
-#                              (c) 2010-2012 by                                #
+#                              (c) 2010-2011 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
 #                     Institute of Geomatics Engineering                       #
 #                           martin.christen@fhnw.ch                            #
@@ -23,7 +23,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                   TUTORIAL 14: Destroy a scene and create new one
+                      TUTORIAL 8.0: Create a Billboard
 *******************************************************************************/
 -->
 <html lang="en">
@@ -34,35 +34,90 @@
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
 <script type="text/javascript">
-//------------------------------------------------------------------------------
-var g_ctx = -1;
 
-function DestroyScene()
+var billboard_id;
+var billboardlayer;
+var canvas = null;
+var ctx = null;
+
+//------------------------------------------------------------------------------
+// called every frame:
+function OnRender(context)
 {
-   if (g_ctx != -1)
+   ogSetTextColor(context, 0,1,0);
+   ogDrawText(context, "Click on the top-left rectangle.", 0, 50);
+}
+
+
+//------------------------------------------------------------------------------
+// Mouse-Down-Event: Called when a mouse button is pressed
+function OnMouseDown(context, button, mx, my)
+{
+   // retrieve the scene attached to context:
+   var scene = ogGetScene(context);
+   
+   // get poi id of picked poi, returns -1 if no poi picked.
+   var coors = ogPickBillboard(scene,mx,my);
+   
+   if(coors)
    {
-      ogDestroyContext(g_ctx);
-      g_ctx = -1;
+      console.log("x: "+coors.x+" y: "+coors.y);
+      //checks if the top-left rectangle is clicked
+      var x = coors.x * 512;
+      var y = coors.y * 512;
+      if(x  > 50 && x  < 100 && y  > 50 && y  < 100 )
+      {
+         updateCanvas();
+         ogUpdateBillboard(coors.id,canvas);
+      }
    }
 }
 
-function InitScene()
-{
-   if (g_ctx != -1) // already initialized ?
-   {
-      return;
-   }
 
+var toggle=1;
+//Change the color of the rectangeles in the canvas
+function updateCanvas()
+{
+   ctx.fillStyle = 'rgba('+255*toggle+',0,0, 1)';
+   ctx.fillRect (50, 50, 50, 50);
+   ctx.fillRect (100, 100, 50, 50);
+   ctx.fillRect (150, 150, 50, 50);
+   toggle = (toggle == 1) ? 0 : 1;
+
+}
+
+//create a HTML5 Cnavas element and draw something
+function createHTML5Canvas()
+{
+   canvas = document.createElement('canvas');
+   canvas.id = "canvas2d";
+   ctx = canvas.getContext('2d');
+   ctx.canvas.width = 200;
+   ctx.canvas.height = 600;
+   ctx.fillStyle = 'rgba(255,255,255,0.7)';
+   ctx.fillRect (0, 0, 200, 600);
+   ctx.strokeStyle = "rgb(0, 0, 0)";
+   ctx.strokeRect(0,0,200,600);
+   ctx.fillStyle = 'rgba(0, 0,50, 0.5)';
+   ctx.fillRect (50, 50, 50, 50);
+   ctx.fillRect (100, 100, 50, 50);
+   ctx.fillRect (150, 150, 50, 50);
+   return canvas;
+}
+
+//------------------------------------------------------------------------------
+function main()
+{
    // (0) Set location of Artwork directory. Because of CORS this can't be local
    // if you want to open this using file://...
    ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
    
    // (1) create an OpenWebGlobe context using canvas
    // first parameter is canvas-id and second is "fullscreen"
-   g_ctx = ogCreateContextFromCanvas("canvas", true);
+   var ctx = ogCreateContextFromCanvas("canvas", true);
    
    // (2) Create a virtual globe
-   var globe = ogCreateGlobe(g_ctx);
+   var globe = ogCreateGlobe(ctx);
    
    // (3) Add an image and an elevation layer
    
@@ -83,27 +138,41 @@ function InitScene()
    ogAddImageLayer(globe, imgBlueMarble500);
    ogAddElevationLayer(globe, elvSRTM_CH);
 
-   ogSetBackgroundColor(ctx, 0.2,0.5,0.7,1);
+   // (4) Set the "Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
+   ogSetRenderFunction(ctx, OnRender);
+   
+   // (5) Set the background color
+   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+   
+   
+   // (6) Set the mouse down function. We need this for picking!
+   ogSetMouseDownFunction(ctx, OnMouseDown);
+   
+   // (7) get the scene
+   var scene = ogGetScene(ctx);
+ 
+   // (8) get the world
+   var world = ogGetWorld(scene);
+  
+   // Create a Billboard Layer
+   billboardlayer = ogCreateBillboardLayer(world,"billboards");
+   
+   //creat a HTML5 Canvas and draw something
+   var a = createHTML5Canvas();
+   //Create the Billboard from canvas
+
+   billboard_id = ogCreateBillboardFromCanvas(billboardlayer,a,7.569964,46.135222,9735);
+   
 }
 //------------------------------------------------------------------------------
-
-function main()
-{
-   InitScene();
-}
-
-//------------------------------------------------------------------------------
-
+   
 </script>
 
 </head>
 <body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
-<div>
-   <input type="button" name="myButton" value="Init Scene" onClick="InitScene()"/>
-   <input type="button" name="myButton" value="Destroy Scene" onClick="DestroyScene()"/>
-</div>
-<div style="text-align: center">
-   <canvas id="canvas"></canvas>          
+   <div style="text-align: center">
+   <canvas id="canvas"></canvas>
    </div>
 </body>
 </html>

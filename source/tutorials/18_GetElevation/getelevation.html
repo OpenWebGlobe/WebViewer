@@ -15,7 +15,7 @@
 #                              ____) | |__| | . \                              #
 #                             |_____/|_____/|_|\_\                             #
 #                                                                              #
-#                              (c) 2010-2012 by                                #
+#                              (c) 2010-2011 by                                #
 #           University of Applied Sciences Northwestern Switzerland            #
 #                     Institute of Geomatics Engineering                       #
 #                           martin.christen@fhnw.ch                            #
@@ -23,7 +23,7 @@
 *     Licensed under MIT License. Read the file LICENSE for more information   *
 *******************************************************************************/
 
-                   TUTORIAL 14: Destroy a scene and create new one
+                   TUTORIAL 18: Get Elevation at visible position
 *******************************************************************************/
 -->
 <html lang="en">
@@ -34,35 +34,48 @@
 <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
 
 <script type="text/javascript">
+
 //------------------------------------------------------------------------------
-var g_ctx = -1;
-
-function DestroyScene()
+// called every frame:
+function OnRender(context)
 {
-   if (g_ctx != -1)
+   var scene = ogGetScene(context);
+   var globe = ogGetWorld(scene);
+
+   var elevation = ogGetElevationAt(globe, 7.66, 46.13);
+
+   var ok = elevation["hasvalue"];
+   var elv = elevation["elevation"];
+   var lod = elevation["lod"];
+
+   var text = "";
+
+   if (!ok)
    {
-      ogDestroyContext(g_ctx);
-      g_ctx = -1;
+      text = "Elevation = 0 (no value)";
    }
+   else
+   {
+      text = "Elevation = " + elv.toFixed(2) + " (lod " + lod + ")";
+   }
+
+   ogSetTextColor(context, 0,1,0);
+   ogDrawText(context, text, 0, 20);
 }
+//------------------------------------------------------------------------------
 
-function InitScene()
+function main()
 {
-   if (g_ctx != -1) // already initialized ?
-   {
-      return;
-   }
-
    // (0) Set location of Artwork directory. Because of CORS this can't be local
    // if you want to open this using file://...
    ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
    
    // (1) create an OpenWebGlobe context using canvas
    // first parameter is canvas-id and second is "fullscreen"
-   g_ctx = ogCreateContextFromCanvas("canvas", true);
+   var ctx = ogCreateContextFromCanvas("canvas", true);
    
    // (2) Create a virtual globe
-   var globe = ogCreateGlobe(g_ctx);
+   var globe = ogCreateGlobe(ctx);
    
    // (3) Add an image and an elevation layer
    
@@ -83,26 +96,37 @@ function InitScene()
    ogAddImageLayer(globe, imgBlueMarble500);
    ogAddElevationLayer(globe, elvSRTM_CH);
 
-   ogSetBackgroundColor(ctx, 0.2,0.5,0.7,1);
+   // (4) Set the "Render-Callback" function.
+   // The callback function will be called everytime a frame is drawn.
+   ogSetRenderFunction(ctx, OnRender);
+   
+   // (5) Set the background color
+   ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+
+   // (6) Create a simple POI
+   // Create the poi layer
+
+   var poilayer = ogCreatePOILayer(globe,"test");
+   var PoiDefinition =
+   {
+      text 		: 	"This is a Poi",
+      position :  [7.66, 46.13, 6000],
+      size 		: 	50,
+      flagpole :  true
+   };
+   var poi = ogCreatePOI(poilayer, PoiDefinition);
+
+
+   var scene = ogGetScene(ctx);
+   ogFlyToLookAtPosition(scene,7.66, 46,6000,35000, 0, -45, 0);
 }
 //------------------------------------------------------------------------------
-
-function main()
-{
-   InitScene();
-}
-
-//------------------------------------------------------------------------------
-
+   
 </script>
 
 </head>
 <body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
-<div>
-   <input type="button" name="myButton" value="Init Scene" onClick="InitScene()"/>
-   <input type="button" name="myButton" value="Destroy Scene" onClick="DestroyScene()"/>
-</div>
-<div style="text-align: center">
+   <div style="text-align: center">
    <canvas id="canvas"></canvas>          
    </div>
 </body>
