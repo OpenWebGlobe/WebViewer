@@ -85,7 +85,6 @@ ogPOI.prototype.ParseOptions = function(options)
    var size = 40;
    /** @type {?string} */
    var icon = null;
-
    
    if (options["text"])
    {
@@ -138,6 +137,18 @@ ogPOI.prototype.ParseOptions = function(options)
    }
    
    this.poi.SetSize(size);
+   
+   if(options["centerOnIcon"] == true)
+   {
+      this.poi.SetCenterOnIcon(true);
+   }
+   
+   if(options["pivotPoint"])
+   {
+      /** type {Array.<number>} */
+      var pivotPoint = options["pivotPoint"];
+      this.poi.SetPivot(pivotPoint[0], pivotPoint[1], pivotPoint[2]);
+   }
    
    this.poi.ogpoi = this;
    
