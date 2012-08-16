@@ -20,8 +20,8 @@ viewer_path = "WebGLViewer/"
 tutorials_path = "tutorials/"
 ###############################
 
-jstarget = deploy_path + viewer_path;
-target = deploy_path + viewer_path + tutorials_path;
+jstarget = deploy_path + viewer_path
+target = deploy_path + viewer_path + tutorials_path
 
 #########################
 ## Replace for Deploy ###
