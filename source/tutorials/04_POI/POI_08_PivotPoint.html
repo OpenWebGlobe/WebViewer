@@ -172,6 +172,19 @@ function main()
    // (8.4) then create and add it to the scene
    ogCreatePOI(poilayer, PoiDefinitionWithIcon);
    
+   // (8.5) let's create a poi with icon-only. (text is optional)
+   var PoiDefinitionWithIcon =
+   {
+      icon     :  "http://www.openwebglobe.org/data/media/airport.png",
+      position :  [7.52, 46.71, 2000],
+      size     :  80,
+      flagpole :  true,
+	  pivotPoint : [1,1,0]		// Entire POI to the right of the pole
+   };
+   
+   // (8.6) then create and add it to the scene
+   ogCreatePOI(poilayer, PoiDefinitionWithIcon);   
+   
    // Create another poi layer to place poi's interactive
    bycicleLayer = ogCreatePOILayer(world,"byciclelayer");
 

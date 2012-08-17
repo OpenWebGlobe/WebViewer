@@ -177,7 +177,7 @@ Poi.prototype.SetContent = function(text,textStyle,timgurl,iconStyle)
 */ 
 Poi.prototype.SetPosition = function(x,y,z,zs)
 {
-    //calc poi width
+    //calc this.poiWidth and this.poiHeight
     if(this.iconMesh && this.textMesh)
     {
       this.poiWidth = this.iconMesh.meshWidth + this.textMesh.meshWidth;
@@ -194,8 +194,7 @@ Poi.prototype.SetPosition = function(x,y,z,zs)
       this.poiHeight = this.textMesh.meshHeight;
     }
     
-    // will evaluate to 0 if there's no icon
-    var iconWidth = this.poiWidth - this.textMesh.meshWidth;
+    var iconWidth = this.iconMesh ? this.iconMesh.meshWidth : 0;
     var pivotOffsetX = this.centerOnIcon ? -this.pivotX*iconWidth/2 : -this.pivotX*this.poiWidth/2;
     
     if(this.iconMesh)
