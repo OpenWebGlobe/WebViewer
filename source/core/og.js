@@ -481,7 +481,7 @@ function ogCreateContextFromCanvas(sCanvasId, fullscreen, cbfInit, cbfExit, cbfR
    {
       contextoptions["fullscreen"] = false;
    }
-   
+
    contextoptions["canvas"] = sCanvasId;
    return ogCreateContext(contextoptions, cbfInit, cbfExit, cbfResize);
 }
@@ -958,16 +958,23 @@ goog.exportSymbol('ogSetArtworkDirectory', ogSetArtworkDirectory);
 * @description create a new scene object
 * @param {number} context_id the id of the context
 * @param {number} scenetype the type of scene. This must be OG_SCENE_3D_ELLIPSOID_WGS84, OG_SCENE_3D_FLAT_CARTESIAN, OG_SCENE_2D_SCREEN, or OG_SCENE_CUSTOM
+* @param {Object=} options
 * @returns {number} the scene or -1 if failed
 */
-function ogCreateScene(context_id, scenetype)
+function ogCreateScene(context_id, scenetype, options)
 {
+   // initialize optional options
+   if (!goog.isDef(options))
+   {
+      options = {};
+   }
+
    // test if context_id is a valid context
    var context = _GetObjectFromId(context_id);
    if (context && context.type == OG_OBJECT_CONTEXT)
    {
-      var sceneoptions = {};
-      sceneoptions["type"] = scenetype;
+
+      options["type"] = scenetype;
       
       if (scenetype == OG_SCENE_3D_ELLIPSOID_WGS84 ||
           scenetype == OG_SCENE_3D_FLAT_CARTESIAN ||
@@ -976,7 +983,7 @@ function ogCreateScene(context_id, scenetype)
           )
       {
          /** @type {ogScene} */
-         var scene = _CreateObject(OG_OBJECT_SCENE, context, sceneoptions);
+         var scene = _CreateObject(OG_OBJECT_SCENE, context, options);
          context.scene = scene;
          return scene.id;
       }

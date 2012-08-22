@@ -50,6 +50,8 @@ function ogScene()
    this.cameras = [];
    /** @type {number} */
    this.scenetype = OG_SCENE_3D_ELLIPSOID_WGS84;
+   /** @type {boolean} */
+   this.rendertotexture = true;
 }
 //------------------------------------------------------------------------------
 ogScene.prototype = new ogObject();
@@ -67,9 +69,14 @@ ogScene.prototype.ParseOptions = function(options)
       return;  // no options!!
    }
    
-   if (options["type"])
+   if (goog.isDef(options["type"]))
    {
       this.scenetype = options["type"];
+   }
+
+   if (goog.isDef(options["rendertotexture"]))
+   {
+      this.rendertotexture = options["rendertotexture"];
    }
 }
 //------------------------------------------------------------------------------

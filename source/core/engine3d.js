@@ -897,22 +897,19 @@ engine3d.prototype.SetOrtho2D = function ()
 //------------------------------------------------------------------------------
 /**
  * @description Create Scene
+ * @param {Object} options
  */
-engine3d.prototype.CreateScene = function ()
+engine3d.prototype.CreateScene = function (options)
 {
    if (this.worldtype == 0) // custom scene
    {
-      var options = {
-         "type":"custom"
-      };
+      options["type"] = "custom";
       this.scene = new SceneGraph(this, options);
       this.scene.nodeRenderObject.DoResize(this.width, this.height);
    }
    else if (this.worldtype == 1) // wgs84
    {
-      var options = {
-         "type":"ellipsoid"
-      };
+      options["type"] = "ellipsoid";
 
       this.scene = new SceneGraph(this, options);
       this.scene.nodeRenderObject.DoResize(this.width, this.height);

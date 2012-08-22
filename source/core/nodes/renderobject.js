@@ -54,7 +54,7 @@ function RenderObjectNode(options)
       /** @type {VectorRenderer} */
       this.vectorrenderer = null;
       /** @type {boolean} */
-      this.bRenderTexture = true;
+      this.bRenderTexture = options["rendertotexture"];
       /** @type {Texture} */
       this.texture = null;
       // todo: change to enum
@@ -146,7 +146,14 @@ function RenderObjectNode(options)
          if (!this.custom)
          {
             this.globeshape = new Surface(this.engine);
-            this.globeshape.SolidGeosphere([1,0,1,0], 3);
+            if (this.bRenderTexture)
+            {
+               this.globeshape.SolidGeosphere([1,0,1,0], 3);
+            }
+            else
+            {
+               this.globeshape.SolidGeosphere([0,0,0,1], 2);
+            }
             this.globerenderer = new GlobeRenderer(this.engine);
          }
          this.vectorrenderer = new VectorRenderer(this.engine);

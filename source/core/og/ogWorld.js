@@ -58,13 +58,21 @@ ogWorld.prototype.ParseOptions = function(options)
       
       /** @type {ogContext} */
       var context = /** @type ogContext */this.parent.parent;
+      /** @type {ogScene} */
+      var scene = /** @type ogScene */ this.parent;
       /** @type {engine3d} */
       var engine = context.engine;
-      
+
+      /** @type {Object} */
+      var sceneoptions =   // more options will be available in future
+      {
+         "rendertotexture" : scene.rendertotexture
+      };
+
       if (options["scenetype"] == OG_SCENE_3D_ELLIPSOID_WGS84)
       {
          engine.SetWorldType(1);
-         engine.CreateScene();
+         engine.CreateScene(sceneoptions);
          if (engine.scene)
          {
             engine.scene.world = this;
@@ -73,7 +81,7 @@ ogWorld.prototype.ParseOptions = function(options)
       else if (options["scenetype"] == OG_SCENE_3D_FLAT_CARTESIAN)
       {
          engine.SetWorldType(2);
-         engine.CreateScene();
+         engine.CreateScene(sceneoptions);
          if (engine.scene)
          {
             engine.scene.world = this;
@@ -82,7 +90,7 @@ ogWorld.prototype.ParseOptions = function(options)
       else if (options["scenetype"] == OG_SCENE_2D_SCREEN)
       {
          engine.SetWorldType(3);
-         engine.CreateScene();
+         engine.CreateScene(sceneoptions);
          if (engine.scene)
          {
             engine.scene.world = this;
@@ -91,7 +99,7 @@ ogWorld.prototype.ParseOptions = function(options)
       else if (options["scenetype"] == OG_SCENE_CUSTOM)
       {
          engine.SetWorldType(0);
-         engine.CreateScene();
+         engine.CreateScene(sceneoptions);
          if (engine.scene)
          {
             engine.scene.world = this;
