@@ -185,7 +185,7 @@ SceneGraph.prototype.SetNavigationMode = function(options)
       else if (options["type"] == "dynamic")
       {
          this.nodeNavigation.OnDestroy();
-         this.nodeNavigation = new DynamicNavigationNode();
+         this.nodeNavigation = new DynamicNavigationNode(options);
          this.nodeNavigation.SetEngine(this.engine);
       }
 

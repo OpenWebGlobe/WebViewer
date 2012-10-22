@@ -116,7 +116,7 @@ GeometryRenderer.prototype.Render = function(vCameraPosition, matModelViewProjec
                      this.engine.gl.disable(this.engine.gl.BLEND);
                   }
                }
-            } 
+            }
          }
       }
    }

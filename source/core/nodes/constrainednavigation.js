@@ -146,6 +146,10 @@ function ConstrainedNavigationNode(options)
    /** @type {ogCamera} */
    this.ogcam = null;
 
+   this.near = 0.000001;
+   this.far = 15.0;
+   this.fov = 45;
+
    /** @type {number} */
    this.evtKeyDown = 0;
    /** @type {number} */
@@ -188,6 +192,21 @@ function ConstrainedNavigationNode(options)
    {
       this.ElevationSteps = options["ElevationSteps"];
    }
+
+   if (goog.isDef(options["Near"]))
+   {
+      this.near = options["Near"];
+   }
+   if (goog.isDef(options["Far"]))
+   {
+      this.far = options["Far"];
+   }
+   if (goog.isDef(options["Fov"]))
+   {
+      this.fov = options["Fov"];
+   }
+
+
    /** @type {number} */
    this.MinElevation = 0;
    /** @type {number} */
@@ -258,9 +277,11 @@ function ConstrainedNavigationNode(options)
          this.ogcam.pitch = this._pitch * 57.295779513082320876798154814105;
          this.ogcam.yaw = this._yaw * 57.295779513082320876798154814105;
          this.ogcam.roll = this._roll * 57.295779513082320876798154814105;
+
 //            console.log("this.ogcam.yaw: "+this.ogcam.yaw);
       }
-
+      this.engine.scene.nodeCamera.near = this.near;
+      this.engine.scene.nodeCamera.far = this.far;
    }
    //------------------------------------------------------------------------
    this.OnInit = function ()

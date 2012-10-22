@@ -38,9 +38,10 @@ goog.require('owg.Mercator');
  * Dynamic Navigation Node, based on GlobeNavigation (in development)
  * @author Martin Christen martin.christen@fhnw.ch
  * @constructor
+ * @param  {Object} options
  * @extends NavigationNode
  */
-function DynamicNavigationNode()
+function DynamicNavigationNode(options)
 {
    this.lastkey = 0;
    this.curtime = 0;
@@ -143,6 +144,25 @@ function DynamicNavigationNode()
    this.bElevationLock = false;
 
    this.basis = 0;
+   this.near = -1.0;
+   this.far = -1.0;
+   this.fov = -1;
+
+   if(goog.isDef(options))
+   {
+      if (goog.isDef(options["Near"]))
+      {
+         this.near = options["Near"];
+      }
+      if (goog.isDef(options["Far"]))
+      {
+         this.far = options["Far"];
+      }
+      if (goog.isDef(options["Fov"]))
+      {
+         this.fov = options["Fov"];
+      }
+   }
 
    /** @type {number} */
    this.evtKeyDown = 0;
@@ -182,6 +202,7 @@ function DynamicNavigationNode()
    //---------------------------------------------------------------------------
    this.OnTraverse = function (ts)
    {
+
       if (this._ellipsoidHeight < 2000)
       {
          this.engine.scene.nodeCamera.near = 0.0000001;
@@ -191,6 +212,18 @@ function DynamicNavigationNode()
       {
          this.engine.scene.nodeCamera.near = 0.00001;
          this.engine.scene.nodeCamera.far = 10;
+      }
+      if(this.fov >= 0)
+      {
+         this.engine.scene.nodeCamera.fov = this.fov;
+      }
+      if(this.near >= 0.0)
+      {
+         this.engine.scene.nodeCamera.near = this.near;
+      }
+      if(this.far >= 0.0)
+      {
+         this.engine.scene.nodeCamera.far = this.far;
       }
 
       // read possible navigation command from outside:

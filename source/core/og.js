@@ -1074,7 +1074,7 @@ function ogToCartesian(scene_id, lng, lat, elv)
 {
    /** @type {ogScene} */
    var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
-   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   if (scene && scene.type == OG_OBJECT_SCENE && (scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84 || scene.scenetype == OG_SCENE_CUSTOM))
    {
       var geocoor = new GeoCoord(lng,lat,elv);
       var res = [];
@@ -1199,7 +1199,7 @@ goog.exportSymbol('ogGetPosition', ogGetPosition);
 
 //------------------------------------------------------------------------------
 /**
- * @description set the orientation of the active camera
+ * @description set the orientation a camera
  * @param {number} camera_id
  * @param {number} yaw
  * @param {number} pitch
@@ -1207,20 +1207,20 @@ goog.exportSymbol('ogGetPosition', ogGetPosition);
  */
 function ogSetOrientation(camera_id,yaw,pitch,roll)
 {
-    /** @type {ogCamera} */
+   /** @type {ogCamera} */
    var cam = /** @type {ogCamera} */ _GetObjectFromId(camera_id);
-   if (cam && cam.type == OG_OBJECT_CAMERA)
+   if(cam && cam.type == OG_OBJECT_CAMERA)
    {
-            if (yaw>360)
-            {
-               yaw = yaw - 360;
-            }
-            if (yaw<0)
-            {
-               yaw = 360 + yaw;
-            }
+               if (yaw>360)
+               {
+                  yaw = yaw - 360;
+               }
+               if (yaw<0)
+               {
+                  yaw = 360 + yaw;
+               }
 
-     return cam.SetOrientation(yaw,pitch,roll); 
+        return cam.SetOrientation(yaw,pitch,roll);
    }
    return null;
 }
@@ -3065,7 +3065,7 @@ function ogWorldToWindow(scene_id,x,y,z)
    var res;
    /** @type {ogScene} */
    var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
-   if (scene && scene.type == OG_OBJECT_SCENE && scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84)
+   if (scene && scene.type == OG_OBJECT_SCENE && (scene.scenetype == OG_SCENE_3D_ELLIPSOID_WGS84  || scene.scenetype == OG_SCENE_CUSTOM))
    {
       var context =  /** @type ogContext */scene.parent;
       // Get the engine
@@ -3115,3 +3115,55 @@ function ogSetMinAltitude(scene_id, minAltiude)
 
 }
 goog.exportSymbol('ogSetMinAltitude', ogSetMinAltitude);
+//------------------------------------------------------------------------------
+/**
+ * @description Trigger Keyboard key down
+ * @param keycode
+ */
+function ogNavKeyDown(scene_id, keycode)
+{
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene)
+   {
+      var context =  /** @type ogContext */scene.parent;
+      // Get the engine
+      /** @type {engine3d} */
+      var engine = context.engine;
+      var evt = {
+         keyCode: keycode,
+         stopPropagation : function() {},
+         preventDefault : function() {},
+         cancelBubble: false,
+         cancel: false,
+         returnValue: false
+      };
+      engine.scene.nodeNavigation.OnKeyDown(evt);
+   }
+}
+goog.exportSymbol('ogNavKeyDown', ogNavKeyDown);
+//------------------------------------------------------------------------------
+/**
+ * @description Trigger Keyboard key up
+ * @param keycode
+ */
+function ogNavKeyUp(scene_id, keycode)
+{
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene)
+   {
+      var context =  /** @type ogContext */scene.parent;
+      // Get the engine
+      /** @type {engine3d} */
+      var engine = context.engine;
+      var evt = {
+         keyCode: keycode,
+         stopPropagation : function() {},
+         preventDefault : function() {},
+         cancelBubble: false,
+         cancel: false,
+         returnValue: false
+      };
+      engine.scene.nodeNavigation.OnKeyUp(evt);
+   }
+}
+goog.exportSymbol('ogNavKeyUp', ogNavKeyUp);
