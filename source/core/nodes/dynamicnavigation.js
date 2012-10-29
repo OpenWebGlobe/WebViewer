@@ -178,6 +178,9 @@ function DynamicNavigationNode(options)
    this.evtMouseDoubleClick = 0;
    /** @type {number} */
    this.evtMouseWheel = 0;
+
+   this.near = 0.0000001;
+   this.far = 1.2;
    //---------------------------------------------------------------------------
    /**
     * @param {boolean} b true if lock, false if unlock
@@ -203,16 +206,19 @@ function DynamicNavigationNode(options)
    this.OnTraverse = function (ts)
    {
 
-      if (this._ellipsoidHeight < 2000)
+      if(CARTESIAN_SCALE==1.0)
       {
-         this.near = 0.0000001;
-         this.far = 1.2;
+         this.near = 0.1;
+         this.far = 10000;
       }
       else
       {
          this.near = 0.00001;
          this.far = 10;
       }
+
+
+
       if(this.fov >= 0)
       {
          this.engine.scene.nodeCamera.fov = this.fov;

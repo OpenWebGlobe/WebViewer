@@ -39,6 +39,8 @@
 <button onclick="incyaw();">Yaw ++</button>
 <button onclick="incpitch();">Pitch ++</button>
 <button onclick="incroll();">Roll ++</button>
+<button onclick="inclat();">Lat ++</button>
+<button onclick="inclng();">Lng ++</button>
 
 
 <script type="text/javascript">
@@ -102,12 +104,14 @@ function main()
    geometrylayer = ogCreateGeometryLayer(world,"buildings");
 
 
-
    //create the first 3d model                   
    geometry1 = ogLoadGeometryAsync(geometrylayer,"torus.json");
    ogFlyToLookAtPosition(scene, 7.438637,46.951081,3400, 1000,30,-45,0);
 
 }
+var lng =  7.438637;
+var lat = 46.951081;
+var elv = 3400;
 
 function doubleSize()
 {
@@ -139,8 +143,23 @@ function incpitch()
 
 function incroll()
 {
-   //turn by 1 degree
-   ogSetGeometryOrientation(geometry1,0,0,1);
+    //turn by 1 degree
+    ogSetGeometryOrientation(geometry1,0,0,1);
+
+}
+
+function inclat()
+{
+
+    lat = lat+0.001;
+    ogSetGeometryPositionWGS84(geometry1,lng,lat,elv);
+
+}
+
+function inclng()
+{
+    lng = lng+0.001;
+    ogSetGeometryPositionWGS84(geometry1,lng,lat,elv);
 
 }
 
