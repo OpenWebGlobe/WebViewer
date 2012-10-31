@@ -40,3 +40,5 @@ window.webkitRequestAnimationFrame;
 /**
  */
 WebGLRenderingContext.isContextLost = function() {}
+
+var JSON;

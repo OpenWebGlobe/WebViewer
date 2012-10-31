@@ -977,11 +977,26 @@ function ogCreateScene(context_id, scenetype, options)
       options["type"] = scenetype;
       
       if (scenetype == OG_SCENE_3D_ELLIPSOID_WGS84 ||
-          scenetype == OG_SCENE_3D_FLAT_CARTESIAN ||
           scenetype == OG_SCENE_2D_SCREEN ||
+          scenetype == OG_SCENE_3D_FLAT_CARTESIAN ||
           scenetype == OG_SCENE_CUSTOM
           )
       {
+
+         if(scenetype == OG_SCENE_CUSTOM)
+         {
+            CARTESIAN_SCALE_INV = 1.0;
+            CARTESIAN_SCALE = 1.0;
+
+         }
+         else
+         {
+            CARTESIAN_SCALE_INV = 1.1920930376163765926810017443897e-7;
+            CARTESIAN_SCALE = 8388607.0;
+         }
+
+
+
          /** @type {ogScene} */
          var scene = _CreateObject(OG_OBJECT_SCENE, context, options);
          context.scene = scene;

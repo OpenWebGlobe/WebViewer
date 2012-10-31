@@ -183,15 +183,15 @@ function GlobeNavigationNode()
    //---------------------------------------------------------------------------
    this.OnTraverse = function (ts)
    {
-      if (this._ellipsoidHeight < 2000)
+      if(CARTESIAN_SCALE==1.0)
       {
-         this.engine.scene.nodeCamera.near = 0.0000001;
-         this.engine.scene.nodeCamera.far = 1.2;
+         this.near = 1;
+         this.far = 10000;
       }
       else
       {
-         this.engine.scene.nodeCamera.near = 0.00001;
-         this.engine.scene.nodeCamera.far = 10;
+         this.near = 0.00001;
+         this.far = 10;
       }
 
       // read possible navigation command from outside:
