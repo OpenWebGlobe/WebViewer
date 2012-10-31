@@ -294,11 +294,31 @@ function DynamicNavigationNode(options)
 
       }
 
-      this.matR1.Multiply(this.matTrans, this.matNavigation);
+      //----------------------------------------------------------------------------------
+      // old: This implementation uses inverse, this is not necessary!!!
+     /* this.matR1.Multiply(this.matTrans, this.matNavigation);
       this.matR2.Multiply(this.matR1, this.matBody);
       this.matR1.Multiply(this.matR2, this.matCami3d);
 
       this.matView.Inverse(this.matR1);
+*/
+      //----------------------------------------------------------------------------------
+      // new: this implementation sets the translation component manually and therefore
+      //      doesn't require inverse matrix!
+      this.matR1.CopyFrom(this.matNavigation);
+      this.matR2.Multiply(this.matR1, this.matBody);
+      this.matR1.Multiply(this.matR2, this.matCami3d);
+      this.matView.CopyFrom(this.matR1);
+      this.matView.Transpose();
+
+      this.transVec = new vec3(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
+      var a = this.matView.MultiplyVec3(this.transVec);
+      //----------------------------------------------------------------------------------
+      this.matView._values[12] = -a._values[0];
+      this.matView._values[13] = -a._values[1];
+      this.matView._values[14] = -a._values[2];
+
+
 
       ts.SetCompassDirection(this._yaw);
       ts.SetPosition(this.geocoord[0], this.geocoord[1], this.geocoord[2]);
@@ -822,6 +842,7 @@ function DynamicNavigationNode(options)
             {
                p = 0.001;
             }
+
             var deltaSurface = p * dTick / 50000;
             // navigate along geodetic line
             var lat_rad = Math.PI * this._latitude / 180; // deg2rad
@@ -839,8 +860,14 @@ function DynamicNavigationNode(options)
             B2 = deltaB + B1;
             L2 = deltaL + L1;
 
+
             this._longitude = 180 * L2 / Math.PI;
             this._latitude = 180 * B2 / Math.PI;
+            //this._longitude = (this._longitude + 0.000001 * Math.cos(A1));
+            //this._latitude  = (this._latitude + 0.000001 * Math.sin(A1));
+
+           //console.log(this._longitude+","+this._latitude);
+            //console.log(dTick);
          }
       }
 

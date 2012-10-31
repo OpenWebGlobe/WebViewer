@@ -201,7 +201,7 @@ MathUtils.InterpolateArray = function(arr,index)
    }
 }
 //------------------------------------------------------------------------------
-/** @description Inverse Geodetic Problem (Zweite Geodätische Hauptaufgabe)
+/** @description Inverse Geodetic Problem (Zweite Geodï¿½tische Hauptaufgabe)
   * Input: lng0, lat0: First point (radiant)
   *        lng1, lat1: second point (radiant)
   * Output:
@@ -237,7 +237,7 @@ MathUtils.InverseGeodeticProblem = function(lng0, lat0, lng1, lat1, result)
 }
 //------------------------------------------------------------------------------
 /**
-  * @description Direct Geodetic Problem (Erste Geodätische Hauptaufgabe)
+  * @description Direct Geodetic Problem (Erste Geodï¿½tische Hauptaufgabe)
   *              solved using Runge-Kutta
   * Input: lng0, lat0: Coordinate of point (radiant)
   *        azi0: azimuth (radiant)
@@ -263,7 +263,7 @@ MathUtils.DirectGeodeticProblem = function(lng0, lat0, s, azi0, result)
    B = lat0;
   
    // m: number of iterations
-   var m=1;
+   var m=4;
 
    dS = s/m;
    s = 0;

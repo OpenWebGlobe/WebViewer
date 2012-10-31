@@ -99,12 +99,11 @@ GeoCoord.prototype.GetElevation = function()
     result[0] = (Rn + this._wgscoords[2]) * coslat * coslong;
     result[1] = (Rn + this._wgscoords[2]) * coslat * sinlong;
     result[2] = (WGS84_E_SQQ*Rn + this._wgscoords[2]) * sinlat;
-   
-   
-    
+
     result[0] *= CARTESIAN_SCALE_INV;
     result[1] *= CARTESIAN_SCALE_INV;
     result[2] *= CARTESIAN_SCALE_INV;
+
  }
 
 //------------------------------------------------------------------------------
@@ -126,7 +125,8 @@ GeoCoord.prototype.GetElevation = function()
     x *= CARTESIAN_SCALE;
     y *= CARTESIAN_SCALE;
     z *= CARTESIAN_SCALE;
-    
+
+
     for (var i=0;i<10;i++)
     {
        sinlat2 = Math.sin(_latitude);
@@ -134,7 +134,7 @@ GeoCoord.prototype.GetElevation = function()
        coslat = Math.cos(_latitude),
        Rn = WGS84_a / Math.sqrt(1-WGS84_E_SQUARED*sinlat2);
        _elevation = Math.sqrt(x*x+y*y) / coslat - Rn;
-       _latitude = Math.atan2(z/Math.sqrt(x*x+y*y), 1-(Rn*WGS84_E_SQUARED)/(Rn+_elevation)); 
+       _latitude = Math.atan2(z/Math.sqrt(x*x+y*y), 1-(Rn*WGS84_E_SQUARED)/(Rn+_elevation));
     }
      
    this._wgscoords[0] = MathUtils.Rad2Deg(_longitude);
