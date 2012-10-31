@@ -818,7 +818,7 @@ function DynamicNavigationNode(options)
             }
             var deltaSurface = p * dTick / 50000;
             // navigate along geodetic line
-            var lat_rad = Math.PI * this._latitude / 180; // deg2rad
+            /*var lat_rad = Math.PI * this._latitude / 180; // deg2rad
             var lng_rad = Math.PI * this._longitude / 180; // deg2rad
             var sinlat = Math.sin(lat_rad);
             var coslat = Math.cos(lat_rad);
@@ -830,8 +830,30 @@ function DynamicNavigationNode(options)
             var deltaB = (WGS84_a / Rm) * deltaSurface * Math.cos(A1);
             var deltaL = (WGS84_a / Rn) * deltaSurface * Math.sin(A1) / Math.cos(B1);
             var A2, B2, L2;
-            B2 = deltaB + B1;
-            L2 = deltaL + L1;
+            B2 = deltaB*0.01 + B1;
+            L2 = deltaL*0.01 + L1;*/
+
+            var lat_rad = Math.PI * this._latitude / 180; // deg2rad
+            var lng_rad = Math.PI * this._longitude / 180; // deg2rad
+
+            var sinlat = Math.sin(lat_rad);
+            var coslat = Math.cos(lat_rad);
+            var A1 = this._yaw + deltaYaw;
+
+            var B1 = lat_rad;
+            var L1 = lng_rad;
+            var Rn = WGS84_a / Math.sqrt(1.0 - WGS84_E_SQUARED * sinlat * sinlat);
+            var Rm = Rn / (1 + WGS84_E_SQUARED2 * coslat * coslat);
+
+            //var dB = (Math.sqrt(1.0 - WGS84_E_SQUARED * sinlat * sinlat) / (1 + WGS84_E_SQUARED2 * coslat * coslat)) * deltaSurface * Math.cos(A1);
+            //var dL = Math.sqrt(1.0 - WGS84_E_SQUARED * sinlat * sinlat) * deltaSurface * Math.sin(A1) / Math.cos(B1);
+
+            var deltaB = (WGS84_a / Rm) * deltaSurface * Math.cos(A1);
+            var deltaL = (WGS84_a / Rn) * deltaSurface * Math.sin(A1) / Math.cos(B1);
+            var A2, B2, L2;
+
+            B2 = deltaB*0.1 + B1;
+            L2 = deltaL*0.1 + L1;
 
             this._longitude = 180 * L2 / Math.PI;
             this._latitude = 180 * B2 / Math.PI;
