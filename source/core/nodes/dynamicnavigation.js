@@ -879,8 +879,8 @@ function DynamicNavigationNode(options)
             var deltaL = (WGS84_a / Rn) * deltaSurface * Math.sin(A1) / Math.cos(B1);
             var A2, B2, L2;
 
-            B2 = deltaB*0.1 + B1;
-            L2 = deltaL*0.1 + L1;
+            B2 = deltaB*0.05 + B1;
+            L2 = deltaL*0.05 + L1;
 
 
             this._longitude = 180 * L2 / Math.PI;
