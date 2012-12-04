@@ -209,13 +209,14 @@ for line in lines:
                     newy = float(tokens2[1])
                     newz = float(tokens2[2])
 
+
                 if bFlipxy:
                     s = str(newy) + ',' + str(-newz) + ',' + str(newx)+','
 
                 elif bFlipxz:
-                    s = str(newz) + ',' + str(newy) + ',' + str(newx)+','
-                else:
                     s = str(newx) + ',' + str(newy) + ',' + str(newz)+','
+                else:
+                    s = str(newy) + ',' + str(newz) + ',' + str(newx)+','
 
 
                 for i in range(3,len(tokens2)):
@@ -241,7 +242,7 @@ for line in lines:
 
         g.write("{\n\"id\"  :  \""+str(id)+"\",")
         g.write("\n\"Center\"  :  ["+str(lng)+","+str(lat)+","+str(elv)+"],")
-        g.write("\n\"DiffuseMap\"  :  \""+str(texture)+"\",")
+        g.write("\n\"VisibilityDistance\"  :  "+str(100000000)+",")
         g.write("\n\"VertexSemantic\"  :  \""+vertexsemantic+"\",\n\"Vertices\"  :  [")
         for x in ilb:
             if(x != " "):
