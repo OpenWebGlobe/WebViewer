@@ -213,7 +213,7 @@ function DynamicNavigationNode(options)
       }
       else
       {
-         this.near = 0.00001;
+         this.near = 0.000000001;
          this.far = 10;
       }
 
