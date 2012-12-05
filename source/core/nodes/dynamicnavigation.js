@@ -205,7 +205,7 @@ function DynamicNavigationNode(options)
    //---------------------------------------------------------------------------
    this.OnTraverse = function (ts)
    {
-
+      /*
       if(CARTESIAN_SCALE==1.0)
       {
          this.near = 0.1;
@@ -214,9 +214,28 @@ function DynamicNavigationNode(options)
       else
       {
          this.near = 0.000000001;
-         this.far = 10;
+         this.far = 1000000;
       }
+*/
+      if(CARTESIAN_SCALE==1.0)
+      {
+         this.near = 1;
+         this.far = 10000;
+      }
+      else
+      {
+         if(this._ellipsoidHeight<3000)
+         {
+            this.near = 0.0000001;
+            this.far = 1;
+         }
+         else
+         {
+            this.near = 0.00001;
+            this.far = 10;
+         }
 
+      }
 
 
       if(this.fov >= 0)
