@@ -32,6 +32,7 @@ goog.provide('owg.ShaderManager');
 //    PNT: Position, Normal, Texcoord
 //    PC:  Position, Color
 //    PT:  Position, Texcoord
+//    PNC: Position, Normal, Color
 //    PNCT: Position, Normal, Color, Texcoord
 //
 //------------------------------------------------------------------------------
@@ -74,6 +75,14 @@ function ShaderManager(gl)
    this.vs_pc = null;
    /** @type {WebGLShader} */
    this.fs_pc = null;
+
+   // PNT:
+   /** @type {WebGLProgram} */
+   this.program_pnc = null;
+   /** @type {WebGLShader} */
+   this.vs_pnc = null;
+   /** @type {WebGLShader} */
+   this.fs_pnc = null;
    
    // PT:
    /** @type {WebGLProgram} */
@@ -150,7 +159,7 @@ ShaderManager.prototype.UseShader_P = function(modelviewprojection,color)
 }
 //------------------------------------------------------------------------------
 /**
- * @param {mat4} normalmatrix 
+ * @param {mat4} normalmatrix
  * @param {mat4} modelview
  * @param {mat4} projection
  */
@@ -163,13 +172,13 @@ ShaderManager.prototype.UseShader_PNT = function(normalmatrix, modelview, projec
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matProjection"), false, projection.ToFloat32Array());
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnt, "matNormal"), false, normalmatrix.ToFloat32Array());
       this.gl.uniform1i(this.gl.getUniformLocation(this.program_pnt, "uTexture"),0);
-   }   
+   }
 }
 //------------------------------------------------------------------------------
 /**
- *  
+ *
  * @param {mat4} modelviewprojection
- * @param {vec4} color 
+ * @param {vec4} color
  */
 ShaderManager.prototype.UseShader_PC = function(modelviewprojection, color)
 {
@@ -179,6 +188,28 @@ ShaderManager.prototype.UseShader_PC = function(modelviewprojection, color)
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pc, "matMVP"), false, modelviewprojection.ToFloat32Array());
       this.gl.uniform4fv(this.gl.getUniformLocation(this.program_pc, "uColor"), color.ToFloat32Array());
    }    
+}
+//------------------------------------------------------------------------------
+/**
+ * @param {mat4} normalmatrix
+ * @param {mat4} modelview
+ * @param {mat4} modelviewprojection
+ * @param {vec4} color
+ */
+ShaderManager.prototype.UseShader_PNC = function(normalmatrix, modelview, modelviewprojection, color)
+{
+   if (this.program_pnc)
+   {
+      var ambientcolor = new vec4([0.1,0.1,0.1,0.0]);
+
+      this.gl.useProgram(this.program_pnc);
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnc, "matMVP"), false, modelviewprojection.ToFloat32Array());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnc, "matNormal"), false, normalmatrix.ToFloat32Array());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnc, "matModelView"), false, modelview.ToFloat32Array());
+
+      this.gl.uniform4fv(this.gl.getUniformLocation(this.program_pnc, "uAmbientColor"), ambientcolor.ToFloat32Array());
+      this.gl.uniform4fv(this.gl.getUniformLocation(this.program_pnc, "uColor"), color.ToFloat32Array());
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -407,6 +438,74 @@ ShaderManager.prototype.InitShader_PC = function()
       {
           alert(this.gl.getProgramInfoLog(this.program_pc));
           return;
+      }
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ *  Initializes the point,color shader for lighting
+ *  internal use
+ */
+ShaderManager.prototype.InitShader_PNC = function()
+{
+   var src_vertexshader_PNC= "uniform mat4 matMVP;\n" +
+                             "attribute vec3 aPosition;\n" +
+                             "attribute vec3 aNormal;" +
+                             "attribute vec4 aColor;\n" +
+                             "varying vec4 vColor;\n\n" +
+                             "uniform mat4 matNormal;\n" +
+                             "uniform mat4 matModelView;\n" +
+                             "varying vec2 vTexCoord;\n" +
+                             "varying vec4 vPosition;" +
+                             "varying vec3 vNormal;\n\n" +
+                             "void main()\n" +
+                             "{\n" +
+                             "   gl_Position = matMVP * vec4(aPosition, 1.0);\n" +
+                             "   vPosition = matModelView * vec4(aPosition, 1.0);\n" +
+                             "   vNormal = normalize((matNormal * vec4(aNormal,1.0)).xyz);" +
+                             "   vColor = aColor;\n" +
+                             "}\n";
+   var src_fragmentshader_PNC= "#ifdef GL_ES\n" +
+                               "precision highp float;\n" +
+                               "#endif\n\n" +
+                               "uniform vec4 uAmbientColor;\n" +
+                               "uniform vec4 uColor;\n" +
+                               "varying vec4 vColor;\n" +
+                               "varying vec3 vNormal;\n" +
+                               "varying vec4 vPosition;\n" +
+                               "void main()\n" +
+                               "{\n" +
+                               "   vec3 L = normalize(-vPosition.xyz);\n" +
+                               "   float lamb1 = dot(normalize(vNormal), L);\n" +
+                               "   float lamb2 = dot(normalize(vNormal), -L);\n" +
+                               "   vec4 diff1 = clamp(vec4(vColor.xyz * lamb1,1.0),0.0,1.0);\n" +
+                               "   vec4 diff2 = clamp(vec4(vColor.xyz * lamb2,1.0),0.0,1.0);\n" +
+                               "   gl_FragColor = diff1+diff2;\n" +
+                               "}\n";
+
+   this.vs_pnc = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PNC);
+   this.fs_pnc = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_PNC);
+
+   if (this.vs_pnc && this.fs_pnc)
+   {
+      // create program object
+      this.program_pnc = this.gl.createProgram();
+
+      // attach our two shaders to the program
+      this.gl.attachShader(this.program_pnc, this.vs_pnc);
+      this.gl.attachShader(this.program_pnc, this.fs_pnc);
+
+      // setup attributes
+      this.gl.bindAttribLocation(this.program_pnc, 0, "aPosition");
+      this.gl.bindAttribLocation(this.program_pnc, 1, "aNormal");
+      this.gl.bindAttribLocation(this.program_pnc, 2, "aColor");
+
+      // linking
+      this.gl.linkProgram(this.program_pnc);
+      if (!this.gl.getProgramParameter(this.program_pnc, this.gl.LINK_STATUS) && !this.gl.isContextLost())
+      {
+         alert(this.gl.getProgramInfoLog(this.program_pnc));
+         return;
       }
    }
 }
@@ -720,6 +819,7 @@ ShaderManager.prototype.InitShaders = function()
    this.InitShader_Point();
    this.InitShader_PT_chroma();
    this.InitShader_Blur();
+   this.InitShader_PNC();
 } 
 //------------------------------------------------------------------------------
 /**

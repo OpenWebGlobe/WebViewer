@@ -79,6 +79,7 @@ var ObjectJSON;
  P:    Position only
  PNT:  Position, Normal, Texcoord
  PC:   Position, Color
+ PNC:  Position, Normal, Color
  PT:   Position, Texcoord
  PNCT: Position, Normal, Color, Texcoord
 
@@ -256,6 +257,20 @@ Surface.prototype.SetBufferPC = function (pc)
       this.vertexbufferdata = new Float32Array(pc);
       this.mode = "pc";
       this.vertexLength = 7;
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Specify a buffer with the vertex semantic "pnc"
+ * @param {Array|Float32Array} pnc the point,normal,color array.
+ */
+Surface.prototype.SetBufferPNC = function(pnc)
+{
+   if ((pnc.length % 10) == 0)
+   {
+      this.vertexbufferdata = new Float32Array(pnc);
+      this.mode = "pnc";
+      this.vertexLength = 10;
    }
 }
 //------------------------------------------------------------------------------
@@ -467,6 +482,16 @@ Surface.prototype.Draw = function (opt_ranged, opt_count, opt_offset, opt_fontco
          this.engine.shadermanager.UseShader_PC(this.engine.matModelViewProjection,this.highlightcolor);
          break;
 
+      case "pnc":
+         this.gl.enableVertexAttribArray(0);
+         this.gl.enableVertexAttribArray(1);
+         this.gl.enableVertexAttribArray(2);
+         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 10 * 4, 0 * 4); // position
+         this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 10 * 4, 3 * 4); // normal
+         this.gl.vertexAttribPointer(2, 4, this.gl.FLOAT, false, 10 * 4, 6 * 4); // color
+         this.engine.shadermanager.UseShader_PNC(this.engine.matNormal, this.engine.matModelView, this.engine.matModelViewProjection, this.highlightcolor);
+         break;
+
       case "pt":
          this.gl.enableVertexAttribArray(0);
          this.gl.enableVertexAttribArray(1);
@@ -528,7 +553,7 @@ Surface.prototype.Draw = function (opt_ranged, opt_count, opt_offset, opt_fontco
          break;
 
       default:
-         alert("unknown surface mode!!");
+         alert("Draw: unknown surface mode!!");
 
    }
 
@@ -659,6 +684,16 @@ Surface.prototype.DrawSolid = function (opt_ranged, opt_count, opt_offset, opt_f
          this.engine.shadermanager.UseShader_P(this.engine.matModelViewProjection, this.solidcolor);
          break;
 
+      case "pnc":
+         this.gl.enableVertexAttribArray(0);
+         this.gl.enableVertexAttribArray(1);
+         this.gl.enableVertexAttribArray(2);
+         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 10 * 4, 0 * 4); // position
+         this.gl.vertexAttribPointer(1, 3, this.gl.FLOAT, false, 10 * 4, 3 * 4); // normal
+         this.gl.vertexAttribPointer(2, 4, this.gl.FLOAT, false, 10 * 4, 6 * 4); // color
+         this.engine.shadermanager.UseShader_PNC(this.engine.matNormal, this.engine.matModelView, this.engine.matModelViewProjection, this.solidcolor);
+         break;
+
       case "pt":
          this.gl.enableVertexAttribArray(0);
          this.gl.enableVertexAttribArray(1);
@@ -776,36 +811,60 @@ Surface.prototype.CreateFromJSONObject = function (jsonobject, readycbf, failedc
          surface.numvertex = jsonobject['Vertices'].length / 3;
          surface.SetBufferP(jsonobject['Vertices']);
          surface.mode = "p";
+         // indices
+         surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
+         surface.numindex = jsonobject['Indices'].length;
          break;
 
       case "pnt":
          surface.numvertex = jsonobject['Vertices'].length / 8;
          surface.SetBufferPNT(jsonobject['Vertices']);
          surface.mode = "pnt";
+         // indices
+         surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
+         surface.numindex = jsonobject['Indices'].length;
          break;
 
       case "pc":
          surface.numvertex = jsonobject['Vertices'].length / 7;
          surface.mode = "pc";
          surface.SetBufferPC(jsonobject['Vertices']);
+         // indices
+         surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
+         surface.numindex = jsonobject['Indices'].length;
+         break;
+
+      case "pnc":
+         surface.numvertex = jsonobject['Vertices'].length / 10;
+         surface.mode = "pnc";
+         surface.SetBufferPNC(jsonobject['Vertices']);
+         // indices
+         surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
+         surface.numindex = jsonobject['Indices'].length;
          break;
 
       case "pt":
          surface.numvertex = jsonobject['Vertices'].length / 5;
          surface.mode = "pt";
          surface.SetBufferPT(jsonobject['Vertices']);
+         // indices
+         surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
+         surface.numindex = jsonobject['Indices'].length;
          break;
 
       case "pnct":
          surface.numvertex = jsonobject['Vertices'].length / 12;
          surface.mode = "p";
          surface.SetBufferPNCT(jsonobject['Vertices']);
+         // indices
+         surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
+         surface.numindex = jsonobject['Indices'].length;
          break;
 
       default:
-         alert("unknown surface mode!!");
+         alert("CreateFromJSONObject: unknown surface mode!!");
    }
-   surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
+
 
    if (jsonobject['DiffuseMap'])
    {
@@ -830,7 +889,7 @@ Surface.prototype.CreateFromJSONObject = function (jsonobject, readycbf, failedc
    }
 
 
-   surface.numindex = jsonobject['Indices'].length;         // number of elements of index vector
+
 
    /*if (this.curtainindex>0)
     {
