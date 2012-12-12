@@ -200,7 +200,7 @@ ShaderManager.prototype.UseShader_PNC = function(normalmatrix, modelview, modelv
 {
    if (this.program_pnc)
    {
-      var ambientcolor = new vec4([0.1,0.1,0.1,0.0]);
+      var ambientcolor = new vec4(0.1,0.1,0.1,0.0);
 
       this.gl.useProgram(this.program_pnc);
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pnc, "matMVP"), false, modelviewprojection.ToFloat32Array());
