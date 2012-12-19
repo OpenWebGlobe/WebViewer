@@ -77,6 +77,8 @@ function LogosNode()
       this.texSliderRail = null;
       /** @type {Texture} */
       this.texCrosshair = null;
+      /** @type {Texture} */
+      this.owglogo = null;
       /** @type {number} */
       this.mx = 0;
       /** @type {number} */
@@ -128,8 +130,9 @@ function LogosNode()
       this.crosshairy = 0;
       /** @type {vec4} */
       this.highlightcolor = new vec4(0.7,0.9,1,1);
-      
-      
+      /** @type {boolean} */
+      this.showlogo = true;
+
       //------------------------------------------------------------------------
       this.OnChangeState = function()
       {
@@ -275,7 +278,14 @@ function LogosNode()
             {
                this.texSlider.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true, false);
             }
-            
+
+            if (this.owglogo && this.showlogo)
+            {
+               xpos = this.engine.width-1-170-this.guiOffsetX;
+               ypos = this.guiOffsetY-25;
+               this.owglogo.Blit(xpos-16, ypos-16, 0, 0, 1, 1, true, false)
+            }
+
             /*ypos = this.engine.height-1-72-128-64-64-this.guiOffsetY;
             this.compassr.Blit(xpos-32, ypos-32,0,this.yaw,0.5,0.5,true, false);    
             this.compassbg.Blit(xpos-32, ypos-32,0,0,0.5,0.5,true, false);*/
@@ -413,6 +423,9 @@ function LogosNode()
       
           this.texCrosshair = new Texture(this.engine);
           this.texCrosshair.loadTexture(owg.ARTWORK_PATH + "globenavigation/crosshair.png");
+
+          this.owglogo = new Texture(this.engine);
+          this.owglogo.loadTexture(owg.ARTWORK_PATH + "owg.png");
       }
       //------------------------------------------------------------------------
       this.OnExit = function()
@@ -434,6 +447,7 @@ function LogosNode()
          this.texSliderClicked.Destroy();
          this.texSliderRail.Destroy();
          this.texCrosshair.Destroy();
+         this.owglogo.Destroy();
 
       }
       //------------------------------------------------------------------------
@@ -795,6 +809,11 @@ function LogosNode()
                // make sure angle is in range [0,360]
                this.ypstartangle = this._adjustAngle(this.ypstartangle);
             }   
+         }
+         //---------------------------------------------------------------------
+         this.HideLogo = function(b)
+         {
+            this.showlogo = b;
          }
          //---------------------------------------------------------------------
 

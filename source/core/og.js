@@ -1121,6 +1121,21 @@ function ogToWGS84(scene_id, x, y, z)
 }
 goog.exportSymbol('ogToWGS84', ogToWGS84);
 //------------------------------------------------------------------------------
+/**
+ * @description ShowLogo
+ * @param {number} scene_id scene id.
+ * @param {boolean} hide true to hide logo, false to show logo
+ */
+function ogHideLogo(scene_id, hide)
+{
+   /** @type {ogScene} */
+   var scene = /** @type {ogScene} */ _GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      scene.HideLogo(hide);
+   }
+}
+goog.exportSymbol('ogCreateCamera', ogCreateCamera);
 //##############################################################################
 // ** CAMERA OBJECT **
 //##############################################################################

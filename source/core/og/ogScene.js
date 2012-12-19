@@ -211,4 +211,14 @@ ogScene.prototype.SetNavigationMode = function(navigationmode, opt_options)
    engine.scene.SetNavigationMode(opt_options);
 }
 //------------------------------------------------------------------------------
+/**
+ * @param {boolean} hide
+ */
+ogScene.prototype.HideLogo = function(hide)
+{
+   /** @type {ogContext} */
+   var context = /** @type ogContext */this.parent;
+
+   context.engine.scene.nodeLogos.HideLogo(hide);
+}
 
