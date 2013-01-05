@@ -52,6 +52,8 @@ function ogScene()
    this.scenetype = OG_SCENE_3D_ELLIPSOID_WGS84;
    /** @type {boolean} */
    this.rendertotexture = true;
+   /** @type {boolean} */
+   this.shownavigation = true;
 }
 //------------------------------------------------------------------------------
 ogScene.prototype = new ogObject();
@@ -77,6 +79,11 @@ ogScene.prototype.ParseOptions = function(options)
    if (goog.isDef(options["rendertotexture"]))
    {
       this.rendertotexture = options["rendertotexture"];
+   }
+   
+   if (goog.isDef(options["shownavigation"])) 
+   {
+   	this.shownavigation = options["shownavigation"];
    }
 }
 //------------------------------------------------------------------------------
