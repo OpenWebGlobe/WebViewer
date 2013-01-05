@@ -1487,6 +1487,7 @@ function ogCreateWorld(scene_id)
    {
       var worldoptions = {};
       worldoptions["scenetype"] = scene.scenetype;
+      worldoptions["shownavigation"] = scene.shownavigation;
       var world = _CreateObject(OG_OBJECT_WORLD, scene, worldoptions);
       scene.world = world;
 

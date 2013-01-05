@@ -52,7 +52,16 @@ function SceneGraph(engine, options)
    // Access Nodes:
    this.nodeCamera = new CameraNode();                      // Camera Node (for projection matrix)
    this.nodeRenderObject = new RenderObjectNode(options);   // Render Object Node (render openglobe objects, e.g. the virtual globe)
-   this.nodeLogos = new LogosNode();
+      
+   if (!goog.isDef(options["shownavigation"])) 
+   {
+      options["shownavigation"] = true;
+   }
+      
+   if (options["shownavigation"]) 
+   {
+      this.nodeLogos = new LogosNode();
+   }
    
    this.nodeCamera.SetEngine(engine);
    this.nodeCamera.InitNode();
@@ -60,8 +69,11 @@ function SceneGraph(engine, options)
    this.nodeRenderObject.SetEngine(engine);
    this.nodeRenderObject.InitNode();
 
-   this.nodeLogos.SetEngine(engine);
-   this.nodeLogos.InitNode();
+   if (this.nodeLogos)
+   {
+      this.nodeLogos.SetEngine(engine);
+      this.nodeLogos.InitNode();
+   }
    
    this.traversalstate = new TraversalState();
 
@@ -81,7 +93,10 @@ SceneGraph.prototype.Tick = function(nMSeconds)
    this.nodeNavigation.OnTick(nMSeconds);
    this.nodeCamera.OnTick(nMSeconds);
    this.nodeRenderObject.OnTick(nMSeconds);
-   this.nodeLogos.OnTick(nMSeconds);
+   if (this.nodeLogos)
+   {
+      this.nodeLogos.OnTick(nMSeconds);
+   }
 };
 //------------------------------------------------------------------------------
 /**
@@ -96,7 +111,11 @@ SceneGraph.prototype.Traverse = function()
    this.nodeNavigation.OnTraverse(this.traversalstate);
    this.nodeCamera.OnTraverse(this.traversalstate);
    this.nodeRenderObject.OnTraverse(this.traversalstate);
-   this.nodeLogos.OnTraverse(this.traversalstate);
+      
+   if (this.nodeLogos)
+   {
+      this.nodeLogos.OnTraverse(this.traversalstate);
+   }
    
    this.traversalstate.PopModel();
    this.traversalstate.PopView();
@@ -119,9 +138,12 @@ SceneGraph.prototype.Render = function()
    // Render globe, poi, geometry, billboards, images on terrain
    this.nodeRenderObject.OnChangeState();
    this.nodeRenderObject.OnRender();
-       
-   this.nodeLogos.OnChangeState();
-   this.nodeLogos.OnRender();        
+   
+   if (this.nodeLogos) 
+   {    
+      this.nodeLogos.OnChangeState();
+      this.nodeLogos.OnRender();        
+	}
 }
 
 //------------------------------------------------------------------------------
