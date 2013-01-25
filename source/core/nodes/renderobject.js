@@ -69,8 +69,6 @@ function RenderObjectNode(options)
       this.custom = false;
       /** @type {Surface} */
       this.globeshape = null;
-      /** @type {boolean} */
-      this.postprocess = true;
 
       if (options["type"] == "custom")
       {
@@ -118,14 +116,7 @@ function RenderObjectNode(options)
             {
                if (goog.isDef(this.texture.blitMesh) && !goog.isNull(this.texture.blitMesh))
                {
-                  if (this.postprocess)
-                  {
-                     this.texture.blitMesh.mode = "blur";
-                  }
-                  else
-                  {
                      this.texture.blitMesh.mode = "pt";
-                  }
                }
                this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
             }
