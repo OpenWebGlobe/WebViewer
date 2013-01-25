@@ -140,8 +140,7 @@ Mercator.MercatorToWGS84 = function(x, y, result)
    y *= Math.PI;
    
    var t = Math.exp(-y);   
-   var lat = Math.PI/2 - 2.0 * Math.atan(t);    //initial value for iteration
-   
+   var lat = Math.PI/2 - 2.0 * Math.atan(t);
    var lng = x / 1.0 + LNG_RAD0;
    
    lat = MathUtils.Rad2Deg(lat);
