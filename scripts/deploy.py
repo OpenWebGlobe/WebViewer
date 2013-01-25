@@ -13,7 +13,7 @@ import fileinput
 ###############################
 # SETTINGS
 ###############################
-OpenWebGlobe_Version = "0.9.14"
+OpenWebGlobe_Version = "0.9.21"
 ###############################
 deploy_path = "../../WebSDK/"
 viewer_path = "WebGLViewer/"
