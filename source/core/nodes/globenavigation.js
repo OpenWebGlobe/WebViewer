@@ -384,71 +384,93 @@ function GlobeNavigationNode()
       {
          if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == 0)
          {
-            var pickresult = {};
-            var mx, my;
-
-            // if crosshair is still displayed, zoom into there, otherwise use
-            // current mouse position.
-            if (this.crosshairdelay > 0)
+            if (this._ellipsoidHeight>50000)
             {
-               mx = this.crosshairpos[0];
-               my = this.crosshairpos[1];
-            }
-            else
-            {
-               mx = this._nMouseX;
-               my = this._nMouseY;
-            }
-
-            this.engine.PickGlobe(mx, my, pickresult);
-            if (pickresult["hit"])
-            {
-               this.crosshairpos = [mx, my];
-               this.crosshairdelay = 500;
-               this.pos.Set(this._longitude, this._latitude, this._ellipsoidHeight);
-               this.pos.ToCartesian(this.geocoord);
-               var dx = this.geocoord[0] - pickresult["x"];
-               var dy = this.geocoord[1] - pickresult["y"];
-               var dz = this.geocoord[2] - pickresult["z"];
                if (e.deltaY > 0)
                {
-                  dx *= 0.2;
-                  dy *= 0.2;
-                  dz *= 0.2;
+                  this._ellipsoidHeight += 0.2*this._ellipsoidHeight;
                }
                else
                {
-                  dx *= -0.2;
-                  dy *= -0.2;
-                  dz *= -0.2;
+                  this._ellipsoidHeight -= 0.2*this._ellipsoidHeight;
                }
-               var gc = new GeoCoord(0, 0, 0);
-               gc.FromCartesian(this.geocoord[0] + dx, this.geocoord[1] + dy, this.geocoord[2] + dz);
-               this._longitude = gc._wgscoords[0];
-               this._latitude = gc._wgscoords[1];
-               if (!this.bElevationLock)
+
+               // prevent "loosing" earth when higher then 150000m
+               if (this._ellipsoidHeight>150000)
                {
-                  this._ellipsoidHeight = gc._wgscoords[2];
-               }
-               else
-               {
-                  if (gc._wgscoords[2] > this._ellipsoidHeight)
-                  {
-                     this._ellipsoidHeight = gc._wgscoords[2];
-                  }
+                  this._pitch = -Math.PI/2;
                }
 
                this.bElevationChanged = true;
+            }
+            else
+            {
+               var pickresult = {};
+               var mx, my;
 
-               if (this._ellipsoidHeight < this.minAltitude)
+               // if crosshair is still displayed, zoom into there, otherwise use
+               // current mouse position.
+               if (this.crosshairdelay > 0)
                {
-                  this._ellipsoidHeight = this.minAltitude;
-                  this.bElevationChanged = true;
+                  mx = this.crosshairpos[0];
+                  my = this.crosshairpos[1];
                }
-               else if (this._ellipsoidHeight > this.maxAltitude)
+               else
                {
-                  this._ellipsoidHeight = this.maxAltitude;
+                  mx = this._nMouseX;
+                  my = this._nMouseY;
+               }
+
+               this.engine.PickGlobe(mx, my, pickresult);
+               if (pickresult["hit"])
+               {
+                  this.crosshairpos = [mx, my];
+                  this.crosshairdelay = 500;
+                  this.pos.Set(this._longitude, this._latitude, this._ellipsoidHeight);
+                  this.pos.ToCartesian(this.geocoord);
+                  var dx = this.geocoord[0] - pickresult["x"];
+                  var dy = this.geocoord[1] - pickresult["y"];
+                  var dz = this.geocoord[2] - pickresult["z"];
+                  if (e.deltaY > 0)
+                  {
+                     dx *= 0.2;
+                     dy *= 0.2;
+                     dz *= 0.2;
+                  }
+                  else
+                  {
+                     dx *= -0.2;
+                     dy *= -0.2;
+                     dz *= -0.2;
+                  }
+                  var gc = new GeoCoord(0, 0, 0);
+                  gc.FromCartesian(this.geocoord[0] + dx, this.geocoord[1] + dy, this.geocoord[2] + dz);
+                  this._longitude = gc._wgscoords[0];
+                  this._latitude = gc._wgscoords[1];
+                  if (!this.bElevationLock)
+                  {
+                     this._ellipsoidHeight = gc._wgscoords[2];
+                  }
+                  else
+                  {
+                     if (gc._wgscoords[2] > this._ellipsoidHeight)
+                     {
+                        this._ellipsoidHeight = gc._wgscoords[2];
+                     }
+                  }
+
                   this.bElevationChanged = true;
+
+                  if (this._ellipsoidHeight < this.minAltitude)
+                  {
+                     this._ellipsoidHeight = this.minAltitude;
+                     this.bElevationChanged = true;
+                  }
+                  else if (this._ellipsoidHeight > this.maxAltitude)
+                  {
+                     this._ellipsoidHeight = this.maxAltitude;
+                     this.bElevationChanged = true;
+                  }
                }
             }
          }
