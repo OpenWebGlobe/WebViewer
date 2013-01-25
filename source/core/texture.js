@@ -420,7 +420,6 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
  */
 Texture.prototype.Destroy = function()
 {
-   this.texture.image = null;
    this.engine.gl.deleteTexture(this.texture);
    this.texture = null;
 

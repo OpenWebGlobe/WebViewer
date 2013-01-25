@@ -330,11 +330,11 @@ Cache.prototype.removeItem_ = function(key)
     }, 0);
   }
   
-  if (item.Destroy != null)
+  if (item.value.Destroy != null)
   {
     setTimeout(function() 
     {
-       item.Destroy();
+       item.value.Destroy();
     }, 0);
   }
 };
