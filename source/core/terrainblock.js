@@ -392,92 +392,102 @@ TerrainBlock.prototype.CalcDistanceTo = function(vWhere)
 
 //------------------------------------------------------------------------------
 /**
-* @description Create Elevation Mesh
+* @description Create Empty Elevation Mesh (no data available)
 * @ignore
 */
 TerrainBlock.prototype._CreateElevationMesh = function()
 {
-   this.haselevation = false;
-
-   this.mesh = new Surface(this.engine);
-   this.mesh.lod = this.quadcode.length;
-
-   var blocksize;
-
-   if (this.quadcode.length<3)
-   {
-      blocksize = 2;
-   }
-   else if (this.quadcode.length<6)
-   {
-      blocksize = 9;
-   }
-   else
-   {
-      blocksize = 5;
-   }
-
-   //--------------------------
-   // (1) CREATE TEXTURE COORDS
-   //--------------------------
-   
-   var texcoordbuffer = new Array(2*blocksize*blocksize);
-   
-   var fdX = 1.0 / (blocksize-1);
-
-   for (var nV = 0; nV<blocksize; nV++)
-   {
-      for (var nU = 0; nU<blocksize; nU++)
-      {
-         texcoordbuffer[2*(nV*blocksize+nU)+0] =  nU*fdX;
-         texcoordbuffer[2*(nV*blocksize+nU)+1] =  1.0-nV*fdX;
-      }
-   }  
-   
-   //----------------------
-   // (2) CREATE POSITIONS
-   //----------------------
-
-   /** @type {Array.<number>} */
-   var positionbuffer = [];
-
-   var x0,y0,x1,y1;
-
    /** @type {Array.<number>} */
    var coords = new Array(4);
    /** @type {Array.<number>} */
    var xy_coord = new Array(2);
    /** @type {Array.<number>} */
    var xyz_cart = new Array(3);
-
    this.quadtree.QuadKeyToMercatorCoord(this.quadcode, coords);
-   x0 = coords[0]; y0 = coords[1]; x1 = coords[2]; y1 = coords[3];
 
    /** @type {number} */
-   var dH = (y1-y0)/(blocksize-1);
+   var x0 = coords[0];
    /** @type {number} */
-   var dW = (x1-x0)/(blocksize-1);
+   var y0 = coords[1];
+   /** @type {number} */
+   var x1 = coords[2];
+   /** @type {number} */
+   var y1 = coords[3];
+   /** @type {number} */
+   var gridsize;
+   /** @type {number} */
+
+   this.haselevation = false;
+
+   this.mesh = new Surface(this.engine);
+   this.mesh.lod = this.quadcode.length;
+
+   if (this.quadcode.length<3)
+   {
+      gridsize = 2;
+      curtainheight = 100000;
+   }
+   else if (this.quadcode.length<6)
+   {
+      gridsize = 9;
+      curtainheight = 100000;
+   }
+   else
+   {
+      gridsize = 5;
+      curtainheight = 1000;
+   }
+
+   // bounding box:
+   var bbminx = 1e20;
+   var bbminy = 1e20;
+   var bbminz = 1e20;
+   var bbmaxx = -1e20;
+   var bbmaxy = -1e20;
+   var bbmaxz = -1e20;
+
+
+   /** @type {Array.<number>} */
+   var interleavedbuffer = new Array();
+   /** @type {Array.<number>} */
+   var indexbuffer = new Array();
+
+   /** @type {number} */
+   var dH = (y1-y0)/(gridsize-1); // for x positions
+   /** @type {number} */
+   var dW = (x1-x0)/(gridsize-1); // for y positions
+   /** @type {number} */
+   var fdX = 1.0 / (gridsize-1);
+
+   // VERTICES
+
    var x_coord, y_coord;
    var x_cart, y_cart, z_cart;
    /** @type {GeoCoord} */
    var g = new GeoCoord();
 
-   for (var y=0;y<blocksize;y++)
+   for (var y=0;y<gridsize;y++)
    {
-      for (var x=0;x<blocksize;x++)
+      for (var x=0;x<gridsize;x++)
       {
          x_coord = x0 + x*dW;
          y_coord = y0 + y*dH;
 
          // Calculate 3D Position:
-
          Mercator.MercatorToWGS84(x_coord, y_coord, xy_coord);
          g.Set(xy_coord[0], xy_coord[1], 0.0);
          g.ToCartesian(xyz_cart);
          x_cart = xyz_cart[0];
          y_cart = xyz_cart[1];
          z_cart = xyz_cart[2];
-         
+
+         /*bbminx = Math.min(bbminx, x_cart);
+         bbminy = Math.min(bbminy, y_cart);
+         bbminz = Math.min(bbminz, z_cart);
+         bbmaxx = Math.max(bbmaxx, x_cart);
+         bbmaxy = Math.max(bbmaxy, y_cart);
+         bbmaxz = Math.max(bbmaxz, z_cart);*/
+
          if (x==0 && y==0)
          {
             this.vOffset = [x_cart, y_cart, z_cart];
@@ -487,81 +497,281 @@ TerrainBlock.prototype._CreateElevationMesh = function()
          {
             this.vTilePoints[0].Set(x_cart, y_cart, z_cart); 
          }
-         else if (x==blocksize-1 && y==0)
+         else if (x==gridsize-1 && y==0)
          {
             this.vTilePoints[1].Set(x_cart, y_cart, z_cart); 
          }
-         else if (x==blocksize-1 && y==blocksize-1)
+         else if (x==gridsize-1 && y==gridsize-1)
          {
             this.vTilePoints[2].Set(x_cart, y_cart, z_cart); 
          }
-         else if (x==0 && y==blocksize-1)
+         else if (x==0 && y==gridsize-1)
          {
             this.vTilePoints[3].Set(x_cart, y_cart, z_cart); 
          }
-         else if (x==(blocksize-1)/2 && y==(blocksize-1)/2)
+         else if (x==(gridsize-1)/2 && y==(gridsize-1)/2)
          {
             this.vTilePoints[4].Set(x_cart, y_cart, z_cart); 
          }
 
-         positionbuffer.push(x_cart - this.vOffset[0]);
-         positionbuffer.push(y_cart - this.vOffset[1]);
-         positionbuffer.push(z_cart - this.vOffset[2]);
+         // push position
+         interleavedbuffer.push(x_cart - this.vOffset[0]);
+         interleavedbuffer.push(y_cart - this.vOffset[1]);
+         interleavedbuffer.push(z_cart - this.vOffset[2]);
+         // push texcoord
+         interleavedbuffer.push(x*fdX);
+         interleavedbuffer.push(1-y*fdX);
       }
-
    }
-   
-   // create interleaved buffer:
-   var interleavedbuffer = new Array(5*blocksize*blocksize);
-   
-   for (var i=0;i<blocksize*blocksize;i++)
+   // add curtain vertices
+
+   var elevation;
+   var x,y;
+
+   // (1) Corners:
+
+   // NW-corner:
+   x=0; y=gridsize-1;
+   x_coord = x0 + x*dW;
+   y_coord = y0 + y*dH;
+   elevation = -curtainheight;
+   Mercator.MercatorToWGS84(x_coord, y_coord, xy_coord); g.Set(xy_coord[0], xy_coord[1], elevation); g.ToCartesian(xyz_cart);
+   x_cart = xyz_cart[0]; y_cart = xyz_cart[1]; z_cart = xyz_cart[2];
+   // push position
+   interleavedbuffer.push(x_cart - this.vOffset[0]);
+   interleavedbuffer.push(y_cart - this.vOffset[1]);
+   interleavedbuffer.push(z_cart - this.vOffset[2]);
+   // push texcoord
+   interleavedbuffer.push(x*fdX);
+   interleavedbuffer.push(1-y*fdX);
+   // SW-corner:
+   x=0; y=0;
+   x_coord = x0 + x*dW;
+   y_coord = y0 + y*dH;
+   elevation = -curtainheight;
+   Mercator.MercatorToWGS84(x_coord, y_coord, xy_coord); g.Set(xy_coord[0], xy_coord[1], elevation); g.ToCartesian(xyz_cart);
+   x_cart = xyz_cart[0]; y_cart = xyz_cart[1]; z_cart = xyz_cart[2];
+   // push position
+   interleavedbuffer.push(x_cart - this.vOffset[0]);
+   interleavedbuffer.push(y_cart - this.vOffset[1]);
+   interleavedbuffer.push(z_cart - this.vOffset[2]);
+   // push texcoord
+   interleavedbuffer.push(x*fdX);
+   interleavedbuffer.push(1-y*fdX);
+   // SE-corner:
+   x=gridsize-1; y=0;
+   x_coord = x0 + x*dW;
+   y_coord = y0 + y*dH;
+   elevation = -curtainheight;
+   Mercator.MercatorToWGS84(x_coord, y_coord, xy_coord); g.Set(xy_coord[0], xy_coord[1], elevation); g.ToCartesian(xyz_cart);
+   x_cart = xyz_cart[0]; y_cart = xyz_cart[1]; z_cart = xyz_cart[2];
+   // push position
+   interleavedbuffer.push(x_cart - this.vOffset[0]);
+   interleavedbuffer.push(y_cart - this.vOffset[1]);
+   interleavedbuffer.push(z_cart - this.vOffset[2]);
+   // push texcoord
+   interleavedbuffer.push(x*fdX);
+   interleavedbuffer.push(1-y*fdX);
+   // NE-corner:
+   x=gridsize-1; y=gridsize-1;
+   x_coord = x0 + x*dW;
+   y_coord = y0 + y*dH;
+   elevation = -curtainheight;
+   Mercator.MercatorToWGS84(x_coord, y_coord, xy_coord); g.Set(xy_coord[0], xy_coord[1], elevation); g.ToCartesian(xyz_cart);
+   x_cart = xyz_cart[0]; y_cart = xyz_cart[1]; z_cart = xyz_cart[2];
+   // push position
+   interleavedbuffer.push(x_cart - this.vOffset[0]);
+   interleavedbuffer.push(y_cart - this.vOffset[1]);
+   interleavedbuffer.push(z_cart - this.vOffset[2]);
+   // push texcoord
+   interleavedbuffer.push(x*fdX);
+   interleavedbuffer.push(1-y*fdX);
+
+   // (2) Remaining Points
+   // vertices for west-border
+   for (var i=1;i<gridsize-1;i++)
    {
-      interleavedbuffer[5*i+0] = positionbuffer[3*i+0];
-      interleavedbuffer[5*i+1] = positionbuffer[3*i+1];
-      interleavedbuffer[5*i+2] = positionbuffer[3*i+2];    
-      interleavedbuffer[5*i+3] = texcoordbuffer[2*i+0];
-      interleavedbuffer[5*i+4] = texcoordbuffer[2*i+1];
+      x = 0;
+      y = gridsize-1-i;
+      x_coord = x0 + x*dW;
+      y_coord = y0 + y*dH;
+      elevation = -curtainheight;
+      Mercator.MercatorToWGS84(x_coord, y_coord, xy_coord); g.Set(xy_coord[0], xy_coord[1], elevation); g.ToCartesian(xyz_cart);
+      x_cart = xyz_cart[0]; y_cart = xyz_cart[1]; z_cart = xyz_cart[2];
+      // push position
+      interleavedbuffer.push(x_cart - this.vOffset[0]);
+      interleavedbuffer.push(y_cart - this.vOffset[1]);
+      interleavedbuffer.push(z_cart - this.vOffset[2]);
+      // push texcoord
+      interleavedbuffer.push(x*fdX);
+      interleavedbuffer.push(1-y*fdX);
    }
-   
-   // Create index buffer
 
-   var indexbuffer = new Array();
-
-   var v3;
-   var cnt = 0;
-   var xcnt = 0;
-   var xx1, xx2, yy1, yy2;
-   for (var x=0;x<=blocksize-2;x+=1)
+   // vertices for south-border
+   for (var i=1;i<gridsize-1;i++)
    {
-      for (var y=0;y<=blocksize-1;y+=1)
+      x = i;
+      y = 0;
+      x_coord = x0 + x*dW;
+      y_coord = y0 + y*dH;
+      elevation = -curtainheight;
+      Mercator.MercatorToWGS84(x_coord, y_coord, xy_coord); g.Set(xy_coord[0], xy_coord[1], elevation); g.ToCartesian(xyz_cart);
+      x_cart = xyz_cart[0]; y_cart = xyz_cart[1]; z_cart = xyz_cart[2];
+      // push position
+      interleavedbuffer.push(x_cart - this.vOffset[0]);
+      interleavedbuffer.push(y_cart - this.vOffset[1]);
+      interleavedbuffer.push(z_cart - this.vOffset[2]);
+      // push texcoord
+      interleavedbuffer.push(x*fdX);
+      interleavedbuffer.push(1-y*fdX);
+   }
+
+   // vertices for east-border
+   for (var i=1;i<gridsize-1;i++)
+   {
+      x = gridsize-1;
+      y = i;
+      x_coord = x0 + x*dW;
+      y_coord = y0 + y*dH;
+      elevation = -curtainheight;
+      Mercator.MercatorToWGS84(x_coord, y_coord, xy_coord); g.Set(xy_coord[0], xy_coord[1], elevation); g.ToCartesian(xyz_cart);
+      x_cart = xyz_cart[0]; y_cart = xyz_cart[1]; z_cart = xyz_cart[2];
+      // push position
+      interleavedbuffer.push(x_cart - this.vOffset[0]);
+      interleavedbuffer.push(y_cart - this.vOffset[1]);
+      interleavedbuffer.push(z_cart - this.vOffset[2]);
+      // push texcoord
+      interleavedbuffer.push(x*fdX);
+      interleavedbuffer.push(1-y*fdX);
+   }
+
+   // vertices for north-border
+   for (var i=1;i<gridsize-1;i++)
+   {
+      x = gridsize-1-i;
+      y = gridsize-1;
+      x_coord = x0 + x*dW;
+      y_coord = y0 + y*dH;
+      elevation = -curtainheight;
+      Mercator.MercatorToWGS84(x_coord, y_coord, xy_coord); g.Set(xy_coord[0], xy_coord[1], elevation); g.ToCartesian(xyz_cart);
+      x_cart = xyz_cart[0]; y_cart = xyz_cart[1]; z_cart = xyz_cart[2];
+      // push position
+      interleavedbuffer.push(x_cart - this.vOffset[0]);
+      interleavedbuffer.push(y_cart - this.vOffset[1]);
+      interleavedbuffer.push(z_cart - this.vOffset[2]);
+      // push texcoord
+      interleavedbuffer.push(x*fdX);
+      interleavedbuffer.push(1-y*fdX);
+   }
+
+   // INDICES
+   for (var j=0;j<gridsize-1;j++)
+   {
+      for (var i=0;i<gridsize-1;i++)
       {
-         xx1 = x; 
-         xx2 = x+1;
+         /*  d    c
+             +-- -+
+             |  / |    Triangles: acd, abc
+             |/   |
+             +----+
+             a    b
+         */
+         var a,b,c,d;
 
-         if (xcnt%2 == 0) 
-         {
-            yy1 = blocksize-1-y;
-            yy2 = yy1; 
-         }
-         else 
-         {
-            yy1 = y;
-            yy2 = y;
-         }
+         a = i+j*gridsize;
+         b = a+1;
+         d = a+gridsize;
+         c = d+1;
 
-         //--------------------------------------------------------------------
-         v3 = xx2+yy2*blocksize;
-         
-         indexbuffer[cnt++] =  xx1+yy1*blocksize; 
-         indexbuffer[cnt++] = v3; 
+         indexbuffer.push(a);
+         indexbuffer.push(c);
+         indexbuffer.push(d);
+
+         indexbuffer.push(a);
+         indexbuffer.push(b);
+         indexbuffer.push(c);
+
       }
-      indexbuffer[cnt++] = v3; 
-      xcnt += 1;
    }
-   
+
+   // create indices for curtain
+   var NW = gridsize*gridsize;
+   var SW = NW+1;
+   var SE = NW+2;
+   var NE = NW+3;
+
+   for (var i=0;i<gridsize-1;i++)
+   {
+      var s,t,v,u;
+      s = (gridsize-i-1)*gridsize;
+      t = (gridsize-i-2)*gridsize;
+      if (i==0) { u = NW; } else { u=gridsize*gridsize+3+i; }
+      if (i==gridsize-2) { v = SW;} else { v=gridsize*gridsize+4+i; }
+
+      indexbuffer.push(s);
+      indexbuffer.push(t);
+      indexbuffer.push(v);
+      indexbuffer.push(s);
+      indexbuffer.push(v);
+      indexbuffer.push(u);
+   }
+
+
+   // bottom curtain
+   for (var i=0;i<gridsize-1;i++)
+   {
+      var s,t,v,u;
+      s = i;
+      t = i+1;
+      if (i==0) { v = SW; } else { v=gridsize*gridsize+gridsize+1+i; }
+      if (i==gridsize-2) { u = SE;} else { u=gridsize*gridsize+gridsize+2+i; }
+
+      indexbuffer.push(t);
+      indexbuffer.push(s);
+      indexbuffer.push(v);
+      indexbuffer.push(t);
+      indexbuffer.push(v);
+      indexbuffer.push(u);
+   }
+
+   // right curtain
+   for (var i=0;i<gridsize-1;i++)
+   {
+      var s,t,v,u;
+      s = (i+1)*gridsize-1;
+      t = (i+2)*gridsize-1;
+      if (i==0) { u = SE; } else { u=gridsize*gridsize+2*gridsize-1+i; }
+      if (i==gridsize-2) { v = NE;} else { v=gridsize*gridsize+2*gridsize+i; }
+
+      indexbuffer.push(t);
+      indexbuffer.push(s);
+      indexbuffer.push(u);
+      indexbuffer.push(t);
+      indexbuffer.push(u);
+      indexbuffer.push(v);
+   }
+
+   // top cutrain
+   for (var i=0;i<gridsize-1;i++)
+   {
+      var s,t,v,u;
+      s = gridsize*gridsize-1-i;
+      t = s-1;
+      if (i==0) { u = NE; } else { u=gridsize*gridsize+3*gridsize-3+i; }
+      if (i==gridsize-2) { v = NW;} else { v=gridsize*gridsize+3*gridsize-2+i; }
+
+      indexbuffer.push(t);
+      indexbuffer.push(s);
+      indexbuffer.push(u);
+      indexbuffer.push(t);
+      indexbuffer.push(u);
+      indexbuffer.push(v);
+   }
+
+
    // Fill Mesh
    this.mesh.SetBufferPT(interleavedbuffer);
-   this.mesh.SetIndexBuffer(indexbuffer, "TRIANGLESTRIP");
+   this.mesh.SetIndexBuffer(indexbuffer, "TRIANGLES");
    this.mesh.SetTexture(this.texture);
    this.mesh.offset = this.vOffset;
    this.mesh.UpdateAABB();
