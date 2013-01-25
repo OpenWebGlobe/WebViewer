@@ -416,7 +416,8 @@ TerrainBlock.prototype._CreateElevationMesh = function()
    /** @type {number} */
    var gridsize;
    /** @type {number} */
-
+   var curtainheight;
+   
    this.haselevation = false;
 
    this.mesh = new Surface(this.engine);
