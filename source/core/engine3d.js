@@ -384,13 +384,11 @@ var create3DContext = function (canvas)
 //------------------------------------------------------------------------------
 /**
  * @description Initialize Engine
- * @param {string} canvasid The id of the webgl canvas
+ * @param {Element} canvas The canvas for webgl
  * @param {boolean} bFullscreen True if the canvas should autofit the browser window
  */
-engine3d.prototype.InitEngine = function (canvasid, bFullscreen)
+engine3d.prototype.InitEngine = function (canvas, bFullscreen)
 {
-   var canvas = document.getElementById(canvasid);
-
    this.gl = setupWebGL(canvas);
    if (!this.gl)
    {
@@ -446,7 +444,16 @@ engine3d.prototype.InitEngine = function (canvasid, bFullscreen)
 
    goog.events.listen(window, goog.events.EventType.RESIZE, _fncResize, false, this);
    goog.events.listen(window, goog.events.EventType.UNLOAD, this.OnDestroy, false, this);
-
+}
+/**
+ * @description Initialize Engine
+ * @param {string} canvasid The id of the webgl canvas
+ * @param {boolean} bFullscreen True if the canvas should autofit the browser window
+ */
+engine3d.prototype.InitEngineById = function(canvasid, bFullscreen)
+{
+   var canvas = document.getElementById(canvasid);
+   this.InitEngine(canvas, bFullscreen);
 }
 //------------------------------------------------------------------------------
 /**

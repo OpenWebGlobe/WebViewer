@@ -487,6 +487,29 @@ function ogCreateContextFromCanvas(sCanvasId, fullscreen, cbfInit, cbfExit, cbfR
 }
 goog.exportSymbol('ogCreateContextFromCanvas', ogCreateContextFromCanvas);
 //------------------------------------------------------------------------------
+/**
+* @description Create new context using a newly generated canvas.
+* @param {boolean} fullscreen
+* @param {function()} cbfInit
+* @param {function()} cbfExit
+* @param {function()} cbfResize
+*/
+function ogCreateNewContext(fullscreen, cbfInit, cbfExit, cbfResize)
+{
+   var contextoptions = {};
+   if (fullscreen)
+   {
+      contextoptions["fullscreen"] = true;
+   }
+   else
+   {
+      contextoptions["fullscreen"] = false;
+   }
+   contextoptions["new"] = true;
+   return ogCreateContext(contextoptions, cbfInit, cbfExit, cbfResize);
+}
+goog.exportSymbol('ogCreateNewContext', ogCreateNewContext);
+//------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 /** @description destroy context (free all memory)
 *   @param {number} context_id the context to be destroyed

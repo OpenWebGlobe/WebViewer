@@ -312,15 +312,18 @@ ogContext.prototype.ParseOptions = function(options)
    
    this.engine = new engine3d();
    this.engine.owg = this;
-   
-   // a html5 canvasid is provided:
-   if (options["canvas"])
+
+   if (goog.isDef(options["new"]))
    {
-      this.engine.InitEngine(options["canvas"], this.fullscreen);  // (canvasid, fullscreen)
+      var newdiv = document.createElement("div");
+      document.body.appendChild(newdiv);
+      var newcanvas = document.createElement('canvas');
+      newdiv.appendChild(newcanvas);
+      this.engine.InitEngine(newcanvas, this.fullscreen);
    }
-   else
+   else if (options["canvas"])
    {
-      goog.debug.Logger.getLogger('owg.ogContext').warning("**ERROR: auto creating canvas is not supported yet!");
+      this.engine.InitEngineById(options["canvas"], this.fullscreen);  // (canvasid, fullscreen)
    }
 
    this.engine.SetInitCallback(_ctx_callback_init);
