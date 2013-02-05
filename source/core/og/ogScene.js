@@ -226,6 +226,8 @@ ogScene.prototype.HideLogo = function(hide)
    /** @type {ogContext} */
    var context = /** @type ogContext */this.parent;
 
-   context.engine.scene.nodeLogos.HideLogo(hide);
+   /** @type {LogosNode} */
+   var logos = context.engine.scene.nodeLogos;
+   logos.HideLogo(hide);
 }
 
