@@ -72,7 +72,39 @@ function _ctx_callback_render(engine)
    
    if (context.cbfRender)
    {
-      context.cbfRender(context.id);
+      var visibleTiles = [];
+
+      if (engine.scene.nodeRenderObject &&
+            engine.scene.nodeRenderObject.globerenderer &&
+            engine.scene.nodeRenderObject.globerenderer.lstFrustum) 
+      {
+         for (var i=0;i<engine.scene.nodeRenderObject.globerenderer.lstFrustum.length;i++) 
+         {
+            var tile = engine.scene.nodeRenderObject.globerenderer.lstFrustum[i];
+            visibleTiles[visibleTiles.length] = 
+            {
+               "quadcode": tile.quadcode,
+               "sw": [tile.longitude0, tile.latitude0],
+               "ne": [tile.longitude1, tile.latitude1],
+               "available": tile.available
+            };
+         }   
+      }
+      
+      context.cbfRender(context.id, 
+         {
+            "gl": engine.gl,
+            "cameraVec": engine.scene.nodeRenderObject.camera.ToFloat32Array(),
+            "eyeVec": engine.scene.nodeNavigation._vEye.ToFloat32Array(),
+            "vMatrix": engine.matView.ToFloat32Array(),
+            "pMatrix": engine.matProjection.ToFloat32Array(),
+            "viewPort": {
+               "width": engine.width,
+               "height": engine.height
+            },
+            "visibleTiles": visibleTiles
+         }
+      );
    }
 }
 //------------------------------------------------------------------------------
