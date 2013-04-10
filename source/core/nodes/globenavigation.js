@@ -384,27 +384,7 @@ function GlobeNavigationNode()
       {
          if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == 0)
          {
-            if (this._ellipsoidHeight>400000)
-            {
-               if (e.deltaY > 0)
-               {
-                  this._ellipsoidHeight += 0.2*this._ellipsoidHeight;
-               }
-               else
-               {
-                  this._ellipsoidHeight -= 0.2*this._ellipsoidHeight;
-               }
 
-               // prevent "loosing" earth when higher then 150000m
-               if (this._ellipsoidHeight>500000)
-               {
-                  this._pitch = -Math.PI/2;
-               }
-
-               this.bElevationChanged = true;
-            }
-            else
-            {
                var pickresult = {};
                var mx, my;
 
@@ -472,7 +452,7 @@ function GlobeNavigationNode()
                      this.bElevationChanged = true;
                   }
                }
-            }
+
          }
          else if ((this._inputs & GlobeNavigationNode.INPUTS.MODIFIER_ALL) == GlobeNavigationNode.INPUTS.MODIFIER_SHIFT)
          {
