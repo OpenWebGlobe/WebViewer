@@ -300,9 +300,11 @@ function GlobeNavigationNode()
       this.evtMouseDown = goog.events.listen(context, goog.events.EventType.MOUSEDOWN, this.OnMouseDown, false, this);
       this.evtMouseMove = goog.events.listen(context, goog.events.EventType.MOUSEMOVE, this.OnMouseMove, false, this);
       this.evtMouseUp = goog.events.listen(context, goog.events.EventType.MOUSEUP, this.OnMouseUp, false, this);
+      this.evtMouseOut = goog.events.listen(context, goog.events.EventType.MOUSEOUT, this.OnMouseOut, false, this);
       this.evtMouseDoubleClick = goog.events.listen(context, goog.events.EventType.DBLCLICK, this.OnMouseDoubleClick, false, this);
       var mouseWheelHandler = new goog.events.MouseWheelHandler(context);
       this.evtMouseWheel = goog.events.listen(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.OnMouseWheel, false, this);
+
    }
    //---------------------------------------------------------------------------
    this._OnInputChange = function ()
@@ -676,6 +678,19 @@ function GlobeNavigationNode()
 
       this._nMouseX = e.offsetX - this.engine.context.offsetLeft;
       this._nMouseY = e.offsetY - this.engine.context.offsetTop;
+      this._OnInputChange();
+
+      return this._cancelEvent(e);
+   }
+   //---------------------------------------------------------------------------
+   this.OnMouseOut = function (e)
+   {
+      this._bDragging = false;
+      this._inputs &= ~GlobeNavigationNode.INPUTS.MOUSE_LEFT;
+      this._inputs &= ~GlobeNavigationNode.INPUTS.MOUSE_RIGHT;
+      this._bHit = false;
+      document.body.style.cursor = 'default';
+      this._bLClick = false;
       this._OnInputChange();
 
       return this._cancelEvent(e);
