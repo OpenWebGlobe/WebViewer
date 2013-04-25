@@ -200,7 +200,15 @@ function Surface(engine)
    /** @type {number} */
    this.lod = -1;
 
-
+   // Correction matrices for stereoscopic rendering (anaglyph)
+   /** @type {mat4} */
+   this.colormat0 = new mat4();
+   /** @type {mat4} */
+   this.colormat1 = new mat4();
+   /** @type {number} */
+   this.dx = 0;
+   /** @type {number} */
+   this.dy = 0;
 }
 
 //------------------------------------------------------------------------------
@@ -498,6 +506,15 @@ Surface.prototype.Draw = function (opt_ranged, opt_count, opt_offset, opt_fontco
          this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5 * 4, 0 * 4); // position
          this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5 * 4, 3 * 4); // texture
          this.engine.shadermanager.UseShader_PT(this.engine.matModelViewProjection, this.highlightcolor);
+         break;
+
+      case "pt_stereo":
+         this.gl.enableVertexAttribArray(0);
+         this.gl.enableVertexAttribArray(1);
+         this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 5 * 4, 0 * 4); // position
+         this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 5 * 4, 3 * 4); // texture
+
+         this.engine.shadermanager.UseShader_PT_STEREO(this.engine.matModelViewProjection,  this.colormat0, this.colormat1, this.dx, this.dy);
          break;
 
       case "pnct":
@@ -836,8 +853,9 @@ Surface.prototype.CreateFromJSONObject = function (jsonobject, readycbf, failedc
          break;
 
       case "pt":
+      case "pt_stereo":
          surface.numvertex = jsonobject['Vertices'].length / 5;
-         surface.mode = "pt";
+         surface.mode = jsonobject['VertexSemantic'];
          surface.SetBufferPT(jsonobject['Vertices']);
          // indices
          surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);

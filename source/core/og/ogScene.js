@@ -230,4 +230,18 @@ ogScene.prototype.HideLogo = function(hide)
    var logos = context.engine.scene.nodeLogos;
    logos.HideLogo(hide);
 }
+//------------------------------------------------------------------------------
+/**
+ * @param {boolean} bEnable
+ */
+ogScene.prototype.EnableStereo = function(bEnable)
+{
+   /** @type {ogContext} */
+   var context = /** @type ogContext */this.parent;
+
+   /** @type {RenderObjectNode} */
+   var ro = context.engine.scene.nodeRenderObject;
+   ro.stereoscopic = bEnable;
+}
+//------------------------------------------------------------------------------
 

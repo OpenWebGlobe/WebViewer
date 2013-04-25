@@ -185,17 +185,15 @@ mat4.prototype.Translation = function(x,y,z)
 /**
  * @description Overwrites the Translation values in matrix mat with x,y,z. 
  *
- * @param {mat4} mat mat4 matrix wich will be overwritten
  * @param {number} x translation in x direction
  * @param {number} y translation in y direction
  * @param {number} z translation in z direction
  */
-mat4.prototype.OverwriteTranslation = function(mat,x,y,z)
+mat4.prototype.OverwriteTranslation = function(x,y,z)
 {     
- mat._values[12] = x;
- mat._values[13] = y;
- mat._values[14] = z;
-
+ this._values[12] = x;
+ this._values[13] = y;
+ this._values[14] = z;
 }
 //------------------------------------------------------------------------------
 /**

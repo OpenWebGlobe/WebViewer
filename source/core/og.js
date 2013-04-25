@@ -2564,8 +2564,22 @@ function ogCreatePolylineWGS84(layer_id,wgs84coord,options)
    return -1;
 }
 goog.exportSymbol('ogCreatePolylineWGS84', ogCreatePolylineWGS84);
-
-
+//------------------------------------------------------------------------------
+/** @description Enable stereo mode (anaglyph etc.)
+ *  @param {number} scene_id
+ *  @param {boolean} bEnable
+ *  @param {Object=} opt_options
+ */
+function ogEnableStereo(scene_id,bEnable,opt_options)
+{
+   /** @type {ogScene} */
+   var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
+   if (scene && scene.type == OG_OBJECT_SCENE)
+   {
+      scene.EnableStereo(bEnable);
+   }
+}
+goog.exportSymbol('ogEnableStereo', ogEnableStereo);
 //------------------------------------------------------------------------------
 //##############################################################################
 // ** Mesh OBJECT **

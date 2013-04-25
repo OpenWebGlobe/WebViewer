@@ -57,18 +57,26 @@ function RenderObjectNode(options)
       this.bRenderTexture = options["rendertotexture"];
       /** @type {Texture} */
       this.texture = null;
-      // todo: change to enum
-      // 0: no stereo,
-      // 1: render top,
-      // 2: render bottom
+      /** @type {Texture} */
+      this.leftImage = null;
+      /** @type {Texture} */
+      this.rightImage = null;
+      /** @type {boolean} */
+      this.stereoscopic = false;
       /** @type {number} */
-      this.stereoscopic = 0;
+      this.stereomode = RenderObjectNode.STEREOMODE.ANAGLYPH;
       /** @type {number} */
       this.elevation = 0;
       /** @type {boolean} */
       this.custom = false;
       /** @type {Surface} */
       this.globeshape = null;
+      /** @type {number} */
+      this.sep = 0;
+      /** @type {number} */
+      this.w = 0;
+      /** @type {number} */
+      this.h = 0;
 
       if (options["type"] == "custom")
       {
@@ -84,9 +92,80 @@ function RenderObjectNode(options)
       //------------------------------------------------------------------------
       this.OnRender = function()
       {
+         if (this.stereoscopic)
+         {
+            if (this.leftImage == null)
+            {
+               this.leftImage = new Texture(this.engine, true, this.w, this.h, true);
+            }
+            if (this.rightImage == null)
+            {
+               this.rightImage = new Texture(this.engine, true, this.w, this.h, true);
+            }
+
+            if ( this.stereomode == RenderObjectNode.STEREOMODE.TOPBOTTOM )
+            {
+               this._doRender(this.rightImage, 1);
+               this._doRender(this.leftImage, 2);
+            }
+            else if ( this.stereomode == RenderObjectNode.STEREOMODE.ANAGLYPH )
+            {
+               var oldmat = new mat4();
+               oldmat.CopyFrom(this.engine.matView);
+
+               // do calculations:
+               var basis = 0.000003;
+               // modify matrix:
+               var move = new vec3(0, -basis, 0);
+               var move2 = new vec3(0, basis, 0);
+               var v = this.engine.matView.MultiplyVec3(move);
+               var v2 = this.engine.matView.MultiplyVec3(move2);
+
+               // Render right Image:
+               this.engine.matView.OverwriteTranslation(v._values[0],v._values[1],v._values[2]);
+               this.engine._UpdateMatrices();
+               this._doRender(this.rightImage, 3);
+               this.engine.matView.CopyFrom(oldmat);
+
+               // Render Left Image:
+               this.engine.matView.OverwriteTranslation(v2._values[0],v2._values[1],v2._values[2]);
+               this.engine._UpdateMatrices();
+               this._doRender(this.leftImage, 4);
+
+               // Combineright and left image.. render them using optimized anaglyph
+               if (!goog.isNull(this.leftImage.blitMesh))
+               {
+                  // Black & White Anaglyph:
+                  //this.leftImage.blitMesh.colormat0.SetFromArray([.299,.587,.114,0,  0,0,0,0, 0,0,0,0, 0,0,0,1]);
+                  //this.leftImage.blitMesh.colormat1.SetFromArray([0,0,0,0,  .299,.587,.114,0, .299,.587,.114,0, 0,0,0,1]);
+
+                  // Optimized Anaglyph:
+                  this.leftImage.blitMesh.colormat0.SetFromArray([0,0.7,0.3,0,  0,0,0,0, 0,0,0,0, 0,0,0,1]);
+                  this.leftImage.blitMesh.colormat1.SetFromArray([0,  0, 0, 0,  0,1,0,0, 0,0,1,0, 0,0,0,1]);
+                  this.leftImage.blitMesh.dx = 1.0/this.leftImage.width;
+                  this.leftImage.blitMesh.dy = 1.0/this.leftImage.height;
+
+                  this.leftImage.blitMesh.mode = "pt_stereo";
+               }
+               this.leftImage.Blit(0,0, 0, 0, 1, 1, true, true, 1.0, null, this.rightImage);
+
+               // reset:
+               //this.engine.ColorMask(true,true,true,true);
+               this.engine.matView.CopyFrom(oldmat);
+               this.engine._UpdateMatrices();
+            }
+         }
+         else
+         {
+            this._doRender(this.texture, 0);
+         }
+      }
+      //------------------------------------------------------------------------
+      this._doRender = function(target_texture, mode)
+      {
          if (this.bRenderTexture)
          {
-            this.engine.PushRenderTarget(this.texture);
+            this.engine.PushRenderTarget(target_texture);
             this.engine.SetupDepthTextureTarget();
          }
 
@@ -112,17 +191,23 @@ function RenderObjectNode(options)
          {
             this.engine.PopRenderTarget();
 
-            if (this.stereoscopic == 0)
+            if (mode == 0)
             {
-               if (goog.isDef(this.texture.blitMesh) && !goog.isNull(this.texture.blitMesh))
-               {
-                     this.texture.blitMesh.mode = "pt";
-               }
-               this.texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
+               target_texture.Blit(0,0, 0, 0, 1, 1, true, true, 1.0);
+               target_texture.blitMesh.mode = "pt";
+            }
+            else if (mode == 1)
+            {
+               target_texture.Blit(0,0, 0, 0, 1, 0.5, true, true, 1.0);
+               target_texture.blitMesh.mode = "pt";
+            }
+            else if (mode == 2)
+            {
+               target_texture.Blit(0,this.engine.height/2, 0, 0, 1, 0.5, true, true, 1.0);
+               target_texture.blitMesh.mode = "pt";
             }
          }
       }
-
       //------------------------------------------------------------------------
       this.OnTraverse = function(ts)
       {
@@ -158,6 +243,21 @@ function RenderObjectNode(options)
       //------------------------------------------------------------------------
       this.OnExit = function()
       {
+         if (this.texture)
+         {
+            this.texture.Destroy();
+            this.texture = null;
+         }
+         if (this.rightImage)
+         {
+            this.rightImage.Destroy();
+            this.rightImage = null;
+         }
+         if (this.leftImage)
+         {
+            this.leftImage.Destroy();
+            this.leftImage = null;
+         }
          if (this.globeshape)
          {
             this.globeshape.Destroy();
@@ -174,6 +274,30 @@ function RenderObjectNode(options)
       //------------------------------------------------------------------------
       this.DoResize = function(w,h)
       {
+         this.w = w;
+         this.h = h;
+
+         if (this.stereoscopic)
+         {
+            if (this.leftImage == null)
+            {
+               this.leftImage = new Texture(this.engine, true, w, h, true);
+            }
+            else
+            {
+               this.leftImage.UpdateFBO(w, h, true);
+            }
+
+            if (this.rightImage == null)
+            {
+               this.rightImage = new Texture(this.engine, true, w, h, true);
+            }
+            else
+            {
+               this.rightImage.UpdateFBO(w, h, true);
+            }
+         }
+
          if (this.bRenderTexture)
          {
             if (this.texture == null)
@@ -187,11 +311,23 @@ function RenderObjectNode(options)
          }
       }
       //------------------------------------------------------------------------
-      this.OnRegisterEvents = function(context)
-      {
-
-      }
-      //------------------------------------------------------------------------
+   //---------------------------------------------------------------------------
+   this.OnUnregisterEvents = function ()
+   {
+      goog.events.unlistenByKey(this.evtKeyDown);
+   }
+   //---------------------------------------------------------------------------
+   this.OnRegisterEvents = function (context)
+   {
+   }
+   //---------------------------------------------------------------------------
 }
 
 RenderObjectNode.prototype = new ScenegraphNode();
+
+
+/** @enum {number} */
+RenderObjectNode.STEREOMODE = {
+   ANAGLYPH:0,
+   TOPBOTTOM:1
+};

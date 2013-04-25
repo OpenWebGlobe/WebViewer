@@ -304,8 +304,9 @@ Texture.prototype.BlitRect = function(x0, y0, width, height)
  * @param {boolean=} opt_invtexcoord
  * @param {number=} opt_alpha
  * @param {vec4=} opt_color
+ * @param {Texture=} opt_blendtexture
  */
-Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley, opt_blend, opt_invtexcoord, opt_alpha, opt_color)
+Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley, opt_blend, opt_invtexcoord, opt_alpha, opt_color, opt_blendtexture)
 {   
    /** @type {number} */
    var z = opt_z || 0;
@@ -321,6 +322,8 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
    var invtexcoord = opt_invtexcoord ||false;
    /** @type {number} */
    var alpha = opt_alpha || 1.0;
+   /** @type {Texture} */
+   var blendtexture = opt_blendtexture || null;
    
    if (this.ready)
    {
@@ -401,8 +404,20 @@ Texture.prototype.Blit = function(x, y, opt_z, opt_angle, opt_scalex, opt_scaley
          this.engine.gl.blendFunc(this.engine.gl.CONSTANT_ALPHA, this.engine.gl.ONE_MINUS_CONSTANT_ALPHA);
       }
 
+      if (blendtexture)
+      {
+         this.gl.activeTexture(this.gl.TEXTURE1);
+         this.gl.bindTexture(this.gl.TEXTURE_2D, blendtexture.texture);
+      }
+
       this.blitMesh.Draw(null, null, null, null, opt_color);
 
+      if (blendtexture)
+      {
+         this.gl.activeTexture(this.gl.TEXTURE1);
+         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+         this.gl.activeTexture(this.gl.TEXTURE0);
+      }
 
       if (blend)
       {

@@ -131,6 +131,14 @@ function ShaderManager(gl)
    this.vs_pt_chroma = null;
    /** @type WebGLShader */
    this.fs_pt_chroma = null;
+
+   // PT for Anaglph Stereo
+   /** @type {WebGLProgram} */
+   this.program_pt_stereo = null;
+   /** @type {WebGLShader} */
+   this.vs_pt_stereo = null;
+   /** @type {WebGLShader} */
+   this.fs_pt_stereo = null;
 }
 
 //------------------------------------------------------------------------------
@@ -288,6 +296,30 @@ ShaderManager.prototype.UseShader_Point = function(modelviewprojection, invmatmo
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_point, "matMVP"),false,modelviewprojection.ToFloat32Array());
       this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_point, "matInvMVP"),false,invmatmodelviewprojection.ToFloat32Array());
    }    
+}
+//------------------------------------------------------------------------------
+/**
+ * PT Stereo (Anaglph Correction)
+ * @param {mat4} modelviewprojection
+ * @param {mat4} colormat1
+ * @param {mat4} colormat2
+ * @param {number} dx
+ * @param {number} dy
+ */
+ShaderManager.prototype.UseShader_PT_STEREO = function(modelviewprojection, colormat1, colormat2, dx, dy)
+{
+   if (this.program_pt_stereo)
+   {
+      this.gl.useProgram(this.program_pt_stereo);
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt_stereo, "matMVP"), false, modelviewprojection.ToFloat32Array());
+      this.gl.uniform1i(this.gl.getUniformLocation(this.program_pt_stereo, "uTexture1"), 0);
+      this.gl.uniform1i(this.gl.getUniformLocation(this.program_pt_stereo, "uTexture2"), 1);
+      this.gl.uniform1f(this.gl.getUniformLocation(this.program_pt_stereo, "dx"), dx);
+      this.gl.uniform1f(this.gl.getUniformLocation(this.program_pt_stereo, "dy"), dy);
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt_stereo, "uColorMat1"), false, colormat1.ToFloat32Array());
+      this.gl.uniformMatrix4fv(this.gl.getUniformLocation(this.program_pt_stereo, "uColorMat2"), false, colormat2.ToFloat32Array());
+
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -696,6 +728,67 @@ ShaderManager.prototype.InitShader_Point = function()
 
 //------------------------------------------------------------------------------
 /**
+ *  Initializes the point,texture with anaglyph correction
+ *  internal use
+ */
+ShaderManager.prototype.InitShader_PT_STEREO = function()
+{
+   var src_vertexshader_PT_STEREO= "uniform mat4 matMVP;\n" +
+                                   "attribute vec3 aPosition;\n" +
+                                   "attribute vec2 aTexCoord;\n" +
+                                   "varying vec2 vTexCoord;\n" +
+                                   "void main()\n" +
+                                   "{" +
+                                     "gl_Position = matMVP * vec4(aPosition,1.0);\n"+
+                                     "vTexCoord = aTexCoord;\n" +
+                                   "}\n";
+   var src_fragmentshader_PT_STEREO= "#ifdef GL_ES\nprecision highp float;\n#endif\n" +
+                                     "varying vec2 vTexCoord;" +
+                                     "uniform float dx;" +
+                                     "uniform float dy;" +
+                                     "uniform mat4 uColorMat1;" +
+                                     "uniform mat4 uColorMat2;" +
+                                     "uniform sampler2D uTexture1;\n" +
+                                     "uniform sampler2D uTexture2;\n" +
+                                     "void main()\n" +
+                                     "{\n" +
+                                       "float sep = 4.0;"  +
+                                       "vec4 col1 = texture2D(uTexture1, vTexCoord+vec2(sep*dx,0));" +
+                                       "vec4 col2 = texture2D(uTexture2, vTexCoord+vec2(-sep*dx,0));" +
+                                       "vec4 colc = col1*uColorMat1 + col2*uColorMat2;\n" +
+                                       "gl_FragColor = vec4(pow(colc.r, 1.0/1.5), pow(colc.g, 1.0/1.5),pow(colc.b, 1.0/1.5),1.0);" +
+                                     "}\n\n";
+
+   this.vs_pt_stereo = this._createShader(this.gl.VERTEX_SHADER, src_vertexshader_PT_STEREO);
+   this.fs_pt_stereo = this._createShader(this.gl.FRAGMENT_SHADER, src_fragmentshader_PT_STEREO);
+
+   if (this.vs_pt_stereo && this.fs_pt_stereo)
+   {
+      // create program object
+      this.program_pt_stereo = this.gl.createProgram();
+
+      // attach our two shaders to the program
+      this.gl.attachShader(this.program_pt_stereo, this.vs_pt_stereo);
+      this.gl.attachShader(this.program_pt_stereo, this.fs_pt_stereo);
+
+      // setup attributes
+      this.gl.bindAttribLocation(this.program_pt_stereo, 0, "aPosition");
+      this.gl.bindAttribLocation(this.program_pt_stereo, 1, "aTexCoord");
+
+
+      // linking
+      this.gl.linkProgram(this.program_pt_stereo);
+      if (!this.gl.getProgramParameter(this.program_pt_stereo, this.gl.LINK_STATUS) && !this.gl.isContextLost())
+      {
+         alert(this.gl.getProgramInfoLog(this.program_pt_stereo));
+         return;
+      }
+   }
+
+}
+
+//------------------------------------------------------------------------------
+/**
  *  Initializes all shaders. 
  * 
  */
@@ -713,6 +806,7 @@ ShaderManager.prototype.InitShaders = function()
    this.InitShader_Point();
    this.InitShader_PT_chroma();
    this.InitShader_PNC();
+   this.InitShader_PT_STEREO();
 } 
 //------------------------------------------------------------------------------
 /**

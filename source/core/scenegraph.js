@@ -48,7 +48,7 @@ function SceneGraph(engine, options)
    this.nodeNavigation = /*new NavigationNode();*/ new GlobeNavigationNode();
    this.nodeNavigation.SetEngine(engine);
    this.nodeNavigation.InitNode();
-   
+
    // Access Nodes:
    this.nodeCamera = new CameraNode();                      // Camera Node (for projection matrix)
    this.nodeRenderObject = new RenderObjectNode(options);   // Render Object Node (render openglobe objects, e.g. the virtual globe)
@@ -131,7 +131,7 @@ SceneGraph.prototype.Render = function()
 {
    this.nodeNavigation.OnChangeState();         // ViewMatrix
    this.nodeNavigation.OnRender();
-   
+
    this.nodeCamera.OnChangeState();             // SetProjectionMatrix
    this.nodeCamera.OnRender();
 

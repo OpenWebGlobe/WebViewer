@@ -661,6 +661,17 @@ engine3d.prototype.SetupDepthTextureTarget = function ()
 }
 //------------------------------------------------------------------------------
 /**
+ * @param r {boolean}
+ * @param g {boolean}
+ * @param b {boolean}
+ * @param a {boolean}
+ */
+engine3d.prototype.ColorMask = function(r, g, b, a)
+{
+   this.gl.colorMask(r, g, b, a);
+}
+//------------------------------------------------------------------------------
+/**
  * @description Render Geometry on Terrain,
  * based on Schneider, M. and Klein, R. (2007) "Efficient and Accurate Rendering
  * of Vector Data on Virtual Landscapes", in Proceedings of WSCG.

@@ -95,7 +95,7 @@ Font.prototype.DrawText = function(text,x,y,scale,fontcolor)
          ccode = text.charCodeAt(i);
          a += (fontwidth[ccode]/2)*scale;
          model.Scale(scale,scale,1);
-         model.OverwriteTranslation(model,x+a,y,0);
+         model.OverwriteTranslation(x+a,y,0);
          this.engine.SetModelMatrix(model);
          this.fontmesh.Draw(true,6,ccode*12,fontcolor);
          a += (fontwidth[ccode]/2)*scale;   
