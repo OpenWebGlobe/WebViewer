@@ -64,34 +64,38 @@ function WMSImageLayer()
    //---------------------------------------------------------------------------
    this.RequestTile = function(engine, quadcode, layer, cbfReady, cbfFailed, caller)
    {
-      if (this.server.indexOf("?", this.server.length - 1) == -1)
-      {
-          this.server+="?";
-      }
+     var separator = "?";
+     var index = this.server[0].indexOf("?");
+	  
+	  if (index > 0 && index < (this.server[0].length - 1)) 
+	  {
+		 separator = "&";		
+	  }
+	  
       var coords = new Array(4);
       if(this.SRS=="EPSG%3A4326")
       {
          this.quadtree.QuadKeyToWGS84(quadcode, coords);
-         var bbox= coords[0]+","+coords[1]+","+coords[2]+","+coords[3];         
       }
       else // EPSG:900913, ESRI:102100, ESRI:102113, EPSG:3785, EPSG:3857
       {
          this.quadtree.QuadKeyToMercator(quadcode, coords);
-         var bbox= coords[0]+","+coords[1]+","+coords[2]+","+coords[3];         
       }
+	   var bbox = coords.join(",");
 
       var sFilename = this.server + 
-               "service=WMS"+
-               "&request=GetMap" + 
-               "&WIDTH=256" +
-               "&HEIGHT=256" +
-               "&TILED=TRUE" +
-               "&SRS=" + this.SRS      +     // deprecated -> EPSG%3A3857
-               "&LAYERS=" + this.layer +
-               "&STYLES=" + this.style +
-               "&FORMAT="+ this.format +
-               "&VERSION=" + this.version +
-               "&BBOX=" + bbox;
+         separator +
+         "service=WMS"+
+         "&request=GetMap" + 
+         "&WIDTH=256" +
+         "&HEIGHT=256" +
+         "&TILED=TRUE" +
+         "&SRS=" + this.SRS      +     // deprecated -> EPSG%3A3857
+         "&LAYERS=" + this.layer +
+         "&STYLES=" + this.style +
+         "&FORMAT="+ this.format +
+         "&VERSION=" + this.version +
+         "&BBOX=" + bbox;
                
 
       
