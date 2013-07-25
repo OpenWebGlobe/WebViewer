@@ -233,8 +233,9 @@ ogScene.prototype.HideLogo = function(hide)
 //------------------------------------------------------------------------------
 /**
  * @param {boolean} bEnable
+ * @param {Object} options
  */
-ogScene.prototype.EnableStereo = function(bEnable)
+ogScene.prototype.EnableStereo = function(bEnable, options)
 {
    /** @type {ogContext} */
    var context = /** @type ogContext */this.parent;
@@ -242,6 +243,15 @@ ogScene.prototype.EnableStereo = function(bEnable)
    /** @type {RenderObjectNode} */
    var ro = context.engine.scene.nodeRenderObject;
    ro.stereoscopic = bEnable;
+   if (goog.isDef(options["topbottom"]) && options["topbottom"])
+   {
+      ro.stereomode = RenderObjectNode.STEREOMODE.TOPBOTTOM;
+   }
+   else
+   {
+      ro.stereomode = RenderObjectNode.STEREOMODE.ANAGLYPH;
+   }
+
 }
 //------------------------------------------------------------------------------
 
