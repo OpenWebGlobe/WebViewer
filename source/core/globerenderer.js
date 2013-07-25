@@ -61,6 +61,18 @@ var ImageLayerOptions;
 var ElevationLayerOptions;
 //------------------------------------------------------------------------------
 /**
+ * @typedef {{
+ *     name    : string,
+ *     type    : string,
+ *     url     : Array.<string>,
+ *     service : string,
+ *     minlod  : number,
+ *     maxlod  : number
+ * }}
+ */
+var GeometryLayerOptions;
+//------------------------------------------------------------------------------
+/**
  * @constructor
  * @description Rendering the virtual globe...
  * @author Martin Christen, martin.christen@fhnw.ch

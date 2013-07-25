@@ -1765,9 +1765,9 @@ goog.exportSymbol('ogAddElevationLayer', ogAddElevationLayer);
 function ogRemoveElevationLayer(layer_id)
 {
    // test if context_id is a valid elevation layer
-   // @type {ogElevationLayer}
+   // @type {ogGeometryLayer}
    var layer = _GetObjectFromId(layer_id);
-   if (layer && layer.type == OG_OBJECT_ELEVATIONLAYER)
+   if (layer && layer.type == OG_OBJECT_GEOMETRYLAYER)
    {
       layer.RemoveElevationLayer();
       layer.UnregisterObject();
@@ -2158,8 +2158,28 @@ goog.exportSymbol('ogPickPOI', ogPickPOI);
 // ** GEOMETRY LAYER OBJECT **
 //##############################################################################
 //------------------------------------------------------------------------------
+/**
+ * @description Add 3d geometry layer to the globe
+ * @param {number} world_id
+ * @param {GeometryLayerOptions} options
+ */
+function ogAddGeometryLayer(world_id, options)
+{
+   // test if context_id is a valid context
+   var world = _GetObjectFromId(world_id);
+   if (world && world.type == OG_OBJECT_WORLD)
+   {
+      var geometrylayer = _CreateObject(OG_OBJECT_GEOMETRYLAYER, world, options);
+      return geometrylayer.id;
+   }
+
+   return -1;
+}
+goog.exportSymbol('ogAddGeometryLayer', ogAddGeometryLayer);
 //------------------------------------------------------------------------------
-/** @description Create a Geometry Layer Object
+
+//------------------------------------------------------------------------------
+/** @description [DEPRECATED] Create a Geometry Layer Object for static 3D objects
 *   @param {number} world_id the scene
 *   @param {string} layername 
 */
@@ -2167,6 +2187,7 @@ function ogCreateGeometryLayer(world_id, layername)
 {
    var options={};
    options["name"] = layername;
+   options["type"] = "static";
    // test if scene_id is a valid scene
    var world = /** @type {ogWorld} */ _GetObjectFromId(world_id);
    if (world && world.type == OG_OBJECT_WORLD)
@@ -2572,11 +2593,12 @@ goog.exportSymbol('ogCreatePolylineWGS84', ogCreatePolylineWGS84);
  */
 function ogEnableStereo(scene_id,bEnable,opt_options)
 {
+   var options = opt_options || {};
    /** @type {ogScene} */
    var scene = /** @type {ogScene} */_GetObjectFromId(scene_id);
    if (scene && scene.type == OG_OBJECT_SCENE)
    {
-      scene.EnableStereo(bEnable);
+      scene.EnableStereo(bEnable, options);
    }
 }
 goog.exportSymbol('ogEnableStereo', ogEnableStereo);

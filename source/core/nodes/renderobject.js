@@ -105,8 +105,26 @@ function RenderObjectNode(options)
 
             if ( this.stereomode == RenderObjectNode.STEREOMODE.TOPBOTTOM )
             {
-               this._doRender(this.rightImage, 1);
-               this._doRender(this.leftImage, 2);
+               var oldmat = new mat4();
+               oldmat.CopyFrom(this.engine.matView);
+
+               // do calculations:
+               //var basis = 0.000003;
+               var basis = 0.000024;
+               // modify matrix:
+               var move = new vec3(0, -basis, 0);
+               var move2 = new vec3(0, basis, 0);
+               var v = this.engine.matView.MultiplyVec3(move);
+               var v2 = this.engine.matView.MultiplyVec3(move2);
+
+               // Render right Image:
+               this.engine.matView.OverwriteTranslation(v._values[0],v._values[1],v._values[2]);
+               this.engine._UpdateMatrices();
+               this._doRender(this.rightImage, 2);
+
+               this.engine.matView.OverwriteTranslation(v2._values[0],v2._values[1],v2._values[2]);
+               this.engine._UpdateMatrices();
+               this._doRender(this.leftImage, 1);
             }
             else if ( this.stereomode == RenderObjectNode.STEREOMODE.ANAGLYPH )
             {

@@ -45,6 +45,10 @@ function ogGeometryLayer()
    this.hide = false;  // true if poi layer is hidden
    /** @type {Array.<ogGeometry>} */
    this.geometryarray = [];   // array of "ogGeometries"
+
+   /** @type {boolean} */
+   this.simple3d = false;   // true for non-streamed 3d objects
+
    
    /** @type {string} */
    this.layername = "";
@@ -63,6 +67,14 @@ ogGeometryLayer.prototype.ParseOptions = function(options)
    if(options["name"])
    {
       this.layername = options["name"];
+   }
+   if( options["type"] == "static")
+   {
+      this.simple3d = true;
+   }
+   else
+   {
+      this.AddGeometryLayer(options);
    }
 }
 
@@ -145,6 +157,75 @@ ogGeometryLayer.prototype.RemoveGeometry = function(geometry)
          this.geometryarray[i].UnregisterObject();
          this.geometryarray.splice(i,1);
       }
+   }
+}
+
+//------------------------------------------------------------------------------
+/**
+ * @description Get the current globe renderer or null if there is none
+ * @ignore
+ * @returns {GlobeRenderer}
+ */
+ogGeometryLayer.prototype.GetGlobeRenderer = function()
+{
+   /** @type {GlobeRenderer} */
+   var renderer = null;
+
+   //parent of ogImageLayer is ogWorld
+   /** @type {ogWorld} */
+   var world = /** @type ogWorld */this.parent;
+
+   // parent of world is scene
+
+   var scene = /** @type ogScene */world.parent;
+
+   // parent of scene is context
+   /** @type {ogContext} */
+   var context = /** @type ogContext */scene.parent;
+
+   // Get the engine
+   /** @type {engine3d} */
+   var engine = context.engine;
+
+   // test if there is a scenegraph attached
+   if (engine.scene)
+   {
+      if (engine.scene.nodeRenderObject)
+      {
+         renderer = engine.scene.nodeRenderObject.globerenderer;
+      }
+   }
+   return renderer;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Add an image layer to the world
+ */
+ogImageLayer.prototype.AddGeometryLayer = function(options)
+{
+   /** @type {GlobeRenderer} */
+   var renderer = this.GetGlobeRenderer();
+   if (renderer)
+   {
+      this.layerindex = renderer.AddGeometryLayer(options);
+   }
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Remove image layer
+ */
+ogImageLayer.prototype.RemoveGeometryLayer = function()
+{
+   if (this.simple3d)
+   {
+      return; // simple3d is not connected to globe renderer
+   }
+
+   /** @type {GlobeRenderer} */
+   var renderer = this.GetGlobeRenderer();
+   if (renderer && this.layerindex != -1)
+   {
+      renderer.RemoveGeometryLayer(this.layerindex);
    }
 }
 
