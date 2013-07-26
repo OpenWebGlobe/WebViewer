@@ -72,28 +72,20 @@ function owgGeometryLayer()
       
       var coords = new Array(4);
       var res = {};
-
-      // todo: use real format
+      var extent;
       this.quadtree.QuadKeyToWGS84(quadcode, coords);
-      //var bbox= coords[0]+","+coords[1]+","+coords[2]+","+coords[3];
-
-      this.quadtree.QuadKeyToTileCoord(quadcode, res);
-
-      var sFilename = this.servers[this.curserver] + "/" + this.layer + "/tiles/" +
-                      res.lod + "/" + 
-                      res.x + "/" + 
-                      res.y + this.dsi.sFileExtension;
+      extent="extent="+ coords[1]+","+coords[2]+","+coords[3]+","+coords[0];
+      var sFilename = this.servers[this.curserver] + "/?" + extent + "&format=owg";
 
       // create mesh
-      var GeometryMesh = new Surface(engine);
+      /*var GeometryMesh = new Surface(engine);
       GeometryMesh.quadcode = quadcode;   // store quadcode in texture object
       GeometryMesh.layer = layer;
       GeometryMesh.cbfReady = cbfReady;   // store the ready callback in mesh object
       GeometryMesh.cbfFailed = cbfFailed; // store the failure callback in mesh object
       GeometryMesh.caller = caller;
       GeometryMesh.loadFromJSON(sFilename, _cbGeometryTileReady_owg, _cbGeometryTileFailed_owg);
-
-
+      */
       this.curserver++;
       if (this.curserver>=this.servers.length)
       {

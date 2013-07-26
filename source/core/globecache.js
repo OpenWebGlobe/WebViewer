@@ -34,10 +34,11 @@ goog.require('owg.TerrainBlock');
  * @param {engine3d} engine
  * @param {Array.<ImageLayer>} imagelayerlist
  * @param {Array.<ElevationLayer>} elevationlayerlist
+ * @param {Array.<ElevationLayer>} geometrylayerlist
  * @param {MercatorQuadtree} quadtree
  * @param {number} cachesize
  */
-function GlobeCache(engine, imagelayerlist, elevationlayerlist, quadtree, cachesize)
+function GlobeCache(engine, imagelayerlist, elevationlayerlist, geometrylayerlist, quadtree, cachesize)
 {
    /** @type {engine3d} */
    this.engine = engine;
@@ -45,6 +46,8 @@ function GlobeCache(engine, imagelayerlist, elevationlayerlist, quadtree, caches
    this.imagelayerlist = imagelayerlist;
    /** @type {Array.<ElevationLayer>} */
    this.elevationlayerlist = elevationlayerlist;
+   /** @type {Array.<GeometryLayer>} */
+   this.geometrylayerlist = geometrylayerlist;
    /** @type {MercatorQuadtree} */
    this.quadtree = quadtree;
 
@@ -67,6 +70,7 @@ GlobeCache.prototype.Destroy = function()
    this.engine = null;
    this.imagelayerlist = null;
    this.elevationlayerlist = null;
+   this.geometrylayerlist = null;
    this.quadtree = null;
    this.cache.clear();
    this.cache = null;  
@@ -126,7 +130,7 @@ GlobeCache.prototype.RequestBlock = function(quadcode)
       this.stats.numRequests++;
       // item doesn't exist yet, create a new one and request data (async)
       terrainblock = new TerrainBlock(this.engine, quadcode, this.quadtree);
-      terrainblock._AsyncRequestData(this.imagelayerlist, this.elevationlayerlist);
+      terrainblock._AsyncRequestData(this.imagelayerlist, this.elevationlayerlist, this.geometrylayerlist);
       this.cache.setItem(quadcode, terrainblock);
    }
    

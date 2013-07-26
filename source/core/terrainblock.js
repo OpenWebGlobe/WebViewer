@@ -161,7 +161,7 @@ TerrainBlock.prototype.MergeImages = function()
  * @description Request Data
  * @private
  */
-TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlayerlist)
+TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlayerlist, geometrylayerlist)
 {
    if (this.quadcode.length < 3)
    {
@@ -217,6 +217,16 @@ TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlay
       
       }
    }
+
+   // Part 3: Geometry Layer tile request
+   if (geometrylayerlist && geometrylayerlist.length>0)
+   {
+      if (geometrylayerlist[0].Contains(this.quadcode))
+      {
+         geometrylayerlist[0].RequestTile(this.engine, this.quadcode, 0, _cbfOnGeometryTileReady, _cbfOnGeometryTileFailed, caller);
+         g_activeRequests++;
+      }
+   }
 }
 //------------------------------------------------------------------------------
 /**
@@ -265,19 +275,19 @@ function _cbfOnElevationTileReady(quadcode, mesh, layer)
    terrainblock.mesh = mesh;
    terrainblock.mesh.lod = terrainblock.quadcode.length;
    terrainblock.vOffset = mesh.offset;
-   
+
    terrainblock.vTilePoints[0].Set(mesh.bbmin[0], mesh.bbmin[1], mesh.bbmin[2]);
    terrainblock.vTilePoints[1].Set(mesh.bbmax[0], mesh.bbmin[1], mesh.bbmin[2]);
    terrainblock.vTilePoints[2].Set(mesh.bbmax[0], mesh.bbmax[1], mesh.bbmin[2]);
    terrainblock.vTilePoints[3].Set(mesh.bbmin[0], mesh.bbmax[1], mesh.bbmin[2]);
    terrainblock.vTilePoints[4].Set(0.5*(mesh.bbmax[0]-mesh.bbmin[0]), 0.5*(mesh.bbmax[1]-mesh.bbmin[1]),0.5*(mesh.bbmax[2]-mesh.bbmin[2]));
-   
+
    terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
    terrainblock.MergeImages();
 
    g_activeRequests--;
 }
-//------------------------------------------------------------------------------       
+//------------------------------------------------------------------------------
 /**
  * @description Callback when data failed
  * @private
@@ -287,6 +297,41 @@ function _cbfOnElevationTileFailed(quadcode, terrainblock, layer)
    terrainblock.mesh = null;
    terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
    terrainblock.MergeImages();
+   g_activeRequests--;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Callback when elevation data is ready
+ * @private
+ */
+function _cbfOnGeometryTileReady(quadcode, mesh, layer)
+{
+   /*var terrainblock = mesh.caller;
+   terrainblock.mesh = mesh;
+   terrainblock.mesh.lod = terrainblock.quadcode.length;
+   terrainblock.vOffset = mesh.offset;
+
+   terrainblock.vTilePoints[0].Set(mesh.bbmin[0], mesh.bbmin[1], mesh.bbmin[2]);
+   terrainblock.vTilePoints[1].Set(mesh.bbmax[0], mesh.bbmin[1], mesh.bbmin[2]);
+   terrainblock.vTilePoints[2].Set(mesh.bbmax[0], mesh.bbmax[1], mesh.bbmin[2]);
+   terrainblock.vTilePoints[3].Set(mesh.bbmin[0], mesh.bbmax[1], mesh.bbmin[2]);
+   terrainblock.vTilePoints[4].Set(0.5*(mesh.bbmax[0]-mesh.bbmin[0]), 0.5*(mesh.bbmax[1]-mesh.bbmin[1]),0.5*(mesh.bbmax[2]-mesh.bbmin[2]));
+
+   terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
+   terrainblock.MergeImages();*/
+
+   g_activeRequests--;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Callback when data failed
+ * @private
+ */
+function _cbfOnGeometryTileFailed(quadcode, terrainblock, layer)
+{
+   /*terrainblock.mesh = null;
+   terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
+   terrainblock.MergeImages();*/
    g_activeRequests--;
 }
 //------------------------------------------------------------------------------
