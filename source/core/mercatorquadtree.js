@@ -186,8 +186,8 @@ MercatorQuadtree.prototype.QuadKeyToWGS84 = function(quadcode, coords)
    var minx = 90.0 - 360.0 * Math.atan(Math.exp(-y * 2.0 * Math.PI)) / Math.PI;
    var miny = 360.0000 * x;
 
-   x = (Math.min(Math.max(minpixelX, 0), mapSize - 1) / mapSize) - 0.5;
-   y = 0.5 - (Math.min(Math.max(minpixelY, 0), mapSize - 1) / mapSize);
+   x = (Math.min(Math.max(maxpixelX, 0), mapSize - 1) / mapSize) - 0.5;
+   y = 0.5 - (Math.min(Math.max(maxpixelY, 0), mapSize - 1) / mapSize);
    var maxx = 90.0 - 360.0 * Math.atan(Math.exp(-y * 2.0 * Math.PI)) / Math.PI;
    var maxy = 360.0000 * x;
     coords[0]=minx;
