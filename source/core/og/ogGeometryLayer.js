@@ -171,7 +171,7 @@ ogGeometryLayer.prototype.GetGlobeRenderer = function()
    /** @type {GlobeRenderer} */
    var renderer = null;
 
-   //parent of ogImageLayer is ogWorld
+   //parent of ogGeometryLayer is ogWorld
    /** @type {ogWorld} */
    var world = /** @type ogWorld */this.parent;
 
@@ -199,9 +199,9 @@ ogGeometryLayer.prototype.GetGlobeRenderer = function()
 }
 //------------------------------------------------------------------------------
 /**
- * @description Add an image layer to the world
+ * @description Add a geometry layer to the world
  */
-ogImageLayer.prototype.AddGeometryLayer = function(options)
+ogGeometryLayer.prototype.AddGeometryLayer = function(options)
 {
    /** @type {GlobeRenderer} */
    var renderer = this.GetGlobeRenderer();
@@ -214,7 +214,7 @@ ogImageLayer.prototype.AddGeometryLayer = function(options)
 /**
  * @description Remove image layer
  */
-ogImageLayer.prototype.RemoveGeometryLayer = function()
+ogGeometryLayer.prototype.RemoveGeometryLayer = function()
 {
    if (this.simple3d)
    {
