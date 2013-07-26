@@ -28,6 +28,8 @@ goog.require('owg.ImageLayer');
 goog.require('owg.MercatorQuadtree');
 goog.require('owg.Texture');
 goog.require('owg.GeometryLayer');
+goog.require('owg.Geometry');
+
 
 //------------------------------------------------------------------------------
 /**
@@ -77,15 +79,15 @@ function owgGeometryLayer()
       extent="extent="+ coords[1]+","+coords[2]+","+coords[3]+","+coords[0];
       var sFilename = this.servers[this.curserver] + "/?" + extent + "&format=owg";
 
-      // create mesh
-      /*var GeometryMesh = new Surface(engine);
-      GeometryMesh.quadcode = quadcode;   // store quadcode in texture object
-      GeometryMesh.layer = layer;
-      GeometryMesh.cbfReady = cbfReady;   // store the ready callback in mesh object
-      GeometryMesh.cbfFailed = cbfFailed; // store the failure callback in mesh object
-      GeometryMesh.caller = caller;
-      GeometryMesh.loadFromJSON(sFilename, _cbGeometryTileReady_owg, _cbGeometryTileFailed_owg);
-      */
+      // create geometry
+      var GeometryBlock = new Geometry(engine);
+      GeometryBlock.quadcode = quadcode;   // store quadcode in texture object
+      GeometryBlock.layer = layer;
+      GeometryBlock.cbfReady = cbfReady;   // store the ready callback in mesh object
+      GeometryBlock.cbfFailed = cbfFailed; // store the failure callback in mesh object
+      GeometryBlock.caller = caller;
+      GeometryBlock.Load(sFilename, _cbGeometryTileReady_owg, _cbGeometryTileFailed_owg);
+
       this.curserver++;
       if (this.curserver>=this.servers.length)
       {
@@ -141,28 +143,28 @@ owgGeometryLayer.prototype = new GeometryLayer();
  * @description internal callback function for tiles
  * @ignore
  */
-function _cbGeometryTileReady_owg(mesh)
+function _cbGeometryTileReady_owg(geometry)
 {
-   mesh.cbfReady(mesh.quadcode, mesh, mesh.layer);
-   mesh.cbfReady = null;
-   mesh.cbfFailed = null;
-   mesh.quadcode = null;
-   mesh.caller = null;
-   mesh.layer = null;
+   geometry.cbfReady(geometry.quadcode, geometry, geometry.layer);
+   geometry.cbfReady = null;
+   geometry.cbfFailed = null;
+   geometry.quadcode = null;
+   geometry.caller = null;
+   geometry.layer = null;
 }
 //------------------------------------------------------------------------------
 /**
  * @description internal callback function for tiles
  * @ignore
  */
-function _cbGeometryTileFailed_owg(mesh)
+function _cbGeometryTileFailed_owg(geometry)
 {
-   mesh.cbfFailed(mesh.quadcode, mesh.caller, mesh.layer);
-   mesh.cbfReady = null;
-   mesh.cbfFailed = null;
-   mesh.quadcode = null;
-   mesh.caller = null;
-   mesh.layer = null;
+   geometry.cbfFailed(geometry.quadcode, geometry.caller, geometry.layer);
+   geometry.cbfReady = null;
+   geometry.cbfFailed = null;
+   geometry.quadcode = null;
+   geometry.caller = null;
+   geometry.layer = null;
 }
 //------------------------------------------------------------------------------
 
