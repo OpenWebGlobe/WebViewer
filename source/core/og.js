@@ -2169,6 +2169,8 @@ function ogAddGeometryLayer(world_id, options)
    var world = _GetObjectFromId(world_id);
    if (world && world.type == OG_OBJECT_WORLD)
    {
+      options["name"] = "3d-stream";
+      options["type"] = "3d-stream";
       var geometrylayer = _CreateObject(OG_OBJECT_GEOMETRYLAYER, world, options);
       return geometrylayer.id;
    }

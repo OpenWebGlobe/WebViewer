@@ -38,6 +38,7 @@ goog.require('owg.OYMImageLayer');
 goog.require('owg.TMSImageLayer');
 goog.require('owg.WMSImageLayer');
 goog.require('owg.WMTSImageLayer');
+goog.require('owg.owgGeometryLayer');
 //------------------------------------------------------------------------------
 /**
  * @typedef {{
@@ -62,8 +63,6 @@ var ElevationLayerOptions;
 //------------------------------------------------------------------------------
 /**
  * @typedef {{
- *     name    : string,
- *     type    : string,
  *     url     : Array.<string>,
  *     service : string,
  *     minlod  : number,
@@ -87,6 +86,8 @@ function GlobeRenderer(engine)
    this.imagelayerlist = new Array();
    /** @type {Array.<ElevationLayer>} */
    this.elevationlayerlist = new Array();
+   /** @type {Array.<GeometryLayer>} */
+   this.geometrylayerlist = new Array();
    /** @type {MercatorQuadtree} */
    this.quadtree = new MercatorQuadtree();
    /** @type {number} */
@@ -427,7 +428,39 @@ GlobeRenderer.prototype.AddElevationLayer = function(options)
    
    return index;
 }
+//------------------------------------------------------------------------------
+/**
+ * @description Add a 3d geometry layer
+ * @param {GeometryLayerOptions} options
+ * @returns index of array where this geometry layer is placed, or -1 on failure
+ *
+ */
+GlobeRenderer.prototype.AddGeometryLayer = function(options)
+{
+   var index = -1;
+   if (options["service"] == "owg")
+   {
+      // OpenWebGlobe elevation tile service
+      if (options["url"] && options["minlod"] && options["maxlod"])
+      {
+         if (options["url"].length>0)
+         {
+            var servers = options["url"];
+            var minlod = options["minlod"];
+            var maxlod = options["maxlod"];
 
+            // Create OpenWebGlobe Geometry layer:
+            var geomLayer = new owgGeometryLayer();
+            geomLayer.Setup(servers, minlod, maxlod);
+            index = this.geometrylayerlist.length;
+            this.geometrylayerlist.push(geomLayer);
+            this._UpdateLayers();
+         }
+      }
+   }
+
+   return index;
+}
 //------------------------------------------------------------------------------
 /**
  * @description Remove image layer at specified index
@@ -457,6 +490,21 @@ GlobeRenderer.prototype.RemoveElevationLayer = function(index)
    }
    
    this.elevationlayerlist.splice(index, 1);
+   this._UpdateLayers();
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Remove geometry layer at specified index
+ * @param {number} index the index of the geometry layer to be removed
+ */
+GlobeRenderer.prototype.RemoveGeometryLayer = function(index)
+{
+   if (index<0 || index>=this.geometrylayerlist.length)
+   {
+      return; // wrong index!!
+   }
+
+   this.geometrylayerlist.splice(index, 1);
    this._UpdateLayers();
 }
 //------------------------------------------------------------------------------

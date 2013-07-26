@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2010-2011 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                           martin.christen@fhnw.ch                            #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/
+
+                      TUTORIAL 5.0: Load a 3D-Model
+
+*******************************************************************************/
+-->
+<html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../../compiled/deps.js"></script>
+<script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
+
+<script type="text/javascript">
+
+    var geometrylayer = null;
+
+    //------------------------------------------------------------------------------
+    function main()
+    {
+        ogSetArtworkDirectory("http://www.openwebglobe.org/art/");
+
+        var ctx = ogCreateContextFromCanvas("canvas", true);
+
+        var globe = ogCreateGlobe(ctx);
+        var scene = ogGetScene(ctx);
+        var world = ogGetWorld(scene);
+
+        ogAddImageLayer(globe, {
+            url     : ["http://tile1.openwebglobe.org/mapcache/owg",
+                       "http://tile2.openwebglobe.org/mapcache/owg",
+                       "http://tile3.openwebglobe.org/mapcache/owg"],
+            layer   : "world",
+            service : "owg"
+        });
+
+        ogAddElevationLayer(globe, {
+            url     : ["http://tile1.openwebglobe.org/mapcache/owg",
+                       "http://tile2.openwebglobe.org/mapcache/owg",
+                       "http://tile3.openwebglobe.org/mapcache/owg"],
+            layer   : "srtm",
+            service : "owg"
+        });
+
+        /*var geom_options = {
+            url  : ["http://localhost:1337"],
+            service : ["owg"],
+            minlod: 14,
+            maxlod: 19
+        };
+
+        var geometrylayer = ogAddGeometryLayer(world, geom_options);
+        */
+        ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1);
+    }
+    //------------------------------------------------------------------------------
+
+</script>
+
+</head>
+<body onload="main()" style="padding:0px; margin:0px; overflow:hidden;">
+<div style="text-align: center">
+    <canvas id="canvas"></canvas>
+</div>
+</body>
+</html>
