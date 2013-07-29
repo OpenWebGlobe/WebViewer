@@ -1922,7 +1922,7 @@ function ogDestroyVector(vector_id)
    {
       if(vector.layer)
       {
-         var layer = vector.layer;
+         var layer = vector.vectorlayer;
          if (layer  && layer.type == OG_OBJECT_VECTORLAYER)
          {
             layer.RemoveVector(vector);
