@@ -38,9 +38,9 @@ goog.require('owg.poly2tri');
 function ogVector()
 {
    /** @type {string} */
-   this.name = "ogGeometry";
+   this.name = "ogVector";
    /** @type {number} */
-   this.type = OG_OBJECT_GEOMETRY;
+   this.type = OG_OBJECT_VECTOR;
    /** @type {string} */
    this.jsonUrl = "";
    /** @type {?function(number)} */
