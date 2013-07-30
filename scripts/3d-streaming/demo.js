@@ -279,6 +279,11 @@ function MakeRelative(object)
 // Main Application
 http.createServer(function (req, res) {
 
+   res.setHeader('Access-Control-Allow-Origin', '*');
+   res.setHeader('Access-Control-Max-Age', '86400');  // 86400s = 1 day
+   res.setHeader("Cache-Control", "public, max-age=86400"); // 86400s = 1 day
+   res.setHeader("Expires", new Date(Date.now() + 86400000).toUTCString()); //  86400000ms = 1 day
+
    res.writeHead(200, {'Content-Type': 'application/json'});
 
    var JSONObject = {};
@@ -304,14 +309,14 @@ http.createServer(function (req, res) {
       // A CUBE (dimensions in [m])
       // Vertex semantic is "pc": position, color
       // vertices: xyz rgba
-      var vertices = [ -10.0, -100.0, -10.0, 1,0,0,1,
-                       -10.0, -100.0,  10.0, 0,1,0,1,
-                       -10.0,  100.0, -10.0, 0,0,1,1,
-                       -10.0,  100.0,  10.0, 1,1,0,1,
-                        10.0, -100.0, -10.0, 0,1,1,1,
-                        10.0, -100.0,  10.0, 1,0,1,1,
-                        10.0,  100.0, -10.0, 0,0,0,1,
-                        10.0,  100.0,  10.0, 1,1,1,1
+      var vertices = [ -10.0, -10.0, -100.0, 1,0,0,1,
+                       -10.0, -10.0,  100.0, 0,1,0,1,
+                       -10.0,  10.0, -100.0, 0,0,1,1,
+                       -10.0,  10.0,  100.0, 1,1,0,1,
+                        10.0, -10.0, -100.0, 0,1,1,1,
+                        10.0, -10.0,  100.0, 1,0,1,1,
+                        10.0,  10.0, -100.0, 0,0,0,1,
+                        10.0,  10.0,  100.0, 1,1,1,1
                      ];
 
       var indices = [0, 6, 4,
