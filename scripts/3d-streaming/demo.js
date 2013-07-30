@@ -147,7 +147,7 @@ function Add3DObject(object, id, center, vertex_semantic, vertexlist, indexlist)
    var object3d = {};
 
    var navframe = mat4.create();
-   mat4.CalcNavigationFrame(navframe, center[0], center[1]);
+   mat4.CalcNavigationFrameZUp(navframe, center[0], center[1]);
 
    var cartesian = WGS84ToCartesian(center[0],center[1],center[2]);
 
@@ -309,13 +309,13 @@ http.createServer(function (req, res) {
       // A CUBE (dimensions in [m])
       // Vertex semantic is "pc": position, color
       // vertices: xyz rgba
-      var vertices = [ -10.0, -10.0, -100.0, 1,0,0,1,
-                       -10.0, -10.0,  100.0, 0,1,0,1,
-                       -10.0,  10.0, -100.0, 0,0,1,1,
-                       -10.0,  10.0,  100.0, 1,1,0,1,
-                        10.0, -10.0, -100.0, 0,1,1,1,
-                        10.0, -10.0,  100.0, 1,0,1,1,
-                        10.0,  10.0, -100.0, 0,0,0,1,
+      var vertices = [   0.0,   0.0,    0.0, 0,0,0,1,
+                         0.0,   0.0,  100.0, 1,1,1,1,
+                         0.0,  10.0,    0.0, 0,0,0,1,
+                         0.0,  10.0,  100.0, 1,1,1,1,
+                        10.0,   0.0,    0.0, 0,0,0,1,
+                        10.0,   0.0,  100.0, 1,1,1,1,
+                        10.0,  10.0,    0.0, 0,0,0,1,
                         10.0,  10.0,  100.0, 1,1,1,1
                      ];
 

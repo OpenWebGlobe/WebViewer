@@ -898,8 +898,15 @@ mat4.lookAt = function (out, eye, center, up) {
    return out;
 };
 
-/**
- * @description Generate navigation frame
+/**         x (North)
+ *        /
+ *      /
+ *     +------> y (East)
+ *     |
+ *     |
+ *     v
+ *     z (down)
+ * @description Generate navigation frame (z-down)
  * @param {number} lng_deg
  * @param {number} lat_deg
  */
@@ -918,6 +925,33 @@ mat4.CalcNavigationFrame = function(out, lng_deg, lat_deg)
    out[2] = coslat;           out[6] = 0;       out[10] = -sinlat;         out[14] = 0;
    out[3] = 0;                out[7] = 0;       out[11] = 0;               out[15] = 1;
 
+}
+
+/**
+ *         z
+ *         ^     y (North)
+ *         |   /
+ *         | /
+ *         +-----> x (East)
+ *
+ * @description Generate navigation frame with z-axis up
+ * @param {number} lng_deg
+ * @param {number} lat_deg
+ */
+mat4.CalcNavigationFrameZUp = function(out, lng_deg, lat_deg)
+{
+   var lng = lng_deg*0.017453292519943295769236907684886;
+   var lat = lat_deg*0.017453292519943295769236907684886;
+
+   var sinlat = Math.sin(lat);
+   var sinlng = Math.sin(lng);
+   var coslat = Math.cos(lat);
+   var coslng = Math.cos(lng);
+
+   out[0] = -sinlng; out[4] = -sinlat*coslng; out[8]  = coslat*coslng; out[12] = 0;
+   out[1] = coslng;  out[5] = -sinlat*sinlng; out[9]  = coslat*sinlng; out[13] = 0;
+   out[2] = 0;       out[6] = coslat;         out[10] = sinlat;        out[14] = 0;
+   out[3] = 0;       out[7] = 0;              out[11] = 0;             out[15] = 1;
 }
 
 /**
