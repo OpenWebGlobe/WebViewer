@@ -88,6 +88,7 @@ function owgGeometryLayer()
       GeometryBlock.caller = caller;
       GeometryBlock.Load(sFilename, _cbGeometryTileReady_owg, _cbGeometryTileFailed_owg);
 
+      // handle multiple tile servers
       this.curserver++;
       if (this.curserver>=this.servers.length)
       {

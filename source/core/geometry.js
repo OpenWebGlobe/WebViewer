@@ -34,8 +34,14 @@ goog.require('owg.Surface');
  */
 function Geometry(engine)
 {
+   /** @type {engine3d} */
+   this.engine = engine;
+
    /** @type {Array.<Surface>} */
    this.geometries = [];
+
+   /** @type {Array.<number>} */
+   this.offset = [];
 
    /** @type {string} */
    this.type = "tile";
@@ -45,6 +51,9 @@ function Geometry(engine)
 
    this.cbr = null;
    this.cbf = null;
+
+   /** @type {mat4} */
+   this.tmpmodel = new mat4();
 }
 //------------------------------------------------------------------------------
 /**
@@ -76,6 +85,22 @@ Geometry.prototype.Load = function(url, opt_callbackready, opt_callbackfailed)
  */
 Geometry.prototype.Render = function()
 {
+   this.tmpmodel.CopyFrom(this.engine.matModel);
+
+   // virtual camera offset:
+   this.tmpmodel._values[12] += this.offset[0];
+   this.tmpmodel._values[13] += this.offset[1];
+   this.tmpmodel._values[14] += this.offset[2];
+
+   this.engine.PushMatrices();
+   this.engine.SetModelMatrix(this.tmpmodel);
+
+   for (var i=0;i<this.geometries.length;i++)
+   {
+      this.geometries[i].Draw();
+   }
+
+   this.engine.PopMatrices();
 
 }
 //------------------------------------------------------------------------------
@@ -84,13 +109,63 @@ Geometry.prototype.Render = function()
  */
 Geometry.prototype.CreateFromJSONObject = function(jsonobject)
 {
+   var failed = true;
 
-
-   // if ready:
-   /*if (this.cbr)
+   if (goog.isDef(jsonobject["Version"] && jsonobject["Version"] == "1.0"))
    {
-      this.cbr(geometry);
-   }*/
+      var bounds = jsonobject["Bounds"];
+      var texture = jsonobject["Texture"];
+      var offset = jsonobject["Offset"];
+      var bbox = jsonobject["BoundingBox"];
+      var objects = jsonobject["Objects"];
+
+      this.offset = offset;
+
+      // now create this.geometries[] out of "objects". if successful set failed to false
+      for (var i=0;i<objects.length;i++)
+      {
+         var surf = new Surface(this.engine);
+         var obj3d = objects[i];
+
+         // obj3d["Vertices"] already exists
+         // obj3d["VertexSemantic"] already exists
+
+         // Set virtual camera offset:
+         obj3d["Offset"] = offset;
+
+         // Set global bounding box
+         obj3d['BoundingBox'] = bbox;
+
+         if (texture.length>0)
+         {
+            obj3d["DiffuseMap"] = obj3d["Texture"];  // download texture
+            // note: version "1.1" is planned to support embedded base64 textures
+            // in version 1.0 of the format only URLs are accepted...
+         }
+
+         // create the 3d geometry:
+         surf.CreateFromJSONObject(obj3d, null, null);
+         //surf.UpdateAABB() // would create a more precise AABB, don't call it for now.
+
+         this.geometries.push(surf);
+         failed = false;
+      }
+   }
+
+   if (failed)
+   {
+      if (this.cbf)
+      {
+         this.cbf(this);
+      }
+   }
+   else
+   {
+      if (this.cbr)
+      {
+         this.cbr(this);
+      }
+   }
 }
 
 //------------------------------------------------------------------------------

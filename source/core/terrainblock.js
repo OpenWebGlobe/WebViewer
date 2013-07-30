@@ -52,6 +52,8 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.mesh = null;
    /** @type {boolean} */
    this.haselevation = true;
+   /** @type {Array.<Geometry>} */
+   this.geometries = [];
    
    /** @type {Array} */
    this.vOffset = []; // virtual camera offset
@@ -221,10 +223,13 @@ TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlay
    // Part 3: Geometry Layer tile request
    if (geometrylayerlist && geometrylayerlist.length>0)
    {
-      if (geometrylayerlist[0].Contains(this.quadcode))
+      for (var i=0;i<geometrylayerlist.length;i++)
       {
-         geometrylayerlist[0].RequestTile(this.engine, this.quadcode, 0, _cbfOnGeometryTileReady, _cbfOnGeometryTileFailed, caller);
-         g_activeRequests++;
+         if (geometrylayerlist[i].Contains(this.quadcode))
+         {
+            geometrylayerlist[i].RequestTile(this.engine, this.quadcode, i, _cbfOnGeometryTileReady, _cbfOnGeometryTileFailed, caller);
+            g_activeRequests++;
+         }
       }
    }
 }
@@ -304,21 +309,12 @@ function _cbfOnElevationTileFailed(quadcode, terrainblock, layer)
  * @description Callback when elevation data is ready
  * @private
  */
-function _cbfOnGeometryTileReady(quadcode, mesh, layer)
+function _cbfOnGeometryTileReady(quadcode, geometry, layer)
 {
-   /*var terrainblock = mesh.caller;
-   terrainblock.mesh = mesh;
-   terrainblock.mesh.lod = terrainblock.quadcode.length;
-   terrainblock.vOffset = mesh.offset;
+   var terrainblock = geometry.caller;
 
-   terrainblock.vTilePoints[0].Set(mesh.bbmin[0], mesh.bbmin[1], mesh.bbmin[2]);
-   terrainblock.vTilePoints[1].Set(mesh.bbmax[0], mesh.bbmin[1], mesh.bbmin[2]);
-   terrainblock.vTilePoints[2].Set(mesh.bbmax[0], mesh.bbmax[1], mesh.bbmin[2]);
-   terrainblock.vTilePoints[3].Set(mesh.bbmin[0], mesh.bbmax[1], mesh.bbmin[2]);
-   terrainblock.vTilePoints[4].Set(0.5*(mesh.bbmax[0]-mesh.bbmin[0]), 0.5*(mesh.bbmax[1]-mesh.bbmin[1]),0.5*(mesh.bbmax[2]-mesh.bbmin[2]));
+   terrainblock.geometries[layer] = geometry;
 
-   terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
-   terrainblock.MergeImages();*/
 
    g_activeRequests--;
 }
@@ -329,9 +325,8 @@ function _cbfOnGeometryTileReady(quadcode, mesh, layer)
  */
 function _cbfOnGeometryTileFailed(quadcode, terrainblock, layer)
 {
-   /*terrainblock.mesh = null;
-   terrainblock.elevationlayers = terrainblock.elevationlayers - 1;
-   terrainblock.MergeImages();*/
+   // currently don't do anything if geometry tile download/creation fails.
+
    g_activeRequests--;
 }
 //------------------------------------------------------------------------------
@@ -910,6 +905,12 @@ TerrainBlock.prototype.Render = function(nomaterial)
       this.mesh.Draw();
 
       this.engine.PopMatrices();
+
+      // render all streamed geometries
+      for (var i=0;i<this.geometries.length;i++)
+      {
+         this.geometries[i].Render();
+      }
    }
    
 }
