@@ -57,13 +57,16 @@
             service : "owg"
         });
 
-        ogAddElevationLayer(globe, {
+        // deactivating elevation for this demo:
+        // the streaming demo currently renders at elevation 0.
+
+        /*ogAddElevationLayer(globe, {
             url     : ["http://tile1.openwebglobe.org/mapcache/owg",
                        "http://tile2.openwebglobe.org/mapcache/owg",
                        "http://tile3.openwebglobe.org/mapcache/owg"],
             layer   : "srtm",
             service : "owg"
-        });
+        });*/
 
         // run the node.js demo: "scripts/3d-streaming/demo.js" for this
         var geom_options = {
