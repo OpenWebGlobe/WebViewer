@@ -102,7 +102,7 @@ function AddVersion(object)
 function AddBounds(object, extent)
 {
    var m0 = WGS84ToMercator(extent[0],extent[1]);
-   var m1 = WGS84ToMercator(extent[1],extent[2]);
+   var m1 = WGS84ToMercator(extent[2],extent[3]);
 
    object["Bounds"] = [m0[0],m0[1],m1[0],m1[1]];
 }
