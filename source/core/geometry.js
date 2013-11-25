@@ -136,11 +136,13 @@ Geometry.prototype.CreateFromJSONObject = function(jsonobject)
          // Set global bounding box
          obj3d['BoundingBox'] = bbox;
 
-         if (texture.length>0)
+         if (texture.length==0)
          {
-            obj3d["DiffuseMap"] = obj3d["Texture"];  // download texture
-            // note: version "1.1" is planned to support embedded base64 textures
-            // in version 1.0 of the format only URLs are accepted...
+            obj3d["DiffuseMap"] = obj3d["Texture"];  // use local texture
+         }
+         else
+         {
+            obj3d["DiffuseMap"] = texture; // use global texture
          }
 
          // create the 3d geometry:
