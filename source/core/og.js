@@ -1767,7 +1767,7 @@ function ogRemoveElevationLayer(layer_id)
    // test if context_id is a valid elevation layer
    // @type {ogGeometryLayer}
    var layer = _GetObjectFromId(layer_id);
-   if (layer && layer.type == OG_OBJECT_GEOMETRYLAYER)
+   if (layer && layer.type == OG_OBJECT_ELEVATIONLAYER)
    {
       layer.RemoveElevationLayer();
       layer.UnregisterObject();
