@@ -72,6 +72,17 @@ var ElevationLayerOptions;
 var GeometryLayerOptions;
 //------------------------------------------------------------------------------
 /**
+ * @typedef {{
+ *     url     : Array.<string>,
+ *     service : string,
+ *     layer   : string,
+ *     minlod  : number,
+ *     maxlod  : number
+ * }}
+ */
+var PointCloudLayerOptions;
+//------------------------------------------------------------------------------
+/**
  * @constructor
  * @description Rendering the virtual globe...
  * @author Martin Christen, martin.christen@fhnw.ch
