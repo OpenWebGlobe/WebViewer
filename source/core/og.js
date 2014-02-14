@@ -46,6 +46,7 @@ goog.require('owg.ogSurface');
 goog.require('owg.ogTexture');
 goog.require('owg.ogPOILayer');
 goog.require('owg.ogGeometryLayer');
+goog.require('owg.ogPointCloudLayer');
 goog.require('owg.ogBillboard');
 goog.require('owg.ogBillboardLayer');
 goog.require('owg.FlyToAnimation');
@@ -116,6 +117,10 @@ function _CreateObject(typ, parent, options)
    else if (typ ==  OG_OBJECT_GEOMETRYLAYER)
    {
       newobject = new ogGeometryLayer();
+   }
+   else if (typ ==  OG_OBJECT_POINTCLOUDLAYER)
+   {
+      newobject = new ogPointCloudLayer();
    }
    else if (typ ==  OG_OBJECT_VOXELLAYER)
    {
@@ -2200,6 +2205,33 @@ function ogCreateGeometryLayer(world_id, layername)
    return -1;
 }
 goog.exportSymbol('ogCreateGeometryLayer', ogCreateGeometryLayer);
+//------------------------------------------------------------------------------
+//##############################################################################
+// ** POINT CLOUD LAYER OBJECT **
+//##############################################################################
+//------------------------------------------------------------------------------
+/**
+ * @description Add point cloud layer to the globe
+ * @param {number} world_id
+ * @param {PointCloudLayerOptions} options
+ */
+function ogCreatePointCloudLayer(world_id, options)
+{
+    // test if context_id is a valid context
+    var world = _GetObjectFromId(world_id);
+    if (world && world.type == OG_OBJECT_WORLD)
+    {
+        options["name"] = "pointcloud";
+        options["type"] = "pointcloud";
+        var pointcloudlayer = _CreateObject(OG_OBJECT_POINTCLOUDLAYER, world, options);
+        return pointcloudlayer.id;
+    }
+
+    return -1;
+}
+goog.exportSymbol('ogCreatePointCloudLayer', ogCreatePointCloudLayer);
+//------------------------------------------------------------------------------
+
 //------------------------------------------------------------------------------
 //##############################################################################
 // ** AOEIMAGE LAYER OBJECT **
