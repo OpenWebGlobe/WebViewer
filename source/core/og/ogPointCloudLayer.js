@@ -191,8 +191,7 @@ ogPointCloudLayer.prototype.AddPointCloudLayer = function(options)
     var renderer = this.GetGlobeRenderer();
     if (renderer)
     {
-        // #TODO
-        //this.layerindex = renderer.AddPointCloudLayer(options);
+        this.layerindex = renderer.AddPointCloudLayer(options);
     }
 }
 //------------------------------------------------------------------------------
@@ -205,8 +204,7 @@ ogPointCloudLayer.prototype.RemovePointCloudLayer = function()
     var renderer = this.GetGlobeRenderer();
     if (renderer && this.layerindex != -1)
     {
-        // #TODO
-        //renderer.RemovePointCloudLayer(this.layerindex);
+        renderer.RemovePointCloudLayer(this.layerindex);
     }
 }
 
