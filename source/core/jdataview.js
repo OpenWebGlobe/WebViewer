@@ -305,7 +305,7 @@ jDataView.prototype = {
     },
 
     _arrayBufferAction: function (type, isReadAction, byteOffset, littleEndian, value) {
-        var size = dataTypes[type], TypedArray = global[type + 'Array'], typedArray;
+        /*var size = dataTypes[type], TypedArray = global[type + 'Array'], typedArray;
 
         littleEndian = defined(littleEndian, this._littleEndian);
 
@@ -324,7 +324,7 @@ jDataView.prototype = {
                 typedArray[0] = value;
                 this._setBytes(byteOffset, bytes, littleEndian);
             }
-        }
+        }*/
     },
 
     _arrayAction: function (type, isReadAction, byteOffset, littleEndian, value) {
