@@ -54,6 +54,8 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.haselevation = true;
    /** @type {Array.<Geometry>} */
    this.geometries = [];
+   /** @type {Array.<Geometry>} */
+   this.pointclouds = [];
    
    /** @type {Array} */
    this.vOffset = []; // virtual camera offset
@@ -163,7 +165,7 @@ TerrainBlock.prototype.MergeImages = function()
  * @description Request Data
  * @private
  */
-TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlayerlist, geometrylayerlist)
+TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlayerlist, geometrylayerlist, pointcloudlayerlist)
 {
    if (this.quadcode.length < 3)
    {
@@ -221,17 +223,31 @@ TerrainBlock.prototype._AsyncRequestData = function(imagelayerlist, elevationlay
    }
 
    // Part 3: Geometry Layer tile request
-   if (geometrylayerlist && geometrylayerlist.length>0)
-   {
-      for (var i=0;i<geometrylayerlist.length;i++)
-      {
-         if (geometrylayerlist[i].Contains(this.quadcode))
-         {
-            geometrylayerlist[i].RequestTile(this.engine, this.quadcode, i, _cbfOnGeometryTileReady, _cbfOnGeometryTileFailed, caller);
-            g_activeRequests++;
-         }
-      }
-   }
+    if (geometrylayerlist && geometrylayerlist.length>0)
+    {
+        for (var i=0;i<geometrylayerlist.length;i++)
+        {
+            if (geometrylayerlist[i].Contains(this.quadcode))
+            {
+                geometrylayerlist[i].RequestTile(this.engine, this.quadcode, i, _cbfOnGeometryTileReady, _cbfOnGeometryTileFailed, caller);
+                g_activeRequests++;
+            }
+        }
+    }
+
+    // Part 4: Point Cloud Layer tile request
+    if (pointcloudlayerlist && pointcloudlayerlist.length>0)
+    {
+        for (var i=0;i<pointcloudlayerlist.length;i++)
+        {
+            if (pointcloudlayerlist[i].Contains(this.quadcode))
+            {
+                pointcloudlayerlist[i].RequestTile(this.engine, this.quadcode, i, _cbfOnPointCloudTileReady, _cbfOnPointCloudTileFailed, caller);
+                g_activeRequests++;
+            }
+        }
+    }
+
 }
 //------------------------------------------------------------------------------
 /**
@@ -329,6 +345,30 @@ function _cbfOnGeometryTileFailed(quadcode, terrainblock, layer)
 
    g_activeRequests--;
 }
+//------------------------------------------------------------------------------
+/**
+ * @description Callback when elevation data is ready
+ * @private
+ */
+function _cbfOnPointCloudTileReady(quadcode, pc, layer)
+{
+    var terrainblock = pc.caller;
+    terrainblock.pointclouds[layer] = pc;
+
+    g_activeRequests--;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Callback when data failed
+ * @private
+ */
+function _cbfOnPointCloudTileFailed(quadcode, terrainblock, layer)
+{
+    // currently don't do anything if point cloud tile download/creation fails.
+
+    g_activeRequests--;
+}
+
 //------------------------------------------------------------------------------
 /**
  * @description Destroy Terrainblock and free all memory, especially GPU mem.
