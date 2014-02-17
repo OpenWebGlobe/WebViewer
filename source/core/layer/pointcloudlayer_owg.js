@@ -84,13 +84,13 @@ function owgPointCloudLayer()
         var sFilename = this.servers[this.curserver] + "/?" + "src=" + this.layer + extent + "&pts=" + this.maxpts;
 
         // create geometry
-        var GeometryBlock = new Geometry(engine);
-        GeometryBlock.quadcode = quadcode;   // store quadcode in texture object
-        GeometryBlock.layer = layer;
-        GeometryBlock.cbfReady = cbfReady;   // store the ready callback in mesh object
-        GeometryBlock.cbfFailed = cbfFailed; // store the failure callback in mesh object
-        GeometryBlock.caller = caller;
-        GeometryBlock.Load(sFilename, _cbPointCloudTileReady_owg, _cbPointCloudTileFailed_owg);
+        var PointCloudBlock = new PointCloud(engine);
+        PointCloudBlock.quadcode = quadcode;   // store quadcode in texture object
+        PointCloudBlock.layer = layer;
+        PointCloudBlock.cbfReady = cbfReady;   // store the ready callback in mesh object
+        PointCloudBlock.cbfFailed = cbfFailed; // store the failure callback in mesh object
+        PointCloudBlock.caller = caller;
+        PointCloudBlock.Load(sFilename, _cbPointCloudTileReady_owg, _cbPointCloudTileFailed_owg);
 
         // handle multiple tile servers
         this.curserver++;
