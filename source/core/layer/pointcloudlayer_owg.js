@@ -150,12 +150,12 @@ owgPointCloudLayer.prototype = new PointCloudLayer();
  */
 function _cbPointCloudTileReady_owg(pc)
 {
-    geometry.cbfReady(pc.quadcode, pc, pc.layer);
-    geometry.cbfReady = null;
-    geometry.cbfFailed = null;
-    geometry.quadcode = null;
-    geometry.caller = null;
-    geometry.layer = null;
+    pc.cbfReady(pc.quadcode, pc, pc.layer);
+    pc.cbfReady = null;
+    pc.cbfFailed = null;
+    pc.quadcode = null;
+    pc.caller = null;
+    pc.layer = null;
 }
 //------------------------------------------------------------------------------
 /**
@@ -164,12 +164,12 @@ function _cbPointCloudTileReady_owg(pc)
  */
 function _cbPointCloudTileFailed_owg(pc)
 {
-    geometry.cbfFailed(pc.quadcode, pc.caller, pc.layer);
-    geometry.cbfReady = null;
-    geometry.cbfFailed = null;
-    geometry.quadcode = null;
-    geometry.caller = null;
-    geometry.layer = null;
+    pc.cbfFailed(pc.quadcode, pc.caller, pc.layer);
+    pc.cbfReady = null;
+    pc.cbfFailed = null;
+    pc.quadcode = null;
+    pc.caller = null;
+    pc.layer = null;
 }
 //------------------------------------------------------------------------------
 
