@@ -34,11 +34,12 @@ goog.require('owg.TerrainBlock');
  * @param {engine3d} engine
  * @param {Array.<ImageLayer>} imagelayerlist
  * @param {Array.<ElevationLayer>} elevationlayerlist
- * @param {Array.<ElevationLayer>} geometrylayerlist
+ * @param {Array.<GeometryLayer>} geometrylayerlist$
+ * @param {Array.<PointCloudLayer>} pointcloudlayerlist
  * @param {MercatorQuadtree} quadtree
  * @param {number} cachesize
  */
-function GlobeCache(engine, imagelayerlist, elevationlayerlist, geometrylayerlist, quadtree, cachesize)
+function GlobeCache(engine, imagelayerlist, elevationlayerlist, geometrylayerlist, pointcloudlayerlist, quadtree, cachesize)
 {
    /** @type {engine3d} */
    this.engine = engine;
@@ -48,12 +49,13 @@ function GlobeCache(engine, imagelayerlist, elevationlayerlist, geometrylayerlis
    this.elevationlayerlist = elevationlayerlist;
    /** @type {Array.<GeometryLayer>} */
    this.geometrylayerlist = geometrylayerlist;
+   /** @type {Array.<PointCloudLayer>} */
+   this.pointcloudlayerlist = pointcloudlayerlist;
    /** @type {MercatorQuadtree} */
    this.quadtree = quadtree;
 
    /** @type {Cache} */
    this.cache = new Cache(cachesize, false);
-
 
    /** @type {Object} */
    this.stats = {};
@@ -71,6 +73,7 @@ GlobeCache.prototype.Destroy = function()
    this.imagelayerlist = null;
    this.elevationlayerlist = null;
    this.geometrylayerlist = null;
+   this.pointcloudlayerlist = null;
    this.quadtree = null;
    this.cache.clear();
    this.cache = null;  
@@ -130,7 +133,7 @@ GlobeCache.prototype.RequestBlock = function(quadcode)
       this.stats.numRequests++;
       // item doesn't exist yet, create a new one and request data (async)
       terrainblock = new TerrainBlock(this.engine, quadcode, this.quadtree);
-      terrainblock._AsyncRequestData(this.imagelayerlist, this.elevationlayerlist, this.geometrylayerlist);
+      terrainblock._AsyncRequestData(this.imagelayerlist, this.elevationlayerlist, this.geometrylayerlist, this.pointcloudlayerlist);
       this.cache.setItem(quadcode, terrainblock);
    }
    

@@ -619,7 +619,7 @@ GlobeRenderer.prototype._UpdateLayers = function()
       this.globecache.Destroy();  // free memory of old cache, especally GPU memory!
       this.globecache = null;
    }
-   this.globecache = new GlobeCache(this.engine, this.imagelayerlist, this.elevationlayerlist, this.geometrylayerlist, this.quadtree, this.cachesize);
+   this.globecache = new GlobeCache(this.engine, this.imagelayerlist, this.elevationlayerlist, this.geometrylayerlist, this.pointcloudlayerlist, this.quadtree, this.cachesize);
 }
 
 //------------------------------------------------------------------------------
