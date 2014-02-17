@@ -63,7 +63,7 @@ function owgPointCloudLayer()
     /**
      * @description Request a geometry tile  by entering a quadcode
      * the following callback functions must be specified:
-     *   cbfReady(quadcode, ) : called when request successfull. Holds the quadcode and the texture object
+     *   cbfReady(quadcode, ) : called when request successfull. Holds the quadcode and the point cloud object
      *   cbfFailed(quadcode) : called when request failed
      */
     this.RequestTile = function(engine, quadcode, layer, cbfReady, cbfFailed, caller)
