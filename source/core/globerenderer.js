@@ -556,6 +556,21 @@ GlobeRenderer.prototype.RemoveGeometryLayer = function(index)
 }
 //------------------------------------------------------------------------------
 /**
+ * @description Remove pointcloud layer at specified index
+ * @param {number} index the index of the geometry layer to be removed
+ */
+GlobeRenderer.prototype.RemovePointCloudLayer = function(index)
+{
+    if (index<0 || index>=this.pointcloudlayerlist.length)
+    {
+        return; // wrong index!!
+    }
+
+    this.pointcloudlayerlist.splice(index, 1);
+    this._UpdateLayers();
+}
+//------------------------------------------------------------------------------
+/**
  * @description Swap order of image layers
  * @param {number} index1
  * @param {number} index2
