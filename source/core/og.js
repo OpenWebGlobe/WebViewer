@@ -2215,7 +2215,7 @@ goog.exportSymbol('ogCreateGeometryLayer', ogCreateGeometryLayer);
  * @param {number} world_id
  * @param {PointCloudLayerOptions} options
  */
-function ogCreatePointCloudLayer(world_id, options)
+function ogAddPointCloudLayer(world_id, options)
 {
     // test if context_id is a valid context
     var world = _GetObjectFromId(world_id);
@@ -2229,7 +2229,7 @@ function ogCreatePointCloudLayer(world_id, options)
 
     return -1;
 }
-goog.exportSymbol('ogCreatePointCloudLayer', ogCreatePointCloudLayer);
+goog.exportSymbol('ogAddPointCloudLayer', ogAddPointCloudLayer);
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
