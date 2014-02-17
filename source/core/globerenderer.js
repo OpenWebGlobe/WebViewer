@@ -39,6 +39,7 @@ goog.require('owg.TMSImageLayer');
 goog.require('owg.WMSImageLayer');
 goog.require('owg.WMTSImageLayer');
 goog.require('owg.owgGeometryLayer');
+goog.require('owg.owgPointCloudLayer');
 //------------------------------------------------------------------------------
 /**
  * @typedef {{
@@ -99,6 +100,8 @@ function GlobeRenderer(engine)
    this.elevationlayerlist = new Array();
    /** @type {Array.<GeometryLayer>} */
    this.geometrylayerlist = new Array();
+   /** @type {Array.<PointCloudLayer>} */
+   this.pointcloudlayerlist = new Array();
    /** @type {MercatorQuadtree} */
    this.quadtree = new MercatorQuadtree();
    /** @type {number} */
@@ -451,7 +454,7 @@ GlobeRenderer.prototype.AddGeometryLayer = function(options)
    var index = -1;
    if (options["service"] == "owg")
    {
-      // OpenWebGlobe elevation tile service
+      // OpenWebGlobe geometry tile service
       if (options["url"] && options["minlod"] && options["maxlod"])
       {
          if (options["url"].length>0)
@@ -471,6 +474,39 @@ GlobeRenderer.prototype.AddGeometryLayer = function(options)
    }
 
    return index;
+}
+//------------------------------------------------------------------------------
+/**
+ * @description Add a pointcloud  layer
+ * @param {PointCloudLayerOptions} options
+ * @returns index of array where this pointcloud layer is placed, or -1 on failure
+ *
+ */
+GlobeRenderer.prototype.AddPointCloudLayer = function(options)
+{
+    var index = -1;
+    if (options["service"] == "owg")
+    {
+        // OpenWebGlobe point cloud tile service
+        if (options["url"] && options["minlod"] && options["maxlod"])
+        {
+            if (options["url"].length>0)
+            {
+                var servers = options["url"];
+                var minlod = options["minlod"];
+                var maxlod = options["maxlod"];
+
+                // Create OpenWebGlobe pointcloud layer:
+                var pcLayer = new owgPointCloudLayer();
+                pcLayer.Setup(servers, minlod, maxlod);
+                index = this.pointcloudlayerlist.length;
+                this.pointcloudlayerlist.push(pcLayer);
+                this._UpdateLayers();
+            }
+        }
+    }
+
+    return index;
 }
 //------------------------------------------------------------------------------
 /**
