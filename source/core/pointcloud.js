@@ -23,6 +23,7 @@
 
 goog.provide('owg.PointCloud');
 goog.require('owg.Surface');
+goog.require('owg.DataView');
 
 
 //------------------------------------------------------------------------------
@@ -65,19 +66,20 @@ function PointCloud(engine)
  */
 PointCloud.prototype.Load = function(url, opt_callbackready, opt_callbackfailed)
 {
-    this.jsonUrl = url;
-    this.http = new window.XMLHttpRequest();
-    this.http.open("GET", this.jsonUrl, true);
-
-    this.cbr = opt_callbackready;
-    this.cbf = opt_callbackfailed;
-
     var me = this;
-    this.http.onreadystatechange = function ()
-    {
-        _cbfpointclouddownload(me);
-    };
-    this.http.send();
+    var _transferComplete = function(e) { _cbfpointclouddownload(me, e.target.response); };
+    var _transferFailed = function(e) { _cbfpointcloudfailed(me); };
+
+    // XMLHttpRequest for binary data:
+    var oReq = new window.XMLHttpRequest();
+    oReq.addEventListener("load", _transferComplete, false);
+    oReq.addEventListener("error", _transferFailed, false);
+
+    oReq.open("GET", url, true);
+    oReq.responseType = "arraybuffer";
+    oReq.send(null);
+
+
 }
 //------------------------------------------------------------------------------
 /**
@@ -104,55 +106,78 @@ PointCloud.prototype.Render = function()
 
 }
 //------------------------------------------------------------------------------
-/**
- * @param {Object} jsonobject
- */
-PointCloud.prototype.CreateFromJSONObject = function(jsonobject)
+PointCloud.prototype.CreateFromBinary = function(buffer)
 {
     var failed = true;
 
-    if (goog.isDef(jsonobject["Version"] && jsonobject["Version"] == "1.0"))
+    var dv = new jDataView(buffer, 0, buffer.length, true);
+    var majorversion = dv.getChar().charCodeAt(0);
+    var minorversion = dv.getChar().charCodeAt(0);
+
+    if (majorversion == 1 && minorversion == 0)
     {
-        var bounds = jsonobject["Bounds"];
-        var texture = jsonobject["Texture"];
-        var offset = jsonobject["Offset"];
-        var bbox = jsonobject["BoundingBox"];
-        var objects = jsonobject["Objects"];
 
-        this.offset = offset;
+        var offset = [0,0,0];
+        offset[0] = dv.getFloat64();
+        offset[1] = dv.getFloat64();
+        offset[2] = dv.getFloat64();
+        var format = dv.getChar().charCodeAt(0);
+        if (format == 0) { format = 'pc'; } else {format = 'p';}
+        var numpoints = dv.getInt32();
 
-        // now create this.geometries[] out of "objects". if successful set failed to false
-        for (var i=0;i<objects.length;i++)
+        var points = [];
+        var colors = [];
+        var elementsperpoint;
+
+        if (format=='pc')
         {
-            var surf = new Surface(this.engine);
-            var obj3d = objects[i];
+            elementsperpoint = 7;
 
-            // obj3d["Vertices"] already exists
-            // obj3d["VertexSemantic"] already exists
+            points = new Float32Array(numpoints*3);
+            colors = new Uint8Array(numpoints*4);
 
-            // Set virtual camera offset:
-            obj3d["Offset"] = offset;
-
-            // Set global bounding box
-            obj3d['BoundingBox'] = bbox;
-
-            if (texture.length==0)
+            for (var i=0;i<numpoints;i++)
             {
-                obj3d["DiffuseMap"] = obj3d["Texture"];  // use local texture
-            }
-            else
-            {
-                obj3d["DiffuseMap"] = texture; // use global texture
+                points[3*i+0] = dv.getFloat32();
+                points[3*i+1] = dv.getFloat32();
+                points[3*i+2] = dv.getFloat32();
+                colors[4*i+0] = dv.getChar().charCodeAt(0);
+                colors[4*i+1] = dv.getChar().charCodeAt(0);
+                colors[4*i+2] = dv.getChar().charCodeAt(0);
+                colors[4*i+3] = dv.getChar().charCodeAt(0);
             }
 
-            // create the 3d geometry:
-            surf.CreateFromJSONObject(obj3d, null, null);
-            //surf.UpdateAABB() // would create a more precise AABB, don't call it for now.
+        }
+        else
+        {
+            //console.log("ERROR: Vertex format not supported...")
+        }
 
-            this.geometries.push(surf);
-            failed = false;
+        /*console.log("majorversion: " + majorversion + "<br>");
+        console.log("minorversion: " + minorversion + "<br>");
+        console.log("offsetx: " + offset[0] + "<br>");
+        console.log("offsetx: " + offset[1] + "<br>");
+        console.log("offsetx: " + offset[2] + "<br>");
+        console.log("point semantic: " + format + "<br>");
+        console.log("num points: " + numpoints + "<br>");*/
+
+        for (var i=0;i<points.length/3;i++)
+        {
+            //console.log("" + points[i*3+0] + ", " + points[i*3+1] + ", " + points[i*3+2] + "<br/>" );
+        }
+
+        for (var i=0;i<colors.length/4;i++)
+        {
+            //console.log("" + colors[i*4+0] + ", " + colors[i*4+1] + ", " + colors[i*4+2] + ", " + colors[i*4+2] + "<br/>" );
         }
     }
+    else
+    {
+        //console.log("ERROR: point cloud format not supported!");
+    }
+
+
+
 
     if (failed)
     {
@@ -175,23 +200,21 @@ PointCloud.prototype.CreateFromJSONObject = function(jsonobject)
  * @description download callback
  * @ignore
  */
-function _cbfpointclouddownload(geometry)
+function _cbfpointclouddownload(pc, arraybuffer)
 {
-    if (geometry.http.readyState == 4)
+    var bytebuffer = new Uint8Array(arraybuffer); // currently required for browser compability...
+    pc.CreateFromBinary(bytebuffer);
+}
+//------------------------------------------------------------------------------
+/**
+ * @description failed callback
+ * @ignore
+ */
+function _cbfpointcloudfailed(pc)
+{
+    if (pc.cbf)
     {
-        if (geometry.http.status == 404)
-        {
-            if (geometry.cbf)
-            {
-                geometry.cbf(geometry);
-            }
-        }
-        else
-        {
-            var data = geometry.http.responseText;
-            var jsonobject = goog.json.parse(data);
-            geometry.CreateFromJSONObject(jsonobject);
-        }
+        pc.cbf(pc);
     }
 }
 //------------------------------------------------------------------------------
