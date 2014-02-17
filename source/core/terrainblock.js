@@ -951,6 +951,12 @@ TerrainBlock.prototype.Render = function(nomaterial)
       {
          this.geometries[i].Render();
       }
+
+      // render all streamed point clouds
+      for (var i=0;i<this.pointclouds.length;i++)
+      {
+         this.pointclouds[i].Render();
+      }
    }
    
 }
