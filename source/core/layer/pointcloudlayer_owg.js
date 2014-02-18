@@ -66,7 +66,7 @@ function owgPointCloudLayer()
      *   cbfReady(quadcode, ) : called when request successfull. Holds the quadcode and the point cloud object
      *   cbfFailed(quadcode) : called when request failed
      */
-    this.RequestTile = function(engine, quadcode, layer, cbfReady, cbfFailed, caller)
+    this.RequestTile = function(engine, quadcode, index, cbfReady, cbfFailed, caller)
     {
         if (!this.Ready())
         {
@@ -75,19 +75,17 @@ function owgPointCloudLayer()
 
         // Example Request:
         // http://myserver.com/myscript.php?src=16&lon0=7.583253&lat0=47.566965&lon1=7.58459&lat1=47.567558&pts=40000
-
-        this.layer = layer;
         var coords = new Array(4);
         var res = {};
         var extent;
         this.quadtree.QuadKeyToWGS84(quadcode, coords);
         extent="&lon0="+ coords[1]+"&lat0="+coords[2]+"&lon1="+coords[3]+"&lat1="+coords[0];
-        var sFilename = this.servers[this.curserver] + "/?" + "src=" + this.layer + extent + "&pts=" + this.maxpts;
+        var sFilename = this.servers[this.curserver] + "?" + "layer=" + this.layer + extent + "&points=" + this.maxpts;
 
         // create geometry
         var PointCloudBlock = new PointCloud(engine);
         PointCloudBlock.quadcode = quadcode;   // store quadcode in texture object
-        PointCloudBlock.layer = layer;
+        PointCloudBlock.layer = index;
         PointCloudBlock.cbfReady = cbfReady;   // store the ready callback in mesh object
         PointCloudBlock.cbfFailed = cbfFailed; // store the failure callback in mesh object
         PointCloudBlock.caller = caller;
@@ -131,9 +129,10 @@ function owgPointCloudLayer()
 
     //---------------------------------------------------------------------------
 
-    this.Setup = function(servers, minlod, maxlod)
+    this.Setup = function(servers, layer, minlod, maxlod)
     {
         this.servers = servers;
+        this.layer = layer;
         this.minlod = minlod;
         this.maxlod = maxlod;
     }
