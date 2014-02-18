@@ -194,3 +194,17 @@ ogWorld.prototype.GetEngine = function()
    return engine;
 }
 //------------------------------------------------------------------------------
+/** @description Hide Elevation tile if there is a point-cloud
+ *  @param {boolean} yes
+ */
+ogWorld.prototype.HideElevationOnPointCloud = function(yes)
+{
+    /** @type {ogContext} */
+    var context = /** @type ogContext */this.parent.parent;
+    /** @type {engine3d} */
+    var engine = context.engine;
+
+    /** @type {GlobeRenderer} */
+    var renderer = engine.scene.nodeRenderObject.globerenderer;
+    renderer.hideelvonpt = yes;
+}

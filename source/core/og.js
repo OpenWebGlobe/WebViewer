@@ -2230,6 +2230,23 @@ function ogAddPointCloudLayer(world_id, options)
     return -1;
 }
 goog.exportSymbol('ogAddPointCloudLayer', ogAddPointCloudLayer);
+
+//------------------------------------------------------------------------------
+/**
+ * @description Add point cloud layer to the globe
+ * @param {number} world_id
+ * @param {boolean} yes
+ */
+function ogHideElevationOnPointCloud(world_id, yes)
+{
+    var world = _GetObjectFromId(world_id);
+    if (world && world.type == OG_OBJECT_WORLD)
+    {
+        world.HideElevationOnPointCloud(yes);
+    }
+}
+
+goog.exportSymbol('ogHideElevationOnPointCloud', ogHideElevationOnPointCloud);
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

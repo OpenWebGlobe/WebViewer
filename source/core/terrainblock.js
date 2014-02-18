@@ -863,8 +863,9 @@ TerrainBlock.prototype._CreateElevationMesh = function()
 /**
  * @description Render a terrain block.
  * @param {boolean} nomaterial set to true for rendering without material
+ * @param {boolean} hideelvonpt if true, don't render elevation if there is a point cloud tile
  */
-TerrainBlock.prototype.Render = function(nomaterial)
+TerrainBlock.prototype.Render = function(nomaterial, hideelvonpt)
 {
    if (this.quadcode.length < 3)
       return;
@@ -942,7 +943,10 @@ TerrainBlock.prototype.Render = function(nomaterial)
          this.mesh.mode = "pt_chroma";
       }
 
-      this.mesh.Draw();
+      if (!(this.pointclouds.length > 0 && hideelvonpt))
+      {
+        this.mesh.Draw();
+      }
 
       this.engine.PopMatrices();
 
