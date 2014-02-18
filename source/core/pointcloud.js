@@ -13,7 +13,7 @@
  #                              ____) | |__| | . \                              #
  #                             |_____/|_____/|_|\_\                             #
  #                                                                              #
- #                              (c) 2010-2013 by                                #
+ #                              (c) 2010-2014 by                                #
  #           University of Applied Sciences Northwestern Switzerland            #
  #                     Institute of Geomatics Engineering                       #
  #                           martin.christen@fhnw.ch                            #
@@ -22,7 +22,7 @@
  *******************************************************************************/
 
 goog.provide('owg.PointCloud');
-goog.require('owg.Surface');
+goog.require('owg.PointRenderer');
 goog.require('owg.DataView');
 
 
@@ -44,11 +44,8 @@ function PointCloud(engine)
     /** @type {Array.<number>} */
     this.offset = [];
 
-    /** @type {string} */
-    this.type = "tile";
-
-    /** @type {string} */
-    this.jsonUrl = "";
+    /** @type {PointRenderer} */
+    this.pointrenderer = null;
 
     this.cbr = null;
     this.cbf = null;
@@ -83,26 +80,29 @@ PointCloud.prototype.Load = function(url, opt_callbackready, opt_callbackfailed)
 }
 //------------------------------------------------------------------------------
 /**
- * @description Renders a geometry
+ * @description Renders a point cloud tile
  */
 PointCloud.prototype.Render = function()
 {
-    this.tmpmodel.CopyFrom(this.engine.matModel);
-
-    // virtual camera offset:
-    this.tmpmodel._values[12] += this.offset[0];
-    this.tmpmodel._values[13] += this.offset[1];
-    this.tmpmodel._values[14] += this.offset[2];
-
-    this.engine.PushMatrices();
-    this.engine.SetModelMatrix(this.tmpmodel);
-
-    for (var i=0;i<this.geometries.length;i++)
+    if (this.geometries.length > 0)
     {
-        this.geometries[i].Draw();
-    }
+        this.tmpmodel.CopyFrom(this.engine.matModel);
 
-    this.engine.PopMatrices();
+        // virtual camera offset:
+        this.tmpmodel._values[12] += this.offset[0];
+        this.tmpmodel._values[13] += this.offset[1];
+        this.tmpmodel._values[14] += this.offset[2];
+
+        this.engine.PushMatrices();
+        this.engine.SetModelMatrix(this.tmpmodel);
+
+        for (var i=0;i<this.geometries.length;i++)
+        {
+            this.geometries[i].Draw();
+        }
+
+        this.engine.PopMatrices();
+    }
 
 }
 //------------------------------------------------------------------------------
@@ -116,67 +116,48 @@ PointCloud.prototype.CreateFromBinary = function(buffer)
 
     if (majorversion == 1 && minorversion == 0)
     {
-
-        var offset = [0,0,0];
-        offset[0] = dv.getFloat64();
-        offset[1] = dv.getFloat64();
-        offset[2] = dv.getFloat64();
+        this.offset = [0,0,0];
+        this.offsetoffset[0] = dv.getFloat64();
+        this.offsetoffset[1] = dv.getFloat64();
+        this.offsetoffset[2] = dv.getFloat64();
         var format = dv.getChar().charCodeAt(0);
         if (format == 0) { format = 'pc'; } else {format = 'p';}
         var numpoints = dv.getInt32();
 
-        var points = [];
-        var colors = [];
-        var elementsperpoint;
+        var vertices = [];
 
         if (format=='pc')
         {
-            elementsperpoint = 7;
-
-            points = new Float32Array(numpoints*3);
-            colors = new Uint8Array(numpoints*4);
+            var points = new Float32Array(numpoints*7);
 
             for (var i=0;i<numpoints;i++)
             {
-                points[3*i+0] = dv.getFloat32();
-                points[3*i+1] = dv.getFloat32();
-                points[3*i+2] = dv.getFloat32();
-                colors[4*i+0] = dv.getChar().charCodeAt(0);
-                colors[4*i+1] = dv.getChar().charCodeAt(0);
-                colors[4*i+2] = dv.getChar().charCodeAt(0);
-                colors[4*i+3] = dv.getChar().charCodeAt(0);
+                vertices[7*i+0] = dv.getFloat32();
+                vertices[7*i+1] = dv.getFloat32();
+                vertices[7*i+3] = dv.getFloat32();
+                vertices[7*i+4] = dv.getChar().charCodeAt(0) / 255.0;
+                vertices[7*i+5] = dv.getChar().charCodeAt(0) / 255.0;
+                vertices[7*i+6] = dv.getChar().charCodeAt(0) / 255.0;
+                vertices[7*i+7] = dv.getChar().charCodeAt(0) / 255.0;
             }
 
-        }
-        else
-        {
-            //console.log("ERROR: Vertex format not supported...")
-        }
+            this.pointrenderer = new PointRenderer(this.engine);
+            this.pointrenderer.SetPoints('pc', points);
 
-        /*console.log("majorversion: " + majorversion + "<br>");
-        console.log("minorversion: " + minorversion + "<br>");
-        console.log("offsetx: " + offset[0] + "<br>");
-        console.log("offsetx: " + offset[1] + "<br>");
-        console.log("offsetx: " + offset[2] + "<br>");
-        console.log("point semantic: " + format + "<br>");
-        console.log("num points: " + numpoints + "<br>");*/
+            failed = false;
 
-        for (var i=0;i<points.length/3;i++)
-        {
-            //console.log("" + points[i*3+0] + ", " + points[i*3+1] + ", " + points[i*3+2] + "<br/>" );
         }
+        /*else
+        {
+            // Vertex format not supported
+        }*/
 
-        for (var i=0;i<colors.length/4;i++)
-        {
-            //console.log("" + colors[i*4+0] + ", " + colors[i*4+1] + ", " + colors[i*4+2] + ", " + colors[i*4+2] + "<br/>" );
-        }
+
     }
-    else
+    /*else
     {
-        //console.log("ERROR: point cloud format not supported!");
-    }
-
-
+        // this version is not supported...
+    }*/
 
 
     if (failed)
