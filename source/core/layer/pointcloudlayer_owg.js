@@ -76,6 +76,7 @@ function owgPointCloudLayer()
         // Example Request:
         // http://myserver.com/myscript.php?src=16&lon0=7.583253&lat0=47.566965&lon1=7.58459&lat1=47.567558&pts=40000
 
+        this.layer = layer;
         var coords = new Array(4);
         var res = {};
         var extent;
