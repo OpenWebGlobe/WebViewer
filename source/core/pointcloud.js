@@ -38,9 +38,6 @@ function PointCloud(engine)
     /** @type {engine3d} */
     this.engine = engine;
 
-    /** @type {Array.<Surface>} */
-    this.geometries = [];
-
     /** @type {Array.<number>} */
     this.offset = [];
 
@@ -73,6 +70,7 @@ PointCloud.prototype.Load = function(url, opt_callbackready, opt_callbackfailed)
     oReq.addEventListener("error", _transferFailed, false);
 
     oReq.open("GET", url, true);
+
     oReq.responseType = "arraybuffer";
     oReq.send(null);
 
@@ -84,7 +82,7 @@ PointCloud.prototype.Load = function(url, opt_callbackready, opt_callbackfailed)
  */
 PointCloud.prototype.Render = function()
 {
-    if (this.geometries.length > 0)
+    if (this.pointrenderer)
     {
         this.tmpmodel.CopyFrom(this.engine.matModel);
 
@@ -96,10 +94,7 @@ PointCloud.prototype.Render = function()
         this.engine.PushMatrices();
         this.engine.SetModelMatrix(this.tmpmodel);
 
-        for (var i=0;i<this.geometries.length;i++)
-        {
-            this.geometries[i].Draw();
-        }
+        this.pointrenderer.Draw();
 
         this.engine.PopMatrices();
     }
