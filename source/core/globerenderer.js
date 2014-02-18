@@ -145,6 +145,10 @@ function GlobeRenderer(engine)
    this.rendereffect = GlobeRenderer.RenderEffect.RGB;
    /** @type {Object} */
    this.renderparam = {};
+
+   /** @type {boolean} */
+   this.hideelvonpt = false;
+
 }
 //------------------------------------------------------------------------------
 /**
@@ -495,10 +499,11 @@ GlobeRenderer.prototype.AddPointCloudLayer = function(options)
                 var servers = options["url"];
                 var minlod = options["minlod"];
                 var maxlod = options["maxlod"];
+                var layer = options["layer"];
 
                 // Create OpenWebGlobe pointcloud layer:
                 var pcLayer = new owgPointCloudLayer();
-                pcLayer.Setup(servers, minlod, maxlod);
+                pcLayer.Setup(servers, layer, minlod, maxlod);
                 index = this.pointcloudlayerlist.length;
                 this.pointcloudlayerlist.push(pcLayer);
                 this._UpdateLayers();
@@ -670,7 +675,7 @@ GlobeRenderer.prototype.Render = function(vCameraPosition, matModelViewProjectio
 
    for (var i=0;i<this.lstFrustum.length;i++)
    {
-      this.lstFrustum[i].Render(false);
+      this.lstFrustum[i].Render(false, this.hideelvonpt);
    }
 
    var northTiles=[];
