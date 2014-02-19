@@ -352,7 +352,7 @@ function _cbfOnGeometryTileFailed(quadcode, terrainblock, layer)
  */
 function _cbfOnPointCloudTileReady(quadcode, pc, layer)
 {
-    console.log("_cbfOnPointCloudTileReady (index: " + layer + ")");
+    //console.log("_cbfOnPointCloudTileReady (index: " + layer + ")");
 
     var terrainblock = pc.caller;
     terrainblock.pointclouds[layer] = pc;
