@@ -82,6 +82,8 @@ function owgPointCloudLayer()
         extent="&lon0="+ coords[1]+"&lat0="+coords[2]+"&lon1="+coords[3]+"&lat1="+coords[0];
         var sFilename = this.servers[this.curserver] + "?" + "layer=" + this.layer + extent + "&points=" + this.maxpts;
 
+        console.log("RequestTile: " + quadcode);
+
         // create geometry
         var PointCloudBlock = new PointCloud(engine);
         PointCloudBlock.quadcode = quadcode;   // store quadcode in texture object

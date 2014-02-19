@@ -60,6 +60,10 @@ function PointCloud(engine)
  */
 PointCloud.prototype.Load = function(url, opt_callbackready, opt_callbackfailed)
 {
+
+    this.cbr = opt_callbackready;
+    this.cbf = opt_callbackfailed;
+
     var me = this;
     var _transferComplete = function(e) { _cbfpointclouddownload(me, e.target.response); };
     var _transferFailed = function(e) { _cbfpointcloudfailed(me); };
@@ -112,39 +116,40 @@ PointCloud.prototype.CreateFromBinary = function(buffer)
     if (majorversion == 1 && minorversion == 0)
     {
         this.offset = [0,0,0];
-        this.offsetoffset[0] = dv.getFloat64();
-        this.offsetoffset[1] = dv.getFloat64();
-        this.offsetoffset[2] = dv.getFloat64();
+        this.offset[0] = dv.getFloat64();
+        this.offset[1] = dv.getFloat64();
+        this.offset[2] = dv.getFloat64();
         var format = dv.getChar().charCodeAt(0);
         if (format == 0) { format = 'pc'; } else {format = 'p';}
         var numpoints = dv.getInt32();
 
         var vertices = [];
 
-        if (format=='pc')
+        if (format=='pc' && numpoints > 0)
         {
-            var points = new Float32Array(numpoints*7);
+            vertices = new Float32Array(numpoints*7);
 
             for (var i=0;i<numpoints;i++)
             {
                 vertices[7*i+0] = dv.getFloat32();
                 vertices[7*i+1] = dv.getFloat32();
-                vertices[7*i+3] = dv.getFloat32();
+                vertices[7*i+2] = dv.getFloat32();
+                vertices[7*i+3] = dv.getChar().charCodeAt(0) / 255.0;
                 vertices[7*i+4] = dv.getChar().charCodeAt(0) / 255.0;
                 vertices[7*i+5] = dv.getChar().charCodeAt(0) / 255.0;
                 vertices[7*i+6] = dv.getChar().charCodeAt(0) / 255.0;
-                vertices[7*i+7] = dv.getChar().charCodeAt(0) / 255.0;
             }
 
+
             this.pointrenderer = new PointRenderer(this.engine);
-            this.pointrenderer.SetPoints('pc', points);
+            this.pointrenderer.SetPoints('pc', vertices);
 
             failed = false;
 
         }
-        /*else
+        /*else if (numpoints == 0)
         {
-            // Vertex format not supported
+            console.log("pointcloud is empty!!")
         }*/
 
 

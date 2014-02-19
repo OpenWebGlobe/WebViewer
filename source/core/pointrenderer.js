@@ -49,10 +49,9 @@ function PointRenderer(engine)
 
     this.pointdata = null;
     this.vbo = null;
-    this.points = [];
+
     this.offset = 0;
-    this.numofpoints = 0;
-    this.totalnumpoints = 0;
+    this.numpoints = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -65,8 +64,10 @@ PointRenderer.prototype.SetPoints = function(pointsemantic, points)
 {
     if (pointsemantic == "pc")
     {
-        this.numpoints += points.length/7;
-        this.pointdata=points;
+
+        this.numpoints = points.length/7;
+        this.pointdata = points;
+
         this._ToGPU();
     }
     else
@@ -120,7 +121,7 @@ PointRenderer.prototype.Draw = function()
         this.engine.shadermanager.UseShader_Point(this.engine.matModelViewProjection,invmvp);
 
         //4. draw the points
-        this.gl.drawArrays(this.gl.POINTS,0,this.numofpoints); //2=anzahl punkte
+        this.gl.drawArrays(this.gl.POINTS,0,this.numpoints); //2=anzahl punkte
 
         this.gl.disableVertexAttribArray(0);
         this.gl.disableVertexAttribArray(1);
@@ -136,18 +137,10 @@ PointRenderer.prototype._ToGPU = function()
     // Create VB
     if(this.vbo === null)
     {
-
         this.vbo = this.gl.createBuffer();
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.totalnumpoints, this.gl.STATIC_DRAW);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.pointdata.length*4, this.gl.STATIC_DRAW);
         this.gl.bufferSubData(this.gl.ARRAY_BUFFER,0,this.pointdata);
-        this.offset += (this.pointdata.length)*4;
-    }
-    else
-    {
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
-        this.gl.bufferSubData(this.gl.ARRAY_BUFFER,this.offset,this.pointdata);
-        this.offset += (this.pointdata.length)*4;
     }
 }
 

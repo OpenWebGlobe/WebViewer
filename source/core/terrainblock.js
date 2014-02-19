@@ -54,7 +54,7 @@ function TerrainBlock(engine, quadcode, quadtree)
    this.haselevation = true;
    /** @type {Array.<Geometry>} */
    this.geometries = [];
-   /** @type {Array.<Geometry>} */
+   /** @type {Array.<PointRenderer>} */
    this.pointclouds = [];
    
    /** @type {Array} */
@@ -352,6 +352,8 @@ function _cbfOnGeometryTileFailed(quadcode, terrainblock, layer)
  */
 function _cbfOnPointCloudTileReady(quadcode, pc, layer)
 {
+    console.log("_cbfOnPointCloudTileReady (index: " + layer + ")");
+
     var terrainblock = pc.caller;
     terrainblock.pointclouds[layer] = pc;
 
