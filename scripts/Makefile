@@ -1,5 +1,5 @@
 CLOSURE_LIBRARY=../external/closure-library
-COMPILATION_LEVEL=ADVANCED_OPTIMIZATIONS
+COMPILATION_LEVEL=SIMPLE_OPTIMIZATIONS
 COMPILER_JAR=../external/closure/compiler.jar
 SOURCES=$(shell find ../source/core ../source/core/layer ../source/core/nodes ../source/core/og ../source/core/aoe -maxdepth 1 -name \*.js)
 TARGETS=\

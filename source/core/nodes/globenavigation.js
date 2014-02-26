@@ -131,7 +131,7 @@ function GlobeNavigationNode()
    this._navrotation = new mat4();
    this._navtotal = new mat4();
 
-   this.minAltitude = 50;
+   this.minAltitude = -20;
    this.maxAltitude = 10000000;
    // external navigation commands
    this.navigationcommand = TraversalState.NavigationCommand.IDLE;
@@ -190,8 +190,8 @@ function GlobeNavigationNode()
       }
       else
       {
-         this.near = 0.00001;
-         this.far = 10;
+         this.near = 0.00000001;
+         this.far = 2.0;
       }
 
       // read possible navigation command from outside:

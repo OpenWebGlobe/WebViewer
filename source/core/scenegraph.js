@@ -45,7 +45,7 @@ function SceneGraph(engine, options)
    /** @type {engine3d} */
    this.engine = engine;         // Render Engine
    
-   this.nodeNavigation = /*new NavigationNode();*/ new GlobeNavigationNode();
+   this.nodeNavigation = new NavigationNode();// new GlobeNavigationNode();
    this.nodeNavigation.SetEngine(engine);
    this.nodeNavigation.InitNode();
 

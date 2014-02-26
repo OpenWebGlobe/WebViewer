@@ -500,10 +500,15 @@ GlobeRenderer.prototype.AddPointCloudLayer = function(options)
                 var minlod = options["minlod"];
                 var maxlod = options["maxlod"];
                 var layer = options["layer"];
+                var maxpoints = 40000;
+                if (goog.isDef(options["maxpoints"]))
+                {
+                    maxpoints = options["maxpoints"];
+                }
 
                 // Create OpenWebGlobe pointcloud layer:
                 var pcLayer = new owgPointCloudLayer();
-                pcLayer.Setup(servers, layer, minlod, maxlod);
+                pcLayer.Setup(servers, layer, minlod, maxlod, maxpoints);
                 index = this.pointcloudlayerlist.length;
                 this.pointcloudlayerlist.push(pcLayer);
                 this._UpdateLayers();

@@ -29,15 +29,16 @@
     <html lang="en">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+    <!--
     <script type="text/javascript" src="../../../external/closure-library/closure/goog/base.js"></script>
     <script type="text/javascript" src="../../../compiled/deps.js"></script>
     <script type="text/javascript">goog.require('owg.OpenWebGlobe');</script>
-    <!--
-    <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
     -->
+    <script type="text/javascript" src="../../../compiled/owg-optimized.js"></script>
     <script type="text/javascript">
 
-    //------------------------------------------------------------------------------
+
+        //------------------------------------------------------------------------------
     // called every frame:
     function OnRender(context)
     {
@@ -59,7 +60,6 @@
         var globe = ogCreateGlobe(ctx);
 
         // (3) Add an image and an elevation layer
-
         var image =
         {
             url     : ["http://tile1.openwebglobe.org/mapcache/owg",
@@ -82,24 +82,32 @@
         var pointcloud =
         {
 
-            url     : ["http://server"],
+            url     : ["http://mapcache.tba-bs.ch/lisowgtile.php"],
             layer   : "16",
             minlod  : 17,
             maxlod  : 20,
+            maxpoints : 40000
             service : "owg"
         };
 
         ogAddImageLayer(globe, image);
         ogAddElevationLayer(globe, elevation);
         ogAddPointCloudLayer(globe, pointcloud);
-        //ogHideElevationOnPointCloud(globe, true);
 
-        // (4) Set the "Render-Callback" function.
+        // Set this to hide elevation tiles when there is point cloud data
+        // **WARNING**: this function will change in future.
+        ogHideElevationOnPointCloud(globe, true);
+
+        // (4) Set the "Render-Callback" function
         // The callback function will be called everytime a frame is drawn.
         ogSetRenderFunction(ctx, OnRender);
 
         // (5) Set the background color
         ogSetBackgroundColor(ctx, 0.2,0.2,0.7,1.0);
+
+        // (6) Fly to a position with point cloud...
+        var scene = ogGetScene(ctx);
+        ogFlyTo(scene, 7.613663196563721,47.557647705078125,350,71.88,-22.29,0);
     }
     //------------------------------------------------------------------------------
 

@@ -131,12 +131,13 @@ function owgPointCloudLayer()
 
     //---------------------------------------------------------------------------
 
-    this.Setup = function(servers, layer, minlod, maxlod)
+    this.Setup = function(servers, layer, minlod, maxlod, maxpoints)
     {
         this.servers = servers;
         this.layer = layer;
         this.minlod = minlod;
         this.maxlod = maxlod;
+        this.maxpoints = maxpoints;
     }
 }
 

@@ -95,7 +95,7 @@ function NavigationNode()
       /** @type {number} */
       this._dRollVelocity = 1.0;
       /** @type {number} */
-      this._dElevationVelocity = 1.0;
+      this._dElevationVelocity = 0.1;
       /** @type {number} */
       this._pitch_increase = 0;
       /** @type {number} */
@@ -146,7 +146,7 @@ function NavigationNode()
       
       // min altitude is currently 100 m, this can be changed soon...
       /** @type {number} */
-      this.minAltitude = 100;
+      this.minAltitude = -10;
       
       /** @type {ogCamera} */
       this.ogcam = null;
@@ -579,7 +579,7 @@ function NavigationNode()
          }
          
         
-      
+
       }
       //------------------------------------------------------------------------
 }

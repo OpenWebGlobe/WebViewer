@@ -809,9 +809,12 @@ Surface.prototype.CreateFromJSONObject = function (jsonobject, readycbf, failedc
       surface.offset = jsonobject['Offset'];
    }
 
+   var numindices = jsonobject['Indices'].length;
    if (jsonobject['CurtainIndex'])
    {
       surface.curtainindex = jsonobject['CurtainIndex'];
+      // if nocurtain:
+      //numindices = surface.curtainindex;
    }
 
    switch (jsonobject['VertexSemantic'])
@@ -822,7 +825,7 @@ Surface.prototype.CreateFromJSONObject = function (jsonobject, readycbf, failedc
          surface.mode = "p";
          // indices
          surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
-         surface.numindex = jsonobject['Indices'].length;
+         surface.numindex = numindices;
          break;
 
       case "pnt":
@@ -831,7 +834,7 @@ Surface.prototype.CreateFromJSONObject = function (jsonobject, readycbf, failedc
          surface.mode = "pnt";
          // indices
          surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
-         surface.numindex = jsonobject['Indices'].length;
+         surface.numindex = numindices;
          break;
 
       case "pc":
@@ -840,7 +843,7 @@ Surface.prototype.CreateFromJSONObject = function (jsonobject, readycbf, failedc
          surface.SetBufferPC(jsonobject['Vertices']);
          // indices
          surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
-         surface.numindex = jsonobject['Indices'].length;
+         surface.numindex = numindices;
          break;
 
       case "pnc":
@@ -849,7 +852,7 @@ Surface.prototype.CreateFromJSONObject = function (jsonobject, readycbf, failedc
          surface.SetBufferPNC(jsonobject['Vertices']);
          // indices
          surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
-         surface.numindex = jsonobject['Indices'].length;
+         surface.numindex = numindices;
          break;
 
       case "pt":
@@ -859,7 +862,7 @@ Surface.prototype.CreateFromJSONObject = function (jsonobject, readycbf, failedc
          surface.SetBufferPT(jsonobject['Vertices']);
          // indices
          surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
-         surface.numindex = jsonobject['Indices'].length;
+         surface.numindex = numindices;
          break;
 
       case "pnct":
@@ -868,7 +871,7 @@ Surface.prototype.CreateFromJSONObject = function (jsonobject, readycbf, failedc
          surface.SetBufferPNCT(jsonobject['Vertices']);
          // indices
          surface.SetIndexBuffer(jsonobject['Indices'], jsonobject['IndexSemantic']);
-         surface.numindex = jsonobject['Indices'].length;
+         surface.numindex = numindices;
          break;
 
       default:

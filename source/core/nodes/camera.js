@@ -34,8 +34,8 @@ goog.require('owg.mat4');
 function CameraNode()
 {
       this.matProjection = new mat4();
-      this.near = 0.00001;
-      this.far = 10.0;
+      this.near = 0.0000001;
+      this.far = 2.0;
       this.fov = 45;
 
       //------------------------------------------------------------------------
