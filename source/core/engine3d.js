@@ -369,7 +369,7 @@ var create3DContext = function (canvas)
    {
       try
       {
-         context = canvas.getContext(names[ii], { antialias:false });
+         context = canvas.getContext(names[ii], { antialias: false, stencil: true });
       }
       catch (e)
       {
