@@ -28,8 +28,8 @@ Library](http://code.google.com/p/closure-library/).  The compiler produces an
 optimized, minified Javascript file containing all the WebViewer code.
 
 
-Windows, Linux, MacOS X
------------------------
+Windows
+-------
 
 1) Install Python if you don't have it already. You can get python at http://www.python.org/
 You also need Java installed for the closure compiler. 
@@ -37,6 +37,13 @@ On windows you may have to adjust the Python Path in "scripts/setup.bat".
 
 2) Go into the scripts directory and start 
 "download_external.py". This will download all required external files.
+
+
+Linux, MacOS X
+--------------
+
+Development under Linux and MacOS is quite easy:
+Just go into the "scripts" directory and start make. This builds the latest version and downloads all dependencies.
 
 
 CORS - Cross Origin Resource Sharing
